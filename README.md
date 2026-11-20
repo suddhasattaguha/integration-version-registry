@@ -44,7 +44,8 @@ versioning yet. Regenerate with `python3 tools/gen_landscape.py registry-data/la
 - **A band opens into its own full-frame view** (the band morphs open; Back reverses it):
   - **Scenarios / Components:** sortable, searchable lists; rows that need attention are
     highlighted and come first ("Needs attention only" filter).
-    - **Click a row** → its full detail page (scenario page, or the component page: versions and
+    - **Click a scenario row** → its full detail page. **Click a component row** → its relationship
+      explorer opens directly; "Open component" there leads to the component page (versions and
       lifecycle, who uses which version, open decisions, direct neighbours, relationships).
     - **Explore** (the button on each row) → the **relationship explorer** grows open: overlapping
       scenarios (or users of a component) on the left, its components grouped by asset (or its

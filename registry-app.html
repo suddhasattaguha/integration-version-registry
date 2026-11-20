@@ -1219,7 +1219,7 @@ function compTable() {
   const lc = (ref, v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
   return `<table class="wtable"><thead><tr><th class="mk"></th><th>Component</th><th>Type</th><th>Platform · asset</th><th>Versions in the registry</th><th>Used by</th><th>Needs attention because</th><th>Relations</th></tr></thead><tbody>
     ${list.map((x, i) => { const a = ar.get(x.ref) || [];
-      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(x.ref)}" data-xkind="co" data-rowopen="co" tabindex="0" title="Open all details of this component">
+      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(x.ref)}" data-xkind="co" data-rowopen="co" tabindex="0" title="Explore this component's relationships">
       <td class="mk">${a.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
       <td><b title="${esc([...x.names].join(" / "))}">${esc([...x.names][0] || "(unnamed)")}</b>${x.names.size > 1 ? ` <span class="muted" style="font-size:12px">+${x.names.size - 1} name${x.names.size > 2 ? "s" : ""}</span>` : ""}<div class="sub2 mono muted">${esc(x.ref)}</div></td>
       <td>${esc(x.type)}</td><td>${esc([kindInfo(x.kind).label, x.asset].filter(Boolean).join(" · "))}</td>
@@ -1728,7 +1728,8 @@ document.addEventListener("click", (ev) => {
   if (t.dataset.crumb !== undefined) return crumbTo(Number(t.dataset.crumb));
   if (t.dataset.xopen) { ev.stopPropagation(); return openExplorer(t.closest("tr.r")); }
   if (t.dataset.copen) return openDetail(t.closest("tr, .list-item") || t, "component", { ref: t.dataset.copen });
-  if (t.dataset.rowopen) return t.dataset.rowopen === "co" ? openDetail(t, "component", { ref: t.dataset.id }) : openDetail(t, "scenario", { id: t.dataset.id, version: null });
+  // components: the row opens the relationship explorer directly; scenarios: the row opens the detail page
+  if (t.dataset.rowopen) return t.dataset.rowopen === "co" ? openExplorer(t) : openDetail(t, "scenario", { id: t.dataset.id, version: null });
   if (t.dataset.band) return openWorld(t, t.dataset.band);           // a band opens into its world
   if (t.dataset.mapsel) {                                            // explorer: show an asset on the map
     const a = S.assets.get(t.dataset.mapsel);
