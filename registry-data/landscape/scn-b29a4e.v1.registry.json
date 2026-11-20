@@ -1,0 +1,292 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-b29a4e",
+    "version": 1,
+    "name": "HR-Leaver-Offboarding",
+    "description": "Terminations in SuccessFactors flow over the employee topic to the identity process that disables the Entra ID account; ServiceNow gets the offboarding case.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-23T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "composite"
+    },
+    "canvas": {
+      "file": "scn-b29a4e.v1.canvas.json"
+    },
+    "tags": [
+      "HR",
+      "offboarding",
+      "SuccessFactors"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-publish",
+        "label": "Process-to-Publish",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 0,
+        "order": 2,
+        "components": [
+          "c3",
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "b4",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 3,
+        "components": [
+          "c5",
+          "c6"
+        ]
+      },
+      {
+        "id": "b5",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 1,
+        "order": 0,
+        "components": [
+          "c3",
+          "c7",
+          "c8"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btpis/sf-employee#api",
+        "name": "SF-Employee-Sync API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "btpis/sf-employee#process",
+        "name": "SF-Employee-Sync Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c3",
+        "ref": "solace/employee#topic",
+        "name": "Employee-Events Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c4",
+        "ref": "solace/q-entra-leaver#queue",
+        "name": "Q-Entra-Leaver Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c5",
+        "ref": "ais/hr-identity#process",
+        "name": "HR-Identity Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k4"
+      },
+      {
+        "id": "c6",
+        "ref": "endapp/entra-id#api",
+        "name": "Microsoft Graph Users API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k5"
+      },
+      {
+        "id": "c7",
+        "ref": "solace/q-servicenow#queue",
+        "name": "Q-Servicenow Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k6"
+      },
+      {
+        "id": "c8",
+        "ref": "endapp/servicenow-hr#api",
+        "name": "ServiceNow HR Case API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k7"
+      },
+      {
+        "id": "c9",
+        "ref": "caller/sf-ec#app",
+        "name": "SuccessFactors Employee Central",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k8"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btpis/sf-employee#api",
+        "toRef": "btpis/sf-employee#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btpis/sf-employee#process",
+        "toRef": "solace/employee#topic"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "solace/employee#topic",
+        "toRef": "solace/q-entra-leaver#queue"
+      },
+      {
+        "from": "c4",
+        "to": "c5",
+        "fromRef": "solace/q-entra-leaver#queue",
+        "toRef": "ais/hr-identity#process"
+      },
+      {
+        "from": "c5",
+        "to": "c6",
+        "fromRef": "ais/hr-identity#process",
+        "toRef": "endapp/entra-id#api"
+      },
+      {
+        "from": "c3",
+        "to": "c7",
+        "fromRef": "solace/employee#topic",
+        "toRef": "solace/q-servicenow#queue"
+      },
+      {
+        "from": "c7",
+        "to": "c8",
+        "fromRef": "solace/q-servicenow#queue",
+        "toRef": "endapp/servicenow-hr#api"
+      },
+      {
+        "from": "c9",
+        "to": "c1",
+        "fromRef": "caller/sf-ec#app",
+        "toRef": "btpis/sf-employee#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btpis/sf-employee",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "SF-Employee-Sync"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/employee",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Employee-Events"
+      },
+      {
+        "id": "k3",
+        "ref": "solace/q-entra-leaver",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Entra-Leaver"
+      },
+      {
+        "id": "k4",
+        "ref": "ais/hr-identity",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "HR-Identity"
+      },
+      {
+        "id": "k5",
+        "ref": "endapp/entra-id",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Microsoft Graph Users API",
+        "process": "Identity lifecycle"
+      },
+      {
+        "id": "k6",
+        "ref": "solace/q-servicenow",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Servicenow"
+      },
+      {
+        "id": "k7",
+        "ref": "endapp/servicenow-hr",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "ServiceNow HR Case API",
+        "process": "Onboarding tasks"
+      },
+      {
+        "id": "k8",
+        "ref": "caller/sf-ec",
+        "kind": "caller",
+        "platform": "",
+        "asset": "SuccessFactors Employee Central",
+        "process": "Employee change"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

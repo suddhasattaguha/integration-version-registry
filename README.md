@@ -32,8 +32,10 @@ the registry from **`registry-data/`** in this repo by default — no folder pic
 To add a scenario: put the Pattern Bench registry export (`*.registry.json`, with its
 `*.canvas.json`) into `registry-data/` and commit it.
 
-`registry-data/_sample/` holds generated sample scenarios to try the app — delete that
-folder when real data is in.
+`registry-data/landscape/` holds a generated test landscape: 22 composite scenarios across
+Order-to-Cash, master data, Procure-to-Pay, finance and HR (S/4HANA, Salesforce, Ariba,
+SuccessFactors, EWM, webshop, banks …) that share APIs, processes, topics and queues — no
+versioning yet. Regenerate with `python3 tools/gen_landscape.py registry-data/landscape`.
 
 ## What draft 0.3 does
 

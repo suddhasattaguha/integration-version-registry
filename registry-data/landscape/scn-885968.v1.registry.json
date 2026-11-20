@@ -1,0 +1,141 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-885968",
+    "version": 1,
+    "name": "P2P-PO-Confirmation-from-Ariba",
+    "description": "Supplier order confirmations from Ariba update the purchase order in S/4HANA through the shared Ariba procurement API.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-17T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "single"
+    },
+    "canvas": {
+      "file": "scn-885968.v1.canvas.json"
+    },
+    "tags": [
+      "P2P",
+      "purchase order",
+      "Ariba"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btpis/ariba-procure#api",
+        "name": "Ariba-Procurement API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "btpis/ariba-procure#process",
+        "name": "Ariba-Procurement Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c3",
+        "ref": "endapp/s4-po#api",
+        "name": "S/4 API_PURCHASEORDER_PROCESS_SRV",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k2"
+      },
+      {
+        "id": "c4",
+        "ref": "caller/ariba#app",
+        "name": "SAP Ariba",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k3"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btpis/ariba-procure#api",
+        "toRef": "btpis/ariba-procure#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btpis/ariba-procure#process",
+        "toRef": "endapp/s4-po#api"
+      },
+      {
+        "from": "c4",
+        "to": "c1",
+        "fromRef": "caller/ariba#app",
+        "toRef": "btpis/ariba-procure#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btpis/ariba-procure",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Ariba-Procurement"
+      },
+      {
+        "id": "k2",
+        "ref": "endapp/s4-po",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "S/4 API_PURCHASEORDER_PROCESS_SRV",
+        "process": "PO confirmation"
+      },
+      {
+        "id": "k3",
+        "ref": "caller/ariba",
+        "kind": "caller",
+        "platform": "",
+        "asset": "SAP Ariba",
+        "process": "Supplier document"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

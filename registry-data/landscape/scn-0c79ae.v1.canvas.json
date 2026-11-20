@@ -1,0 +1,100 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-api",
+      "label": "Consume-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "Order-Status-Dist"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Order-Status-Events"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "name": "Webshop (commercetools)",
+      "process": "Order status"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Business event"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "mode": "composite",
+  "branches": [
+    {
+      "kind": "out",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-api",
+          "label": "Consume-to-API"
+        }
+      ]
+    }
+  ],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-0c79ae",
+    "version": 1,
+    "name": "O2C-Order-Status-Broadcast",
+    "description": "S/4HANA order status events are distributed to the webshop and back to Salesforce.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "O2C",
+      "order status"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-04T09:30:00.000Z"
+}

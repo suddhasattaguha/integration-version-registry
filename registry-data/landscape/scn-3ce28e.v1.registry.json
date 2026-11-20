@@ -1,0 +1,147 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-3ce28e",
+    "version": 1,
+    "name": "HR-Payroll-Export",
+    "description": "Employee events are collected and sent as the payroll input file to ADP.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-22T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "single"
+    },
+    "canvas": {
+      "file": "scn-3ce28e.v1.canvas.json"
+    },
+    "tags": [
+      "HR",
+      "payroll"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-file",
+        "label": "Process-to-File",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c3",
+          "c4"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "solace/employee#topic",
+        "name": "Employee-Events Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "solace/q-payroll#queue",
+        "name": "Q-Payroll Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c3",
+        "ref": "btpis/payroll-export#process",
+        "name": "Payroll-Export Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c4",
+        "ref": "endapp/adp-sftp#file",
+        "name": "ADP SFTP inbox",
+        "autoName": false,
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k4"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "solace/employee#topic",
+        "toRef": "solace/q-payroll#queue"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "solace/q-payroll#queue",
+        "toRef": "btpis/payroll-export#process"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "btpis/payroll-export#process",
+        "toRef": "endapp/adp-sftp#file"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "solace/employee",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Employee-Events"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/q-payroll",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Payroll"
+      },
+      {
+        "id": "k3",
+        "ref": "btpis/payroll-export",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Payroll-Export"
+      },
+      {
+        "id": "k4",
+        "ref": "endapp/adp-sftp",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "ADP SFTP inbox",
+        "process": "Payroll input"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

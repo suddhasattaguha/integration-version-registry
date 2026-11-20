@@ -1,0 +1,69 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "file-to-process",
+      "label": "File-to-Process"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "name": "Nordea Bank",
+      "process": "Statements"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "Bank-Statement-In"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Electronic bank statement"
+    }
+  ],
+  "caller": false,
+  "ripples": [],
+  "marks": [],
+  "mode": "single",
+  "branches": [],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-7a6e2d",
+    "version": 1,
+    "name": "FIN-Bank-Statement-Import",
+    "description": "Daily camt.053 statements from Nordea are picked up and imported into S/4HANA.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "FIN",
+      "bank statement",
+      "bank"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-20T09:30:00.000Z"
+}

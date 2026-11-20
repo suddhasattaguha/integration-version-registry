@@ -1,0 +1,147 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-64cc50",
+    "version": 1,
+    "name": "ANA-Sales-Order-to-Data-Lake",
+    "description": "Analytics subscription on the sales-order topic, landing raw order events in the data lake.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-10T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "single"
+    },
+    "canvas": {
+      "file": "scn-64cc50.v1.canvas.json"
+    },
+    "tags": [
+      "analytics",
+      "sales order"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-file",
+        "label": "Process-to-File",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c3",
+          "c4"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "solace/sales-order#topic",
+        "name": "Sales-Order-Events Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "solace/q-dwh-order#queue",
+        "name": "Q-Dwh-Order Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c3",
+        "ref": "ais/datalake-ingest#process",
+        "name": "DataLake-Ingest Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c4",
+        "ref": "endapp/datalake#file",
+        "name": "Data Lake landing folder",
+        "autoName": false,
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k4"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "solace/sales-order#topic",
+        "toRef": "solace/q-dwh-order#queue"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "solace/q-dwh-order#queue",
+        "toRef": "ais/datalake-ingest#process"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "ais/datalake-ingest#process",
+        "toRef": "endapp/datalake#file"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "solace/sales-order",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Sales-Order-Events"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/q-dwh-order",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Dwh-Order"
+      },
+      {
+        "id": "k3",
+        "ref": "ais/datalake-ingest",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "DataLake-Ingest"
+      },
+      {
+        "id": "k4",
+        "ref": "endapp/datalake",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Data Lake landing folder",
+        "process": "Analytics ingest"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

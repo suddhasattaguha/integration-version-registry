@@ -1,0 +1,105 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-api",
+      "label": "Consume-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "AIS",
+      "asset": "CRM-Connector"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Sales-Order-Events"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Sales order creation"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "Salesforce Sales Cloud",
+      "process": "Order / account change"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "mode": "composite",
+  "branches": [
+    {
+      "kind": "out",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-process",
+          "label": "Consume-to-Process"
+        },
+        {
+          "pattern": "process-to-file",
+          "label": "Process-to-File"
+        }
+      ]
+    }
+  ],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-dcba7d",
+    "version": 1,
+    "name": "O2C-Salesforce-Order-Intake",
+    "description": "Orders closed in Salesforce are routed by the CRM connector onto the shared sales-order topic; S/4HANA and the data lake subscribe.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "O2C",
+      "sales order",
+      "salesforce"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-03T09:30:00.000Z"
+}

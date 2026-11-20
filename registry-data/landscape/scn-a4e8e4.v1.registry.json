@@ -1,0 +1,148 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-a4e8e4",
+    "version": 1,
+    "name": "O2C-Invoice-Copy-to-Salesforce",
+    "description": "Subscribes to the invoice topic and makes invoices visible on the Salesforce account.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-09T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "single"
+    },
+    "canvas": {
+      "file": "scn-a4e8e4.v1.canvas.json"
+    },
+    "tags": [
+      "O2C",
+      "invoice",
+      "salesforce"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c3",
+          "c4"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "solace/invoice#topic",
+        "name": "Invoice-Events Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "solace/q-crm-invoice#queue",
+        "name": "Q-Crm-Invoice Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c3",
+        "ref": "btpis/invoice-crm#process",
+        "name": "Invoice-to-CRM Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c4",
+        "ref": "endapp/sfdc-invoice#api",
+        "name": "Salesforce Invoice API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k4"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "solace/invoice#topic",
+        "toRef": "solace/q-crm-invoice#queue"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "solace/q-crm-invoice#queue",
+        "toRef": "btpis/invoice-crm#process"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "btpis/invoice-crm#process",
+        "toRef": "endapp/sfdc-invoice#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "solace/invoice",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Invoice-Events"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/q-crm-invoice",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Crm-Invoice"
+      },
+      {
+        "id": "k3",
+        "ref": "btpis/invoice-crm",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Invoice-to-CRM"
+      },
+      {
+        "id": "k4",
+        "ref": "endapp/sfdc-invoice",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Salesforce Invoice API",
+        "process": "Invoice visibility"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

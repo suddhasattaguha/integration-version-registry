@@ -1,0 +1,69 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "Ariba-Procurement"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "name": "SAP S/4HANA (P01)",
+      "process": "PO confirmation"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SAP Ariba",
+      "process": "Supplier document"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "mode": "single",
+  "branches": [],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-885968",
+    "version": 1,
+    "name": "P2P-PO-Confirmation-from-Ariba",
+    "description": "Supplier order confirmations from Ariba update the purchase order in S/4HANA through the shared Ariba procurement API.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "P2P",
+      "purchase order",
+      "Ariba"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-17T09:30:00.000Z"
+}

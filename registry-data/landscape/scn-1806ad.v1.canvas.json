@@ -1,0 +1,121 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-api",
+      "label": "Consume-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "SF-Employee-Sync"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Employee-Events"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "name": "Microsoft Entra ID",
+      "process": "Identity lifecycle"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SuccessFactors Employee Central",
+      "process": "Employee change"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "mode": "composite",
+  "branches": [
+    {
+      "kind": "out",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-api",
+          "label": "Consume-to-API"
+        }
+      ]
+    },
+    {
+      "kind": "out",
+      "row": -1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-api",
+          "label": "Consume-to-API"
+        }
+      ]
+    }
+  ],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-1806ad",
+    "version": 1,
+    "name": "HR-New-Hire-Onboarding",
+    "description": "New hires in SuccessFactors are published once: Entra ID creates the account, ServiceNow opens onboarding tasks, S/4HANA gets the employee as business partner.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "HR",
+      "onboarding",
+      "SuccessFactors"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-21T09:30:00.000Z"
+}

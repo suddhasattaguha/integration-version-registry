@@ -1,32 +1,33 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.5",
+  "schemaVersion": "0.6",
   "scenario": {
-    "id": "smp-order-status",
+    "id": "scn-7a6e2d",
     "version": 1,
-    "name": "Order status back to Webshop",
-    "description": "Order confirmations from S/4 EU to the webshop via AIS.",
-    "author": "Sample Architect",
-    "exportedAt": "2026-11-14T13:20:00Z",
+    "name": "FIN-Bank-Statement-Import",
+    "description": "Daily camt.053 statements from Nordea are picked up and imported into S/4HANA.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-20T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
       "toolVersion": "2.0",
       "mode": "single"
     },
-    "tags": [
-      "sample",
-      "order"
-    ],
     "canvas": {
-      "file": "smp-order-status.v1.canvas.json"
-    }
+      "file": "scn-7a6e2d.v1.canvas.json"
+    },
+    "tags": [
+      "FIN",
+      "bank statement",
+      "bank"
+    ]
   },
   "base": {
     "blocks": [
       {
         "id": "b1",
-        "templateId": "api-to-process",
-        "label": "API-to-Process",
+        "templateId": "file-to-process",
+        "label": "File-to-Process",
         "row": 0,
         "order": 0,
         "components": [
@@ -49,18 +50,18 @@
     "components": [
       {
         "id": "c1",
-        "ref": "endapp/sap-eu#api",
-        "name": "SAP EU API",
+        "ref": "endapp/bank-nordea-in#file",
+        "name": "Nordea SFTP inbox (camt.053)",
         "autoName": false,
-        "type": "api",
+        "type": "file",
         "version": "v1",
         "owner": "endApp",
         "container": "k1"
       },
       {
         "id": "c2",
-        "ref": "ais/orderintake-exp#process",
-        "name": "OrderIntake-exp Process",
+        "ref": "btpis/bank-statement#process",
+        "name": "Bank-Statement-In Process",
         "autoName": false,
         "type": "process",
         "version": "v1",
@@ -69,12 +70,12 @@
       },
       {
         "id": "c3",
-        "ref": "caller/webshop#app",
-        "name": "Webshop App",
+        "ref": "endapp/s4-bank-statement#api",
+        "name": "S/4 Bank Statement Import (CAMT.053)",
         "autoName": false,
-        "type": "app",
+        "type": "api",
         "version": "v1",
-        "owner": "caller",
+        "owner": "endApp",
         "container": "k3"
       }
     ],
@@ -82,37 +83,39 @@
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "endapp/sap-eu#api",
-        "toRef": "ais/orderintake-exp#process"
+        "fromRef": "endapp/bank-nordea-in#file",
+        "toRef": "btpis/bank-statement#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "ais/orderintake-exp#process",
-        "toRef": "caller/webshop#app"
+        "fromRef": "btpis/bank-statement#process",
+        "toRef": "endapp/s4-bank-statement#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "endapp/sap-eu",
+        "ref": "endapp/bank-nordea-in",
         "kind": "endApp",
         "platform": "",
-        "asset": "SAP EU"
+        "asset": "Nordea SFTP inbox (camt.053)",
+        "process": "Statements"
       },
       {
         "id": "k2",
-        "ref": "ais/orderintake-exp",
+        "ref": "btpis/bank-statement",
         "kind": "iPaaS",
-        "platform": "AIS",
-        "asset": "OrderIntake-exp"
+        "platform": "BTP IS",
+        "asset": "Bank-Statement-In"
       },
       {
         "id": "k3",
-        "ref": "caller/webshop",
-        "kind": "caller",
+        "ref": "endapp/s4-bank-statement",
+        "kind": "endApp",
         "platform": "",
-        "asset": "Webshop"
+        "asset": "S/4 Bank Statement Import (CAMT.053)",
+        "process": "Electronic bank statement"
       }
     ]
   },

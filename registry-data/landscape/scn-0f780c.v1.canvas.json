@@ -1,0 +1,97 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "consume-to-process",
+      "label": "Consume-to-Process"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "Solace",
+      "asset": "Material-Events"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "platform": "AIS",
+      "asset": "Catalog-Sync"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "name": "Webshop (commercetools)",
+      "process": "Catalogue"
+    }
+  ],
+  "caller": false,
+  "ripples": [],
+  "marks": [],
+  "mode": "composite",
+  "branches": [
+    {
+      "kind": "in",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "api-to-process",
+          "label": "API-to-Process"
+        }
+      ]
+    }
+  ],
+  "callers": [
+    {
+      "anchor": [
+        {
+          "ref": "b0.0",
+          "side": "in"
+        }
+      ],
+      "name": "PIM (Akeneo)",
+      "process": "Product published"
+    }
+  ],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-0f780c",
+    "version": 1,
+    "name": "MDM-Product-Catalogue-to-Webshop",
+    "description": "The catalogue sync subscribes to material events and also takes enriched products pushed from PIM, updating the webshop catalogue.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "MDM",
+      "product",
+      "webshop"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-14T09:30:00.000Z"
+}

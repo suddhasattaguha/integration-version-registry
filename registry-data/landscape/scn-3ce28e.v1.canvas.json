@@ -1,0 +1,68 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "consume-to-process",
+      "label": "Consume-to-Process"
+    },
+    {
+      "pattern": "process-to-file",
+      "label": "Process-to-File"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "Solace",
+      "asset": "Employee-Events"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "Payroll-Export"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "name": "ADP Payroll",
+      "process": "Payroll input"
+    }
+  ],
+  "caller": false,
+  "ripples": [],
+  "marks": [],
+  "mode": "single",
+  "branches": [],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-3ce28e",
+    "version": 1,
+    "name": "HR-Payroll-Export",
+    "description": "Employee events are collected and sent as the payroll input file to ADP.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "HR",
+      "payroll"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-22T09:30:00.000Z"
+}

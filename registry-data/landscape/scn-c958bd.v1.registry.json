@@ -1,0 +1,210 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-c958bd",
+    "version": 1,
+    "name": "P2P-Supplier-Invoice-Processing",
+    "description": "Supplier invoices from Ariba, plus scanned paper invoices from the OCR service, are posted in S/4HANA.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-18T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "composite"
+    },
+    "canvas": {
+      "file": "scn-c958bd.v1.canvas.json"
+    },
+    "tags": [
+      "P2P",
+      "supplier invoice",
+      "Ariba"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "file-to-process",
+        "label": "File-to-Process",
+        "row": 1,
+        "order": 0,
+        "components": [
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "b4",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 1,
+        "order": 1,
+        "components": [
+          "c5",
+          "c1"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btpis/ariba-procure#api",
+        "name": "Ariba-Procurement API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "btpis/ariba-procure#process",
+        "name": "Ariba-Procurement Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c3",
+        "ref": "endapp/s4-supplier-invoice#api",
+        "name": "S/4 API_SUPPLIERINVOICE_PROCESS_SRV",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k2"
+      },
+      {
+        "id": "c4",
+        "ref": "endapp/ocr-sftp#file",
+        "name": "OCR outbox SFTP",
+        "autoName": false,
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k3"
+      },
+      {
+        "id": "c5",
+        "ref": "btpis/invoice-scan#process",
+        "name": "Invoice-Scan-OCR Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k4"
+      },
+      {
+        "id": "c6",
+        "ref": "caller/ariba#app",
+        "name": "SAP Ariba",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k5"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btpis/ariba-procure#api",
+        "toRef": "btpis/ariba-procure#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btpis/ariba-procure#process",
+        "toRef": "endapp/s4-supplier-invoice#api"
+      },
+      {
+        "from": "c4",
+        "to": "c5",
+        "fromRef": "endapp/ocr-sftp#file",
+        "toRef": "btpis/invoice-scan#process"
+      },
+      {
+        "from": "c5",
+        "to": "c1",
+        "fromRef": "btpis/invoice-scan#process",
+        "toRef": "btpis/ariba-procure#api"
+      },
+      {
+        "from": "c6",
+        "to": "c1",
+        "fromRef": "caller/ariba#app",
+        "toRef": "btpis/ariba-procure#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btpis/ariba-procure",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Ariba-Procurement"
+      },
+      {
+        "id": "k2",
+        "ref": "endapp/s4-supplier-invoice",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "S/4 API_SUPPLIERINVOICE_PROCESS_SRV",
+        "process": "Supplier invoice posting"
+      },
+      {
+        "id": "k3",
+        "ref": "endapp/ocr-sftp",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "OCR outbox SFTP",
+        "process": "Scanned invoices"
+      },
+      {
+        "id": "k4",
+        "ref": "btpis/invoice-scan",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Invoice-Scan-OCR"
+      },
+      {
+        "id": "k5",
+        "ref": "caller/ariba",
+        "kind": "caller",
+        "platform": "",
+        "asset": "SAP Ariba",
+        "process": "Supplier document"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

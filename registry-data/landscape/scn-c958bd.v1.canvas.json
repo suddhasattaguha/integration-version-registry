@@ -1,0 +1,90 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "Ariba-Procurement"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Supplier invoice posting"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SAP Ariba",
+      "process": "Supplier document"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "mode": "composite",
+  "branches": [
+    {
+      "kind": "in",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t0",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "file-to-process",
+          "label": "File-to-Process"
+        },
+        {
+          "pattern": "process-to-api",
+          "label": "Process-to-API"
+        }
+      ]
+    }
+  ],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-c958bd",
+    "version": 1,
+    "name": "P2P-Supplier-Invoice-Processing",
+    "description": "Supplier invoices from Ariba, plus scanned paper invoices from the OCR service, are posted in S/4HANA.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "P2P",
+      "supplier invoice",
+      "Ariba"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-18T09:30:00.000Z"
+}

@@ -1,0 +1,69 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "consume-to-process",
+      "label": "Consume-to-Process"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "Solace",
+      "asset": "Invoice-Events"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "Invoice-to-CRM"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "name": "Salesforce Sales Cloud",
+      "process": "Invoice visibility"
+    }
+  ],
+  "caller": false,
+  "ripples": [],
+  "marks": [],
+  "mode": "single",
+  "branches": [],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-a4e8e4",
+    "version": 1,
+    "name": "O2C-Invoice-Copy-to-Salesforce",
+    "description": "Subscribes to the invoice topic and makes invoices visible on the Salesforce account.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "O2C",
+      "invoice",
+      "salesforce"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-09T09:30:00.000Z"
+}

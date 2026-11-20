@@ -1,0 +1,292 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-dcba7d",
+    "version": 1,
+    "name": "O2C-Salesforce-Order-Intake",
+    "description": "Orders closed in Salesforce are routed by the CRM connector onto the shared sales-order topic; S/4HANA and the data lake subscribe.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-03T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "composite"
+    },
+    "canvas": {
+      "file": "scn-dcba7d.v1.canvas.json"
+    },
+    "tags": [
+      "O2C",
+      "sales order",
+      "salesforce"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-publish",
+        "label": "Process-to-Publish",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 0,
+        "order": 2,
+        "components": [
+          "c3",
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "b4",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 1,
+        "order": 0,
+        "components": [
+          "c3",
+          "c6",
+          "c7"
+        ]
+      },
+      {
+        "id": "b5",
+        "templateId": "process-to-file",
+        "label": "Process-to-File",
+        "row": 1,
+        "order": 1,
+        "components": [
+          "c7",
+          "c8"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "ais/crm-connector#api",
+        "name": "CRM-Connector API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "ais/crm-connector#process",
+        "name": "CRM-Connector Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c3",
+        "ref": "solace/sales-order#topic",
+        "name": "Sales-Order-Events Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c4",
+        "ref": "solace/q-s4-order#queue",
+        "name": "Q-S4-Order Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c5",
+        "ref": "endapp/s4-salesorder#api",
+        "name": "S/4 API_SALES_ORDER_SRV",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k4"
+      },
+      {
+        "id": "c6",
+        "ref": "solace/q-dwh-order#queue",
+        "name": "Q-Dwh-Order Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k5"
+      },
+      {
+        "id": "c7",
+        "ref": "ais/datalake-ingest#process",
+        "name": "DataLake-Ingest Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k6"
+      },
+      {
+        "id": "c8",
+        "ref": "endapp/datalake#file",
+        "name": "Data Lake landing folder",
+        "autoName": false,
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k7"
+      },
+      {
+        "id": "c9",
+        "ref": "caller/sfdc#app",
+        "name": "Salesforce Sales Cloud",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k8"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "ais/crm-connector#api",
+        "toRef": "ais/crm-connector#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "ais/crm-connector#process",
+        "toRef": "solace/sales-order#topic"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "solace/sales-order#topic",
+        "toRef": "solace/q-s4-order#queue"
+      },
+      {
+        "from": "c4",
+        "to": "c5",
+        "fromRef": "solace/q-s4-order#queue",
+        "toRef": "endapp/s4-salesorder#api"
+      },
+      {
+        "from": "c3",
+        "to": "c6",
+        "fromRef": "solace/sales-order#topic",
+        "toRef": "solace/q-dwh-order#queue"
+      },
+      {
+        "from": "c6",
+        "to": "c7",
+        "fromRef": "solace/q-dwh-order#queue",
+        "toRef": "ais/datalake-ingest#process"
+      },
+      {
+        "from": "c7",
+        "to": "c8",
+        "fromRef": "ais/datalake-ingest#process",
+        "toRef": "endapp/datalake#file"
+      },
+      {
+        "from": "c9",
+        "to": "c1",
+        "fromRef": "caller/sfdc#app",
+        "toRef": "ais/crm-connector#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "ais/crm-connector",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "CRM-Connector"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/sales-order",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Sales-Order-Events"
+      },
+      {
+        "id": "k3",
+        "ref": "solace/q-s4-order",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-S4-Order"
+      },
+      {
+        "id": "k4",
+        "ref": "endapp/s4-salesorder",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "S/4 API_SALES_ORDER_SRV",
+        "process": "Sales order creation"
+      },
+      {
+        "id": "k5",
+        "ref": "solace/q-dwh-order",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Dwh-Order"
+      },
+      {
+        "id": "k6",
+        "ref": "ais/datalake-ingest",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "DataLake-Ingest"
+      },
+      {
+        "id": "k7",
+        "ref": "endapp/datalake",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Data Lake landing folder",
+        "process": "Analytics ingest"
+      },
+      {
+        "id": "k8",
+        "ref": "caller/sfdc",
+        "kind": "caller",
+        "platform": "",
+        "asset": "Salesforce Sales Cloud",
+        "process": "Order / account change"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

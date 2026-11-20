@@ -1,0 +1,226 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-3bcd54",
+    "version": 1,
+    "name": "MDM-Salesforce-Account-to-S4",
+    "description": "New prospects converted in Salesforce, and webshop self-registrations, create business partners in S/4HANA through the CRM connector.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-12T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "composite"
+    },
+    "canvas": {
+      "file": "scn-3bcd54.v1.canvas.json"
+    },
+    "tags": [
+      "MDM",
+      "business partner",
+      "salesforce"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 1,
+        "order": 0,
+        "components": [
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "b4",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 1,
+        "order": 1,
+        "components": [
+          "c5",
+          "c1"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "ais/crm-connector#api",
+        "name": "CRM-Connector API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "ais/crm-connector#process",
+        "name": "CRM-Connector Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c3",
+        "ref": "endapp/s4-bp#api",
+        "name": "S/4 API_BUSINESS_PARTNER",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k2"
+      },
+      {
+        "id": "c4",
+        "ref": "ais/webshop-gateway#api",
+        "name": "Webshop-Gateway API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c5",
+        "ref": "ais/webshop-gateway#process",
+        "name": "Webshop-Gateway Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c6",
+        "ref": "caller/sfdc#app",
+        "name": "Salesforce Sales Cloud",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k4"
+      },
+      {
+        "id": "c7",
+        "ref": "caller/webshop#app",
+        "name": "Webshop (commercetools)",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k5"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "ais/crm-connector#api",
+        "toRef": "ais/crm-connector#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "ais/crm-connector#process",
+        "toRef": "endapp/s4-bp#api"
+      },
+      {
+        "from": "c4",
+        "to": "c5",
+        "fromRef": "ais/webshop-gateway#api",
+        "toRef": "ais/webshop-gateway#process"
+      },
+      {
+        "from": "c5",
+        "to": "c1",
+        "fromRef": "ais/webshop-gateway#process",
+        "toRef": "ais/crm-connector#api"
+      },
+      {
+        "from": "c6",
+        "to": "c1",
+        "fromRef": "caller/sfdc#app",
+        "toRef": "ais/crm-connector#api"
+      },
+      {
+        "from": "c7",
+        "to": "c4",
+        "fromRef": "caller/webshop#app",
+        "toRef": "ais/webshop-gateway#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "ais/crm-connector",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "CRM-Connector"
+      },
+      {
+        "id": "k2",
+        "ref": "endapp/s4-bp",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "S/4 API_BUSINESS_PARTNER",
+        "process": "Business partner maintenance"
+      },
+      {
+        "id": "k3",
+        "ref": "ais/webshop-gateway",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "Webshop-Gateway"
+      },
+      {
+        "id": "k4",
+        "ref": "caller/sfdc",
+        "kind": "caller",
+        "platform": "",
+        "asset": "Salesforce Sales Cloud",
+        "process": "Order / account change"
+      },
+      {
+        "id": "k5",
+        "ref": "caller/webshop",
+        "kind": "caller",
+        "platform": "",
+        "asset": "Webshop (commercetools)",
+        "process": "Place order"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

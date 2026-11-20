@@ -1,0 +1,351 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-ddab9a",
+    "version": 1,
+    "name": "MDM-Material-Master-Distribution",
+    "description": "Product master changes from S/4HANA are published to PIM, EWM and the data lake.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-13T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "composite"
+    },
+    "canvas": {
+      "file": "scn-ddab9a.v1.canvas.json"
+    },
+    "tags": [
+      "MDM",
+      "material",
+      "product"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-publish",
+        "label": "Process-to-Publish",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 0,
+        "order": 2,
+        "components": [
+          "c3",
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "b4",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 1,
+        "order": 0,
+        "components": [
+          "c3",
+          "c6",
+          "c7"
+        ]
+      },
+      {
+        "id": "b5",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 2,
+        "order": 0,
+        "components": [
+          "c3",
+          "c8",
+          "c9"
+        ]
+      },
+      {
+        "id": "b6",
+        "templateId": "process-to-file",
+        "label": "Process-to-File",
+        "row": 2,
+        "order": 1,
+        "components": [
+          "c9",
+          "c10"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btpis/material-master#api",
+        "name": "Material-Master-Dist API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "btpis/material-master#process",
+        "name": "Material-Master-Dist Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c3",
+        "ref": "solace/material#topic",
+        "name": "Material-Events Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c4",
+        "ref": "solace/q-pim-material#queue",
+        "name": "Q-Pim-Material Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c5",
+        "ref": "endapp/pim#api",
+        "name": "Akeneo Product API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k4"
+      },
+      {
+        "id": "c6",
+        "ref": "solace/q-ewm-product#queue",
+        "name": "Q-Ewm-Product Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k5"
+      },
+      {
+        "id": "c7",
+        "ref": "endapp/ewm-product#api",
+        "name": "EWM Product API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k6"
+      },
+      {
+        "id": "c8",
+        "ref": "solace/q-dwh-material#queue",
+        "name": "Q-Dwh-Material Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k7"
+      },
+      {
+        "id": "c9",
+        "ref": "ais/datalake-ingest#process",
+        "name": "DataLake-Ingest Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k8"
+      },
+      {
+        "id": "c10",
+        "ref": "endapp/datalake#file",
+        "name": "Data Lake landing folder",
+        "autoName": false,
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k9"
+      },
+      {
+        "id": "c11",
+        "ref": "caller/s4-p01#app",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k10"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btpis/material-master#api",
+        "toRef": "btpis/material-master#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btpis/material-master#process",
+        "toRef": "solace/material#topic"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "solace/material#topic",
+        "toRef": "solace/q-pim-material#queue"
+      },
+      {
+        "from": "c4",
+        "to": "c5",
+        "fromRef": "solace/q-pim-material#queue",
+        "toRef": "endapp/pim#api"
+      },
+      {
+        "from": "c3",
+        "to": "c6",
+        "fromRef": "solace/material#topic",
+        "toRef": "solace/q-ewm-product#queue"
+      },
+      {
+        "from": "c6",
+        "to": "c7",
+        "fromRef": "solace/q-ewm-product#queue",
+        "toRef": "endapp/ewm-product#api"
+      },
+      {
+        "from": "c3",
+        "to": "c8",
+        "fromRef": "solace/material#topic",
+        "toRef": "solace/q-dwh-material#queue"
+      },
+      {
+        "from": "c8",
+        "to": "c9",
+        "fromRef": "solace/q-dwh-material#queue",
+        "toRef": "ais/datalake-ingest#process"
+      },
+      {
+        "from": "c9",
+        "to": "c10",
+        "fromRef": "ais/datalake-ingest#process",
+        "toRef": "endapp/datalake#file"
+      },
+      {
+        "from": "c11",
+        "to": "c1",
+        "fromRef": "caller/s4-p01#app",
+        "toRef": "btpis/material-master#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btpis/material-master",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Material-Master-Dist"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/material",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Material-Events"
+      },
+      {
+        "id": "k3",
+        "ref": "solace/q-pim-material",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Pim-Material"
+      },
+      {
+        "id": "k4",
+        "ref": "endapp/pim",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Akeneo Product API",
+        "process": "Product enrichment"
+      },
+      {
+        "id": "k5",
+        "ref": "solace/q-ewm-product",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Ewm-Product"
+      },
+      {
+        "id": "k6",
+        "ref": "endapp/ewm-product",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "EWM Product API",
+        "process": "Warehouse product master"
+      },
+      {
+        "id": "k7",
+        "ref": "solace/q-dwh-material",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Dwh-Material"
+      },
+      {
+        "id": "k8",
+        "ref": "ais/datalake-ingest",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "DataLake-Ingest"
+      },
+      {
+        "id": "k9",
+        "ref": "endapp/datalake",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Data Lake landing folder",
+        "process": "Analytics ingest"
+      },
+      {
+        "id": "k10",
+        "ref": "caller/s4-p01",
+        "kind": "caller",
+        "platform": "",
+        "asset": "SAP S/4HANA (P01)",
+        "process": "Business event"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

@@ -1,0 +1,122 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-api",
+      "label": "Consume-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "Invoice-Outbound-DRC"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Invoice-Events"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "name": "KSeF (PL e-invoicing)",
+      "process": "Statutory e-invoice"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Business event"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "mode": "composite",
+  "branches": [
+    {
+      "kind": "out",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-api",
+          "label": "Consume-to-API"
+        }
+      ]
+    },
+    {
+      "kind": "out",
+      "row": -1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-file",
+          "label": "Consume-to-File"
+        }
+      ]
+    }
+  ],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-f3a9d8",
+    "version": 1,
+    "name": "O2C-Customer-E-Invoicing",
+    "description": "Customer invoices from S/4HANA DRC are published once and sent to KSeF (Poland) and the Peppol access point; a copy lands in the data lake.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "O2C",
+      "e-invoicing",
+      "DRC",
+      "KSeF"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-08T09:30:00.000Z"
+}

@@ -1,0 +1,350 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-153574",
+    "version": 1,
+    "name": "MDM-Business-Partner-Distribution",
+    "description": "Business partner changes in S/4HANA are published and consumed by Salesforce (accounts), Ariba (suppliers) and the data lake.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-11T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "composite"
+    },
+    "canvas": {
+      "file": "scn-153574.v1.canvas.json"
+    },
+    "tags": [
+      "MDM",
+      "business partner"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-publish",
+        "label": "Process-to-Publish",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 0,
+        "order": 2,
+        "components": [
+          "c3",
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "b4",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 1,
+        "order": 0,
+        "components": [
+          "c3",
+          "c6",
+          "c7"
+        ]
+      },
+      {
+        "id": "b5",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 2,
+        "order": 0,
+        "components": [
+          "c3",
+          "c8",
+          "c9"
+        ]
+      },
+      {
+        "id": "b6",
+        "templateId": "process-to-file",
+        "label": "Process-to-File",
+        "row": 2,
+        "order": 1,
+        "components": [
+          "c9",
+          "c10"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btpis/bp-replication#api",
+        "name": "BP-Replication API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "btpis/bp-replication#process",
+        "name": "BP-Replication Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c3",
+        "ref": "solace/business-partner#topic",
+        "name": "BP-Events Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c4",
+        "ref": "solace/q-crm-bp#queue",
+        "name": "Q-Crm-Bp Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c5",
+        "ref": "endapp/sfdc-account#api",
+        "name": "Salesforce Account API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k4"
+      },
+      {
+        "id": "c6",
+        "ref": "solace/q-ariba-supplier#queue",
+        "name": "Q-Ariba-Supplier Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k5"
+      },
+      {
+        "id": "c7",
+        "ref": "endapp/ariba-supplier#api",
+        "name": "Ariba Supplier API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k6"
+      },
+      {
+        "id": "c8",
+        "ref": "solace/q-dwh-bp#queue",
+        "name": "Q-Dwh-Bp Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k7"
+      },
+      {
+        "id": "c9",
+        "ref": "ais/datalake-ingest#process",
+        "name": "DataLake-Ingest Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k8"
+      },
+      {
+        "id": "c10",
+        "ref": "endapp/datalake#file",
+        "name": "Data Lake landing folder",
+        "autoName": false,
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k9"
+      },
+      {
+        "id": "c11",
+        "ref": "caller/s4-p01#app",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k10"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btpis/bp-replication#api",
+        "toRef": "btpis/bp-replication#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btpis/bp-replication#process",
+        "toRef": "solace/business-partner#topic"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "solace/business-partner#topic",
+        "toRef": "solace/q-crm-bp#queue"
+      },
+      {
+        "from": "c4",
+        "to": "c5",
+        "fromRef": "solace/q-crm-bp#queue",
+        "toRef": "endapp/sfdc-account#api"
+      },
+      {
+        "from": "c3",
+        "to": "c6",
+        "fromRef": "solace/business-partner#topic",
+        "toRef": "solace/q-ariba-supplier#queue"
+      },
+      {
+        "from": "c6",
+        "to": "c7",
+        "fromRef": "solace/q-ariba-supplier#queue",
+        "toRef": "endapp/ariba-supplier#api"
+      },
+      {
+        "from": "c3",
+        "to": "c8",
+        "fromRef": "solace/business-partner#topic",
+        "toRef": "solace/q-dwh-bp#queue"
+      },
+      {
+        "from": "c8",
+        "to": "c9",
+        "fromRef": "solace/q-dwh-bp#queue",
+        "toRef": "ais/datalake-ingest#process"
+      },
+      {
+        "from": "c9",
+        "to": "c10",
+        "fromRef": "ais/datalake-ingest#process",
+        "toRef": "endapp/datalake#file"
+      },
+      {
+        "from": "c11",
+        "to": "c1",
+        "fromRef": "caller/s4-p01#app",
+        "toRef": "btpis/bp-replication#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btpis/bp-replication",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "BP-Replication"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/business-partner",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "BP-Events"
+      },
+      {
+        "id": "k3",
+        "ref": "solace/q-crm-bp",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Crm-Bp"
+      },
+      {
+        "id": "k4",
+        "ref": "endapp/sfdc-account",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Salesforce Account API",
+        "process": "Account sync"
+      },
+      {
+        "id": "k5",
+        "ref": "solace/q-ariba-supplier",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Ariba-Supplier"
+      },
+      {
+        "id": "k6",
+        "ref": "endapp/ariba-supplier",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Ariba Supplier API",
+        "process": "Supplier master"
+      },
+      {
+        "id": "k7",
+        "ref": "solace/q-dwh-bp",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Dwh-Bp"
+      },
+      {
+        "id": "k8",
+        "ref": "ais/datalake-ingest",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "DataLake-Ingest"
+      },
+      {
+        "id": "k9",
+        "ref": "endapp/datalake",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Data Lake landing folder",
+        "process": "Analytics ingest"
+      },
+      {
+        "id": "k10",
+        "ref": "caller/s4-p01",
+        "kind": "caller",
+        "platform": "",
+        "asset": "SAP S/4HANA (P01)",
+        "process": "Business event"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

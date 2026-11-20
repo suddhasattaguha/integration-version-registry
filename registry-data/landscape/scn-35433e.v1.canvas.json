@@ -1,0 +1,101 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "file-to-process",
+      "label": "File-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-file",
+      "label": "Consume-to-File"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Payment run (F110)"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "Payment-Files"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Payment-Events"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "name": "Nordea Bank",
+      "process": "Payments"
+    }
+  ],
+  "caller": false,
+  "ripples": [],
+  "marks": [],
+  "mode": "composite",
+  "branches": [
+    {
+      "kind": "out",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-api",
+          "label": "Consume-to-API"
+        }
+      ]
+    }
+  ],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-35433e",
+    "version": 1,
+    "name": "FIN-Payment-Run-to-Bank",
+    "description": "Payment files from the S/4HANA payment run are published and delivered to Nordea; Kyriba gets the payment details for cash positioning.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "FIN",
+      "payments",
+      "bank"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-19T09:30:00.000Z"
+}

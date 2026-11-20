@@ -1,0 +1,118 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-process",
+      "label": "Consume-to-Process"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "SF-Employee-Sync"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Employee-Events"
+    },
+    {
+      "block": 2,
+      "at": "in",
+      "platform": "Solace",
+      "asset": "Employee-Events"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "platform": "AIS",
+      "asset": "HR-Identity"
+    },
+    {
+      "block": 3,
+      "at": "out",
+      "name": "Microsoft Entra ID",
+      "process": "Identity lifecycle"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SuccessFactors Employee Central",
+      "process": "Employee change"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "mode": "composite",
+  "branches": [
+    {
+      "kind": "out",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-api",
+          "label": "Consume-to-API"
+        }
+      ]
+    }
+  ],
+  "callers": [],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-b29a4e",
+    "version": 1,
+    "name": "HR-Leaver-Offboarding",
+    "description": "Terminations in SuccessFactors flow over the employee topic to the identity process that disables the Entra ID account; ServiceNow gets the offboarding case.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "HR",
+      "offboarding",
+      "SuccessFactors"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-23T09:30:00.000Z"
+}

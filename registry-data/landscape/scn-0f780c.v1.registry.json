@@ -1,0 +1,199 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-0f780c",
+    "version": 1,
+    "name": "MDM-Product-Catalogue-to-Webshop",
+    "description": "The catalogue sync subscribes to material events and also takes enriched products pushed from PIM, updating the webshop catalogue.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-14T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "composite"
+    },
+    "canvas": {
+      "file": "scn-0f780c.v1.canvas.json"
+    },
+    "tags": [
+      "MDM",
+      "product",
+      "webshop"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c3",
+          "c4"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 1,
+        "order": 0,
+        "components": [
+          "c5",
+          "c3"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "solace/material#topic",
+        "name": "Material-Events Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "solace/q-webshop-material#queue",
+        "name": "Q-Webshop-Material Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c3",
+        "ref": "ais/catalog-sync#process",
+        "name": "Catalog-Sync Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c4",
+        "ref": "endapp/webshop-catalog#api",
+        "name": "commercetools Product API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k4"
+      },
+      {
+        "id": "c5",
+        "ref": "ais/catalog-sync#api",
+        "name": "Catalog-Sync API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c6",
+        "ref": "caller/pim#app",
+        "name": "PIM (Akeneo)",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k5"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "solace/material#topic",
+        "toRef": "solace/q-webshop-material#queue"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "solace/q-webshop-material#queue",
+        "toRef": "ais/catalog-sync#process"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "ais/catalog-sync#process",
+        "toRef": "endapp/webshop-catalog#api"
+      },
+      {
+        "from": "c5",
+        "to": "c3",
+        "fromRef": "ais/catalog-sync#api",
+        "toRef": "ais/catalog-sync#process"
+      },
+      {
+        "from": "c6",
+        "to": "c5",
+        "fromRef": "caller/pim#app",
+        "toRef": "ais/catalog-sync#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "solace/material",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Material-Events"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/q-webshop-material",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Webshop-Material"
+      },
+      {
+        "id": "k3",
+        "ref": "ais/catalog-sync",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "Catalog-Sync"
+      },
+      {
+        "id": "k4",
+        "ref": "endapp/webshop-catalog",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "commercetools Product API",
+        "process": "Catalogue"
+      },
+      {
+        "id": "k5",
+        "ref": "caller/pim",
+        "kind": "caller",
+        "platform": "",
+        "asset": "PIM (Akeneo)",
+        "process": "Product published"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

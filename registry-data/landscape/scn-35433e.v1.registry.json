@@ -1,0 +1,242 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-35433e",
+    "version": 1,
+    "name": "FIN-Payment-Run-to-Bank",
+    "description": "Payment files from the S/4HANA payment run are published and delivered to Nordea; Kyriba gets the payment details for cash positioning.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-19T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "composite"
+    },
+    "canvas": {
+      "file": "scn-35433e.v1.canvas.json"
+    },
+    "tags": [
+      "FIN",
+      "payments",
+      "bank"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "file-to-process",
+        "label": "File-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-publish",
+        "label": "Process-to-Publish",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "consume-to-file",
+        "label": "Consume-to-File",
+        "row": 0,
+        "order": 2,
+        "components": [
+          "c3",
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "b4",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 1,
+        "order": 0,
+        "components": [
+          "c3",
+          "c6",
+          "c7"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "endapp/s4-payment-out#file",
+        "name": "S/4 Payment Medium folder",
+        "autoName": false,
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "btpis/payment-files#process",
+        "name": "Payment-Files Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c3",
+        "ref": "solace/payment#topic",
+        "name": "Payment-Events Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c4",
+        "ref": "solace/q-bank-payment#queue",
+        "name": "Q-Bank-Payment Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k4"
+      },
+      {
+        "id": "c5",
+        "ref": "endapp/bank-nordea-out#file",
+        "name": "Nordea SFTP outbox (pain.001)",
+        "autoName": false,
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k5"
+      },
+      {
+        "id": "c6",
+        "ref": "solace/q-treasury#queue",
+        "name": "Q-Treasury Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k6"
+      },
+      {
+        "id": "c7",
+        "ref": "endapp/treasury-kyriba#api",
+        "name": "Kyriba Payments API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k7"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "endapp/s4-payment-out#file",
+        "toRef": "btpis/payment-files#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btpis/payment-files#process",
+        "toRef": "solace/payment#topic"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "solace/payment#topic",
+        "toRef": "solace/q-bank-payment#queue"
+      },
+      {
+        "from": "c4",
+        "to": "c5",
+        "fromRef": "solace/q-bank-payment#queue",
+        "toRef": "endapp/bank-nordea-out#file"
+      },
+      {
+        "from": "c3",
+        "to": "c6",
+        "fromRef": "solace/payment#topic",
+        "toRef": "solace/q-treasury#queue"
+      },
+      {
+        "from": "c6",
+        "to": "c7",
+        "fromRef": "solace/q-treasury#queue",
+        "toRef": "endapp/treasury-kyriba#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "endapp/s4-payment-out",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "S/4 Payment Medium folder",
+        "process": "Payment run (F110)"
+      },
+      {
+        "id": "k2",
+        "ref": "btpis/payment-files",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Payment-Files"
+      },
+      {
+        "id": "k3",
+        "ref": "solace/payment",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Payment-Events"
+      },
+      {
+        "id": "k4",
+        "ref": "solace/q-bank-payment",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Bank-Payment"
+      },
+      {
+        "id": "k5",
+        "ref": "endapp/bank-nordea-out",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Nordea SFTP outbox (pain.001)",
+        "process": "Payments"
+      },
+      {
+        "id": "k6",
+        "ref": "solace/q-treasury",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Treasury"
+      },
+      {
+        "id": "k7",
+        "ref": "endapp/treasury-kyriba",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Kyriba Payments API",
+        "process": "Cash positioning"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

@@ -1,0 +1,257 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.6",
+  "scenario": {
+    "id": "scn-0c79ae",
+    "version": 1,
+    "name": "O2C-Order-Status-Broadcast",
+    "description": "S/4HANA order status events are distributed to the webshop and back to Salesforce.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-04T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "composite"
+    },
+    "canvas": {
+      "file": "scn-0c79ae.v1.canvas.json"
+    },
+    "tags": [
+      "O2C",
+      "order status"
+    ]
+  },
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-publish",
+        "label": "Process-to-Publish",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 0,
+        "order": 2,
+        "components": [
+          "c3",
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "b4",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 1,
+        "order": 0,
+        "components": [
+          "c3",
+          "c6",
+          "c7"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btpis/order-status#api",
+        "name": "Order-Status-Dist API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "btpis/order-status#process",
+        "name": "Order-Status-Dist Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c3",
+        "ref": "solace/order-status#topic",
+        "name": "Order-Status-Events Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c4",
+        "ref": "solace/q-webshop-status#queue",
+        "name": "Q-Webshop-Status Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c5",
+        "ref": "endapp/webshop-order#api",
+        "name": "commercetools Order API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k4"
+      },
+      {
+        "id": "c6",
+        "ref": "solace/q-crm-status#queue",
+        "name": "Q-Crm-Status Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k5"
+      },
+      {
+        "id": "c7",
+        "ref": "endapp/sfdc-order#api",
+        "name": "Salesforce Order API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k6"
+      },
+      {
+        "id": "c8",
+        "ref": "caller/s4-p01#app",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k7"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btpis/order-status#api",
+        "toRef": "btpis/order-status#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btpis/order-status#process",
+        "toRef": "solace/order-status#topic"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "solace/order-status#topic",
+        "toRef": "solace/q-webshop-status#queue"
+      },
+      {
+        "from": "c4",
+        "to": "c5",
+        "fromRef": "solace/q-webshop-status#queue",
+        "toRef": "endapp/webshop-order#api"
+      },
+      {
+        "from": "c3",
+        "to": "c6",
+        "fromRef": "solace/order-status#topic",
+        "toRef": "solace/q-crm-status#queue"
+      },
+      {
+        "from": "c6",
+        "to": "c7",
+        "fromRef": "solace/q-crm-status#queue",
+        "toRef": "endapp/sfdc-order#api"
+      },
+      {
+        "from": "c8",
+        "to": "c1",
+        "fromRef": "caller/s4-p01#app",
+        "toRef": "btpis/order-status#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btpis/order-status",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Order-Status-Dist"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/order-status",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Order-Status-Events"
+      },
+      {
+        "id": "k3",
+        "ref": "solace/q-webshop-status",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Webshop-Status"
+      },
+      {
+        "id": "k4",
+        "ref": "endapp/webshop-order",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "commercetools Order API",
+        "process": "Order status"
+      },
+      {
+        "id": "k5",
+        "ref": "solace/q-crm-status",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Crm-Status"
+      },
+      {
+        "id": "k6",
+        "ref": "endapp/sfdc-order",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Salesforce Order API",
+        "process": "Order sync"
+      },
+      {
+        "id": "k7",
+        "ref": "caller/s4-p01",
+        "kind": "caller",
+        "platform": "",
+        "asset": "SAP S/4HANA (P01)",
+        "process": "Business event"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

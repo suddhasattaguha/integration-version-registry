@@ -1,0 +1,132 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-api",
+      "label": "Consume-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "Sales-Order-Exp"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Sales-Order-Events"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Sales order creation"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "Sales Rep Mobile App",
+      "process": "Create order"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "mode": "composite",
+  "branches": [
+    {
+      "kind": "out",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-api",
+          "label": "Consume-to-API"
+        }
+      ]
+    },
+    {
+      "kind": "in",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t0",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "api-to-process",
+          "label": "API-to-Process"
+        },
+        {
+          "pattern": "process-to-api",
+          "label": "Process-to-API"
+        }
+      ]
+    }
+  ],
+  "callers": [
+    {
+      "anchor": [
+        {
+          "ref": "b1.0",
+          "side": "in"
+        }
+      ],
+      "name": "Webshop (commercetools)",
+      "process": "Place order"
+    }
+  ],
+  "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "scn-b6fea9",
+    "version": 1,
+    "name": "O2C-Webshop-Order-Intake",
+    "description": "Webshop and sales-rep app orders enter through the Sales Order experience API, are published once and fan out to S/4HANA and Salesforce.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "O2C",
+      "sales order",
+      "webshop"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-02T09:30:00.000Z"
+}

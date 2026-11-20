@@ -1,25 +1,26 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.5",
+  "schemaVersion": "0.6",
   "scenario": {
-    "id": "smp-material-pim",
+    "id": "scn-7746cf",
     "version": 1,
-    "name": "Material master to PIM",
-    "description": "Material changes from S/4 EU broadcast via master-data topic.",
-    "author": "Sample Architect",
-    "exportedAt": "2026-11-05T10:00:00Z",
+    "name": "O2C-Carrier-Tracking-Updates",
+    "description": "DHL tracking webhooks enter through the carrier hub, are published on the delivery topic and update the webshop order.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-07T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
       "toolVersion": "2.0",
       "mode": "single"
     },
-    "tags": [
-      "sample",
-      "master data"
-    ],
     "canvas": {
-      "file": "smp-material-pim.v1.canvas.json"
-    }
+      "file": "scn-7746cf.v1.canvas.json"
+    },
+    "tags": [
+      "O2C",
+      "logistics",
+      "tracking"
+    ]
   },
   "base": {
     "blocks": [
@@ -61,38 +62,38 @@
     "components": [
       {
         "id": "c1",
-        "ref": "endapp/sap-eu#api",
-        "name": "SAP EU API",
+        "ref": "ais/carrier-hub#api",
+        "name": "Carrier-Hub API",
         "autoName": false,
         "type": "api",
         "version": "v1",
-        "owner": "endApp",
+        "owner": "integration",
         "container": "k1"
       },
       {
         "id": "c2",
-        "ref": "btpis/material-prc#process",
-        "name": "Material-Prc Process",
+        "ref": "ais/carrier-hub#process",
+        "name": "Carrier-Hub Process",
         "autoName": false,
         "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1"
+      },
+      {
+        "id": "c3",
+        "ref": "solace/delivery#topic",
+        "name": "Delivery-Events Topic",
+        "autoName": false,
+        "type": "topic",
         "version": "v1",
         "owner": "integration",
         "container": "k2"
       },
       {
-        "id": "c3",
-        "ref": "solace/master-data#topic",
-        "name": "Master-Data Topic",
-        "autoName": false,
-        "type": "topic",
-        "version": "v1",
-        "owner": "integration",
-        "container": "k3"
-      },
-      {
         "id": "c4",
-        "ref": "solace/master-data#queue",
-        "name": "Master-Data Queue",
+        "ref": "solace/q-webshop-tracking#queue",
+        "name": "Q-Webshop-Tracking Queue",
         "autoName": false,
         "type": "queue",
         "version": "v1",
@@ -101,69 +102,94 @@
       },
       {
         "id": "c5",
-        "ref": "endapp/pim#api",
-        "name": "PIM API",
+        "ref": "endapp/webshop-order#api",
+        "name": "commercetools Order API",
         "autoName": false,
         "type": "api",
         "version": "v1",
         "owner": "endApp",
         "container": "k4"
+      },
+      {
+        "id": "c6",
+        "ref": "caller/dhl#app",
+        "name": "DHL Parcel",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k5"
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "endapp/sap-eu#api",
-        "toRef": "btpis/material-prc#process"
+        "fromRef": "ais/carrier-hub#api",
+        "toRef": "ais/carrier-hub#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/material-prc#process",
-        "toRef": "solace/master-data#topic"
+        "fromRef": "ais/carrier-hub#process",
+        "toRef": "solace/delivery#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/master-data#topic",
-        "toRef": "solace/master-data#queue"
+        "fromRef": "solace/delivery#topic",
+        "toRef": "solace/q-webshop-tracking#queue"
       },
       {
         "from": "c4",
         "to": "c5",
-        "fromRef": "solace/master-data#queue",
-        "toRef": "endapp/pim#api"
+        "fromRef": "solace/q-webshop-tracking#queue",
+        "toRef": "endapp/webshop-order#api"
+      },
+      {
+        "from": "c6",
+        "to": "c1",
+        "fromRef": "caller/dhl#app",
+        "toRef": "ais/carrier-hub#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "endapp/sap-eu",
-        "kind": "endApp",
-        "platform": "",
-        "asset": "SAP EU"
+        "ref": "ais/carrier-hub",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "Carrier-Hub"
       },
       {
         "id": "k2",
-        "ref": "btpis/material-prc",
-        "kind": "iPaaS",
-        "platform": "BTP IS",
-        "asset": "Material-Prc"
+        "ref": "solace/delivery",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Delivery-Events"
       },
       {
         "id": "k3",
-        "ref": "solace/master-data",
+        "ref": "solace/q-webshop-tracking",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Master-Data"
+        "asset": "Q-Webshop-Tracking"
       },
       {
         "id": "k4",
-        "ref": "endapp/pim",
+        "ref": "endapp/webshop-order",
         "kind": "endApp",
         "platform": "",
-        "asset": "PIM"
+        "asset": "commercetools Order API",
+        "process": "Order status"
+      },
+      {
+        "id": "k5",
+        "ref": "caller/dhl",
+        "kind": "caller",
+        "platform": "",
+        "asset": "DHL Parcel",
+        "process": "Tracking webhook"
       }
     ]
   },

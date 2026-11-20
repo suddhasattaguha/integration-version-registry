@@ -28,40 +28,53 @@
   "containers": [
     {
       "block": 0,
-      "at": "caller",
-      "name": "SAP EU",
-      "process": "material change"
-    },
-    {
-      "block": 0,
       "at": "in",
-      "platform": "BTP IS",
-      "asset": "Material-Prc"
+      "platform": "AIS",
+      "asset": "Carrier-Hub"
     },
     {
       "block": 1,
       "at": "out",
       "platform": "Solace",
-      "asset": "Master-Data"
+      "asset": "Delivery-Events"
     },
     {
       "block": 2,
       "at": "out",
-      "name": "PIM",
-      "process": "product update"
+      "name": "Webshop (commercetools)",
+      "process": "Order status"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "DHL Parcel",
+      "process": "Tracking webhook"
     }
   ],
   "caller": true,
+  "ripples": [],
+  "marks": [],
   "mode": "single",
   "branches": [],
   "callers": [],
   "branchVersions": [],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
   "compositeRipples": [],
   "scenario": {
-    "id": "smp-material-pim",
+    "id": "scn-7746cf",
     "version": 1,
-    "name": "Material master to PIM",
+    "name": "O2C-Carrier-Tracking-Updates",
+    "description": "DHL tracking webhooks enter through the carrier hub, are published on the delivery topic and update the webshop order.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "O2C",
+      "logistics",
+      "tracking"
+    ],
+    "relations": [],
     "why": []
   },
-  "savedAt": "2026-11-05T10:00:00Z"
+  "savedAt": "2026-11-07T09:30:00.000Z"
 }
