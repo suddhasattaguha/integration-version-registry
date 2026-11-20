@@ -1,0 +1,96 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.5",
+  "scenario": {
+    "id": "smp-order-status",
+    "version": 1,
+    "name": "Order status back to Webshop",
+    "description": "Order confirmations from S/4 EU to the webshop via AIS.",
+    "author": "Sample Architect",
+    "exportedAt": "2026-11-14T13:20:00Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "single"
+    },
+    "tags": [
+      "sample",
+      "order"
+    ]
+  },
+  "base": {
+    "blocks": [],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "endapp/sap-eu#api",
+        "name": "SAP EU API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "ais/orderintake-exp#process",
+        "name": "OrderIntake-exp Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c3",
+        "ref": "caller/webshop#app",
+        "name": "Webshop App",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k3"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "endapp/sap-eu#api",
+        "toRef": "ais/orderintake-exp#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "ais/orderintake-exp#process",
+        "toRef": "caller/webshop#app"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "endapp/sap-eu",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "SAP EU"
+      },
+      {
+        "id": "k2",
+        "ref": "ais/orderintake-exp",
+        "kind": "iPaaS",
+        "platform": "AIS",
+        "asset": "OrderIntake-exp"
+      },
+      {
+        "id": "k3",
+        "ref": "caller/webshop",
+        "kind": "caller",
+        "platform": "",
+        "asset": "Webshop"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

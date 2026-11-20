@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Integration Registry — draft 0.1</title>
+<title>Integration Registry — draft 0.2</title>
 <style>
   :root {
     --bg: #f5f6f8; --panel: #ffffff; --ink: #1d2433; --muted: #667085; --line: #e3e6ec;
@@ -90,21 +90,55 @@
   .hist a { color: var(--teal); cursor: pointer; text-decoration: underline; }
   .note { font-size: 12px; color: var(--muted); }
   .hidden { display: none !important; }
+  .scroll { overflow-x: auto; }
+  /* overview 0.2 */
+  .tile.click { cursor: pointer; transition: border-color .15s, box-shadow .15s; }
+  .tile.click:hover, .tile.click:focus-visible { border-color: var(--teal); box-shadow: 0 2px 10px rgba(15,124,122,.12); outline: none; }
+  .tile .go { font-size: 11px; color: var(--teal); margin-top: 6px; }
+  .tile .split { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .g-map { grid-template-columns: minmax(0, 1fr) 330px; }
+  @media (max-width: 1100px) { .g-map { grid-template-columns: 1fr; } }
+  .panel-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+  .panel-head h2 { margin: 0; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .seg button { background: #fff; border: 0; padding: 4px 10px; font: inherit; font-size: 12px; cursor: pointer; color: var(--muted); }
+  .seg button.on { background: var(--teal); color: #fff; }
+  .map { width: 100%; height: auto; display: block; }
+  .map [data-sel] { cursor: pointer; }
+  .map .dim { opacity: .16; }
+  .map .node:hover rect.box { stroke: var(--teal); }
+  .sel-panel h3 { font-size: 15px; margin: 0 0 4px; }
+  .sel-panel .kv { font-size: 12px; color: var(--muted); margin-bottom: 10px; }
+  .sel-panel .sec { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin: 12px 0 4px; }
+  .linkish { color: var(--teal); cursor: pointer; }
+  .linkish:hover { text-decoration: underline; }
+  .matrix { border-collapse: separate; border-spacing: 2px; width: auto; }
+  .matrix th, .matrix td { border: 0; padding: 0; }
+  .matrix th.rh { text-align: right; padding-right: 8px; font-weight: 500; color: var(--ink); max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .matrix th.ch { width: 30px; text-align: center; font-size: 11px; }
+  .matrix td.c { width: 30px; height: 26px; text-align: center; font-size: 12px; border-radius: 4px; background: var(--grey-bg); color: var(--muted); }
+  .matrix td.c.n { cursor: pointer; color: #fff; font-weight: 600; }
+  .matrix td.c.on { outline: 2px solid var(--ink); }
+  .matrix td.d { background: transparent; }
+  .src-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: rgba(255,255,255,.14); }
+  .banner { background: var(--amber-bg); color: var(--amber); padding: 8px 12px; border-radius: 6px; display: inline-block; font-size: 12px; }
 </style>
 </head>
 <body>
 <header>
   <h1>Integration Registry</h1>
-  <span class="draft">draft 0.1 · schema 0.5</span>
+  <span class="draft">draft 0.2 · schema 0.5</span>
   <nav id="nav">
     <button data-view="overview" disabled>Overview</button>
     <button data-view="list" disabled>All scenarios</button>
     <button data-view="components" disabled>Components</button>
+    <button data-view="decisions" disabled>Decisions</button>
   </nav>
   <span class="spacer"></span>
   <span class="folder" id="folderName"></span>
-  <button class="btn ghost small hidden" id="reloadBtn" title="Read the folder again">Reload</button>
-  <button class="btn small" id="openBtn">Open registry folder</button>
+  <button class="btn ghost small hidden" id="reloadBtn" title="Read the registry again">Reload</button>
+  <button class="btn ghost small hidden" id="ghBtn" title="Go back to the registry folder on GitHub">Back to GitHub</button>
+  <button class="btn small" id="openBtn" title="Use a folder on this computer for this browser session only">Open local folder</button>
   <input type="file" id="dirInput" webkitdirectory multiple class="hidden">
 </header>
 <main>
@@ -115,20 +149,38 @@
 <script>
 "use strict";
 /* ============================================================================
-   Integration Registry — draft 0.1
-   Reads a registry folder of Pattern Bench "registry entry" files (schema 0.5),
+   Integration Registry — draft 0.2
+   Default source: the registry folder in the GitHub repo (read-only); a local folder can be
+   opened for the current browser session instead. Reads a registry folder of Pattern Bench "registry entry" files (schema 0.5),
    keeps index.json as a rebuildable cache, shows overview, directory, components
    and scenario detail with cross-scenario flags. Single self-contained file.
    ========================================================================== */
 
-const APP_VERSION = "0.1";
+const APP_VERSION = "0.2";
 const INDEX_FILE = "index.json";
 const LIFECYCLE_FILE = "lifecycle.json";
 const INDEX_SCHEMA = "pattern-bench.registry-index";
 const ENTRY_SCHEMA = "pattern-bench.registry-entry";
-const RECORD_FORMAT = 1;            // bump when the cached record shape changes
+const RECORD_FORMAT = 2;            // bump when the cached record shape changes
+
+/* Default registry source (R-1): one folder in the GitHub repo. When the app is served from
+   <owner>.github.io/<repo>/ the owner and repo are taken from the address. */
+const GH = (() => {
+  const c = { owner: "suddhasattaguha", repo: "integration-version-registry", branch: "main", path: "registry-data" };
+  try {
+    const h = location.hostname;
+    if (h.endsWith(".github.io")) {
+      c.owner = h.split(".")[0];
+      const seg = location.pathname.split("/").filter(Boolean)[0];
+      if (seg && !seg.includes(".")) c.repo = seg;
+    }
+  } catch (_) {}
+  return c;
+})();
 
 const S = {
+  source: "",          // "github" (default) | "local" (this session only)
+  ghError: "",
   root: null,          // FileSystemDirectoryHandle (Chrome / Edge) or null
   writable: false,
   folderName: "",
@@ -140,7 +192,10 @@ const S = {
   specCache: new Map(),// path -> parsed full spec
   view: "overview", param: null,
   listSort: { key: "changed", dir: -1 }, listQuery: "", listFlagsOnly: false,
-  compQuery: "",
+  compQuery: "", compShared: false,
+  assets: new Map(),   // container ref -> aggregated asset info
+  mapMode: "asset", mapAll: false, sel: null,   // overview relationship map
+  decQuery: "", decOpenOnly: true,
 };
 
 /* ---------- small helpers ---------- */
@@ -167,11 +222,60 @@ let inFrame = false;
 try { inFrame = window.self !== window.top; } catch (_) { inFrame = true; }
 const canPick = () => !!window.showDirectoryPicker && !inFrame;
 
+/* ---- default source: the registry folder in the GitHub repo (read-only) ---- */
+async function loadFromGitHub() {
+  S.source = "github"; S.root = null; S.writable = false; S.ghError = "";
+  const label = `GitHub · ${GH.owner}/${GH.repo}/${GH.path}`;
+  setStatus("Reading the registry folder on GitHub …");
+  try {
+    const api = `https://api.github.com/repos/${GH.owner}/${GH.repo}/git/trees/${encodeURIComponent(GH.branch)}?recursive=1`;
+    const r = await fetch(api, { headers: { Accept: "application/vnd.github+json" } });
+    if (r.status === 403 || r.status === 429) throw new Error("GitHub's limit for anonymous reads was reached (about 60 per hour). Try again later, or open a local folder.");
+    if (r.status === 404) throw new Error(`Repository ${GH.owner}/${GH.repo} not found, or it is private.`);
+    if (!r.ok) throw new Error("GitHub answered " + r.status + ".");
+    const tree = await r.json();
+    const pre = GH.path.replace(/\/+$/, "") + "/";
+    const blobs = (tree.tree || []).filter((t) => t.type === "blob" && t.path.startsWith(pre) && t.path.toLowerCase().endsWith(".json"));
+    const raw = (p) => `https://raw.githubusercontent.com/${GH.owner}/${GH.repo}/${encodeURIComponent(GH.branch)}/${p.split("/").map(encodeURIComponent).join("/")}`;
+    const texts = await Promise.all(blobs.map(async (b) => {
+      const res = await fetch(raw(b.path));
+      if (!res.ok) throw new Error("Could not read " + b.path + " (" + res.status + ").");
+      return [b, await res.text()];
+    }));
+    const files = new Map(texts.map(([b, text]) => {
+      const rel = b.path.slice(pre.length);
+      const lm = parseInt(b.sha.slice(0, 8), 16);       // content hash stands in for "last modified"
+      return [rel, { getFile: async () => new File([text], rel.split("/").pop(), { lastModified: lm }) }];
+    }));
+    S.folderName = label;
+    await ingest(files);
+  } catch (e) {
+    const msg = e && e.message ? e.message : String(e);
+    S.ghError = /fetch|NetworkError|Load failed/i.test(msg)
+      ? "Couldn't reach GitHub from here — you may be offline, or this page is shown in a preview that blocks outside connections."
+      : msg;
+    S.folderName = ""; S.records = []; S.scenarios = new Map();
+    setStatus("");
+    renderSource();
+    go("overview");
+  }
+}
+
+function renderSource() {
+  const gh = S.source === "github";
+  $("#folderName").innerHTML = S.folderName
+    ? (gh ? `☁ ${esc(S.folderName)} <span class="src-badge">read-only</span>`
+          : `📁 ${esc(S.folderName)} <span class="src-badge">this session${S.writable ? "" : " · read-only"}</span>`)
+    : "";
+  $("#reloadBtn").classList.toggle("hidden", !(gh ? S.folderName : S.root));
+  $("#ghBtn").classList.toggle("hidden", gh);
+}
+
 async function openFolder() {
   if (!canPick()) { $("#dirInput").click(); return; }   // fallback: read-only folder upload
   try {
     const h = await window.showDirectoryPicker({ id: "registry", mode: "readwrite" });
-    S.root = h; S.folderName = h.name;
+    S.root = h; S.folderName = h.name; S.source = "local";
     await loadFromHandle();
   } catch (e) {
     if (e && e.name === "AbortError") return;
@@ -207,7 +311,7 @@ function loadFromInput(fileList) {
     const p = parts.length > 1 ? parts.slice(1).join("/") : rel;
     if (p.toLowerCase().endsWith(".json")) files.set(p, { getFile: async () => f });
   }
-  S.root = null; S.writable = false; S.folderName = top || "folder";
+  S.root = null; S.writable = false; S.folderName = top || "folder"; S.source = "local";
   return ingest(files);
 }
 
@@ -226,7 +330,7 @@ async function ingest(files) {
   const records = []; let fromCache = 0, parsed = 0, skipped = 0, errors = [];
   for (const [path, entry] of files) {
     const low = path.toLowerCase();
-    if (low === INDEX_FILE || low === LIFECYCLE_FILE || low.endsWith(".canvas.json")) continue;
+    if (low === INDEX_FILE || low.split("/").pop() === LIFECYCLE_FILE || low.endsWith(".canvas.json")) continue;
     let f; try { f = await entry.getFile(); } catch (e) { errors.push(path); continue; }
     const c = cache[path];
     if (c && c.lastModified === f.lastModified && c.size === f.size) { records.push(c); fromCache++; continue; }
@@ -239,8 +343,12 @@ async function ingest(files) {
   }
   // lifecycle record (optional)
   S.lifecycle = null;
-  const lcEntry = files.get(LIFECYCLE_FILE);
-  if (lcEntry) { try { S.lifecycle = buildLifecycle(await readJson(lcEntry)); } catch (e) { errors.push(LIFECYCLE_FILE); } }
+  // every lifecycle.json in the folder (root or sub-folders) is merged
+  const lcEvents = [];
+  for (const [path, entry] of files) if (path.toLowerCase().split("/").pop() === LIFECYCLE_FILE) {
+    try { lcEvents.push(...((await readJson(entry)).events || [])); } catch (e) { errors.push(path); }
+  }
+  if (lcEvents.length) S.lifecycle = buildLifecycle({ events: lcEvents });
 
   S.records = records;
   derive();
@@ -252,8 +360,8 @@ async function ingest(files) {
   setStatus(`${S.scenarios.size} scenarios from ${records.length} files — ${parsed} read, ${fromCache} from index${skipped ? ", " + skipped + " other JSON skipped" : ""}` +
     `${S.lifecycle ? " · lifecycle loaded" : ""}${saved}${S.writable ? "" : " · read-only"} · ${ms} ms` +
     (errors.length ? ` · could not read: ${errors.join(", ")}` : ""));
-  $("#folderName").textContent = "📁 " + S.folderName;
-  $("#reloadBtn").classList.toggle("hidden", !S.root);
+  S.ghError = ""; S.sel = null;
+  renderSource();
   document.querySelectorAll("#nav button").forEach((b) => (b.disabled = false));
   go(S.view === "scenario" && !S.scenarios.has(S.param?.id) ? "overview" : S.view, S.param);
 }
@@ -288,7 +396,7 @@ function extract(spec, path, lastModified, size) {
   const pushComp = (c, origin) => {
     const k = contById[c.container];
     components.push({ ref: c.ref || null, name: c.name || "", type: c.type, version: c.version, origin,
-      platform: k ? k.platform || "" : "", asset: k ? k.asset || "" : "", stage: c.stage || null });
+      platform: k ? k.platform || "" : "", asset: k ? k.asset || "" : "", kind: k ? k.kind || "" : "", container: c.container, stage: c.stage || null });
   };
   comps.forEach((c) => { addUse(c.ref, c.version); pushComp(c, "base"); });
 
@@ -322,13 +430,29 @@ function extract(spec, path, lastModified, size) {
   const missingRefs = conts.filter((k) => !k.ref).length;
   const unnamed = comps.filter((c) => !c.name).length;
 
+  // assets (containers) this scenario uses, with the component refs inside them
+  const containers = conts.map((k) => ({
+    key: k.ref || "noref:" + k.id, name: label(k) || "(unlabelled)", platform: k.platform || "", kind: k.kind || "",
+    refs: uniq(components.filter((c) => c.container === k.id).map((c) => c.ref)),
+  }));
+  // every versioning decision, compact (for the cross-scenario Decisions view)
+  const cname = (id) => { const c = compById[id]; return c ? c.name || c.type : id; };
+  const decisionList = versions.map((v) => {
+    const d = v.decision || {};
+    return { label: v.label || v.id, status: v.status || "open", option: d.option || "",
+      on: cname(v.appliesTo?.component), side: v.appliesTo?.side || "",
+      change: uniq((v.changed || []).map((c) => c.change)), why: d.why || "", what: d.what || "", who: d.who || "", when: d.when || "",
+      refs: uniq([...(v.changed || []).map((c) => compById[c.component]?.ref), ...(v.added || []).map((a) => a.ref)]),
+      warnings: (v.impacts || []).filter((im) => im.warning && !im.acknowledged).length };
+  });
+
   return {
     path, lastModified, size,
     id: sc.id || path, version: Number(sc.version) || 0, name: sc.name || "(unnamed scenario)", description: sc.description || "",
     author: sc.author || "", exportedAt: sc.exportedAt || "", tags: sc.tags || [], mode: sc.source?.mode || "",
     canvas: sc.canvas?.file || "", platforms, assets, endApps,
     decisions: versions.length, openVersions: open, completedVersions: completed,
-    uses, introduced, links, components, warnings, missingRefs, unnamed,
+    uses, introduced, links, components, warnings, missingRefs, unnamed, containers, decisionList,
     acks: (spec.acknowledgements || []).map((a) => a.flag), relations: spec.relations || [],
   };
 }
@@ -358,7 +482,18 @@ function derive() {
     for (const i of r.introduced) { const x = R(i.ref); x.versions.add(i.to); x.intro.push({ ...i, scenario: r.id }); }
   }
   for (const x of refs.values()) x.max = Math.max(0, ...[...x.versions].map(vnum));
+  for (const s of sc.values()) for (const c of s.latest.components) if (c.ref && refs.has(c.ref)) {
+    const x = refs.get(c.ref); x.kind ||= c.kind; x.asset ||= c.asset || c.platform;
+  }
   S.refs = refs;
+
+  // assets (platform containers / end applications) across latest versions
+  const assets = new Map();
+  for (const s of sc.values()) for (const k of s.latest.containers || []) {
+    const a = assets.get(k.key) || assets.set(k.key, { key: k.key, name: k.name, platform: k.platform, kind: k.kind, scenarios: new Set(), refs: new Set() }).get(k.key);
+    a.scenarios.add(s.latest.id); k.refs.forEach((r) => a.refs.add(r));
+  }
+  S.assets = assets;
 
   for (const s of sc.values()) s.flags = flagsFor(s.latest);
 }
@@ -409,6 +544,7 @@ function go(view, param) {
   if (!S.records.length && !S.folderName) { v.innerHTML = emptyView(); return; }
   if (view === "list") v.innerHTML = listView();
   else if (view === "components") v.innerHTML = componentsView();
+  else if (view === "decisions") v.innerHTML = decisionsView();
   else if (view === "scenario") { v.innerHTML = `<div class="panel">Loading …</div>`; scenarioView(param).then((h) => { if (S.view === "scenario") v.innerHTML = h; }); }
   else v.innerHTML = overviewView();
   window.scrollTo(0, 0);
@@ -416,52 +552,315 @@ function go(view, param) {
 
 function emptyView() {
   const fs = canPick();
+  if (!S.ghError && S.source === "github") return `<div class="empty"><h2>Reading the registry on GitHub …</h2>
+    <p class="note">${esc(GH.owner)}/${esc(GH.repo)} · folder <code>${esc(GH.path)}/</code></p></div>`;
   return `<div class="empty">
-    ${inFrame ? `<p class="note" style="background:var(--amber-bg);color:var(--amber);padding:8px 12px;border-radius:6px;display:inline-block">
-      Running inside a preview window, so the folder opens read-only (no index cache). For the full app, download the file and open it directly in Chrome or Edge.</p>` : ""}
-    <h2>Open your registry folder</h2>
-    <p>Pick the folder that holds the scenario files exported from Pattern Bench (<code>*.registry.json</code>, with their <code>*.canvas.json</code>). Sub-folders are read too.</p>
-    <p class="note">${fs ? "The app keeps a small <code>index.json</code> in that folder as a cache, so only changed files are read next time. The browser asks once for permission to save it."
-      : "This browser can't write to folders, so the app opens it read-only (no index cache). Chrome or Edge give the full experience."}</p>
-    <button class="btn" data-act="open">Open registry folder</button>
+    ${S.ghError ? `<p class="banner">${esc(S.ghError)}</p>` : ""}
+    ${inFrame ? `<p class="banner">Shown inside a preview window: a local folder opens read-only (no index cache). For the full app, open the file directly in Chrome or Edge.</p>` : ""}
+    <h2>Registry not loaded</h2>
+    <p>By default the app reads the registry folder on GitHub: <code>${esc(GH.owner)}/${esc(GH.repo)}/${esc(GH.path)}/</code>.</p>
+    <p>You can also open a folder on this computer for this browser session — it holds the files exported from Pattern Bench (<code>*.registry.json</code>). Sub-folders are read too.</p>
+    <p class="note">${fs ? "In a local folder the app keeps a small <code>index.json</code> as a cache; the browser asks once for permission to save it."
+      : "This browser can't write to folders, so a local folder opens read-only (no index cache). Chrome or Edge give the full experience."}</p>
+    <button class="btn" data-act="github">Try GitHub again</button>
+    <button class="btn ghost" style="color:var(--teal)" data-act="open">Open local folder</button>
   </div>`;
+}
+
+/* ---------- overview helpers ---------- */
+const KIND = {
+  iPaaS: { label: "iPaaS", col: "#0f7c7a" }, broker: { label: "Message broker", col: "#6b4fd8" },
+  endApp: { label: "End application", col: "#8a94a6" }, caller: { label: "Caller", col: "#8a94a6" },
+};
+const kindInfo = (k) => KIND[k] || { label: k || "other", col: "#b0b7c3" };
+const flaggedRefs = (s) => new Set(activeFlags(s).map((f) => f.ref).filter(Boolean));
+const openIntroRefs = (r) => new Set(r.introduced.filter((i) => i.status !== "completed").map((i) => i.ref));
+const short = (t, n) => { t = String(t ?? ""); return t.length > n ? t.slice(0, n - 1) + "…" : t; };
+
+/* Graph for the relationship map: scenarios (left) ↔ assets or components (right). */
+function mapGraph() {
+  const scen = [...S.scenarios.values()];
+  const targets = new Map(), edges = [];
+  if (S.mapMode === "asset") {
+    for (const a of S.assets.values()) if (S.mapAll || a.scenarios.size > 1) targets.set(a.key, { id: a.key, name: a.name, sub: a.platform || kindInfo(a.kind).label, kind: a.kind, n: a.scenarios.size });
+    for (const s of scen) {
+      const r = s.latest, fl = flaggedRefs(s), op = openIntroRefs(r);
+      for (const k of r.containers || []) if (targets.has(k.key)) edges.push({ s: r.id, t: k.key, w: Math.max(1, k.refs.length),
+        flag: k.refs.some((x) => fl.has(x)), ver: k.refs.some((x) => op.has(x)), label: k.refs.length + " comp." });
+    }
+  } else {
+    for (const x of S.refs.values()) if (S.mapAll || x.scenarios.size > 1)
+      targets.set(x.ref, { id: x.ref, name: refName(x.ref), sub: [x.type, x.asset].filter(Boolean).join(" · "), kind: x.kind, n: x.scenarios.size });
+    for (const s of scen) {
+      const r = s.latest, fl = flaggedRefs(s), op = openIntroRefs(r);
+      for (const [ref, vers] of Object.entries(r.uses)) if (targets.has(ref))
+        edges.push({ s: r.id, t: ref, w: 1, flag: fl.has(ref), ver: op.has(ref), label: vers.join("+") });
+    }
+  }
+  // order both columns by barycentre to reduce crossings
+  let L = scen.map((s) => s.latest.id).sort((a, b) => scenarioName(a).localeCompare(scenarioName(b)));
+  let R = [...targets.keys()].sort((a, b) => targets.get(b).n - targets.get(a).n || String(targets.get(a).name).localeCompare(String(targets.get(b).name)));
+  const bary = (ids, other, key, okey) => {
+    const pos = new Map(other.map((id, i) => [id, i]));
+    const score = new Map(ids.map((id, i) => {
+      const ps = edges.filter((e) => e[key] === id).map((e) => pos.get(e[okey])).filter((p) => p !== undefined);
+      return [id, ps.length ? ps.reduce((a, b) => a + b, 0) / ps.length : i];
+    }));
+    return ids.slice().sort((a, b) => score.get(a) - score.get(b));
+  };
+  for (let i = 0; i < 3; i++) { R = bary(R, L, "t", "s"); L = bary(L, R, "s", "t"); }
+  return { L, R, targets, edges };
+}
+
+/* What the current selection highlights. */
+function selection(g) {
+  const sel = S.sel; if (!sel) return null;
+  const pS = new Set(), sS = new Set(), pT = new Set(), eOn = new Set();
+  if (sel.type === "s") {
+    pS.add(sel.id);
+    g.edges.forEach((e, i) => { if (e.s === sel.id) { pT.add(e.t); eOn.add(i); } });
+    g.edges.forEach((e, i) => { if (e.s !== sel.id && pT.has(e.t)) { sS.add(e.s); eOn.add(i); } });
+  } else if (sel.type === "t") {
+    pT.add(sel.id);
+    g.edges.forEach((e, i) => { if (e.t === sel.id) { pS.add(e.s); eOn.add(i); } });
+  } else if (sel.type === "p") {
+    pS.add(sel.a); pS.add(sel.b);
+    const ta = new Set(g.edges.filter((e) => e.s === sel.a).map((e) => e.t));
+    g.edges.forEach((e) => { if (e.s === sel.b && ta.has(e.t)) pT.add(e.t); });
+    g.edges.forEach((e, i) => { if (pS.has(e.s) && pT.has(e.t)) eOn.add(i); });
+  }
+  return { pS, sS, pT, eOn };
+}
+
+function mapSvg(g) {
+  const W = 960, NW = 270, NH = 40, GAP = 10, TOP = 34, x1 = 4, x2 = W - NW - 4;
+  const rows = Math.max(g.L.length, g.R.length, 1);
+  const H = TOP + rows * (NH + GAP) + 6;
+  const yOf = (i, n) => TOP + (rows - n) * (NH + GAP) / 2 + i * (NH + GAP);
+  const yl = new Map(g.L.map((id, i) => [id, yOf(i, g.L.length)]));
+  const yr = new Map(g.R.map((id, i) => [id, yOf(i, g.R.length)]));
+  const hl = selection(g);
+  const font = getComputedStyle(document.body).fontFamily.replace(/"/g, "'");
+  let svg = `<svg class="map" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="${font}" role="img" aria-label="Relationship map">
+    <text x="${x1}" y="16" font-size="11" fill="#667085" font-weight="600">SCENARIOS (${g.L.length})</text>
+    <text x="${x2}" y="16" font-size="11" fill="#667085" font-weight="600">${S.mapMode === "asset" ? "ASSETS" : "COMPONENTS"}${S.mapAll ? "" : " — shared only"} (${g.R.length})</text>`;
+  // edges first
+  g.edges.forEach((e, i) => {
+    if (!yl.has(e.s) || !yr.has(e.t)) return;
+    const ya = yl.get(e.s) + NH / 2, yb = yr.get(e.t) + NH / 2, xa = x1 + NW, xb = x2, mx = (xa + xb) / 2;
+    const col = e.flag ? "#b86e00" : e.ver ? "#6b4fd8" : "#9aa4b5";
+    const on = hl ? hl.eOn.has(i) : true;
+    const secondary = hl && hl.sS.has(e.s);
+    svg += `<path d="M${xa} ${ya} C${mx} ${ya} ${mx} ${yb} ${xb} ${yb}" fill="none" stroke="${col}" stroke-width="${(1 + Math.min(e.w, 6) * 0.5).toFixed(1)}"
+      ${secondary ? 'stroke-dasharray="5 4"' : ""} class="${on ? "" : "dim"}" opacity="${hl ? (on ? 0.95 : 1) : 0.6}"><title>${esc(scenarioName(e.s))} → ${esc(g.targets.get(e.t).name)} · ${esc(e.label)}${e.flag ? " · flagged" : ""}${e.ver ? " · open new version" : ""}</title></path>`;
+  });
+  // scenario nodes
+  for (const id of g.L) {
+    const s = S.scenarios.get(id), r = s.latest, y = yl.get(id), nf = activeFlags(s).length;
+    const on = !hl || hl.pS.has(id) || hl.sS.has(id), prim = hl && hl.pS.has(id), sec = hl && hl.sS.has(id);
+    svg += `<g class="node ${on ? "" : "dim"}" data-sel="s|${esc(id)}" tabindex="0">
+      <rect class="box" x="${x1}" y="${y}" width="${NW}" height="${NH}" rx="7" fill="${prim ? "#e3f3f2" : "#fff"}" stroke="${prim ? "#0f7c7a" : sec ? "#0f7c7a" : "#c9cfd9"}" stroke-width="${prim ? 2 : 1.2}" ${sec ? 'stroke-dasharray="4 3"' : ""}/>
+      <text x="${x1 + 10}" y="${y + 16}" font-size="12.5" font-weight="600" fill="#1d2433">${esc(short(r.name, 34))}</text>
+      <text x="${x1 + 10}" y="${y + 31}" font-size="10.5" fill="#667085">${r.components.length} comp. · ${r.openVersions} open decision${r.openVersions === 1 ? "" : "s"}</text>
+      ${nf ? `<text x="${x1 + NW - 10}" y="${y + 24}" font-size="12" text-anchor="end" fill="#b86e00" font-weight="600">⚠ ${nf}</text>` : ""}
+      <title>${esc(r.name)} — click to see its relationships</title></g>`;
+  }
+  // asset / component nodes
+  for (const id of g.R) {
+    const t = g.targets.get(id), y = yr.get(id), k = kindInfo(t.kind);
+    const on = !hl || hl.pT.has(id), prim = hl && S.sel.type === "t" && S.sel.id === id;
+    svg += `<g class="node ${on ? "" : "dim"}" data-sel="t|${esc(id)}" tabindex="0">
+      <rect class="box" x="${x2}" y="${y}" width="${NW}" height="${NH}" rx="7" fill="${prim ? "#e3f3f2" : "#fff"}" stroke="${prim ? "#0f7c7a" : "#c9cfd9"}" stroke-width="${prim ? 2 : 1.2}"/>
+      <rect x="${x2}" y="${y}" width="5" height="${NH}" rx="2" fill="${k.col}"/>
+      <text x="${x2 + 14}" y="${y + 16}" font-size="12.5" font-weight="600" fill="#1d2433">${esc(short(t.name, 30))}</text>
+      <text x="${x2 + 14}" y="${y + 31}" font-size="10.5" fill="#667085">${esc(short(t.sub, 36))}</text>
+      ${t.n > 1 ? `<rect x="${x2 + NW - 42}" y="${y + 11}" width="32" height="18" rx="9" fill="#0f7c7a"/><text x="${x2 + NW - 26}" y="${y + 24}" font-size="11" text-anchor="middle" fill="#fff" font-weight="600">×${t.n}</text>` : ""}
+      <title>${esc(t.name)} — used by ${t.n} scenario${t.n === 1 ? "" : "s"}</title></g>`;
+  }
+  return svg + "</svg>";
+}
+
+/* Side panel for the current selection. */
+function selPanel(g) {
+  const sel = S.sel;
+  if (!sel) return `<h2>Selection</h2><div class="muted">Click a scenario, ${S.mapMode === "asset" ? "an asset" : "a component"} or a matrix cell to see how they relate.</div>
+    <div class="sec">Reading the map</div>
+    <div class="note">Lines = “uses”. Thicker = more components in that asset. <span style="color:#6b4fd8">Violet</span> = an open decision brings a new version there. <span style="color:#b86e00">Amber</span> = flagged. <b>×n</b> = shared by n scenarios.</div>`;
+  const tname = (id) => g.targets.get(id)?.name || id;
+  if (sel.type === "s") {
+    const s = S.scenarios.get(sel.id); if (!s) return "";
+    const r = s.latest, mine = new Set(g.edges.filter((e) => e.s === r.id).map((e) => e.t));
+    const shares = [];
+    for (const o of S.scenarios.values()) {
+      if (o.latest.id === r.id) continue;
+      const common = g.edges.filter((e) => e.s === o.latest.id && mine.has(e.t)).map((e) => e.t);
+      if (common.length) shares.push({ o: o.latest, common });
+    }
+    shares.sort((a, b) => b.common.length - a.common.length);
+    const fl = activeFlags(s);
+    return `<div class="sel-panel"><h3>${esc(r.name)}</h3>
+      <div class="kv">v${r.version} · ${r.components.length} components · ${r.openVersions} open decision${r.openVersions === 1 ? "" : "s"}${r.author ? " · " + esc(r.author) : ""}</div>
+      <button class="btn small" data-open="${esc(r.id)}">Open scenario →</button>
+      <div class="sec">Overlaps with (${shares.length})</div>
+      ${shares.map((x) => `<div class="list-item" data-sel="p|${esc(r.id)}|${esc(x.o.id)}"><div class="t">${esc(x.o.name)}</div>
+        <div class="s">shares ${x.common.length}: ${esc(x.common.map(tname).slice(0, 4).join(", "))}${x.common.length > 4 ? " …" : ""}</div></div>`).join("") || '<div class="muted">No overlap with other scenarios.</div>'}
+      ${fl.length ? `<div class="sec">Flags (${fl.length})</div>${fl.slice(0, 3).map((f) => `<div class="flag ${f.sev === "red" ? "red" : ""}"><span class="ico">⚠</span><div style="font-size:12px">${esc(f.text)}</div></div>`).join("")}` : ""}
+    </div>`;
+  }
+  if (sel.type === "t") {
+    const t = g.targets.get(sel.id); if (!t) return "";
+    const users = g.edges.filter((e) => e.t === sel.id);
+    let comps = "";
+    if (S.mapMode === "asset") {
+      const a = S.assets.get(sel.id);
+      comps = [...(a?.refs || [])].map((ref) => {
+        const x = S.refs.get(ref); if (!x) return "";
+        return `<div class="list-item" style="cursor:default"><div class="t">${esc(refName(ref))} <span class="muted" style="font-weight:400">${esc(x.type)}</span></div>
+          <div class="s">${[...x.scenarios].map((id) => { const v = S.scenarios.get(id).latest.uses[ref] || [];
+            return `<span class="chip ${Math.max(...v.map(vnum)) < x.max ? "amber" : ""}">${esc(short(scenarioName(id), 22))} · ${esc(v.join("+"))}</span>`; }).join("")}</div></div>`;
+      }).join("");
+    } else {
+      const x = S.refs.get(sel.id);
+      comps = `<div class="note">Versions in the registry: ${[...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>`).join("")}</div>`;
+    }
+    return `<div class="sel-panel"><h3>${esc(t.name)}</h3>
+      <div class="kv">${esc(kindInfo(t.kind).label)}${t.sub ? " · " + esc(t.sub) : ""} · used by ${users.length} scenario${users.length === 1 ? "" : "s"}</div>
+      <div class="sec">Used by</div>
+      ${users.map((e) => `<div class="list-item" data-sel="s|${esc(e.s)}"><div class="t">${esc(scenarioName(e.s))}</div>
+        <div class="s">${esc(e.label)}${e.ver ? ' · <span style="color:#6b4fd8">open new version</span>' : ""}${e.flag ? ' · <span style="color:#b86e00">flagged</span>' : ""}</div></div>`).join("")}
+      ${comps ? `<div class="sec">${S.mapMode === "asset" ? "Components in this asset" : "Versions"}</div>${comps}` : ""}
+    </div>`;
+  }
+  if (sel.type === "p") {
+    const ta = new Set(g.edges.filter((e) => e.s === sel.a).map((e) => e.t));
+    const common = g.edges.filter((e) => e.s === sel.b && ta.has(e.t)).map((e) => e.t);
+    return `<div class="sel-panel"><h3>${esc(scenarioName(sel.a))}<br><span class="muted" style="font-weight:400">and</span> ${esc(scenarioName(sel.b))}</h3>
+      <div class="kv">share ${common.length} ${S.mapMode === "asset" ? "asset" : "component"}${common.length === 1 ? "" : "s"}</div>
+      ${common.map((id) => `<div class="list-item" data-sel="t|${esc(id)}"><div class="t">${esc(tname(id))}</div><div class="s">${esc(g.targets.get(id)?.sub || "")}</div></div>`).join("") || '<div class="muted">Nothing in common.</div>'}
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn small" data-open="${esc(sel.a)}">Open first →</button><button class="btn small" data-open="${esc(sel.b)}">Open second →</button></div>
+    </div>`;
+  }
+  return "";
+}
+
+/* Scenario × scenario overlap matrix (shared assets or components). */
+function matrixHtml(g) {
+  const ids = g.L;
+  if (ids.length < 2) return `<div class="muted">Overlap needs at least two scenarios.</div>`;
+  const tset = new Map(ids.map((id) => [id, new Set(g.edges.filter((e) => e.s === id).map((e) => e.t))]));
+  const cnt = (a, b) => { let n = 0; for (const t of tset.get(a)) if (tset.get(b).has(t)) n++; return n; };
+  let max = 1; for (const a of ids) for (const b of ids) if (a !== b) max = Math.max(max, cnt(a, b));
+  const on = (a, b) => S.sel && S.sel.type === "p" && ((S.sel.a === a && S.sel.b === b) || (S.sel.a === b && S.sel.b === a));
+  return `<div class="scroll"><table class="matrix"><tr><th></th>${ids.map((id, i) => `<th class="ch" title="${esc(scenarioName(id))}">${i + 1}</th>`).join("")}</tr>
+    ${ids.map((a, i) => `<tr><th class="rh" title="${esc(scenarioName(a))}">${i + 1}. ${esc(short(scenarioName(a), 30))}</th>${ids.map((b) => {
+      if (a === b) return `<td class="c d"></td>`;
+      const n = cnt(a, b);
+      return n ? `<td class="c n ${on(a, b) ? "on" : ""}" data-sel="p|${esc(a)}|${esc(b)}" style="background:rgba(15,124,122,${(0.25 + 0.75 * n / max).toFixed(2)})" title="${esc(scenarioName(a))} ∩ ${esc(scenarioName(b))}: ${n}">${n}</td>` : `<td class="c">·</td>`;
+    }).join("")}</tr>`).join("")}</table></div>
+    <div class="note" style="margin-top:6px">Number = ${S.mapMode === "asset" ? "assets" : "components"} two scenarios share. Click a cell to see which.</div>`;
 }
 
 function overviewView() {
   const all = [...S.scenarios.values()];
-  if (!all.length) return `<div class="panel">No registry entries found in <b>${esc(S.folderName)}</b>. Files must use schema <code>${ENTRY_SCHEMA}</code>.</div>`;
+  if (!all.length) return `<div class="panel">No registry entries found in <b>${esc(S.folderName)}</b>. Files must use schema <code>${ENTRY_SCHEMA}</code>.
+    ${S.source === "github" ? `<div class="note" style="margin-top:6px">Put Pattern Bench registry exports into <code>${esc(GH.path)}/</code> in the repo, or open a local folder for this session.</div>` : ""}</div>`;
   const attention = all.filter((s) => activeFlags(s).length).sort((a, b) => activeFlags(b).length - activeFlags(a).length);
-  const recent = all.slice().sort((a, b) => String(b.latest.exportedAt).localeCompare(String(a.latest.exportedAt))).slice(0, 8);
+  const recent = all.slice().sort((a, b) => String(b.latest.exportedAt).localeCompare(String(a.latest.exportedAt))).slice(0, 6);
   const openVers = all.reduce((n, s) => n + s.latest.openVersions, 0);
+  const withOpen = all.filter((s) => s.latest.openVersions).length;
   const shared = [...S.refs.values()].filter((x) => x.scenarios.size > 1).length;
+  const sharedAssets = [...S.assets.values()].filter((a) => a.scenarios.size > 1).length;
   const retire = S.lifecycle ? S.lifecycle.events.filter((e) => S.lifecycle.byKey.get(e.ref + "@" + e.version) === e && e.stage === "deprecated")
     .sort((a, b) => String(a.retireOn || "9").localeCompare(String(b.retireOn || "9"))) : [];
+  const g = mapGraph();
+  if (S.sel && ((S.sel.type === "t" && !g.targets.has(S.sel.id)) || (S.sel.type === "s" && !S.scenarios.has(S.sel.id)))) S.sel = null;
   return `
   <div class="grid g4" style="margin-bottom:16px">
-    <div class="tile"><div class="num">${all.length}</div><div class="lbl">Scenarios (end-to-end flows)</div></div>
-    <div class="tile"><div class="num">${S.refs.size}</div><div class="lbl">Components · ${shared} shared by several flows</div></div>
-    <div class="tile"><div class="num">${openVers}</div><div class="lbl">Open versioning decisions</div></div>
-    <div class="tile ${attention.length ? "warn" : ""}"><div class="num">${attention.length}</div><div class="lbl">Scenarios need attention</div></div>
+    <div class="tile click" data-go="list" tabindex="0"><div class="num">${all.length}</div><div class="lbl">Scenarios (end-to-end flows)</div>
+      <div class="split">${sharedAssets} of ${S.assets.size} assets shared</div><div class="go">See all scenarios →</div></div>
+    <div class="tile click" data-go="components:shared" tabindex="0"><div class="num">${S.refs.size}</div><div class="lbl">Components</div>
+      <div class="split">${shared} shared by several flows</div><div class="go">See shared components →</div></div>
+    <div class="tile click" data-go="decisions" tabindex="0"><div class="num">${openVers}</div><div class="lbl">Open versioning decisions</div>
+      <div class="split">across ${withOpen} scenario${withOpen === 1 ? "" : "s"}</div><div class="go">See decisions →</div></div>
+    <div class="tile click ${attention.length ? "warn" : ""}" data-go="list:flags" tabindex="0"><div class="num">${attention.length}</div><div class="lbl">Scenarios need attention</div>
+      <div class="split">${attention.reduce((n, s) => n + activeFlags(s).length, 0)} open flags</div><div class="go">See flagged scenarios →</div></div>
+  </div>
+
+  <div class="grid g-map">
+    <div class="panel">
+      <div class="panel-head"><h2>Relationship map</h2>
+        <span class="seg"><button data-map="asset" class="${S.mapMode === "asset" ? "on" : ""}">By asset</button><button data-map="ref" class="${S.mapMode === "ref" ? "on" : ""}">By component</button></span>
+        <label class="note" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="mapAll" ${S.mapAll ? "checked" : ""}> show unshared too</label>
+        <span class="spacer" style="flex:1"></span>
+        ${S.sel ? `<button class="btn ghost small" style="color:var(--teal)" data-act="clearsel">Clear selection</button>` : ""}
+      </div>
+      <div id="mapBox">${g.R.length ? mapSvg(g) : `<div class="muted">Nothing shared yet — switch on “show unshared too”.</div>`}</div>
+      <div class="legend"><span><i style="background:#0f7c7a"></i>iPaaS</span><span><i style="background:#6b4fd8"></i>message broker</span><span><i style="background:#8a94a6"></i>end application / caller</span>
+        <span style="color:#6b4fd8">━ open new version</span><span style="color:#b86e00">━ flagged</span><span>– – overlapping scenario</span></div>
+    </div>
+    <div class="panel" id="selBox">${selPanel(g)}</div>
+  </div>
+
+  <div class="grid g2">
+    <div class="panel"><h2>Overlap matrix <span class="count">(${S.mapMode === "asset" ? "shared assets" : "shared components"})</span></h2>${matrixHtml(g)}</div>
+    <div class="panel"><h2>Needs attention <span class="count">(${attention.length})</span></h2>
+      ${attention.length ? attention.slice(0, 6).map((s) => `<div class="list-item" data-open="${esc(s.latest.id)}">
+          <div class="t">${esc(s.latest.name)} <span class="chip amber">⚠ ${activeFlags(s).length}</span></div>
+          <div class="s">${esc(activeFlags(s)[0].text)}</div></div>`).join("") + (attention.length > 6 ? `<div class="list-item linkish" data-go="list:flags">All ${attention.length} →</div>` : "") : `<div class="muted">Nothing flagged.</div>`}
+    </div>
   </div>
   <div class="grid g2">
-    <div class="panel"><h2>Needs attention <span class="count">(${attention.length})</span></h2>
-      ${attention.length ? attention.map((s) => `<div class="list-item" data-open="${esc(s.latest.id)}">
-          <div class="t">${esc(s.latest.name)} <span class="chip amber">⚠ ${activeFlags(s).length}</span></div>
-          <div class="s">${esc(activeFlags(s)[0].text)}</div></div>`).join("") : `<div class="muted">Nothing flagged.</div>`}
-    </div>
     <div class="panel"><h2>Recently changed</h2>
       ${recent.map((s) => `<div class="list-item" data-open="${esc(s.latest.id)}">
           <div class="t">${esc(s.latest.name)} <span class="chip">v${s.latest.version}</span></div>
           <div class="s">${esc(fmtDate(s.latest.exportedAt))}${s.latest.author ? " · " + esc(s.latest.author) : ""} · ${esc(s.latest.platforms.join(", "))}</div></div>`).join("")}
     </div>
-  </div>
-  ${S.lifecycle ? `<div class="panel"><h2>Upcoming retirements <span class="count">(from lifecycle.json)</span></h2>
-    ${retire.length ? `<table><tr><th>Component</th><th>Version</th><th>Retires on</th><th>Still used by</th></tr>
+    <div class="panel"><h2>Upcoming retirements ${S.lifecycle ? '<span class="count">(from lifecycle.json)</span>' : ""}</h2>
+    ${!S.lifecycle ? `<div class="muted">No <code>lifecycle.json</code> in the registry folder.</div>` : retire.length ? `<table><tr><th>Component</th><th>Version</th><th>Retires on</th><th>Still used by</th></tr>
       ${retire.map((e) => { const users = [...S.scenarios.values()].filter((s) => (s.latest.uses[e.ref] || []).includes(e.version));
         return `<tr><td>${esc(refName(e.ref))}<div class="mono muted">${esc(e.ref)}</div></td><td>${esc(e.version)}</td><td class="nowrap">${esc(e.retireOn || "—")}</td>
         <td>${users.map((s) => `<span class="chip amber" data-open="${esc(s.latest.id)}" style="cursor:pointer">${esc(s.latest.name)}</span>`).join("") || '<span class="muted">none</span>'}</td></tr>`; }).join("")}</table>`
-      : `<div class="muted">No deprecated versions.</div>`}</div>` : ""}
-  <div class="note">Overview shows a summary only. Use <b>All scenarios</b> for the full directory.</div>`;
+      : `<div class="muted">No deprecated versions.</div>`}</div>
+  </div>`;
+}
+
+/* Re-draw only the map, side panel and matrix after a selection change. */
+function refreshOverviewParts() {
+  if (S.view !== "overview") return;
+  $("#view").innerHTML = overviewView();
+}
+
+/* ---- decisions across all scenarios ---- */
+function decisionsView() {
+  return `<div class="panel">
+    <div class="toolbar">
+      <input type="search" id="decSearch" placeholder="Search decision, component, option, reason, scenario …" value="${esc(S.decQuery)}">
+      <label><input type="checkbox" id="decOpen" ${S.decOpenOnly ? "checked" : ""}> open only</label>
+    </div>
+    <div id="decTable">${decisionsTable()}</div></div>`;
+}
+function decisionsTable() {
+  const q = S.decQuery.trim().toLowerCase();
+  const rows = [];
+  for (const s of S.scenarios.values()) for (const d of s.latest.decisionList || []) {
+    if (S.decOpenOnly && d.status === "completed") continue;
+    const hay = [s.latest.name, d.label, d.on, d.option, d.why, d.what, d.who, ...d.refs.map(refName)].join(" ").toLowerCase();
+    if (q && !hay.includes(q)) continue;
+    rows.push({ s: s.latest, d });
+  }
+  rows.sort((a, b) => a.s.name.localeCompare(b.s.name) || String(b.d.when).localeCompare(String(a.d.when)));
+  const nsc = new Set(rows.map((r) => r.s.id)).size;
+  return `<div class="note" style="margin-bottom:6px">${rows.length} decision${rows.length === 1 ? "" : "s"} in ${nsc} scenario${nsc === 1 ? "" : "s"} · click a row to open the scenario</div>
+  <table><thead><tr><th>Scenario</th><th>Decision</th><th>On</th><th>Change</th><th>Why</th><th>Who / when</th><th>Status</th></tr></thead><tbody>
+  ${rows.map(({ s, d }) => `<tr class="row" data-open="${esc(s.id)}">
+    <td><b>${esc(s.name)}</b></td>
+    <td>${esc(d.label)}${d.option ? ` <span class="chip">${esc(d.option)}</span>` : ""}${d.warnings ? ` <span class="chip amber">⚠ ${d.warnings}</span>` : ""}</td>
+    <td>${esc(d.on)}${d.side ? `<div class="muted" style="font-size:12px">${esc(d.side)}</div>` : ""}</td>
+    <td>${d.change.map((c) => `<span class="chip ${c === "breaking" ? "amber" : ""}">${esc(c === "nonBreaking" ? "non-breaking" : c)}</span>`).join("") || '<span class="muted">—</span>'}</td>
+    <td>${d.why ? esc(d.why) : '<span class="muted">not given</span>'}</td>
+    <td class="nowrap">${esc(d.who)}<div class="muted" style="font-size:12px">${esc(fmtDate(d.when))}</div></td>
+    <td>${d.status === "completed" ? '<span class="chip done">completed</span>' : '<span class="chip violet">open</span>'}</td></tr>`).join("") || `<tr><td colspan="7" class="muted">No decisions match.</td></tr>`}
+  </tbody></table>`;
 }
 
 /* ---- directory table ---- */
@@ -516,10 +915,12 @@ function componentsView() {
   const q = S.compQuery.trim().toLowerCase();
   let list = [...S.refs.values()];
   if (q) list = list.filter((x) => (x.ref + " " + [...x.names].join(" ") + " " + x.type).toLowerCase().includes(q));
+  if (S.compShared) list = list.filter((x) => x.scenarios.size > 1);
   list.sort((a, b) => b.scenarios.size - a.scenarios.size || a.ref.localeCompare(b.ref));
   const lc = (ref, v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
   return `<div class="panel">
-    <div class="toolbar"><input type="search" id="compSearch" placeholder="Search component name, ref or type …" value="${esc(S.compQuery)}"></div>
+    <div class="toolbar"><input type="search" id="compSearch" placeholder="Search component name, ref or type …" value="${esc(S.compQuery)}">
+      <label><input type="checkbox" id="compShared" ${S.compShared ? "checked" : ""}> shared only</label></div>
     <div class="note" style="margin-bottom:6px">${list.length} components (one row per <code>ref</code>, across the latest version of every scenario)</div>
     <table><thead><tr><th>Component</th><th>Type</th><th>Versions in the registry</th><th>Used by</th></tr></thead><tbody>
     ${list.map((x) => `<tr><td><b>${esc([...x.names].join(" / ") || "(unnamed)")}</b><div class="mono muted">${esc(x.ref)}</div></td>
@@ -717,9 +1118,24 @@ async function downloadMarkers(id, version) {
    5. Events
    ========================================================================== */
 document.addEventListener("click", (ev) => {
-  const t = ev.target.closest("[data-open],[data-act],[data-view],[data-sort]");
+  const t = ev.target.closest("[data-open],[data-act],[data-view],[data-sort],[data-go],[data-sel],[data-map]");
   if (!t) return;
   if (t.dataset.view && !t.disabled) return go(t.dataset.view);
+  if (t.dataset.go) {                                   // drill-down from the overview tiles
+    const [view, opt] = t.dataset.go.split(":");
+    if (view === "list") { S.listFlagsOnly = opt === "flags"; S.listQuery = ""; }
+    if (view === "components") { S.compShared = opt === "shared"; S.compQuery = ""; }
+    if (view === "decisions") { S.decOpenOnly = true; S.decQuery = ""; }
+    return go(view);
+  }
+  if (t.dataset.sel) {                                  // relationship map / matrix selection
+    const [type, a, b] = t.dataset.sel.split("|");
+    const next = type === "p" ? { type, a, b } : { type, id: a };
+    const same = S.sel && S.sel.type === next.type && (type === "p" ? S.sel.a === a && S.sel.b === b : S.sel.id === a);
+    S.sel = same ? null : next;
+    return refreshOverviewParts();
+  }
+  if (t.dataset.map) { S.mapMode = t.dataset.map; S.sel = null; return refreshOverviewParts(); }
   if (t.dataset.sort) {
     const k = t.dataset.sort;
     S.listSort = S.listSort.key === k ? { key: k, dir: -S.listSort.dir } : { key: k, dir: k === "changed" || k === "flags" || k === "decisions" || k === "version" ? -1 : 1 };
@@ -728,24 +1144,37 @@ document.addEventListener("click", (ev) => {
   if (t.dataset.open) { S.prev = { view: S.view, param: S.param }; return go("scenario", { id: t.dataset.open, version: t.dataset.v ? Number(t.dataset.v) : null }); }
   const act = t.dataset.act;
   if (act === "open") openFolder();
+  if (act === "github") loadFromGitHub();
+  if (act === "clearsel") { S.sel = null; refreshOverviewParts(); }
   if (act === "back") { const p = S.prev && S.prev.view !== "scenario" ? S.prev : { view: "list" }; go(p.view, p.param); }
   if (act === "markers") downloadMarkers(t.dataset.id, Number(t.dataset.v));
 });
 document.addEventListener("input", (ev) => {
   if (ev.target.id === "listSearch") { S.listQuery = ev.target.value; $("#listTable").innerHTML = listTable(); }
   if (ev.target.id === "flagsOnly") { S.listFlagsOnly = ev.target.checked; $("#listTable").innerHTML = listTable(); }
+  if (ev.target.id === "compShared") { S.compShared = ev.target.checked; $("#view").innerHTML = componentsView(); return; }
+  if (ev.target.id === "mapAll") { S.mapAll = ev.target.checked; S.sel = null; refreshOverviewParts(); return; }
+  if (ev.target.id === "decSearch") { S.decQuery = ev.target.value; $("#decTable").innerHTML = decisionsTable(); return; }
+  if (ev.target.id === "decOpen") { S.decOpenOnly = ev.target.checked; $("#decTable").innerHTML = decisionsTable(); return; }
   if (ev.target.id === "compSearch") { S.compQuery = ev.target.value; const pos = ev.target.selectionStart; $("#view").innerHTML = componentsView(); const i = $("#compSearch"); i.focus(); i.setSelectionRange(pos, pos); }
 });
 $("#openBtn").addEventListener("click", openFolder);
-$("#reloadBtn").addEventListener("click", () => S.root && loadFromHandle());
+$("#reloadBtn").addEventListener("click", () => (S.source === "github" ? loadFromGitHub() : S.root && loadFromHandle()));
+$("#ghBtn").addEventListener("click", () => loadFromGitHub());
+document.addEventListener("keydown", (ev) => {     // Enter / Space on tiles and map nodes
+  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches?.("[data-go],[data-sel]")) { ev.preventDefault(); ev.target.click(); }
+});
 $("#dirInput").addEventListener("change", (e) => e.target.files.length && loadFromInput(e.target.files));
 
 // test / automation hook: load from an array of {path, text, lastModified}
 window.__registryLoad = (items, name = "test") => {
   const files = new Map(items.map((it) => [it.path, { getFile: async () => new File([it.text], it.path.split("/").pop(), { lastModified: it.lastModified || 1 }) }]));
-  S.root = null; S.writable = false; S.folderName = name; return ingest(files);
+  S.root = null; S.writable = false; S.folderName = name; S.source = "local"; return ingest(files);
 };
+window.__registryGitHub = GH;
+S.source = "github";
 go("overview");
+loadFromGitHub();
 </script>
 </body>
 </html>

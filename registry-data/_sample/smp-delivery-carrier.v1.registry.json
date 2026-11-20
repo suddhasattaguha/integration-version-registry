@@ -1,0 +1,135 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.5",
+  "scenario": {
+    "id": "smp-delivery-carrier",
+    "version": 1,
+    "name": "Delivery notice to carrier (SFTP)",
+    "description": "Same delivery topic, second subscriber writing files for the carrier.",
+    "author": "Sample Architect",
+    "exportedAt": "2026-11-08T11:00:00Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "single"
+    },
+    "tags": [
+      "sample",
+      "logistics"
+    ]
+  },
+  "base": {
+    "blocks": [],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "endapp/sap-eu#api",
+        "name": "SAP EU API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "btpis/delivery-prc#process",
+        "name": "Delivery-Prc Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c3",
+        "ref": "solace/deliveries#topic",
+        "name": "Deliveries Topic",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c4",
+        "ref": "solace/deliveries#queue",
+        "name": "Deliveries Queue",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3"
+      },
+      {
+        "id": "c5",
+        "ref": "endapp/carrier-sftp#file",
+        "name": "Carrier SFTP Folder",
+        "autoName": false,
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k4"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "endapp/sap-eu#api",
+        "toRef": "btpis/delivery-prc#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btpis/delivery-prc#process",
+        "toRef": "solace/deliveries#topic"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "solace/deliveries#topic",
+        "toRef": "solace/deliveries#queue"
+      },
+      {
+        "from": "c4",
+        "to": "c5",
+        "fromRef": "solace/deliveries#queue",
+        "toRef": "endapp/carrier-sftp#file"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "endapp/sap-eu",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "SAP EU"
+      },
+      {
+        "id": "k2",
+        "ref": "btpis/delivery-prc",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Delivery-Prc"
+      },
+      {
+        "id": "k3",
+        "ref": "solace/deliveries",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Deliveries"
+      },
+      {
+        "id": "k4",
+        "ref": "endapp/carrier-sftp",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Carrier SFTP"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.5",
+  "scenario": {
+    "id": "smp-invoice-portal",
+    "version": 3,
+    "name": "Supplier invoice to e-Invoice portal",
+    "description": "Outgoing invoices from S/4 EU sent to the e-invoicing portal.",
+    "author": "Sample Author",
+    "exportedAt": "2026-11-19T16:45:00Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.0",
+      "mode": "single"
+    },
+    "tags": [
+      "sample",
+      "finance"
+    ]
+  },
+  "base": {
+    "blocks": [],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "endapp/sap-eu#api",
+        "name": "SAP EU API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k1"
+      },
+      {
+        "id": "c2",
+        "ref": "btpis/invoice-prc#process",
+        "name": "Invoice-Prc Process",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2"
+      },
+      {
+        "id": "c3",
+        "ref": "endapp/einvoice-portal#api",
+        "name": "e-Invoice portal API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k3"
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "endapp/sap-eu#api",
+        "toRef": "btpis/invoice-prc#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btpis/invoice-prc#process",
+        "toRef": "endapp/einvoice-portal#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "endapp/sap-eu",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "SAP EU"
+      },
+      {
+        "id": "k2",
+        "ref": "btpis/invoice-prc",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Invoice-Prc"
+      },
+      {
+        "id": "k3",
+        "ref": "endapp/einvoice-portal",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "e-Invoice portal"
+      }
+    ]
+  },
+  "versions": [
+    {
+      "id": "v-01",
+      "label": "Process v2 \u00b7 same API",
+      "status": "open",
+      "appliesTo": {
+        "component": "c2",
+        "connector": "api",
+        "side": "downstream"
+      },
+      "decision": {
+        "what": "",
+        "why": "Legal format change",
+        "who": "Sample Author",
+        "when": "2026-11-19T16:45:00Z",
+        "option": "inPlace"
+      },
+      "added": [
+        {
+          "id": "n10",
+          "ref": "btpis/invoice-prc#process",
+          "name": "Invoice-Prc Process v2",
+          "type": "process",
+          "version": "v2",
+          "container": "k2",
+          "stage": "planned"
+        }
+      ],
+      "addedLinks": [],
+      "changed": [
+        {
+          "component": "c2",
+          "from": "v1",
+          "to": "v2",
+          "change": "nonBreaking"
+        }
+      ],
+      "impacts": [],
+      "retired": []
+    },
+    {
+      "id": "v-02",
+      "label": "Target API v2 \u00b7 keep v1",
+      "status": "open",
+      "appliesTo": {
+        "component": "c3",
+        "connector": "api",
+        "side": "downstream"
+      },
+      "decision": {
+        "what": "",
+        "why": "Portal API v2 mandatory from 2027",
+        "who": "Sample Author",
+        "when": "2026-11-19T16:45:00Z",
+        "option": "parallel"
+      },
+      "added": [
+        {
+          "id": "n20",
+          "ref": "endapp/einvoice-portal#api",
+          "name": "e-Invoice portal API v2",
+          "type": "api",
+          "version": "v2",
+          "container": "k3",
+          "stage": "planned"
+        }
+      ],
+      "addedLinks": [],
+      "changed": [
+        {
+          "component": "c3",
+          "from": "v1",
+          "to": "v2",
+          "change": "breaking"
+        }
+      ],
+      "impacts": [
+        {
+          "affected": "c2",
+          "path": [
+            "c2"
+          ],
+          "decision": "moveV2",
+          "codeChange": false,
+          "warning": true,
+          "acknowledged": false,
+          "note": ""
+        }
+      ],
+      "retired": []
+    }
+  ],
+  "acknowledgements": [],
+  "relations": []
+}
