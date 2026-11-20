@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Integration Registry — draft 0.1</title>
+<style>
+  :root {
+    --bg: #f5f6f8; --panel: #ffffff; --ink: #1d2433; --muted: #667085; --line: #e3e6ec;
+    --head: #1f2a3c; --teal: #0f7c7a; --teal-bg: #e3f3f2; --violet: #6b4fd8; --violet-bg: #efebfd;
+    --amber: #b86e00; --amber-bg: #fff3dc; --red: #b42318; --red-bg: #fdecea; --grey-bg: #eef0f3;
+    --radius: 8px; --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 14px/1.45 var(--font); color: var(--ink); background: var(--bg); }
+  header { background: var(--head); color: #fff; display: flex; align-items: center; gap: 16px; padding: 10px 20px; position: sticky; top: 0; z-index: 5; }
+  header h1 { font-size: 16px; margin: 0; font-weight: 600; letter-spacing: .2px; }
+  header .draft { font-size: 11px; background: rgba(255,255,255,.14); padding: 2px 8px; border-radius: 10px; }
+  header nav { display: flex; gap: 4px; margin-left: 12px; }
+  header nav button { background: none; border: 0; color: #c9d1de; padding: 6px 12px; border-radius: 6px; cursor: pointer; font: inherit; }
+  header nav button.on, header nav button:hover { background: rgba(255,255,255,.12); color: #fff; }
+  header nav button:disabled { opacity: .4; cursor: default; background: none; }
+  header .spacer { flex: 1; }
+  header .folder { font-size: 12px; color: #c9d1de; max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .btn { background: var(--teal); color: #fff; border: 0; padding: 7px 14px; border-radius: 6px; cursor: pointer; font: inherit; font-weight: 500; }
+  .btn.ghost { background: transparent; color: inherit; border: 1px solid currentColor; opacity: .85; }
+  .btn.small { padding: 4px 10px; font-size: 12px; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  main { padding: 20px; max-width: 1400px; margin: 0 auto; }
+  .status { font-size: 12px; color: var(--muted); margin: -6px 0 14px; min-height: 16px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 16px; }
+  .panel h2 { font-size: 14px; margin: 0 0 12px; font-weight: 600; }
+  .panel h2 .count { color: var(--muted); font-weight: 400; }
+  .grid { display: grid; gap: 16px; }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+  .g2 { grid-template-columns: 1fr 1fr; }
+  .g3 { grid-template-columns: 2fr 1fr; }
+  @media (max-width: 900px) { .g4 { grid-template-columns: 1fr 1fr; } .g2, .g3 { grid-template-columns: 1fr; } }
+  .tile { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; }
+  .tile .num { font-size: 26px; font-weight: 600; }
+  .tile .lbl { color: var(--muted); font-size: 12px; }
+  .tile.warn .num { color: var(--amber); }
+  .empty { text-align: center; padding: 70px 20px; color: var(--muted); }
+  .empty h2 { color: var(--ink); font-size: 20px; margin-bottom: 8px; }
+  .empty p { max-width: 560px; margin: 8px auto; }
+  .empty .btn { margin-top: 14px; font-size: 15px; padding: 10px 20px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; color: var(--muted); font-weight: 600; white-space: nowrap; user-select: none; }
+  th.sort { cursor: pointer; }
+  th.sort:hover { color: var(--ink); }
+  tr.row { cursor: pointer; }
+  tr.row:hover td { background: #f7f9fc; }
+  td.nowrap { white-space: nowrap; }
+  .chip { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 10px; background: var(--grey-bg); color: #344054; margin: 1px 3px 1px 0; white-space: nowrap; }
+  .chip.teal { background: var(--teal-bg); color: var(--teal); }
+  .chip.violet { background: var(--violet-bg); color: var(--violet); }
+  .chip.amber { background: var(--amber-bg); color: var(--amber); }
+  .chip.red { background: var(--red-bg); color: var(--red); }
+  .chip.done { text-decoration: line-through; opacity: .7; }
+  .toolbar { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .toolbar input[type=search] { flex: 1; min-width: 220px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; font: inherit; }
+  .toolbar label { font-size: 13px; color: var(--muted); display: flex; gap: 6px; align-items: center; }
+  .list-item { padding: 9px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .list-item:last-child { border-bottom: 0; }
+  .list-item:hover .t { color: var(--teal); }
+  .list-item .t { font-weight: 500; }
+  .list-item .s { font-size: 12px; color: var(--muted); }
+  .flag { display: flex; gap: 10px; padding: 8px 10px; border-radius: 6px; margin-bottom: 6px; background: var(--amber-bg); }
+  .flag.red { background: var(--red-bg); }
+  .flag.grey { background: var(--grey-bg); }
+  .flag .ico { font-weight: 700; color: var(--amber); }
+  .flag.red .ico { color: var(--red); }
+  .flag.grey .ico { color: var(--muted); }
+  .flag .k { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; }
+  .detail-head { display: flex; align-items: flex-start; gap: 16px; }
+  .detail-head h2 { font-size: 20px; margin: 0; }
+  .meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
+  .back { background: none; border: 0; color: var(--teal); cursor: pointer; font: inherit; padding: 0; margin-bottom: 10px; }
+  .diagram { overflow: auto; border: 1px solid var(--line); border-radius: 6px; background: #fbfcfd; }
+  .legend { display: flex; gap: 14px; font-size: 12px; color: var(--muted); margin-top: 8px; flex-wrap: wrap; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 4px; vertical-align: -1px; }
+  .ver { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; }
+  .ver .vt { font-weight: 600; }
+  .ver dl { display: grid; grid-template-columns: 90px 1fr; gap: 2px 10px; margin: 8px 0 0; font-size: 13px; }
+  .ver dt { color: var(--muted); }
+  .ver dd { margin: 0; }
+  .muted { color: var(--muted); }
+  code, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; }
+  .hist a { color: var(--teal); cursor: pointer; text-decoration: underline; }
+  .note { font-size: 12px; color: var(--muted); }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Integration Registry</h1>
+  <span class="draft">draft 0.1 · schema 0.5</span>
+  <nav id="nav">
+    <button data-view="overview" disabled>Overview</button>
+    <button data-view="list" disabled>All scenarios</button>
+    <button data-view="components" disabled>Components</button>
+  </nav>
+  <span class="spacer"></span>
+  <span class="folder" id="folderName"></span>
+  <button class="btn ghost small hidden" id="reloadBtn" title="Read the folder again">Reload</button>
+  <button class="btn small" id="openBtn">Open registry folder</button>
+  <input type="file" id="dirInput" webkitdirectory multiple class="hidden">
+</header>
+<main>
+  <div class="status" id="status"></div>
+  <div id="view"></div>
+</main>
+
+<script>
+"use strict";
+/* ============================================================================
+   Integration Registry — draft 0.1
+   Reads a registry folder of Pattern Bench "registry entry" files (schema 0.5),
+   keeps index.json as a rebuildable cache, shows overview, directory, components
+   and scenario detail with cross-scenario flags. Single self-contained file.
+   ========================================================================== */
+
+const APP_VERSION = "0.1";
+const INDEX_FILE = "index.json";
+const LIFECYCLE_FILE = "lifecycle.json";
+const INDEX_SCHEMA = "pattern-bench.registry-index";
+const ENTRY_SCHEMA = "pattern-bench.registry-entry";
+const RECORD_FORMAT = 1;            // bump when the cached record shape changes
+
+const S = {
+  root: null,          // FileSystemDirectoryHandle (Chrome / Edge) or null
+  writable: false,
+  folderName: "",
+  files: new Map(),    // path -> { getFile: () => Promise<File> }
+  records: [],         // compact record per spec file
+  scenarios: new Map(),// id -> { latest, history: [records sorted desc] }
+  lifecycle: null,     // { byKey: Map("ref@v" -> latest event), events }
+  refs: new Map(),     // ref -> aggregated info
+  specCache: new Map(),// path -> parsed full spec
+  view: "overview", param: null,
+  listSort: { key: "changed", dir: -1 }, listQuery: "", listFlagsOnly: false,
+  compQuery: "",
+};
+
+/* ---------- small helpers ---------- */
+const $ = (sel) => document.querySelector(sel);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const vnum = (v) => parseInt(String(v ?? "").replace(/[^0-9]/g, ""), 10) || 0;
+const uniq = (a) => [...new Set(a.filter((x) => x !== undefined && x !== null && x !== ""))];
+const fmtDate = (iso) => { if (!iso) return ""; const d = new Date(iso); return isNaN(d) ? String(iso) : d.toISOString().slice(0, 10); };
+const chips = (arr, cls = "") => arr.map((x) => `<span class="chip ${cls}">${esc(x)}</span>`).join("");
+const STAGE_LABEL = { planned: "planned", inTest: "in test", inProduction: "in production", deprecated: "deprecated", retired: "retired" };
+const stageChip = (st) => {
+  if (!st) return "";
+  const cls = { planned: "", inTest: "teal", inProduction: "teal", deprecated: "amber", retired: "red" }[st] || "";
+  return `<span class="chip ${cls}">${esc(STAGE_LABEL[st] || st)}</span>`;
+};
+function setStatus(t) { $("#status").textContent = t || ""; }
+
+/* ============================================================================
+   1. Reading the folder
+   ========================================================================== */
+// The folder picker is blocked when the page runs inside a preview frame (e.g. a chat or
+// file preview). Then fall back to the read-only folder upload, which works everywhere.
+let inFrame = false;
+try { inFrame = window.self !== window.top; } catch (_) { inFrame = true; }
+const canPick = () => !!window.showDirectoryPicker && !inFrame;
+
+async function openFolder() {
+  if (!canPick()) { $("#dirInput").click(); return; }   // fallback: read-only folder upload
+  try {
+    const h = await window.showDirectoryPicker({ id: "registry", mode: "readwrite" });
+    S.root = h; S.folderName = h.name;
+    await loadFromHandle();
+  } catch (e) {
+    if (e && e.name === "AbortError") return;
+    if (e && e.name === "SecurityError") { inFrame = true; $("#dirInput").click(); return; }
+    console.error(e); setStatus("Could not open the folder: " + e.message);
+  }
+}
+
+async function walk(dir, prefix, out) {
+  for await (const [name, h] of dir.entries()) {
+    const p = prefix ? prefix + "/" + name : name;
+    if (h.kind === "directory") { if (!name.startsWith(".")) await walk(h, p, out); }
+    else if (name.toLowerCase().endsWith(".json")) out.set(p, { getFile: () => h.getFile(), handle: h });
+  }
+}
+
+async function loadFromHandle() {
+  setStatus("Reading folder …");
+  S.writable = false;
+  try { S.writable = (await S.root.queryPermission({ mode: "readwrite" })) === "granted"; } catch (_) {}
+  const files = new Map();
+  await walk(S.root, "", files);
+  await ingest(files);
+}
+
+function loadFromInput(fileList) {
+  const files = new Map();
+  let top = "";
+  for (const f of fileList) {
+    const rel = f.webkitRelativePath || f.name;
+    const parts = rel.split("/");
+    if (!top && parts.length > 1) top = parts[0];
+    const p = parts.length > 1 ? parts.slice(1).join("/") : rel;
+    if (p.toLowerCase().endsWith(".json")) files.set(p, { getFile: async () => f });
+  }
+  S.root = null; S.writable = false; S.folderName = top || "folder";
+  return ingest(files);
+}
+
+const readJson = async (entry) => JSON.parse(await (await entry.getFile()).text());
+
+/* Classify files, reuse the index cache for unchanged spec files, parse the rest. */
+async function ingest(files) {
+  S.files = files; S.specCache.clear();
+  const t0 = performance.now();
+  let cache = {};
+  const idxEntry = files.get(INDEX_FILE);
+  if (idxEntry) {
+    try { const idx = await readJson(idxEntry); if (idx.schema === INDEX_SCHEMA && idx.recordFormat === RECORD_FORMAT) cache = idx.files || {}; }
+    catch (e) { console.warn("index.json unreadable, rebuilding", e); }
+  }
+  const records = []; let fromCache = 0, parsed = 0, skipped = 0, errors = [];
+  for (const [path, entry] of files) {
+    const low = path.toLowerCase();
+    if (low === INDEX_FILE || low === LIFECYCLE_FILE || low.endsWith(".canvas.json")) continue;
+    let f; try { f = await entry.getFile(); } catch (e) { errors.push(path); continue; }
+    const c = cache[path];
+    if (c && c.lastModified === f.lastModified && c.size === f.size) { records.push(c); fromCache++; continue; }
+    if (!low.endsWith(".registry.json") && f.size > 2_000_000) { skipped++; continue; }
+    try {
+      const spec = JSON.parse(await f.text());
+      if (spec.schema !== ENTRY_SCHEMA) { skipped++; continue; }
+      records.push(extract(spec, path, f.lastModified, f.size)); parsed++;
+    } catch (e) { errors.push(path); }
+  }
+  // lifecycle record (optional)
+  S.lifecycle = null;
+  const lcEntry = files.get(LIFECYCLE_FILE);
+  if (lcEntry) { try { S.lifecycle = buildLifecycle(await readJson(lcEntry)); } catch (e) { errors.push(LIFECYCLE_FILE); } }
+
+  S.records = records;
+  derive();
+  let saved = "";
+  if (S.writable && (parsed > 0 || Object.keys(cache).length !== records.length)) {
+    try { await writeIndex(); saved = " · index.json updated"; } catch (e) { saved = " · index.json not written (" + e.message + ")"; }
+  }
+  const ms = Math.round(performance.now() - t0);
+  setStatus(`${S.scenarios.size} scenarios from ${records.length} files — ${parsed} read, ${fromCache} from index${skipped ? ", " + skipped + " other JSON skipped" : ""}` +
+    `${S.lifecycle ? " · lifecycle loaded" : ""}${saved}${S.writable ? "" : " · read-only"} · ${ms} ms` +
+    (errors.length ? ` · could not read: ${errors.join(", ")}` : ""));
+  $("#folderName").textContent = "📁 " + S.folderName;
+  $("#reloadBtn").classList.toggle("hidden", !S.root);
+  document.querySelectorAll("#nav button").forEach((b) => (b.disabled = false));
+  go(S.view === "scenario" && !S.scenarios.has(S.param?.id) ? "overview" : S.view, S.param);
+}
+
+async function writeIndex() {
+  const files = {};
+  for (const r of S.records) files[r.path] = r;
+  const body = { schema: INDEX_SCHEMA, schemaVersion: "0.5", recordFormat: RECORD_FORMAT, app: APP_VERSION,
+    builtAt: new Date().toISOString(), note: "Derived cache. Safe to delete; rebuilt from the scenario files.", files };
+  const fh = await S.root.getFileHandle(INDEX_FILE, { create: true });
+  const w = await fh.createWritable(); await w.write(JSON.stringify(body)); await w.close();
+}
+
+/* ============================================================================
+   2. Extract a compact record from one registry entry (this is what index.json keeps)
+   ========================================================================== */
+function extract(spec, path, lastModified, size) {
+  const sc = spec.scenario || {}, base = spec.base || {};
+  const comps = base.components || [], conts = base.containers || [], versions = spec.versions || [];
+  const contById = Object.fromEntries(conts.map((k) => [k.id, k]));
+  const compById = Object.fromEntries(comps.map((c) => [c.id, c]));
+  for (const v of versions) for (const a of v.added || []) compById[a.id] = a;
+  const label = (k) => (k ? (k.asset || k.platform || "") : "");
+
+  const platforms = uniq(conts.filter((k) => k.kind === "iPaaS" || k.kind === "broker").map((k) => k.platform));
+  const assets = uniq(conts.filter((k) => k.kind === "iPaaS" || k.kind === "broker").map((k) => k.asset));
+  const endApps = uniq(conts.filter((k) => k.kind === "endApp" || k.kind === "caller").map((k) => label(k) || "(unlabelled)"));
+
+  const uses = {};                      // ref -> versions used in this scenario
+  const addUse = (ref, ver) => { if (!ref) return; (uses[ref] ||= []); if (!uses[ref].includes(ver)) uses[ref].push(ver); };
+  const components = [];
+  const pushComp = (c, origin) => {
+    const k = contById[c.container];
+    components.push({ ref: c.ref || null, name: c.name || "", type: c.type, version: c.version, origin,
+      platform: k ? k.platform || "" : "", asset: k ? k.asset || "" : "", stage: c.stage || null });
+  };
+  comps.forEach((c) => { addUse(c.ref, c.version); pushComp(c, "base"); });
+
+  const introduced = []; const seen = new Set(); let open = 0, completed = 0;
+  for (const v of versions) {
+    const isOpen = v.status !== "completed";
+    isOpen ? open++ : completed++;
+    const d = v.decision || {};
+    const intro = (ref, from, to, change) => {
+      const key = ref + "@" + to; if (!ref || seen.has(key)) return; seen.add(key);
+      introduced.push({ ref, from, to, change: change || "", option: d.option || "", label: v.label || v.id, status: v.status || "open", when: d.when || "", why: d.why || "" });
+    };
+    for (const ch of v.changed || []) { const c = compById[ch.component]; if (c) { intro(c.ref, ch.from, ch.to, ch.change); if (isOpen) addUse(c.ref, ch.to); } }
+    for (const a of v.added || []) {
+      if (isOpen) { addUse(a.ref, a.version); pushComp(a, v.id); }
+      const baseUse = comps.find((c) => c.ref && c.ref === a.ref);
+      if (baseUse && vnum(a.version) > vnum(baseUse.version)) intro(a.ref, baseUse.version, a.version, "");
+    }
+  }
+
+  const links = uniq([...(base.links || []), ...versions.filter((v) => v.status !== "completed").flatMap((v) => v.addedLinks || [])]
+    .filter((l) => l.fromRef && l.toRef).map((l) => l.fromRef + " > " + l.toRef));
+
+  const warnings = [];
+  for (const v of versions) for (const im of v.impacts || []) {
+    if (im.warning && !im.acknowledged) {
+      const c = compById[im.affected];
+      warnings.push({ ref: c?.ref || null, text: `${c?.name || c?.type || im.affected}: unacknowledged ⚠ (${im.decision || "pending"}) in "${v.label || v.id}"` });
+    }
+  }
+  const missingRefs = conts.filter((k) => !k.ref).length;
+  const unnamed = comps.filter((c) => !c.name).length;
+
+  return {
+    path, lastModified, size,
+    id: sc.id || path, version: Number(sc.version) || 0, name: sc.name || "(unnamed scenario)", description: sc.description || "",
+    author: sc.author || "", exportedAt: sc.exportedAt || "", tags: sc.tags || [], mode: sc.source?.mode || "",
+    canvas: sc.canvas?.file || "", platforms, assets, endApps,
+    decisions: versions.length, openVersions: open, completedVersions: completed,
+    uses, introduced, links, components, warnings, missingRefs, unnamed,
+    acks: (spec.acknowledgements || []).map((a) => a.flag), relations: spec.relations || [],
+  };
+}
+
+function buildLifecycle(doc) {
+  const events = (doc.events || []).slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  const byKey = new Map();
+  for (const e of events) byKey.set(e.ref + "@" + e.version, e);     // latest event wins
+  return { events, byKey };
+}
+
+/* ============================================================================
+   3. Derive scenarios, refs and flags (in memory, from the latest version of each scenario)
+   ========================================================================== */
+function derive() {
+  const sc = new Map();
+  for (const r of S.records) { (sc.get(r.id) || sc.set(r.id, { history: [] }).get(r.id)).history.push(r); }
+  for (const s of sc.values()) { s.history.sort((a, b) => b.version - a.version); s.latest = s.history[0]; }
+  S.scenarios = sc;
+
+  // refs across latest versions
+  const refs = new Map();
+  const R = (ref) => refs.get(ref) || refs.set(ref, { ref, names: new Set(), type: "", versions: new Set(), scenarios: new Set(), intro: [] }).get(ref);
+  for (const s of sc.values()) {
+    const r = s.latest;
+    for (const c of r.components) if (c.ref) { const x = R(c.ref); if (c.name) x.names.add(c.name); x.type ||= c.type; x.versions.add(c.version); x.scenarios.add(r.id); }
+    for (const i of r.introduced) { const x = R(i.ref); x.versions.add(i.to); x.intro.push({ ...i, scenario: r.id }); }
+  }
+  for (const x of refs.values()) x.max = Math.max(0, ...[...x.versions].map(vnum));
+  S.refs = refs;
+
+  for (const s of sc.values()) s.flags = flagsFor(s.latest);
+}
+
+function scenarioName(id) { return S.scenarios.get(id)?.latest.name || id; }
+function refName(ref) { const x = S.refs.get(ref); return x && x.names.size ? [...x.names][0] : ref; }
+
+function flagsFor(r) {
+  const flags = [];
+  const acked = new Set(r.acks);
+  // a) cross-scenario: a newer version of a shared component exists elsewhere
+  for (const [ref, vers] of Object.entries(r.uses)) {
+    const x = S.refs.get(ref); if (!x) continue;
+    const mine = Math.max(...vers.map(vnum));
+    const others = x.intro.filter((i) => i.scenario !== r.id && vnum(i.to) > mine);
+    if (!others.length) continue;
+    const top = others.sort((a, b) => vnum(b.to) - vnum(a.to))[0];
+    const key = `crossImpact:${ref}@${top.to}`;
+    flags.push({ kind: "impact", sev: "amber", ref, key, acked: acked.has(key),
+      text: `${refName(ref)} — ${top.to} introduced in “${scenarioName(top.scenario)}” (${[top.change, top.option].filter(Boolean).join(", ") || "new version"}). This flow is on ${vers.join(", ")}.` });
+  }
+  // b) lifecycle: uses a deprecated or retired version
+  if (S.lifecycle) for (const [ref, vers] of Object.entries(r.uses)) for (const v of vers) {
+    const e = S.lifecycle.byKey.get(ref + "@" + v); if (!e) continue;
+    if (e.stage === "retired") {
+      const key = `retired:${ref}@${v}`;
+      flags.push({ kind: "lifecycle", sev: "red", ref, key, acked: acked.has(key), text: `${refName(ref)} ${v} is retired (${e.date}). Design out of date — remove ${v} in Pattern Bench.` });
+    } else if (e.stage === "deprecated") {
+      const key = `deprecated:${ref}@${v}`;
+      flags.push({ kind: "lifecycle", sev: "amber", ref, key, acked: acked.has(key), text: `${refName(ref)} ${v} is deprecated${e.retireOn ? ", retires on " + e.retireOn : ""}.` });
+    }
+  }
+  // c) open warnings inside the design
+  for (const w of r.warnings) flags.push({ kind: "warning", sev: "amber", ref: w.ref, key: "warn:" + w.text, acked: false, text: w.text });
+  // d) data quality
+  if (r.missingRefs) flags.push({ kind: "data", sev: "grey", ref: null, key: "data:refs", acked: false, text: `${r.missingRefs} container(s) without platform / asset label — those components can't be traced across scenarios.` });
+  return flags;
+}
+const activeFlags = (s) => s.flags.filter((f) => !f.acked && f.sev !== "grey");
+
+/* ============================================================================
+   4. Views
+   ========================================================================== */
+function go(view, param) {
+  S.view = view; S.param = param || null;
+  document.querySelectorAll("#nav button").forEach((b) => b.classList.toggle("on", b.dataset.view === view));
+  const v = $("#view");
+  if (!S.records.length && !S.folderName) { v.innerHTML = emptyView(); return; }
+  if (view === "list") v.innerHTML = listView();
+  else if (view === "components") v.innerHTML = componentsView();
+  else if (view === "scenario") { v.innerHTML = `<div class="panel">Loading …</div>`; scenarioView(param).then((h) => { if (S.view === "scenario") v.innerHTML = h; }); }
+  else v.innerHTML = overviewView();
+  window.scrollTo(0, 0);
+}
+
+function emptyView() {
+  const fs = canPick();
+  return `<div class="empty">
+    ${inFrame ? `<p class="note" style="background:var(--amber-bg);color:var(--amber);padding:8px 12px;border-radius:6px;display:inline-block">
+      Running inside a preview window, so the folder opens read-only (no index cache). For the full app, download the file and open it directly in Chrome or Edge.</p>` : ""}
+    <h2>Open your registry folder</h2>
+    <p>Pick the folder that holds the scenario files exported from Pattern Bench (<code>*.registry.json</code>, with their <code>*.canvas.json</code>). Sub-folders are read too.</p>
+    <p class="note">${fs ? "The app keeps a small <code>index.json</code> in that folder as a cache, so only changed files are read next time. The browser asks once for permission to save it."
+      : "This browser can't write to folders, so the app opens it read-only (no index cache). Chrome or Edge give the full experience."}</p>
+    <button class="btn" data-act="open">Open registry folder</button>
+  </div>`;
+}
+
+function overviewView() {
+  const all = [...S.scenarios.values()];
+  if (!all.length) return `<div class="panel">No registry entries found in <b>${esc(S.folderName)}</b>. Files must use schema <code>${ENTRY_SCHEMA}</code>.</div>`;
+  const attention = all.filter((s) => activeFlags(s).length).sort((a, b) => activeFlags(b).length - activeFlags(a).length);
+  const recent = all.slice().sort((a, b) => String(b.latest.exportedAt).localeCompare(String(a.latest.exportedAt))).slice(0, 8);
+  const openVers = all.reduce((n, s) => n + s.latest.openVersions, 0);
+  const shared = [...S.refs.values()].filter((x) => x.scenarios.size > 1).length;
+  const retire = S.lifecycle ? S.lifecycle.events.filter((e) => S.lifecycle.byKey.get(e.ref + "@" + e.version) === e && e.stage === "deprecated")
+    .sort((a, b) => String(a.retireOn || "9").localeCompare(String(b.retireOn || "9"))) : [];
+  return `
+  <div class="grid g4" style="margin-bottom:16px">
+    <div class="tile"><div class="num">${all.length}</div><div class="lbl">Scenarios (end-to-end flows)</div></div>
+    <div class="tile"><div class="num">${S.refs.size}</div><div class="lbl">Components · ${shared} shared by several flows</div></div>
+    <div class="tile"><div class="num">${openVers}</div><div class="lbl">Open versioning decisions</div></div>
+    <div class="tile ${attention.length ? "warn" : ""}"><div class="num">${attention.length}</div><div class="lbl">Scenarios need attention</div></div>
+  </div>
+  <div class="grid g2">
+    <div class="panel"><h2>Needs attention <span class="count">(${attention.length})</span></h2>
+      ${attention.length ? attention.map((s) => `<div class="list-item" data-open="${esc(s.latest.id)}">
+          <div class="t">${esc(s.latest.name)} <span class="chip amber">⚠ ${activeFlags(s).length}</span></div>
+          <div class="s">${esc(activeFlags(s)[0].text)}</div></div>`).join("") : `<div class="muted">Nothing flagged.</div>`}
+    </div>
+    <div class="panel"><h2>Recently changed</h2>
+      ${recent.map((s) => `<div class="list-item" data-open="${esc(s.latest.id)}">
+          <div class="t">${esc(s.latest.name)} <span class="chip">v${s.latest.version}</span></div>
+          <div class="s">${esc(fmtDate(s.latest.exportedAt))}${s.latest.author ? " · " + esc(s.latest.author) : ""} · ${esc(s.latest.platforms.join(", "))}</div></div>`).join("")}
+    </div>
+  </div>
+  ${S.lifecycle ? `<div class="panel"><h2>Upcoming retirements <span class="count">(from lifecycle.json)</span></h2>
+    ${retire.length ? `<table><tr><th>Component</th><th>Version</th><th>Retires on</th><th>Still used by</th></tr>
+      ${retire.map((e) => { const users = [...S.scenarios.values()].filter((s) => (s.latest.uses[e.ref] || []).includes(e.version));
+        return `<tr><td>${esc(refName(e.ref))}<div class="mono muted">${esc(e.ref)}</div></td><td>${esc(e.version)}</td><td class="nowrap">${esc(e.retireOn || "—")}</td>
+        <td>${users.map((s) => `<span class="chip amber" data-open="${esc(s.latest.id)}" style="cursor:pointer">${esc(s.latest.name)}</span>`).join("") || '<span class="muted">none</span>'}</td></tr>`; }).join("")}</table>`
+      : `<div class="muted">No deprecated versions.</div>`}</div>` : ""}
+  <div class="note">Overview shows a summary only. Use <b>All scenarios</b> for the full directory.</div>`;
+}
+
+/* ---- directory table ---- */
+const LIST_COLS = [
+  { key: "name", label: "Name", get: (r) => r.name.toLowerCase() },
+  { key: "platforms", label: "Platforms", get: (r) => r.platforms.join(",").toLowerCase() },
+  { key: "assets", label: "Assets", get: (r) => r.assets.join(",").toLowerCase() },
+  { key: "endApps", label: "End applications", get: (r) => r.endApps.join(",").toLowerCase() },
+  { key: "version", label: "Version", get: (r) => r.version },
+  { key: "decisions", label: "Decisions", get: (r) => r.decisions },
+  { key: "flags", label: "Flags", get: (r, s) => activeFlags(s).length },
+  { key: "changed", label: "Last changed", get: (r) => r.exportedAt },
+  { key: "author", label: "Author", get: (r) => r.author.toLowerCase() },
+  { key: "tags", label: "Tags", get: (r) => r.tags.join(",").toLowerCase() },
+];
+function listRows() {
+  const q = S.listQuery.trim().toLowerCase();
+  let rows = [...S.scenarios.values()];
+  if (q) rows = rows.filter((s) => { const r = s.latest;
+    return [r.name, r.id, r.author, r.description, ...r.platforms, ...r.assets, ...r.endApps, ...r.tags, ...r.components.map((c) => c.name + " " + (c.ref || ""))].join(" ").toLowerCase().includes(q); });
+  if (S.listFlagsOnly) rows = rows.filter((s) => activeFlags(s).length);
+  const col = LIST_COLS.find((c) => c.key === S.listSort.key) || LIST_COLS[0];
+  rows.sort((a, b) => { const x = col.get(a.latest, a), y = col.get(b.latest, b); return (x > y ? 1 : x < y ? -1 : 0) * S.listSort.dir; });
+  return rows;
+}
+function listView() {
+  return `<div class="panel">
+    <div class="toolbar">
+      <input type="search" id="listSearch" placeholder="Search name, platform, asset, end application, component, tag …" value="${esc(S.listQuery)}">
+      <label><input type="checkbox" id="flagsOnly" ${S.listFlagsOnly ? "checked" : ""}> only with flags</label>
+    </div>
+    <div id="listTable">${listTable()}</div>
+  </div>`;
+}
+function listTable() {
+  const rows = listRows();
+  const arrow = (k) => (S.listSort.key === k ? (S.listSort.dir > 0 ? " ▲" : " ▼") : "");
+  return `<div class="note" style="margin-bottom:6px">${rows.length} of ${S.scenarios.size} scenarios · click a column to sort · click a row to open</div>
+  <table><thead><tr>${LIST_COLS.map((c) => `<th class="sort" data-sort="${c.key}">${c.label}${arrow(c.key)}</th>`).join("")}</tr></thead>
+  <tbody>${rows.map((s) => { const r = s.latest, n = activeFlags(s).length; return `<tr class="row" data-open="${esc(r.id)}">
+    <td><b>${esc(r.name)}</b><div class="mono muted">${esc(r.id)}</div></td>
+    <td>${chips(r.platforms)}</td><td>${chips(r.assets)}</td><td>${chips(r.endApps)}</td>
+    <td class="nowrap">v${r.version}</td>
+    <td>${r.decisions}${r.openVersions ? ` <span class="chip violet">${r.openVersions} open</span>` : ""}</td>
+    <td>${n ? `<span class="chip amber">⚠ ${n}</span>` : '<span class="muted">—</span>'}</td>
+    <td class="nowrap">${esc(fmtDate(r.exportedAt))}</td><td>${esc(r.author)}</td><td>${chips(r.tags)}</td></tr>`; }).join("")}
+  </tbody></table>`;
+}
+
+/* ---- components (by ref) ---- */
+function componentsView() {
+  const q = S.compQuery.trim().toLowerCase();
+  let list = [...S.refs.values()];
+  if (q) list = list.filter((x) => (x.ref + " " + [...x.names].join(" ") + " " + x.type).toLowerCase().includes(q));
+  list.sort((a, b) => b.scenarios.size - a.scenarios.size || a.ref.localeCompare(b.ref));
+  const lc = (ref, v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
+  return `<div class="panel">
+    <div class="toolbar"><input type="search" id="compSearch" placeholder="Search component name, ref or type …" value="${esc(S.compQuery)}"></div>
+    <div class="note" style="margin-bottom:6px">${list.length} components (one row per <code>ref</code>, across the latest version of every scenario)</div>
+    <table><thead><tr><th>Component</th><th>Type</th><th>Versions in the registry</th><th>Used by</th></tr></thead><tbody>
+    ${list.map((x) => `<tr><td><b>${esc([...x.names].join(" / ") || "(unnamed)")}</b><div class="mono muted">${esc(x.ref)}</div></td>
+      <td>${esc(x.type)}</td>
+      <td>${[...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>${stageChip(lc(x.ref, v))}`).join(" ")}</td>
+      <td>${[...x.scenarios].map((id) => { const users = S.scenarios.get(id); const vers = users.latest.uses[x.ref] || [];
+        return `<span class="chip ${Math.max(...vers.map(vnum)) < x.max ? "amber" : ""}" data-open="${esc(id)}" style="cursor:pointer">${esc(users.latest.name)} · ${esc(vers.join("+"))}</span>`; }).join("")}</td></tr>`).join("")}
+    </tbody></table></div>`;
+}
+
+/* ---- scenario detail ---- */
+async function loadSpec(path) {
+  if (S.specCache.has(path)) return S.specCache.get(path);
+  const e = S.files.get(path); if (!e) throw new Error("file not found: " + path);
+  const spec = await readJson(e); S.specCache.set(path, spec); return spec;
+}
+
+async function scenarioView(param) {
+  const s = S.scenarios.get(param.id); if (!s) return `<div class="panel">Scenario not found.</div>`;
+  const rec = param.version ? s.history.find((h) => h.version === param.version) || s.latest : s.latest;
+  const isLatest = rec === s.latest;
+  let spec;
+  try { spec = await loadSpec(rec.path); } catch (e) { return `<div class="panel">Could not read <code>${esc(rec.path)}</code>: ${esc(e.message)}</div>`; }
+  const flags = isLatest ? s.flags : [];
+  const flagRefs = new Map(); for (const f of flags) if (f.ref && !f.acked) flagRefs.set(f.ref, f.sev);
+  const compById = {}; for (const c of spec.base?.components || []) compById[c.id] = c;
+  for (const v of spec.versions || []) for (const a of v.added || []) compById[a.id] = a;
+  const cname = (id) => { const c = compById[id]; return c ? (c.name || c.type) : id; };
+
+  // overlap with other scenarios (latest versions)
+  const overlap = [];
+  for (const o of S.scenarios.values()) {
+    if (o.latest.id === rec.id) continue;
+    const sharedRefs = Object.keys(rec.uses).filter((r) => o.latest.uses[r]);
+    const sharedLinks = rec.links.filter((l) => o.latest.links.includes(l));
+    if (sharedRefs.length) overlap.push({ s: o.latest, sharedRefs, sharedLinks });
+  }
+
+  return `
+  <button class="back" data-act="back">← Back</button>
+  <div class="panel">
+    <div class="detail-head">
+      <div style="flex:1">
+        <h2>${esc(rec.name)} <span class="chip">v${rec.version}</span>${isLatest ? "" : ' <span class="chip amber">older version</span>'}</h2>
+        <div class="meta"><span class="mono">${esc(rec.id)}</span> · exported ${esc(fmtDate(rec.exportedAt))}${rec.author ? " by " + esc(rec.author) : ""}
+          ${rec.mode ? " · " + esc(rec.mode) + " flow" : ""} · ${chips(rec.tags)}</div>
+        ${rec.description ? `<p style="margin:8px 0 0">${esc(rec.description)}</p>` : ""}
+      </div>
+      <div style="text-align:right">
+        <button class="btn small" data-act="markers" data-id="${esc(rec.id)}" data-v="${rec.version}" title="Marker list for Pattern Bench (schema 0.5); the Pattern Bench marker import is not built yet">Download marker list</button>
+        <div class="note" style="margin-top:6px">Canvas: <span class="mono">${esc(rec.canvas || "—")}</span>${rec.canvas && !S.files.has(dirOf(rec.path) + rec.canvas) ? ' <span class="chip red">missing</span>' : ""}</div>
+      </div>
+    </div>
+  </div>
+
+  ${flags.length ? `<div class="panel"><h2>Flags <span class="count">(${flags.length})</span></h2>
+    ${flags.map((f) => `<div class="flag ${f.acked ? "grey" : f.sev === "red" ? "red" : f.sev === "grey" ? "grey" : ""}">
+      <span class="ico">${f.acked ? "✓" : f.sev === "grey" ? "i" : "⚠"}</span>
+      <div><div class="k">${esc(f.kind)}${f.acked ? " · acknowledged" : ""}</div>${esc(f.text)}</div></div>`).join("")}
+    <div class="note">Acting on a flag = re-export the scenario from Pattern Bench (same id, version + 1). Acknowledgements are stored in the scenario's own file.</div></div>` : ""}
+
+  <div class="panel"><h2>Flow</h2>
+    <div class="diagram">${diagramSvg(spec, flagRefs)}</div>
+    <div class="legend"><span><i style="background:#fff;border:1.5px solid #8a94a6"></i>base flow</span>
+      <span><i style="background:var(--violet-bg);border:1.5px solid var(--violet)"></i>added by a version</span>
+      <span><i style="background:var(--amber-bg);border:1.5px solid var(--amber)"></i>flagged</span>
+      <span><i style="background:var(--red-bg);border:1.5px solid var(--red)"></i>retired</span>
+      <span>– – dotted line = retired connection</span></div>
+    <div class="note" style="margin-top:6px">Simple view generated from the registry entry. The full diagram lives in Pattern Bench (canvas file above).</div>
+  </div>
+
+  <div class="grid g3">
+    <div>
+      <div class="panel"><h2>Versioning decisions <span class="count">(${(spec.versions || []).length})</span></h2>
+        ${(spec.versions || []).map((v) => { const d = v.decision || {}; return `<div class="ver">
+          <div class="vt">${esc(v.label || v.id)} ${v.status === "completed" ? '<span class="chip done">completed</span>' : '<span class="chip violet">open</span>'}
+            ${d.option ? `<span class="chip">${esc(d.option)}</span>` : ""}</div>
+          <dl>
+            <dt>On</dt><dd>${esc(cname(v.appliesTo?.component))}${v.appliesTo?.side ? " · " + esc(v.appliesTo.side) : ""}${v.appliesTo?.connector ? " · via " + esc(v.appliesTo.connector) : ""}</dd>
+            ${d.what ? `<dt>What</dt><dd>${esc(d.what)}</dd>` : ""}
+            <dt>Why</dt><dd>${d.why ? esc(d.why) : '<span class="muted">not given</span>'}</dd>
+            ${d.who || d.when ? `<dt>Who / when</dt><dd>${esc(d.who)} ${esc(d.when)}</dd>` : ""}
+            ${(v.changed || []).length ? `<dt>Changed</dt><dd>${v.changed.map((c) => `${esc(cname(c.component))} ${esc(c.from)} → ${esc(c.to)} <span class="chip ${c.change === "breaking" ? "amber" : ""}">${c.change === "nonBreaking" ? "Δ non-breaking" : esc(c.change)}</span>`).join("<br>")}</dd>` : ""}
+            ${(v.added || []).length ? `<dt>Added</dt><dd>${v.added.map((a) => `${esc(a.name || a.type)} ${esc(a.version)} ${stageChip(a.stage)}`).join("<br>")}</dd>` : ""}
+            ${(v.impacts || []).length ? `<dt>Impacts</dt><dd>${v.impacts.map((im) => `${esc(cname(im.affected))}: ${esc(im.decision)}${im.codeChange ? " · code change" : ""}${im.warning ? (im.acknowledged ? ' <span class="chip">⚠ acknowledged</span>' : ' <span class="chip amber">⚠</span>') : ""}${im.note ? " — " + esc(im.note) : ""}`).join("<br>")}</dd>` : ""}
+            ${(v.retired || []).length ? `<dt>Retired</dt><dd>${v.retired.map((x) => `${esc(x.ref)} on ${esc(x.on)}`).join("<br>")}</dd>` : ""}
+          </dl></div>`; }).join("") || '<div class="muted">No versioning decisions — base flow only.</div>'}
+      </div>
+      <div class="panel"><h2>Components</h2>
+        <table><tr><th>Name</th><th>Type</th><th>Version</th><th>Platform / asset</th><th>Lifecycle</th></tr>
+        ${rec.components.map((c) => `<tr><td>${esc(c.name || "(unnamed)")}<div class="mono muted">${esc(c.ref || "no ref")}</div></td><td>${esc(c.type)}</td>
+          <td>${esc(c.version)}${c.origin !== "base" ? ' <span class="chip violet">added</span>' : ""}</td><td>${esc([c.platform, c.asset].filter(Boolean).join(" / "))}</td>
+          <td>${stageChip(S.lifecycle?.byKey.get(c.ref + "@" + c.version)?.stage || c.stage)}</td></tr>`).join("")}</table>
+      </div>
+    </div>
+    <div>
+      <div class="panel"><h2>Overlap with other flows <span class="count">(${overlap.length})</span></h2>
+        ${overlap.map((o) => `<div class="list-item" data-open="${esc(o.s.id)}"><div class="t">${esc(o.s.name)}</div>
+          <div class="s">shares ${o.sharedRefs.map((r) => esc(refName(r))).join(", ")}${o.sharedLinks.length ? ` · ${o.sharedLinks.length} shared connection(s)` : ""}</div></div>`).join("") || '<div class="muted">No shared components.</div>'}
+      </div>
+      <div class="panel"><h2>Relations</h2>
+        ${rec.relations.map((r) => `<div class="list-item" ${S.scenarios.has(r.scenarioId) ? `data-open="${esc(r.scenarioId)}"` : ""}><div class="t">${esc(r.type)}</div>
+          <div class="s">${esc(scenarioName(r.scenarioId))} ${r.version ? "v" + esc(r.version) : ""}</div></div>`).join("") || '<div class="muted">None declared.</div>'}
+      </div>
+      <div class="panel hist"><h2>History</h2>
+        ${s.history.map((h) => h === rec ? `<div><b>v${h.version}</b> · ${esc(fmtDate(h.exportedAt))} (shown)</div>`
+          : `<div><a data-open="${esc(h.id)}" data-v="${h.version}">v${h.version}</a> · ${esc(fmtDate(h.exportedAt))}</div>`).join("")}
+      </div>
+    </div>
+  </div>`;
+}
+const dirOf = (p) => (p.includes("/") ? p.slice(0, p.lastIndexOf("/") + 1) : "");
+
+/* ---- simple flow diagram from the registry entry ---- */
+function diagramSvg(spec, flagRefs) {
+  const base = spec.base || {}, conts = Object.fromEntries((base.containers || []).map((k) => [k.id, k]));
+  const nodes = new Map(); const edges = [];
+  for (const c of base.components || []) nodes.set(c.id, { ...c, added: false });
+  const openVers = (spec.versions || []).filter((v) => v.status !== "completed");
+  const changedTo = {};
+  for (const v of openVers) {
+    for (const ch of v.changed || []) changedTo[ch.component] = ch;
+    for (const a of v.added || []) nodes.set(a.id, { ...a, added: true });
+  }
+  for (const l of base.links || []) edges.push({ ...l, added: false });
+  for (const v of openVers) for (const l of v.addedLinks || []) edges.push({ ...l, added: true });
+  const valid = edges.filter((e) => nodes.has(e.from) && nodes.has(e.to));
+  // longest-path layering
+  const layer = new Map([...nodes.keys()].map((k) => [k, 0]));
+  for (let i = 0; i < nodes.size; i++) for (const e of valid) if (layer.get(e.to) < layer.get(e.from) + 1) layer.set(e.to, layer.get(e.from) + 1);
+  const cols = new Map();
+  for (const [id, n] of nodes) { const L = layer.get(id); (cols.get(L) || cols.set(L, []).get(L)).push(id); }
+  // base nodes first in each column, added below
+  for (const ids of cols.values()) ids.sort((a, b) => (nodes.get(a).added - nodes.get(b).added));
+  const W = 150, H = 62, GX = 70, GY = 34, PX = 24, PY = 24;
+  const pos = {};
+  for (const [L, ids] of cols) ids.forEach((id, i) => (pos[id] = { x: PX + L * (W + GX), y: PY + i * (H + GY) }));
+  const maxL = Math.max(0, ...cols.keys()), maxR = Math.max(1, ...[...cols.values()].map((a) => a.length));
+  const width = PX * 2 + (maxL + 1) * W + maxL * GX, height = PY * 2 + maxR * H + (maxR - 1) * GY;
+  const lc = (n) => S.lifecycle?.byKey.get(n.ref + "@" + n.version)?.stage;
+  const icon = { api: "⇄", process: "⬡", topic: "◎", queue: "≡", file: "▤" };
+
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" font-family="${getComputedStyle(document.body).fontFamily.replace(/"/g, "'")}">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8a94a6"/></marker>
+    <marker id="ahv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6b4fd8"/></marker></defs>`;
+  for (const e of valid) {
+    const a = pos[e.from], b = pos[e.to];
+    const x1 = a.x + W, y1 = a.y + H / 2, x2 = b.x, y2 = b.y + H / 2;
+    let d;
+    if (x2 > x1) { const mx = x1 + (x2 - x1) / 2; d = `M${x1} ${y1} H${mx} V${y2} H${x2 - 2}`; }
+    else { const ty = Math.max(a.y, b.y) + H + GY / 2; d = `M${a.x + W / 2} ${a.y + H} V${ty} H${b.x + W / 2} V${b.y + H + 2}`; }
+    const col = e.added ? "#6b4fd8" : "#8a94a6";
+    svg += `<path d="${d}" fill="none" stroke="${col}" stroke-width="1.6" ${e.line === "dotted" ? 'stroke-dasharray="5 4"' : ""} marker-end="url(#${e.added ? "ahv" : "ah"})"/>`;
+  }
+  for (const [id, n] of nodes) {
+    const p = pos[id], k = conts[n.container] || {};
+    const stage = lc(n), sev = flagRefs.get(n.ref);
+    let fill = "#ffffff", stroke = "#8a94a6";
+    if (n.added) { fill = "#efebfd"; stroke = "#6b4fd8"; }
+    if (sev === "amber") { fill = "#fff3dc"; stroke = "#b86e00"; }
+    if (stage === "retired" || sev === "red") { fill = "#fdecea"; stroke = "#b42318"; }
+    const ch = changedTo[id];
+    const ver = ch ? `${ch.from}→${ch.to}` : n.version || "";
+    const nm = (n.name || "(unnamed)").slice(0, 22), sub = [k.platform, k.asset].filter(Boolean).join(" / ").slice(0, 26) || n.type;
+    svg += `<g><title>${esc((n.ref || "no ref") + (stage ? " · " + (STAGE_LABEL[stage] || stage) : ""))}</title>
+      <rect x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="${sev || n.added ? 1.8 : 1.2}" ${stage === "deprecated" ? 'stroke-dasharray="4 3"' : ""}/>
+      <text x="${p.x + 10}" y="${p.y + 18}" font-size="10" fill="#667085">${esc(icon[n.type] || "")} ${esc(n.type)}</text>
+      <text x="${p.x + W - 10}" y="${p.y + 18}" font-size="10" text-anchor="end" fill="${ch ? "#6b4fd8" : "#667085"}" font-weight="${ch ? 700 : 400}">${esc(ver)}</text>
+      <text x="${p.x + 10}" y="${p.y + 36}" font-size="12.5" font-weight="600" fill="#1d2433">${esc(nm)}</text>
+      <text x="${p.x + 10}" y="${p.y + 52}" font-size="10.5" fill="#667085">${esc(sub)}</text>
+      ${sev ? `<text x="${p.x + W - 8}" y="${p.y + 52}" font-size="13" text-anchor="end" fill="${stroke}">⚠</text>` : ""}</g>`;
+  }
+  return svg + "</svg>";
+}
+
+/* ---- marker list (registry → Pattern Bench), schema 0.5 ---- */
+async function downloadMarkers(id, version) {
+  const s = S.scenarios.get(id); const rec = s.history.find((h) => h.version === version) || s.latest;
+  const spec = await loadSpec(rec.path);
+  const idsByRef = {};
+  for (const c of spec.base?.components || []) if (c.ref) (idsByRef[c.ref] ||= []).push(c.id);
+  const markers = [];
+  for (const f of rec === s.latest ? s.flags : []) {
+    if (!f.ref || f.acked) continue;
+    for (const cid of idsByRef[f.ref] || []) markers.push({ target: { component: cid }, kind: f.kind === "lifecycle" && f.sev === "red" ? "retired" : f.kind === "impact" ? "impact" : "flag", text: f.text });
+  }
+  const body = { schema: "pattern-bench.markers", schemaVersion: "0.5", scenarioId: rec.id, version: rec.version, markers, origin: "registry" };
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(body, null, 2)], { type: "application/json" }));
+  a.download = `${rec.id}.v${rec.version}.markers.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ============================================================================
+   5. Events
+   ========================================================================== */
+document.addEventListener("click", (ev) => {
+  const t = ev.target.closest("[data-open],[data-act],[data-view],[data-sort]");
+  if (!t) return;
+  if (t.dataset.view && !t.disabled) return go(t.dataset.view);
+  if (t.dataset.sort) {
+    const k = t.dataset.sort;
+    S.listSort = S.listSort.key === k ? { key: k, dir: -S.listSort.dir } : { key: k, dir: k === "changed" || k === "flags" || k === "decisions" || k === "version" ? -1 : 1 };
+    $("#listTable").innerHTML = listTable(); return;
+  }
+  if (t.dataset.open) { S.prev = { view: S.view, param: S.param }; return go("scenario", { id: t.dataset.open, version: t.dataset.v ? Number(t.dataset.v) : null }); }
+  const act = t.dataset.act;
+  if (act === "open") openFolder();
+  if (act === "back") { const p = S.prev && S.prev.view !== "scenario" ? S.prev : { view: "list" }; go(p.view, p.param); }
+  if (act === "markers") downloadMarkers(t.dataset.id, Number(t.dataset.v));
+});
+document.addEventListener("input", (ev) => {
+  if (ev.target.id === "listSearch") { S.listQuery = ev.target.value; $("#listTable").innerHTML = listTable(); }
+  if (ev.target.id === "flagsOnly") { S.listFlagsOnly = ev.target.checked; $("#listTable").innerHTML = listTable(); }
+  if (ev.target.id === "compSearch") { S.compQuery = ev.target.value; const pos = ev.target.selectionStart; $("#view").innerHTML = componentsView(); const i = $("#compSearch"); i.focus(); i.setSelectionRange(pos, pos); }
+});
+$("#openBtn").addEventListener("click", openFolder);
+$("#reloadBtn").addEventListener("click", () => S.root && loadFromHandle());
+$("#dirInput").addEventListener("change", (e) => e.target.files.length && loadFromInput(e.target.files));
+
+// test / automation hook: load from an array of {path, text, lastModified}
+window.__registryLoad = (items, name = "test") => {
+  const files = new Map(items.map((it) => [it.path, { getFile: async () => new File([it.text], it.path.split("/").pop(), { lastModified: it.lastModified || 1 }) }]));
+  S.root = null; S.writable = false; S.folderName = name; return ingest(files);
+};
+go("overview");
+</script>
+</body>
+</html>
