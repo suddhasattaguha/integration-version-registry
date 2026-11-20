@@ -1,0 +1,67 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-api",
+      "label": "Consume-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SAP EU",
+      "process": "material change"
+    },
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "Material-Prc"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Master-Data"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "name": "PIM",
+      "process": "product update"
+    }
+  ],
+  "caller": true,
+  "mode": "single",
+  "branches": [],
+  "callers": [],
+  "branchVersions": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "smp-material-pim",
+    "version": 1,
+    "name": "Material master to PIM",
+    "why": []
+  },
+  "savedAt": "2026-11-05T10:00:00Z"
+}

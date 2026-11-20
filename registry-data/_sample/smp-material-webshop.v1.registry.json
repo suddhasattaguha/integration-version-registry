@@ -16,10 +16,48 @@
     "tags": [
       "sample",
       "master data"
-    ]
+    ],
+    "canvas": {
+      "file": "smp-material-webshop.v1.canvas.json"
+    }
   },
   "base": {
-    "blocks": [],
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-publish",
+        "label": "Process-to-Publish",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 0,
+        "order": 2,
+        "components": [
+          "c3",
+          "c4",
+          "c5"
+        ]
+      }
+    ],
     "components": [
       {
         "id": "c1",

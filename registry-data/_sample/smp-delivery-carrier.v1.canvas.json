@@ -1,0 +1,67 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-file",
+      "label": "Consume-to-File"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SAP EU",
+      "process": "outbound delivery"
+    },
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "Delivery-Prc"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Deliveries"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "name": "Carrier SFTP",
+      "process": "delivery notice"
+    }
+  ],
+  "caller": true,
+  "mode": "single",
+  "branches": [],
+  "callers": [],
+  "branchVersions": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "smp-delivery-carrier",
+    "version": 1,
+    "name": "Delivery notice to carrier (SFTP)",
+    "why": []
+  },
+  "savedAt": "2026-11-08T11:00:00Z"
+}

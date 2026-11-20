@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Integration Registry — draft 0.3</title>
+<title>Integration Registry — draft 0.4</title>
 <style>
   :root {
     --bg: #f5f6f8; --panel: #ffffff; --ink: #1d2433; --muted: #667085; --line: #e3e6ec;
@@ -229,12 +229,61 @@
   .selcard { background: #fbfcfe; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; align-self: start; position: sticky; top: 100px; }
   @media (max-width: 760px) { .band { flex-wrap: wrap; gap: 14px; padding: 18px; } .band .big { font-size: 38px; min-width: 0; } .apill, .clear, .explore { margin-left: 0; } .band .deco { display: none; } }
   @media (prefers-reduced-motion: reduce) { .home, .band, .band::after, .xwrap, .xin { transition: none !important; animation: none !important; } .world.enter tr.r, .world.enter .world-body > * { animation: none !important; } .apill .ico { animation: none; } }
+  /* ===== draft 0.4 ===== */
+  .explorer .xn[data-node] { cursor: pointer; }
+  .explorer .xn { transform-box: fill-box; transform-origin: center; transition: transform .3s cubic-bezier(.16,1,.3,1), filter .3s; }
+  .explorer .xn[data-node]:hover { transform: translateY(-2px) scale(1.035); filter: drop-shadow(0 8px 10px rgba(16,24,40,.22)); }
+  .explorer .xn[data-node]:hover rect:first-of-type, .explorer .xn[data-mapsel]:hover rect:first-of-type { stroke: #0f7c7a; stroke-width: 2; }
+  .explorer .xn.shared rect:first-of-type { stroke: #3346c8; stroke-width: 1.4; }
+  .explorer .xn.hold rect:first-of-type { stroke: #0f7c7a; stroke-width: 3; stroke-dasharray: 600; stroke-dashoffset: 600; animation: holdRing .65s linear forwards; }
+  @keyframes holdRing { to { stroke-dashoffset: 0; } }
+  .explorer .xh { cursor: pointer; } .explorer .xh text { font-size: 11.5px; font-weight: 600; fill: #475467; } .explorer .xh:hover text { fill: #0f7c7a; }
+  .xcrumbs { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 13px; margin-bottom: 6px; }
+  .xcrumbs .crumb { color: var(--teal); cursor: pointer; } .xcrumbs .crumb:hover { text-decoration: underline; }
+  .xcrumbs .sep { color: var(--muted); }
+  .xkind { font-size: 10.5px; text-transform: uppercase; letter-spacing: .5px; padding: 2px 8px; border-radius: 8px; color: #fff; background: #0f7c7a; }
+  .xkind.c { background: #3346c8; }
+  .xhint { margin-left: auto; font-size: 11.5px; color: var(--muted); }
+  .xcell { width: 168px; }
+  .xbtn { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; border-radius: 12px; cursor: pointer; font: inherit; font-size: 12.5px; font-weight: 600; color: #0b5d5b;
+    background: linear-gradient(150deg, #ffffff 0%, #e6f4f3 100%); border: 1px solid rgba(15,124,122,.28);
+    box-shadow: inset 0 1px 0 #fff, 0 6px 14px -8px rgba(15,124,122,.6), 0 1px 2px rgba(16,24,40,.06); transition: transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s; }
+  .xbtn:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 #fff, 0 12px 20px -10px rgba(15,124,122,.7); }
+  .xbtn .strip { width: 96px; height: 18px; }
+  tr.r.open .xbtn { background: linear-gradient(150deg, #19b3ad, #0a5f5c); color: #fff; border-color: transparent; }
+  tr.r.open .xbtn .strip line { stroke: rgba(255,255,255,.6); } tr.r.open .xbtn .strip .me { fill: #fff; }
+  tr.r.pulse td { animation: rowPulse 1.6s ease-out 2; }
+  @keyframes rowPulse { 0% { box-shadow: inset 0 0 0 2px rgba(15,124,122,.6); } 100% { box-shadow: inset 0 0 0 2px rgba(15,124,122,0); } }
+  .dive { position: fixed; z-index: 70; pointer-events: none; display: grid; place-items: center; background: linear-gradient(140deg, #fff, #eef3fa); border: 1px solid rgba(16,24,40,.12);
+    box-shadow: 0 40px 80px -30px rgba(16,24,40,.55); font-weight: 600; color: #101828; transform-style: preserve-3d; }
+  .world { transition: transform .6s cubic-bezier(.16,1,.3,1), opacity .5s, filter .5s; transform-origin: 50% 30%; }
+  .world.sink { transform: scale(.94); opacity: .15; filter: blur(2px) saturate(.3); }
+  .row-morph { display: flex; align-items: flex-start; padding: 22px 26px; } .rm-title { font-size: 18px; font-weight: 650; color: #101828; }
+  .sec { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin: 12px 0 4px; }
+  .pbwrap { background: radial-gradient(circle at 1px 1px, #e3e7ee 1px, transparent 1.2px) 0 0 / 18px 18px, #fbfcfe; padding: 6px; }
+  .pbcanvas { display: block; width: 100%; min-width: 640px; height: auto; font-family: var(--font); }
+  .pbb > rect:first-child { fill: #ffffff; stroke: #c9cfd9; stroke-width: 1.4; filter: drop-shadow(0 6px 8px rgba(16,24,40,.12)); }
+  .pbb.ver > rect:first-child { fill: #f5f2fe; stroke: #6b4fd8; stroke-width: 1.8; }
+  .pbb.attn > rect:first-child { fill: #fff8ea; stroke: #f5a524; stroke-width: 2; }
+  .pbl { font-size: 11.5px; fill: #475467; }
+  .pbb .vb { fill: #6b4fd8; } .pbb .vt { fill: #fff; font-size: 11px; font-weight: 700; }
+  .pbb .db { fill: #0f7c7a; } .pbb .dt { fill: #fff; font-size: 12px; font-weight: 700; }
+  .pbb .ab { fill: #f5a524; } .pbb .at { fill: #fff; font-size: 13px; font-weight: 800; }
+  .pbc rect { fill: #e9f6f5; stroke: #0f7c7a; stroke-dasharray: 4 3; } .pbc text { font-size: 10.5px; fill: #0b5d5b; }
+  .pbc.ext rect { fill: #f1f3f6; stroke: #8a94a6; stroke-dasharray: none; } .pbc.ext text { fill: #344054; }
+  .pbcall rect { fill: #f1f3f6; stroke: #8a94a6; } .pbcall text { font-size: 11.5px; fill: #1d2433; } .pbcall text.sm { font-size: 10px; fill: #667085; }
+  .vlane { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .vcard { min-width: 120px; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: linear-gradient(150deg, #fff, #f5f7fb); box-shadow: 0 6px 14px -10px rgba(16,24,40,.35); }
+  .vcard .vn { font-size: 20px; font-weight: 700; letter-spacing: -.5px; margin-bottom: 4px; }
+  .vcard.new { border-color: rgba(107,79,216,.45); background: linear-gradient(150deg, #fff, #f2eefe); }
+  .vcard.attn { border-color: rgba(245,165,36,.6); background: linear-gradient(150deg, #fff, #fff4dc); }
+  @media (prefers-reduced-motion: reduce) { .world, .explorer .xn, .xbtn { transition: none !important; } tr.r.pulse td { animation: none; } }
 </style>
 </head>
 <body>
 <header>
   <h1 data-act="home" style="cursor:pointer" title="Home">Integration Registry</h1>
-  <span class="draft">draft 0.3 · schema 0.5</span>
+  <span class="draft">draft 0.4 · schema 0.5</span>
   <span class="spacer"></span>
   <span class="folder" id="folderName"></span>
   <button class="btn ghost small hidden" id="reloadBtn" title="Read the registry again">Reload</button>
@@ -257,7 +306,7 @@
    and scenario detail with cross-scenario flags. Single self-contained file.
    ========================================================================== */
 
-const APP_VERSION = "0.3";
+const APP_VERSION = "0.4";
 const INDEX_FILE = "index.json";
 const LIFECYCLE_FILE = "lifecycle.json";
 const INDEX_SCHEMA = "pattern-bench.registry-index";
@@ -641,9 +690,11 @@ function go(view, param, opts = {}) {
   S.view = view; S.param = param || null;
   const v = $("#view");
   if (!S.records.length && !S.folderName) { v.innerHTML = emptyView(); return; }
-  if (view === "scenario") { v.innerHTML = `<div class="panel">Loading …</div>`; scenarioView(param).then((h) => { if (S.view === "scenario") v.innerHTML = h; }); }
+  S.enterDetail = !!opts.enter;
+  if (view === "scenario") { v.innerHTML = `<div class="world"><div class="world-body">Loading …</div></div>`; scenarioView(param).then((h) => { if (S.view === "scenario") v.innerHTML = h; }); }
+  else if (view === "component") v.innerHTML = componentView(param.ref);
   else if (view === "band") v.innerHTML = worldView(param.k, opts.enter);
-  else { S.view = "home"; v.innerHTML = homeView(); }
+  else { S.view = "home"; S.diveFrom = null; v.innerHTML = homeView(); }
   if (!opts.keepScroll) window.scrollTo(0, 0);
 }
 
@@ -916,7 +967,7 @@ function attnRefs() {
   for (const s of S.scenarios.values()) for (const f of activeFlags(s)) if (f.ref) add(f.ref, f.text);
   if (S.lifecycle) for (const x of S.refs.values()) for (const v of x.versions) {
     const st = S.lifecycle.byKey.get(x.ref + "@" + v)?.stage;
-    if (st === "deprecated" || st === "retired") add(x.ref, `${v} is ${st}`);
+    if ((st === "deprecated" || st === "retired") && !(m.get(x.ref) || []).some((t) => t.includes(st))) add(x.ref, `${v} is ${st}`);
   }
   return m;
 }
@@ -972,7 +1023,7 @@ function homeView() {
 function worldHead(k) {
   const b = BANDS.find((x) => x.k === k), st = bandStats(k);
   return `<div class="world-head">
-    <button class="wback" data-act="home" aria-label="Back to all bands">${ICON.back}</button>
+    <button class="wback" data-act="${S.diveFrom && S.diveFrom.k ? "diveback" : "home"}" aria-label="Back">${ICON.back}</button>
     ${orb(k, "sm")}${st.n !== null ? `<span class="big">${st.n}</span>` : ""}
     <span class="txt"><span class="name">${b.name}</span><span class="desc">${b.desc}</span></span>
     ${st.a ? `<span class="apill sm"><span class="ico">${ICON.warn}</span><b>${st.a}</b><span>${b.attnLabel}</span></span>` : ""}
@@ -1052,30 +1103,6 @@ function stripSvg(nLeft, rightCols, attn) {
   rightCols.slice(0, 5).forEach((c, i) => { const x = 78 + i * 12; s += `<line x1="70" y1="11" x2="${x}" y2="11"/><rect x="${x - 4}" y="7" width="8" height="8" rx="2" fill="${c}" stroke="none"/>`; });
   return s + `<circle cx="65" cy="11" r="6" class="me ${attn ? "attn" : ""}"/></svg>`;
 }
-function scExplorer(id) {
-  const s = S.scenarios.get(id), r = s.latest, fl = flaggedRefs(s), ov = overlapsOf(id);
-  const left = ov.slice(0, 8).map((o) => ({ label: scenarioName(o.id), sub: o.shared.length > 1 ? "shares " + o.shared.length : "shares 1",
-    title: "Shares: " + o.shared.map(refName).join(", "), cls: "ov", attr: `data-xjump="${esc(o.id)}"` }));
-  if (ov.length > 8) left.push({ label: `+ ${ov.length - 8} more`, cls: "more" });
-  const right = (r.containers || []).map((k) => ({ label: k.name, sub: k.platform || kindInfo(k.kind).label, col: kindInfo(k.kind).col,
-    cls: k.refs.some((x) => fl.has(x)) ? "attn" : "", attr: `data-mapsel="${esc(k.key)}"`, title: k.name + " — click to see it on the relationship map" }));
-  const fls = activeFlags(s);
-  return `<div class="xin">${explorerSvg({ label: r.name, cls: fls.length ? "attn" : "" }, left, right, "Overlaps with", "Uses")}
-    <div class="xfoot">${fls.length ? `<div class="xflags">${fls.slice(0, 3).map((f) => `<div class="flag ${f.sev === "red" ? "red" : ""}"><span class="ico">⚠</span><div>${esc(f.text)}</div></div>`).join("")}</div>` : ""}
-      <button class="btn small" data-open="${esc(id)}">Open scenario</button></div></div>`;
-}
-function coExplorer(ref) {
-  const x = S.refs.get(ref), ar = attnRefs().get(ref) || [];
-  const lc = (v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
-  const left = [...x.scenarios].map((id) => { const v = S.scenarios.get(id).latest.uses[ref] || [], behind = Math.max(...v.map(vnum)) < x.max;
-    return { label: scenarioName(id), sub: v.join("+") + (behind ? " · behind" : ""), cls: behind ? "attn" : "ov", attr: `data-open="${esc(id)}"` }; });
-  const right = [...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => { const st = lc(v);
-    return { label: v, sub: st || "", cls: st === "deprecated" || st === "retired" ? "attn" : vnum(v) === x.max && x.versions.size > 1 ? "new" : "" }; });
-  return `<div class="xin">${explorerSvg({ label: refName(ref), cls: ar.length ? "attn" : "" }, left, right, "Used by", "Versions")}
-    <div class="xfoot">${ar.length ? `<div class="xflags">${ar.slice(0, 3).map((t) => `<div class="flag"><span class="ico">⚠</span><div>${esc(t)}</div></div>`).join("")}</div>` : ""}
-      <span class="mono muted">${esc(ref)}</span></div></div>`;
-}
-
 /* ---- Scenarios world ---- */
 function scWorld() {
   return `<div class="toolbar">
@@ -1090,7 +1117,7 @@ function listTable() {
   const cols = LIST_COLS.filter((c) => c.key !== "tags");
   return `<table class="wtable"><thead><tr><th class="mk"></th>${cols.map((c) => `<th class="sort" data-sort="${c.key}">${c.label}${arrow(c.key)}</th>`).join("")}<th>Relations</th></tr></thead>
   <tbody>${rows.map((s, i) => { const r = s.latest, n = activeFlags(s).length, ov = overlapsOf(r.id).length;
-    return `<tr class="r ${n ? "attn" : ""}" style="--i:${i}" data-xrow="${esc(r.id)}" data-xkind="sc" tabindex="0">
+    return `<tr class="r ${n ? "attn" : ""}" style="--i:${i}" data-id="${esc(r.id)}" data-xkind="sc" data-rowopen="sc" tabindex="0" title="Open all details of this scenario">
     <td class="mk">${n ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
     <td><b>${esc(r.name)}</b><div class="sub2">${r.tags.length ? chips(r.tags) : `<span class="mono muted">${esc(r.id)}</span>`}</div></td>
     <td>${chips(r.platforms)}</td><td>${chips(r.assets)}</td><td>${chips(r.endApps)}</td>
@@ -1098,7 +1125,7 @@ function listTable() {
     <td class="nowrap">${r.decisions}${r.openVersions ? ` <span class="chip violet">${r.openVersions} open</span>` : ""}</td>
     <td class="nowrap">${n ? `<span class="chip amber">⚠ ${n}</span>` : '<span class="muted">—</span>'}</td>
     <td class="nowrap">${esc(fmtDate(r.exportedAt))}</td><td>${esc(r.author)}</td>
-    <td>${stripSvg(ov, (r.containers || []).map((k) => kindInfo(k.kind).col), n)}</td></tr>
+    <td class="xcell"><button class="xbtn" data-xopen="1" title="Explore relations">${stripSvg(ov, (r.containers || []).map((k) => kindInfo(k.kind).col), n)}<span>Explore</span></button></td></tr>
     <tr class="xrow" data-for="${esc(r.id)}"><td colspan="${cols.length + 2}"><div class="xwrap"><div class="xslot"></div></div></td></tr>`; }).join("")
     || `<tr><td colspan="${cols.length + 2}" class="muted" style="padding:18px">No scenarios match.</td></tr>`}
   </tbody></table>`;
@@ -1121,14 +1148,14 @@ function compTable() {
   const lc = (ref, v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
   return `<table class="wtable"><thead><tr><th class="mk"></th><th>Component</th><th>Type</th><th>Platform · asset</th><th>Versions in the registry</th><th>Used by</th><th>Needs attention because</th><th>Relations</th></tr></thead><tbody>
     ${list.map((x, i) => { const a = ar.get(x.ref) || [];
-      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-xrow="${esc(x.ref)}" data-xkind="co" tabindex="0">
+      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(x.ref)}" data-xkind="co" data-rowopen="co" tabindex="0" title="Open all details of this component">
       <td class="mk">${a.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
       <td><b title="${esc([...x.names].join(" / "))}">${esc([...x.names][0] || "(unnamed)")}</b>${x.names.size > 1 ? ` <span class="muted" style="font-size:12px">+${x.names.size - 1} name${x.names.size > 2 ? "s" : ""}</span>` : ""}<div class="sub2 mono muted">${esc(x.ref)}</div></td>
       <td>${esc(x.type)}</td><td>${esc([kindInfo(x.kind).label, x.asset].filter(Boolean).join(" · "))}</td>
       <td>${[...x.versions].sort((p, q2) => vnum(p) - vnum(q2)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>${stageChip(lc(x.ref, v))}`).join(" ")}</td>
       <td>${[...x.scenarios].slice(0, 3).map((id) => `<span class="chip" data-open="${esc(id)}" style="cursor:pointer">${esc(short(scenarioName(id), 26))}</span>`).join("")}${x.scenarios.size > 3 ? `<span class="chip">+${x.scenarios.size - 3}</span>` : ""}</td>
       <td class="why">${a.length ? esc(a[0]) + (a.length > 1 ? ` <span class="muted">(+${a.length - 1})</span>` : "") : '<span class="muted">—</span>'}</td>
-      <td>${stripSvg(x.scenarios.size, [...x.versions].map((v) => vnum(v) === x.max && x.versions.size > 1 ? "#6b4fd8" : "#9aa4b5"), a.length)}</td></tr>
+      <td class="xcell"><button class="xbtn" data-xopen="1" title="Explore relations">${stripSvg(x.scenarios.size, [...x.versions].map((v) => vnum(v) === x.max && x.versions.size > 1 ? "#6b4fd8" : "#9aa4b5"), a.length)}<span>Explore</span></button></td></tr>
       <tr class="xrow" data-for="${esc(x.ref)}"><td colspan="8"><div class="xwrap"><div class="xslot"></div></div></td></tr>`; }).join("")
       || `<tr><td colspan="8" class="muted" style="padding:18px">No components match.</td></tr>`}
     </tbody></table>`;
@@ -1165,16 +1192,268 @@ function mapWorld() {
 function refreshOverviewParts() {
   if (S.view === "band" && S.param?.k === "map") $("#worldBody").innerHTML = mapWorld();
 }
-function toggleXrow(tr) {
-  const id = tr.dataset.xrow, kind = tr.dataset.xkind;
-  const x = tr.nextElementSibling; if (!x || !x.classList.contains("xrow")) return;
+
+/* ---- R-11: simplified Pattern Bench canvas, laid out from the exported canvas JSON ---- */
+const PB_TOKEN = { api: "api", process: "process", publish: "topic", consume: "topic", topic: "topic", queue: "queue", file: "file", sftp: "file", folder: "file" };
+function patternEnds(p) {
+  const [a, b] = String(p || "").split("-to-");
+  return [PB_TOKEN[(a || "").split("-").pop()] || "process", PB_TOKEN[(b || "").split("-")[0]] || "process"];
+}
+function pbIcon(type, x, y) {
+  const c = "#344054";
+  if (type === "api") return `<path d="M${x - 9} ${y - 7}h12l6 7-6 7h-12z" fill="#fff" stroke="${c}" stroke-width="1.6"/>`;
+  if (type === "topic") return `<rect x="${x - 11}" y="${y - 6}" width="22" height="12" rx="6" fill="#fff" stroke="#6b4fd8" stroke-width="1.6"/><path d="M${x - 4} ${y - 6}v12M${x + 3} ${y - 6}v12" stroke="#6b4fd8" stroke-width="1.2"/>`;
+  if (type === "queue") return `<rect x="${x - 13}" y="${y - 5}" width="26" height="10" rx="5" fill="#fff" stroke="#6b4fd8" stroke-width="1.6"/>`;
+  if (type === "file") return `<path d="M${x - 9} ${y - 6}h6l2 2h10v10h-18z" fill="#fff" stroke="${c}" stroke-width="1.6"/>`;
+  const r = 8, pts = [...Array(6)].map((_, i) => `${(x + r * Math.cos(Math.PI / 3 * i)).toFixed(1)},${(y + r * Math.sin(Math.PI / 3 * i)).toFixed(1)}`).join(" ");
+  return `<polygon points="${pts}" fill="#fff" stroke="#0f7c7a" stroke-width="1.6"/>`;
+}
+function canvasSvg(cv, spec, flagRefs) {
+  const W = 176, H = 60, LANE = 118, PADX = 120, PADY = 70;
+  const blocks = [];                         // {key, label, pattern, col, lane}
+  const at = new Map();                      // key -> block
+  (cv.blocks || []).forEach((b, i) => { const o = { key: "t" + i, label: b.label || b.pattern, pattern: b.pattern, col: i, lane: 0 }; blocks.push(o); at.set(o.key, o); });
+  const used = new Set(blocks.map((b) => b.lane + ":" + b.col));
+  const links = [];
+  (cv.branches || []).forEach((br, k) => {
+    const anc = at.get(br.anchor?.[0]?.ref) || blocks[0]; if (!anc) return;
+    const n = (br.blocks || []).length, sign = (br.row || 1) < 0 ? -1 : 1;
+    const start = br.kind === "in" ? anc.col - n : anc.col + 1;
+    let lane = anc.lane + (br.row || 1);
+    const free = (l) => [...Array(n)].every((_, j) => !used.has(l + ":" + (start + j)));
+    while (!free(lane)) lane += sign;
+    (br.blocks || []).forEach((b, j) => { const o = { key: `b${k}.${j}`, label: b.label || b.pattern, pattern: b.pattern, col: start + j, lane, branch: k };
+      blocks.push(o); at.set(o.key, o); used.add(lane + ":" + o.col); });
+    links.push({ x: br.kind === "in" ? anc.col : anc.col + 1, from: anc.lane, to: lane });
+  });
+  // map canvas blocks to registry-entry blocks (row 0 = main, row k+1 = branch k) for attention marks
+  const eb = new Map((spec.base?.blocks || []).map((b) => [b.row + ":" + b.order, b]));
+  const compRef = {}; for (const c of spec.base?.components || []) compRef[c.id] = c.ref;
+  const verKeys = new Map();
+  (cv.versions || []).forEach((v) => verKeys.set("t" + v.block, v.variant));
+  (cv.branchVersions || []).forEach((v) => verKeys.set(v.ref, v.variant));
+  const why = new Map((cv.scenario?.why || []).map((w) => [String(w.key).replace(/^ver\|@/, ""), w.text]));
+  const delta = new Set((cv.compositeRipples || []).filter((r) => r.code).map((r) => r.path));
+  const minCol = Math.min(0, ...blocks.map((b) => b.col)), lanes = blocks.map((b) => b.lane);
+  const minLane = Math.min(0, ...lanes), maxLane = Math.max(0, ...lanes);
+  const X = (col) => PADX + (col - minCol) * W, Y = (lane) => PADY + (lane - minLane) * LANE;
+  const width = PADX * 2 + (Math.max(...blocks.map((b) => b.col)) - minCol + 1) * W, height = PADY + (maxLane - minLane) * LANE + H + 40;
+  let s = `<svg class="pbcanvas" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simplified canvas">`;
+  for (const l of links) { const x = X(l.x), y1 = Y(l.from) + H / 2, y2 = Y(l.to) + H / 2;
+    s += `<path d="M${x} ${y1} V${y2}" stroke="#0f7c7a" stroke-width="2" stroke-dasharray="5 4" fill="none"/><circle cx="${x}" cy="${y1}" r="4" fill="#0f7c7a"/>`; }
+  const seams = new Map();                   // fused connector icons at shared seams
+  for (const b of blocks) {
+    const x = X(b.col), y = Y(b.lane), ent = eb.get((b.branch === undefined ? 0 : b.branch + 1) + ":" + (b.branch === undefined ? b.col : Number(b.key.split(".")[1])));
+    const flagged = ent && ent.components.some((cid) => flagRefs.has(compRef[cid]));
+    const ver = verKeys.get(b.key), cls = flagged ? "attn" : ver ? "ver" : "";
+    s += `<g class="pbb ${cls}"><rect x="${x + 2}" y="${y}" width="${W - 4}" height="${H}" rx="12"/>
+      <text x="${x + W / 2}" y="${y + H / 2 + 22}" text-anchor="middle" class="pbl">${esc(short(b.label, 22))}</text>
+      ${ver ? `<g><rect x="${x + W - 40}" y="${y - 10}" width="34" height="20" rx="10" class="vb"/><text x="${x + W - 23}" y="${y + 4}" text-anchor="middle" class="vt">v2</text><title>${esc(ver)}${why.get(b.key) ? " — " + esc(why.get(b.key)) : ""}</title></g>` : ""}
+      ${delta.has(b.key) ? `<g><circle cx="${x + 18}" cy="${y}" r="10" class="db"/><text x="${x + 18}" y="${y + 4}" text-anchor="middle" class="dt">Δ</text><title>Code change in the same version</title></g>` : ""}
+      ${flagged ? `<g><circle cx="${x + W / 2}" cy="${y}" r="10" class="ab"/><text x="${x + W / 2}" y="${y + 4}" text-anchor="middle" class="at">!</text><title>Needs attention</title></g>` : ""}</g>`;
+    const [a, z] = patternEnds(b.pattern);
+    seams.set(`${b.lane}:${b.col}:L`, { x: x, y: y + H / 2 - 6, t: a });
+    if (!seams.has(`${b.lane}:${b.col + 1}:L`)) seams.set(`${b.lane}:${b.col + 1}:L`, { x: x + W, y: y + H / 2 - 6, t: z });
+  }
+  for (const v of seams.values()) s += pbIcon(v.t, v.x, v.y);
+  // containers (platform / end application labels) and callers
+  for (const k of cv.containers || []) {
+    const b = at.get("t" + k.block); if (!b) continue;
+    const x = X(b.col), y = Y(b.lane), ext = !k.platform;
+    const txt = ext ? [k.name, k.process].filter(Boolean).join(" · ") : [k.platform, k.asset].filter(Boolean).join(" · ");
+    if (k.at === "caller") { s += `<g class="pbcall"><rect x="${x - 104}" y="${y + 10}" width="92" height="40" rx="9"/><text x="${x - 58}" y="${y + 28}" text-anchor="middle">${esc(short(k.name || "Caller", 14))}</text><text x="${x - 58}" y="${y + 42}" text-anchor="middle" class="sm">${esc(short(k.process || "", 16))}</text></g><path d="M${x - 12} ${y + 30}H${x + 2}" stroke="#8a94a6" stroke-width="1.6"/>`; continue; }
+    const label = short(txt, 26), tw = Math.min(W - 10, 14 + label.length * 6.1), tx = k.at === "in" ? x + 4 : x + W - tw - 4;
+    const ty = y - (k.at === "in" ? 30 : 30);
+    s += `<g class="pbc ${ext ? "ext" : ""}"><rect x="${tx}" y="${ty}" width="${tw}" height="20" rx="6"/><text x="${tx + 7}" y="${ty + 14}">${esc(label)}</text><title>${esc(txt)}</title></g>`;
+  }
+  (cv.callers || []).forEach((c, i) => {
+    const b = at.get(c.anchor?.[0]?.ref); if (!b) return;
+    const x = X(b.col), y = Y(b.lane) + H + 12 + i * 0;
+    s += `<g class="pbcall"><rect x="${x - 104}" y="${y}" width="92" height="34" rx="9"/><text x="${x - 58}" y="${y + 15}" text-anchor="middle">${esc(short(c.name || "Caller", 14))}</text><text x="${x - 58}" y="${y + 28}" text-anchor="middle" class="sm">${esc(short(c.process || "", 16))}</text></g>
+      <path d="M${x - 12} ${y + 17} H${x + 8} V${Y(b.lane) + H}" stroke="#8a94a6" stroke-width="1.4" fill="none" stroke-dasharray="3 3"/>`;
+  });
+  return s + "</svg>";
+}
+async function flowPanel(rec, spec, flagRefs) {
+  const path = rec.canvas ? dirOf(rec.path) + rec.canvas : "";
+  if (path && S.files.has(path)) {
+    try {
+      const cv = await loadSpec(path);
+      if (cv && (cv.format === "pattern-bench-flow" || Array.isArray(cv.blocks))) return `<div class="panel"><h2>Flow <span class="count">(from the Pattern Bench canvas)</span></h2>
+        <div class="diagram pbwrap">${canvasSvg(cv, spec, flagRefs)}</div>
+        <div class="legend"><span>${'<svg width="16" height="12"><polygon points="8,1 14,4 14,9 8,11 2,9 2,4" fill="#fff" stroke="#0f7c7a" stroke-width="1.5"/></svg>'} process</span><span>topic / queue</span><span>API</span>
+          <span><i style="background:#f5f2fe;border:1.5px solid #6b4fd8"></i>versioned (v2)</span><span><i style="background:#fff8ea;border:1.5px solid #f5a524"></i>needs attention</span><span>Δ code change, same version</span><span>– – branch (fan-out / fan-in)</span></div>
+        <div class="note" style="margin-top:6px">Simplified from <span class="mono">${esc(rec.canvas)}</span>. Open it in Pattern Bench for the full canvas.</div></div>`;
+    } catch (e) { /* fall through to the generated view */ }
+  }
+  return `<div class="panel"><h2>Flow</h2>
+    <div class="diagram">${diagramSvg(spec, flagRefs)}</div>
+    <div class="legend"><span><i style="background:#fff;border:1.5px solid #8a94a6"></i>base flow</span>
+      <span><i style="background:var(--violet-bg);border:1.5px solid var(--violet)"></i>added by a version</span>
+      <span><i style="background:var(--amber-bg);border:1.5px solid var(--amber)"></i>flagged</span>
+      <span><i style="background:var(--red-bg);border:1.5px solid var(--red)"></i>retired</span></div>
+    <div class="note" style="margin-top:6px">Generated from the registry entry${rec.canvas ? " — the canvas file isn't in the registry folder" : ""}.</div></div>`;
+}
+
+/* ---- R-8 / R-9 / R-10: explorer with in-place pivot, 3D dive, visible Explore button ---- */
+const X = { stack: [], row: null, kind: null };       // explorer state for the open row
+function nodeKey(t, id) { return t + "|" + id; }
+function scNode(id) {
+  const s = S.scenarios.get(id), r = s.latest, fl = flaggedRefs(s), ov = overlapsOf(id);
+  const left = ov.slice(0, 8).map((o) => ({ label: scenarioName(o.id), sub: "shares " + o.shared.length, title: "Shares: " + o.shared.map(refName).join(", "), cls: "ov", attr: `data-node="${esc(nodeKey("s", o.id))}"` }));
+  if (ov.length > 8) left.push({ label: `+ ${ov.length - 8} more`, cls: "more" });
+  const right = [];
+  for (const k of r.containers || []) {
+    if (!k.refs.length) continue;
+    right.push({ head: true, label: k.name, sub: k.platform || kindInfo(k.kind).label, col: kindInfo(k.kind).col, attr: `data-mapsel="${esc(k.key)}"`, title: k.name + " — click to see this asset on the relationship map" });
+    for (const ref of k.refs) {
+      const x = S.refs.get(ref), v = r.uses[ref] || [], behind = x && Math.max(...v.map(vnum)) < x.max;
+      right.push({ label: refName(ref), sub: v.join("+") + (x && x.scenarios.size > 1 ? ` · ${x.scenarios.size} flows` : ""), col: kindInfo(k.kind).col,
+        cls: fl.has(ref) || behind ? "attn" : x && x.scenarios.size > 1 ? "shared" : "", attr: `data-node="${esc(nodeKey("c", ref))}"`, title: refName(ref) + " — click to explore it here, double-click (or hold) to dive into it" });
+    }
+  }
+  return { center: { label: r.name, cls: activeFlags(s).length ? "attn" : "" }, left, right, lt: "Overlaps with", rt: "Uses — components by asset",
+    foot: activeFlags(s).slice(0, 3).map((f) => f.text), open: `data-open="${esc(id)}"`, openLabel: "Open scenario" };
+}
+function coNode(ref) {
+  const x = S.refs.get(ref), ar = attnRefs().get(ref) || [];
+  const lc = (v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
+  const left = [...x.scenarios].map((id) => { const v = S.scenarios.get(id).latest.uses[ref] || [], behind = Math.max(...v.map(vnum)) < x.max;
+    return { label: scenarioName(id), sub: v.join("+") + (behind ? " · behind" : ""), cls: behind ? "attn" : "ov", attr: `data-node="${esc(nodeKey("s", id))}"`, title: scenarioName(id) + " — click to explore it here, double-click (or hold) to dive into it" }; });
+  const right = [...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => { const st = lc(v);
+    return { label: v, sub: st || "", cls: st === "deprecated" || st === "retired" ? "attn" : vnum(v) === x.max && x.versions.size > 1 ? "new" : "" }; });
+  return { center: { label: refName(ref), cls: ar.length ? "attn" : "" }, left, right, lt: "Used by", rt: "Versions", foot: ar.slice(0, 3),
+    open: `data-copen="${esc(ref)}"`, openLabel: "Open component" };
+}
+function explorerSvg2(n) {
+  const ROW = 34, rows = Math.max(n.left.length, n.right.length, 1), H = rows * ROW + 40, cy = 26 + (H - 26) / 2;
+  const W = 940, BW = 270, xL = 10, xR = W - BW - 10, cx = W / 2;
+  const yOf = (i, cnt) => 30 + i * ROW + (H - 30 - cnt * ROW) / 2;
+  let s = `<svg class="explorer" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Relationship explorer for ${esc(n.center.label)}">
+    <text x="${xL}" y="16" class="xl">${esc(n.lt)}</text><text x="${xR}" y="16" class="xl">${esc(n.rt)}</text>`;
+  n.left.forEach((it, i) => { const y = yOf(i, n.left.length);
+    s += `<path d="M${xL + BW} ${y + 13} C${cx - 150} ${y + 13} ${cx - 170} ${cy} ${cx - 100} ${cy}" class="xe ${it.cls || ""}"/>
+      <g class="xn ${it.cls || ""}" ${it.attr || ""}><rect x="${xL}" y="${y}" width="${BW}" height="26" rx="7"/><text x="${xL + 12}" y="${y + 17}">${esc(short(it.label, it.sub ? 26 : 36))}</text>
+      ${it.sub ? `<text x="${xL + BW - 10}" y="${y + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 18))}</text>` : ""}<title>${esc(it.title || it.label)}</title></g>`; });
+  n.right.forEach((it, i) => { const y = yOf(i, n.right.length);
+    if (it.head) { s += `<g class="xh" ${it.attr || ""}><rect x="${xR}" y="${y + 4}" width="5" height="18" rx="2" fill="${it.col}"/><text x="${xR + 12}" y="${y + 18}">${esc(short(it.label, 26))}</text><text x="${xR + BW - 6}" y="${y + 18}" text-anchor="end" class="xs">${esc(short(it.sub, 16))}</text><title>${esc(it.title)}</title></g>`; return; }
+    const ind = n.right.some((r) => r.head) ? 14 : 0;
+    s += `<path d="M${cx + 100} ${cy} C${cx + 170} ${cy} ${cx + 150} ${y + 13} ${xR + ind} ${y + 13}" class="xe ${it.cls || ""}"/>
+      <g class="xn ${it.cls || ""}" ${it.attr || ""}><rect x="${xR + ind}" y="${y}" width="${BW - ind}" height="26" rx="7"/>${it.col ? `<rect x="${xR + ind}" y="${y}" width="4" height="26" rx="2" fill="${it.col}" stroke="none"/>` : ""}
+      <text x="${xR + ind + 12}" y="${y + 17}">${esc(short(it.label, it.sub ? 22 : 32))}</text>${it.sub ? `<text x="${xR + BW - 10}" y="${y + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 18))}</text>` : ""}<title>${esc(it.title || it.label)}</title></g>`; });
+  if (!n.left.length) s += `<text x="${xL}" y="${cy + 4}" class="xs">no overlap with other scenarios</text>`;
+  s += `<g class="xc ${n.center.cls || ""}"><rect x="${cx - 100}" y="${cy - 21}" width="200" height="42" rx="11"/><text x="${cx}" y="${cy + 5}" text-anchor="middle">${esc(short(n.center.label, 26))}</text></g>`;
+  return s + "</svg>";
+}
+function explorerHtml() {
+  const top = X.stack[X.stack.length - 1]; const [t, id] = top.split(/\|(.*)/s);
+  const n = t === "c" ? coNode(id) : scNode(id);
+  const crumbs = X.stack.map((k, i) => { const [tt, ii] = k.split(/\|(.*)/s); const nm = tt === "c" ? refName(ii) : scenarioName(ii);
+    return i < X.stack.length - 1 ? `<span class="crumb" data-crumb="${i}">${esc(short(nm, 28))}</span><span class="sep">›</span>` : `<b>${esc(short(nm, 34))}</b>`; }).join("");
+  return `<div class="xin"><div class="xcrumbs"><span class="xkind ${t}">${t === "c" ? "component" : "scenario"}</span>${crumbs}
+      <span class="xhint">click a box to explore it here · double-click or hold to dive in</span></div>
+    <div class="xstage">${explorerSvg2(n)}</div>
+    <div class="xfoot">${n.foot.length ? `<div class="xflags">${n.foot.map((f) => `<div class="flag"><span class="ico">⚠</span><div>${esc(f)}</div></div>`).join("")}</div>` : ""}
+      <button class="btn small" ${n.open}>${n.openLabel}</button></div></div>`;
+}
+function openExplorer(rowEl, keepStack) {
+  const x = rowEl.nextElementSibling; if (!x || !x.classList.contains("xrow")) return;
   const was = x.classList.contains("on");
   document.querySelectorAll("tr.xrow.on").forEach((o) => { o.classList.remove("on"); o.previousElementSibling?.classList.remove("open"); });
-  if (was) return;
-  const slot = x.querySelector(".xslot");
-  slot.innerHTML = kind === "co" ? coExplorer(id) : scExplorer(id);
-  tr.classList.add("open");
+  if (was && !keepStack) return;
+  if (!keepStack) X.stack = [nodeKey(rowEl.dataset.xkind === "co" ? "c" : "s", rowEl.dataset.id)];
+  X.row = rowEl.dataset.id; X.kind = rowEl.dataset.xkind;
+  x.querySelector(".xslot").innerHTML = explorerHtml();
+  rowEl.classList.add("open");
   requestAnimationFrame(() => requestAnimationFrame(() => x.classList.add("on")));
+}
+function rerenderExplorer(dir) {
+  const x = document.querySelector("tr.xrow.on .xslot"); if (!x) return;
+  const stage = x.querySelector(".xstage");
+  if (reduced() || !stage?.animate) { x.innerHTML = explorerHtml(); x.querySelector(".xin").style.cssText = "opacity:1;transform:none"; return; }
+  stage.animate([{ transform: "none", opacity: 1 }, { transform: `translateX(${dir * -60}px)`, opacity: 0 }], { duration: 220, easing: "ease-in", fill: "forwards" }).onfinish = () => {
+    x.innerHTML = explorerHtml(); const inn = x.querySelector(".xin"); inn.style.cssText = "opacity:1;transform:none;transition:none";
+    x.querySelector(".xstage").animate([{ transform: `translateX(${dir * 60}px)`, opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 420, easing: EASE });
+  };
+}
+function pivot(key) { if (X.stack[X.stack.length - 1] === key) return; X.stack.push(key); rerenderExplorer(1); }
+function crumbTo(i) { X.stack = X.stack.slice(0, i + 1); rerenderExplorer(-1); }
+/* R-9: dive — the box rises toward the viewer, the page sinks back, the box swells into the target band */
+function dive(el, key) {
+  const [t, id] = key.split(/\|(.*)/s), k = t === "c" ? "co" : "sc";
+  S.diveFrom = { k: S.param?.k, row: X.row, stack: X.stack.slice() };
+  const go2 = () => { go("band", { k }, { enter: true }); focusRow(id); };
+  if (reduced() || !el.animate) return go2();
+  const r = el.getBoundingClientRect(), v = $("#view").getBoundingClientRect();
+  const fly = document.createElement("div"); fly.className = "dive";
+  fly.innerHTML = `<span>${esc(t === "c" ? refName(id) : scenarioName(id))}</span>`;
+  document.body.appendChild(fly);
+  const w = $(".world"); w?.classList.add("sink");
+  const from = { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", transform: "perspective(900px) translateZ(0) rotateX(0deg)", borderRadius: "8px" };
+  const lift = { left: r.left + "px", top: (r.top - 16) + "px", width: r.width + "px", height: r.height + "px", transform: "perspective(900px) translateZ(140px) rotateX(-14deg)", borderRadius: "10px", offset: .32 };
+  const to = { left: v.left + "px", top: v.top + "px", width: v.width + "px", height: Math.max(320, innerHeight - v.top - 18) + "px", transform: "perspective(900px) translateZ(0) rotateX(0deg)", borderRadius: "20px" };
+  fly.animate([from, lift, to], { duration: 950, easing: EASE, fill: "forwards" }).onfinish = () => {
+    go2(); fly.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, fill: "forwards" }).onfinish = () => fly.remove();
+  };
+}
+function focusRow(id) {
+  const row = document.querySelector(`tr.r[data-id="${CSS.escape(id)}"]`); if (!row) return;
+  setTimeout(() => { openExplorer(row); row.classList.add("pulse"); row.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "center" }); }, reduced() ? 0 : 450);
+}
+/* R-10: the entry lifts and morphs into its detail page */
+function openDetail(el, view, param) {
+  S.prev = { view: S.view, param: S.param };
+  if (reduced() || !el?.animate) return go(view, param);
+  const r = el.getBoundingClientRect(), v = $("#view").getBoundingClientRect();
+  const mo = document.createElement("div"); mo.className = "morph row-morph";
+  mo.innerHTML = `<div class="rm-title">${esc(view === "component" ? refName(param.ref) : scenarioName(param.id))}</div>`;
+  document.body.appendChild(mo);
+  $(".world")?.classList.add("sink");
+  const from = { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", borderRadius: "10px" };
+  const to = { left: v.left + "px", top: v.top + "px", width: v.width + "px", height: Math.max(320, innerHeight - v.top - 18) + "px", borderRadius: "20px" };
+  mo.animate([from, to], { duration: 640, easing: EASE, fill: "forwards" }).onfinish = () => {
+    go(view, param, { enter: true });
+    mo.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 240, fill: "forwards" }).onfinish = () => mo.remove();
+  };
+}
+
+/* ---- R-10: component detail page ---- */
+function componentView(ref) {
+  const x = S.refs.get(ref); if (!x) return `<div class="panel">Component not found.</div>`;
+  const ar = attnRefs().get(ref) || [], lcEv = (S.lifecycle?.events || []).filter((e) => e.ref === ref).sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  const lc = (v) => S.lifecycle?.byKey.get(ref + "@" + v);
+  const users = [...x.scenarios].map((id) => ({ s: S.scenarios.get(id), v: S.scenarios.get(id).latest.uses[ref] || [] }));
+  const decs = []; for (const s of S.scenarios.values()) for (const d of s.latest.decisionList || []) if (d.refs.includes(ref)) decs.push({ s: s.latest, d });
+  const up = new Map(), down = new Map();
+  for (const s of S.scenarios.values()) for (const l of s.latest.links || []) { const [a, b] = l.split(" > ");
+    if (b === ref && a) up.set(a, (up.get(a) || new Set()).add(s.latest.id)); if (a === ref && b) down.set(b, (down.get(b) || new Set()).add(s.latest.id)); }
+  const nb = (m) => [...m].map(([r, ids]) => `<div class="list-item" data-copen="${esc(r)}"><div class="t">${esc(refName(r))} <span class="muted" style="font-weight:400">${esc(S.refs.get(r)?.type || "")}</span></div><div class="s">in ${[...ids].map(scenarioName).map(esc).join(", ")}</div></div>`).join("") || '<div class="muted">None.</div>';
+  X.stack = [nodeKey("c", ref)];
+  return `<div class="world ${S.enterDetail ? "enter" : ""}">
+    <div class="world-head"><button class="wback" data-act="back" aria-label="Back">${ICON.back}</button>${orb("co", "sm")}
+      <span class="txt"><span class="name">${esc(refName(ref))}</span><span class="desc"><span class="mono">${esc(ref)}</span> · ${esc(x.type)} · ${esc([kindInfo(x.kind).label, x.asset].filter(Boolean).join(" · "))}</span></span>
+      ${ar.length ? `<span class="apill sm"><span class="ico">${ICON.warn}</span><span>needs attention</span></span>` : `<span class="clear"><span class="ico">${ICON.check}</span>All clear</span>`}</div>
+    <div class="world-body">
+      ${ar.length ? `<div class="panel"><h2>Why it needs attention</h2>${ar.map((t) => `<div class="flag"><span class="ico">⚠</span><div>${esc(t)}</div></div>`).join("")}</div>` : ""}
+      <div class="grid g2">
+        <div class="panel"><h2>Versions</h2>
+          <div class="vlane">${[...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => { const e = lc(v);
+            return `<div class="vcard ${e && (e.stage === "deprecated" || e.stage === "retired") ? "attn" : vnum(v) === x.max && x.versions.size > 1 ? "new" : ""}"><div class="vn">${esc(v)}</div>${stageChip(e?.stage)}${e?.retireOn ? `<div class="note">retires ${esc(e.retireOn)}</div>` : ""}
+              <div class="note">${users.filter((u) => u.v.includes(v)).length} scenario(s)</div></div>`; }).join("")}</div>
+          ${lcEv.length ? `<div class="sec">Lifecycle events</div><table>${lcEv.map((e) => `<tr><td class="nowrap">${esc(e.date)}</td><td>${esc(e.version)}</td><td>${stageChip(e.stage)}</td><td>${esc(e.who || "")}</td><td class="muted">${esc(e.note || "")}</td></tr>`).join("")}</table>` : '<div class="note">No lifecycle events recorded.</div>'}
+        </div>
+        <div class="panel"><h2>Used by</h2>
+          <table><tr><th>Scenario</th><th>Version</th><th></th></tr>${users.map(({ s, v }) => { const behind = Math.max(...v.map(vnum)) < x.max;
+            return `<tr class="row" data-open="${esc(s.latest.id)}"><td><b>${esc(s.latest.name)}</b></td><td>${v.map((q) => `<span class="chip ${behind ? "amber" : ""}">${esc(q)}</span>`).join("")}</td><td>${behind ? '<span class="chip amber">behind</span>' : ""}</td></tr>`; }).join("")}</table>
+        </div>
+      </div>
+      <div class="panel"><h2>Relationships</h2><div class="xin" style="opacity:1;transform:none;padding-left:0">${explorerSvg2(coNode(ref))}</div></div>
+      <div class="grid g2">
+        <div class="panel"><h2>Open decisions that touch it</h2>
+          ${decs.filter((q) => q.d.status !== "completed").map(({ s, d }) => `<div class="list-item" data-open="${esc(s.id)}"><div class="t">${esc(d.label)} ${d.option ? `<span class="chip">${esc(d.option)}</span>` : ""}</div><div class="s">${esc(s.name)}${d.why ? " — " + esc(d.why) : ""}</div></div>`).join("") || '<div class="muted">None.</div>'}</div>
+        <div class="panel"><h2>Direct neighbours</h2><div class="sec">Upstream (feeds it)</div>${nb(up)}<div class="sec">Downstream (it feeds)</div>${nb(down)}</div>
+      </div>
+    </div></div>`;
 }
 
 /* ---- scenario detail ---- */
@@ -1205,8 +1484,12 @@ async function scenarioView(param) {
     if (sharedRefs.length) overlap.push({ s: o.latest, sharedRefs, sharedLinks });
   }
 
-  return `
-  <button class="back" data-act="back">← Back</button>
+  const flowHtml = await flowPanel(rec, spec, flagRefs);
+  return `<div class="world ${S.enterDetail ? "enter" : ""}">
+  <div class="world-head"><button class="wback" data-act="back" aria-label="Back">${ICON.back}</button>${orb("sc", "sm")}
+    <span class="txt"><span class="name">${esc(rec.name)}</span><span class="desc">Scenario · v${rec.version}${rec.author ? " · " + esc(rec.author) : ""}</span></span>
+    ${flags.filter((f) => !f.acked && f.sev !== "grey").length ? `<span class="apill sm"><span class="ico">${ICON.warn}</span><b>${flags.filter((f) => !f.acked && f.sev !== "grey").length}</b><span>flags</span></span>` : `<span class="clear"><span class="ico">${ICON.check}</span>All clear</span>`}</div>
+  <div class="world-body">
   <div class="panel">
     <div class="detail-head">
       <div style="flex:1">
@@ -1228,15 +1511,7 @@ async function scenarioView(param) {
       <div><div class="k">${esc(f.kind)}${f.acked ? " · acknowledged" : ""}</div>${esc(f.text)}</div></div>`).join("")}
     <div class="note">Acting on a flag = re-export the scenario from Pattern Bench (same id, version + 1). Acknowledgements are stored in the scenario's own file.</div></div>` : ""}
 
-  <div class="panel"><h2>Flow</h2>
-    <div class="diagram">${diagramSvg(spec, flagRefs)}</div>
-    <div class="legend"><span><i style="background:#fff;border:1.5px solid #8a94a6"></i>base flow</span>
-      <span><i style="background:var(--violet-bg);border:1.5px solid var(--violet)"></i>added by a version</span>
-      <span><i style="background:var(--amber-bg);border:1.5px solid var(--amber)"></i>flagged</span>
-      <span><i style="background:var(--red-bg);border:1.5px solid var(--red)"></i>retired</span>
-      <span>– – dotted line = retired connection</span></div>
-    <div class="note" style="margin-top:6px">Simple view generated from the registry entry. The full diagram lives in Pattern Bench (canvas file above).</div>
-  </div>
+  ${flowHtml}
 
   <div class="grid g3">
     <div>
@@ -1276,7 +1551,7 @@ async function scenarioView(param) {
           : `<div><a data-open="${esc(h.id)}" data-v="${h.version}">v${h.version}</a> · ${esc(fmtDate(h.exportedAt))}</div>`).join("")}
       </div>
     </div>
-  </div>`;
+  </div></div></div>`;
 }
 const dirOf = (p) => (p.includes("/") ? p.slice(0, p.lastIndexOf("/") + 1) : "");
 
@@ -1364,14 +1639,15 @@ async function downloadMarkers(id, version) {
    5. Events
    ========================================================================== */
 document.addEventListener("click", (ev) => {
-  const t = ev.target.closest("[data-open],[data-act],[data-sort],[data-sel],[data-map],[data-band],[data-xjump],[data-mapsel],[data-xrow]");
+  if (S.holdFired) { S.holdFired = false; return; }
+  const t = ev.target.closest("[data-open],[data-copen],[data-act],[data-sort],[data-sel],[data-map],[data-band],[data-node],[data-crumb],[data-xopen],[data-mapsel],[data-rowopen]");
   if (!t) return;
+  if (t.dataset.node) { clearTimeout(S.clickT); const key = t.dataset.node; S.clickT = setTimeout(() => pivot(key), 240); return; }
+  if (t.dataset.crumb !== undefined) return crumbTo(Number(t.dataset.crumb));
+  if (t.dataset.xopen) { ev.stopPropagation(); return openExplorer(t.closest("tr.r")); }
+  if (t.dataset.copen) return openDetail(t.closest("tr, .list-item") || t, "component", { ref: t.dataset.copen });
+  if (t.dataset.rowopen) return t.dataset.rowopen === "co" ? openDetail(t, "component", { ref: t.dataset.id }) : openDetail(t, "scenario", { id: t.dataset.id, version: null });
   if (t.dataset.band) return openWorld(t, t.dataset.band);           // a band opens into its world
-  if (t.dataset.xjump) {                                             // explorer: jump to an overlapping scenario's row
-    const row = document.querySelector(`tr.r[data-xrow="${CSS.escape(t.dataset.xjump)}"]`);
-    if (row) { toggleXrow(row); row.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "center" }); }
-    return;
-  }
   if (t.dataset.mapsel) {                                            // explorer: show an asset on the map
     const a = S.assets.get(t.dataset.mapsel);
     S.mapMode = "asset"; S.mapAll = !(a && a.scenarios.size > 1); S.sel = { type: "t", id: t.dataset.mapsel };
@@ -1391,13 +1667,14 @@ document.addEventListener("click", (ev) => {
     $("#listTable").innerHTML = listTable(); return;
   }
   if (t.dataset.open) { S.prev = { view: S.view, param: S.param }; return go("scenario", { id: t.dataset.open, version: t.dataset.v ? Number(t.dataset.v) : null }); }
-  if (t.dataset.xrow) return toggleXrow(t);
   const act = t.dataset.act;
   if (act === "open") openFolder();
   if (act === "github") loadFromGitHub();
   if (act === "clearsel") { S.sel = null; refreshOverviewParts(); }
   if (act === "back") { const p = S.prev && S.prev.view !== "scenario" ? S.prev : { view: "home" }; go(p.view, p.param); }
   if (act === "home") { if (S.view === "band") closeWorld(); else go("home"); }
+  if (act === "diveback") { const d = S.diveFrom; S.diveFrom = null; go("band", { k: d.k }, { enter: true });
+    const row = document.querySelector(`tr.r[data-id="${CSS.escape(d.row || "")}"]`); if (row) { X.stack = d.stack; openExplorer(row, true); row.scrollIntoView({ block: "center" }); } }
   if (act === "markers") downloadMarkers(t.dataset.id, Number(t.dataset.v));
 });
 document.addEventListener("input", (ev) => {
@@ -1410,11 +1687,23 @@ document.addEventListener("input", (ev) => {
   if (ev.target.id === "decOpen") { S.decOpenOnly = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.decOpenOnly); $("#decTable").innerHTML = decisionsTable(); return; }
   if (ev.target.id === "compSearch") { S.compQuery = ev.target.value; $("#compTable").innerHTML = compTable(); }
 });
+document.addEventListener("dblclick", (ev) => {
+  const n = ev.target.closest("[data-node]"); if (!n) return;
+  clearTimeout(S.clickT); dive(n, n.dataset.node);
+});
+document.addEventListener("pointerdown", (ev) => {
+  const n = ev.target.closest("[data-node]"); if (!n) return;
+  n.classList.add("hold");
+  S.holdT = setTimeout(() => { n.classList.remove("hold"); S.holdFired = true; clearTimeout(S.clickT); dive(n, n.dataset.node); }, 650);
+});
+const endHold = () => { clearTimeout(S.holdT); document.querySelectorAll(".hold").forEach((x) => x.classList.remove("hold")); };
+document.addEventListener("pointerup", endHold); document.addEventListener("pointercancel", endHold);
+document.addEventListener("pointerout", (ev) => { if (ev.target.closest?.("[data-node]")) endHold(); });
 $("#openBtn").addEventListener("click", openFolder);
 $("#reloadBtn").addEventListener("click", () => (S.source === "github" ? loadFromGitHub() : S.root && loadFromHandle()));
 $("#ghBtn").addEventListener("click", () => loadFromGitHub());
 document.addEventListener("keydown", (ev) => {     // Enter / Space on tiles and map nodes
-  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches?.("[data-band],[data-sel],[data-xrow]")) { ev.preventDefault(); ev.target.click(); }
+  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches?.("[data-band],[data-sel],[data-rowopen]")) { ev.preventDefault(); ev.target.click(); }
 });
 $("#dirInput").addEventListener("change", (e) => e.target.files.length && loadFromInput(e.target.files));
 

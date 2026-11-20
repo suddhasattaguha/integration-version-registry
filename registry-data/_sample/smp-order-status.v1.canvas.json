@@ -1,0 +1,56 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SAP EU",
+      "process": "order confirmation"
+    },
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "AIS",
+      "asset": "OrderIntake-exp"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "name": "Webshop",
+      "process": "order status"
+    }
+  ],
+  "caller": true,
+  "mode": "single",
+  "branches": [],
+  "callers": [],
+  "branchVersions": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "smp-order-status",
+    "version": 1,
+    "name": "Order status back to Webshop",
+    "why": []
+  },
+  "savedAt": "2026-11-14T13:20:00Z"
+}

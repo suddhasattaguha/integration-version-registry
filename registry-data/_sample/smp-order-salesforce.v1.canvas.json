@@ -1,0 +1,67 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-api",
+      "label": "Consume-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "Salesforce",
+      "process": "order create"
+    },
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "AIS",
+      "asset": "Salesforce-Order-Sys"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Queue-SAP-EU"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "name": "SAP EU",
+      "process": "Order creation"
+    }
+  ],
+  "caller": true,
+  "mode": "single",
+  "branches": [],
+  "callers": [],
+  "branchVersions": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "smp-order-salesforce",
+    "version": 1,
+    "name": "Salesforce order to SAP EU",
+    "why": []
+  },
+  "savedAt": "2026-11-12T14:00:00Z"
+}

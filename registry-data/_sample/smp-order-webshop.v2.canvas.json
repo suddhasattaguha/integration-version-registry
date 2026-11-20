@@ -1,0 +1,77 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-api",
+      "label": "Consume-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2
+  ],
+  "versions": [
+    {
+      "block": 1,
+      "variant": "sample-variant"
+    }
+  ],
+  "containers": [
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "Webshop",
+      "process": "place order"
+    },
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "AIS",
+      "asset": "OrderIntake-exp"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "platform": "Solace",
+      "asset": "Queue-SAP-EU"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "name": "SAP EU",
+      "process": "Order creation"
+    }
+  ],
+  "caller": true,
+  "mode": "single",
+  "branches": [],
+  "callers": [],
+  "branchVersions": [],
+  "compositeRipples": [],
+  "scenario": {
+    "id": "smp-order-webshop",
+    "version": 2,
+    "name": "Webshop order to SAP EU",
+    "why": [
+      {
+        "key": "ver|@t1",
+        "text": "New order schema (multi-currency)"
+      }
+    ]
+  },
+  "savedAt": "2026-11-18T09:10:00Z"
+}

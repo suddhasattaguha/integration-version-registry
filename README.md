@@ -4,7 +4,7 @@ A registry and traceability app for integration designs exported from
 [Pattern Bench](https://github.com/suddhasattaguha/pattern-bench). It reads a folder
 of registry entries and traces scenarios, components, versions and decisions across them.
 
-**Status:** draft 0.3, reads Pattern Bench export schema v0.5.
+**Status:** draft 0.4, reads Pattern Bench export schema v0.5.
 
 ## How it works
 
@@ -41,12 +41,17 @@ folder when real data is in.
   plus how many need attention. No top menu: the bands are the navigation.
 - **A band opens into its own full-frame view** (the band morphs open; Back reverses it):
   - **Scenarios / Components:** sortable, searchable lists; rows that need attention are
-    highlighted and come first ("Needs attention only" filter). Click a row → its
-    **relationship explorer** grows open: overlapping scenarios (or users of a component) on the
-    left, the assets it uses (or its versions) on the right; click a box to jump.
+    highlighted and come first ("Needs attention only" filter).
+    - **Click a row** → its full detail page (scenario page, or the component page: versions and
+      lifecycle, who uses which version, open decisions, direct neighbours, relationships).
+    - **Explore** (the button on each row) → the **relationship explorer** grows open: overlapping
+      scenarios (or users of a component) on the left, its components grouped by asset (or its
+      versions) on the right. **Click a box** to explore it in place (breadcrumb to step back);
+      **double-click or press and hold** to dive into it in its own band.
   - **Open decisions:** every versioning decision across scenarios; rows with open warnings highlighted.
   - **Relationship map:** scenarios ↔ shared assets or components; click to highlight.
-- **Scenario detail:** simple flow diagram, versioning decisions, components, overlap with other flows, relations, history.
+- **Scenario detail:** simplified Pattern Bench canvas (from the exported `*.canvas.json` in the
+  registry folder; falls back to a generated diagram), versioning decisions, versioning decisions, components, overlap with other flows, relations, history.
 - **Flags:** impact (newer version of a shared component elsewhere), lifecycle (deprecated or retired version),
   warning (unacknowledged ⚠ in the design), data (container without platform or asset label).
 - **Download marker list** for Pattern Bench's planned marker import.
