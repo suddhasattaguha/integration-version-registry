@@ -4,7 +4,7 @@ A registry and traceability app for integration designs exported from
 [Pattern Bench](https://github.com/suddhasattaguha/pattern-bench). It reads a folder
 of registry entries and traces scenarios, components, versions and decisions across them.
 
-**Status:** draft 0.4, reads Pattern Bench export schema v0.5.
+**Status:** draft 0.5, reads Pattern Bench export schema v0.5.
 
 ## How it works
 
@@ -52,6 +52,10 @@ versioning yet. Regenerate with `python3 tools/gen_landscape.py registry-data/la
       **double-click or press and hold** to dive into it in its own band.
   - **Open decisions:** every versioning decision across scenarios; rows with open warnings highlighted.
   - **Relationship map:** scenarios ↔ shared assets or components; click to highlight.
+- **Overlap rule (tiers):** same path (shared connection) · feeds / fed by (one publishes on a topic
+  the other consumes) · shared API (an integration API called by several apps) · shared asset
+  (process, queue, topic) — all strong; shared endpoint (same end-application API or folder) — weak.
+  Sharing only the same source (caller) is not an overlap; it is shown as a note.
 - **Scenario detail:** simplified Pattern Bench canvas (from the exported `*.canvas.json` in the
   registry folder; falls back to a generated diagram), versioning decisions, versioning decisions, components, overlap with other flows, relations, history.
 - **Flags:** impact (newer version of a shared component elsewhere), lifecycle (deprecated or retired version),

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Integration Registry — draft 0.4</title>
+<title>Integration Registry — draft 0.5</title>
 <style>
   :root {
     --bg: #f5f6f8; --panel: #ffffff; --ink: #1d2433; --muted: #667085; --line: #e3e6ec;
@@ -278,12 +278,29 @@
   .vcard.new { border-color: rgba(107,79,216,.45); background: linear-gradient(150deg, #fff, #f2eefe); }
   .vcard.attn { border-color: rgba(245,165,36,.6); background: linear-gradient(150deg, #fff, #fff4dc); }
   @media (prefers-reduced-motion: reduce) { .world, .explorer .xn, .xbtn { transition: none !important; } tr.r.pulse td { animation: none; } }
+  /* ===== draft 0.5: overlap tiers ===== */
+  .explorer .xe.t-path { stroke: #0b5d5b; stroke-width: 3; stroke-dasharray: none; }
+  .explorer .xe.t-feeds { stroke: #0f7c7a; stroke-width: 2.2; stroke-dasharray: none; }
+  .explorer .xe.t-api { stroke: #3346c8; stroke-width: 2.4; stroke-dasharray: none; }
+  .explorer .xe.t-asset { stroke: #0f7c7a; stroke-width: 1.8; stroke-dasharray: none; }
+  .explorer .xe.weak { stroke: #b4bcc8; stroke-width: 1.3; stroke-dasharray: 3 4; }
+  .explorer .xn.t-path rect:first-of-type { stroke: #0b5d5b; stroke-width: 2; stroke-dasharray: none; }
+  .explorer .xn.t-feeds rect:first-of-type, .explorer .xn.t-asset rect:first-of-type { stroke: #0f7c7a; stroke-dasharray: none; }
+  .explorer .xn.t-api rect:first-of-type { stroke: #3346c8; stroke-dasharray: none; }
+  .explorer .xn.weak rect:first-of-type { stroke: #c9cfd9; stroke-dasharray: 3 3; }
+  .explorer .xn.weak text { fill: #667085; }
+  .xlegend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11.5px; color: var(--muted); margin-top: 6px; }
+  .xlegend .path { color: #0b5d5b; } .xlegend .feeds, .xlegend .asset { color: #0f7c7a; } .xlegend .api { color: #3346c8; } .xlegend .endpoint { color: #98a2b3; }
+  .xnote { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .pill-toggle.sm { padding: 3px 10px; font-size: 12px; } .pill-toggle.on2 { background: var(--teal-bg); border-color: rgba(15,124,122,.4); color: var(--teal); }
+  .tchip { display: inline-block; font-size: 11px; font-weight: 500; padding: 1px 8px; border-radius: 10px; margin-left: 4px; background: var(--teal-bg); color: var(--teal); }
+  .tchip.t-path { background: #0b5d5b; color: #fff; } .tchip.t-api { background: #e8ebfd; color: #3346c8; } .tchip.t-endpoint { background: var(--grey-bg); color: #667085; }
 </style>
 </head>
 <body>
 <header>
   <h1 data-act="home" style="cursor:pointer" title="Home">Integration Registry</h1>
-  <span class="draft">draft 0.4 · schema 0.5</span>
+  <span class="draft">draft 0.5 · schema 0.5</span>
   <span class="spacer"></span>
   <span class="folder" id="folderName"></span>
   <button class="btn ghost small hidden" id="reloadBtn" title="Read the registry again">Reload</button>
@@ -306,7 +323,7 @@
    and scenario detail with cross-scenario flags. Single self-contained file.
    ========================================================================== */
 
-const APP_VERSION = "0.4";
+const APP_VERSION = "0.5";
 const INDEX_FILE = "index.json";
 const LIFECYCLE_FILE = "lifecycle.json";
 const INDEX_SCHEMA = "pattern-bench.registry-index";
@@ -730,7 +747,7 @@ function mapGraph() {
   const scen = [...S.scenarios.values()];
   const targets = new Map(), edges = [];
   if (S.mapMode === "asset") {
-    for (const a of S.assets.values()) if (S.mapAll || a.scenarios.size > 1) targets.set(a.key, { id: a.key, name: a.name, sub: a.platform || kindInfo(a.kind).label, kind: a.kind, n: a.scenarios.size });
+    for (const a of S.assets.values()) if (S.mapAll || (a.scenarios.size > 1 && a.kind !== "caller")) targets.set(a.key, { id: a.key, name: a.name, sub: a.platform || kindInfo(a.kind).label, kind: a.kind, n: a.scenarios.size });
     for (const s of scen) {
       const r = s.latest, fl = flaggedRefs(s), op = openIntroRefs(r);
       for (const k of r.containers || []) if (targets.has(k.key)) edges.push({ s: r.id, t: k.key, w: Math.max(1, k.refs.length),
@@ -983,16 +1000,70 @@ function bandStats(k) {
   return { n: null, a: 0 };
 }
 /* scenarios sharing components with this one, most shared first */
-function overlapsOf(id) {
+/* R-12: overlap rule — classify what two scenarios share, ranked by coupling strength.
+   Same source (only the same caller) is not an overlap; shared end-application endpoints are weak. */
+const TIERS = [
+  { k: "path", label: "same path", strong: true },          // the same connection (A → B link)
+  { k: "feeds", label: "feeds", strong: true },             // one publishes on a topic the other consumes
+  { k: "api", label: "shared API", strong: true },          // the same integration (iPaaS) API, called by several apps
+  { k: "asset", label: "shared asset", strong: true },      // the same process / queue / topic in iPaaS or broker
+  { k: "endpoint", label: "shared endpoint", strong: false } // the same end-application API or folder
+];
+function scenFacts(r) {
+  if (r._facts) return r._facts;
+  const kind = {}; for (const c of r.components) if (c.ref) kind[c.ref] = { type: c.type, kind: c.kind };
+  const pub = new Set(), sub = new Set();
+  for (const l of r.links) { const [a, b] = l.split(" > ");
+    if (b && b.endsWith("#topic") && !(a || "").endsWith("#topic")) pub.add(b);
+    if (a && a.endsWith("#topic")) sub.add(a); }
+  return (r._facts = { kind, pub, sub, links: new Set(r.links) });
+}
+function overlapBetween(a, b) {
+  const A = scenFacts(a), B = scenFacts(b);
+  const shared = Object.keys(a.uses).filter((x) => b.uses[x]);
+  const isCaller = (ref) => (A.kind[ref] || B.kind[ref] || {}).kind === "caller";
+  const sharedLinks = [...A.links].filter((l) => B.links.has(l) && !l.split(" > ").some(isCaller));   // a shared source is not a shared path
+  const hits = new Set(), byTier = {}; let dir = "";
+  const add = (t, ref) => { hits.add(t); (byTier[t] ||= []).push(ref); };
+  if (sharedLinks.length) sharedLinks.forEach((l) => add("path", l));
+  let sameSource = [];
+  for (const ref of shared) {
+    const f = A.kind[ref] || B.kind[ref] || {};
+    if (f.kind === "caller") { sameSource.push(ref); continue; }
+    if (f.kind === "endApp") { add("endpoint", ref); continue; }
+    if (f.type === "topic") {
+      const aToB = A.pub.has(ref) && B.sub.has(ref), bToA = B.pub.has(ref) && A.sub.has(ref);
+      if (aToB || bToA) { add("feeds", ref); dir = aToB && bToA ? "both" : aToB ? "out" : "in"; continue; }
+      add("asset", ref); continue;
+    }
+    if (f.type === "api" && f.kind === "iPaaS") { add("api", ref); continue; }
+    add("asset", ref);
+  }
+  const tier = TIERS.findIndex((t) => hits.has(t.k));
+  return { shared: shared.filter((x) => !sameSource.includes(x)), sharedLinks, sameSource, byTier, tier, dir, strong: tier >= 0 && TIERS[tier].strong };
+}
+function tierLabel(o) {
+  if (o.tier < 0) return "";
+  const t = TIERS[o.tier];
+  if (t.k === "feeds") return o.dir === "out" ? "feeds →" : o.dir === "in" ? "← fed by" : "⇄ shared topic";
+  return t.label;
+}
+function overlapsOf(id, opts = {}) {
   const me = S.scenarios.get(id)?.latest; if (!me) return [];
-  const mine = new Set(Object.keys(me.uses));
   const out = [];
   for (const o of S.scenarios.values()) {
     if (o.latest.id === id) continue;
-    const shared = Object.keys(o.latest.uses).filter((r) => mine.has(r));
-    if (shared.length) out.push({ id: o.latest.id, shared });
+    const ov = overlapBetween(me, o.latest);
+    if (ov.tier < 0) continue;                       // nothing shared, or only the same source
+    if (opts.strongOnly && !ov.strong) continue;
+    out.push({ id: o.latest.id, ...ov });
   }
-  return out.sort((a, b) => b.shared.length - a.shared.length);
+  return out.sort((a, b) => a.tier - b.tier || b.shared.length - a.shared.length);
+}
+function sameSourceOf(id) {
+  const me = S.scenarios.get(id)?.latest; if (!me) return [];
+  const callers = me.components.filter((c) => c.kind === "caller" && c.ref).map((c) => c.ref);
+  return callers.map((ref) => ({ ref, others: [...(S.refs.get(ref)?.scenarios || [])].filter((x) => x !== id) })).filter((x) => x.others.length);
 }
 
 function orb(k, size) { const b = BANDS.find((x) => x.k === k); return `<span class="orb ${size || ""}" style="--c1:${b.c1};--c2:${b.c2}">${ICON[k]}</span>`; }
@@ -1116,7 +1187,7 @@ function listTable() {
   const arrow = (k) => (S.listSort.key === k ? (S.listSort.dir > 0 ? " ▲" : " ▼") : "");
   const cols = LIST_COLS.filter((c) => c.key !== "tags");
   return `<table class="wtable"><thead><tr><th class="mk"></th>${cols.map((c) => `<th class="sort" data-sort="${c.key}">${c.label}${arrow(c.key)}</th>`).join("")}<th>Relations</th></tr></thead>
-  <tbody>${rows.map((s, i) => { const r = s.latest, n = activeFlags(s).length, ov = overlapsOf(r.id).length;
+  <tbody>${rows.map((s, i) => { const r = s.latest, n = activeFlags(s).length, ov = overlapsOf(r.id, { strongOnly: true }).length;
     return `<tr class="r ${n ? "attn" : ""}" style="--i:${i}" data-id="${esc(r.id)}" data-xkind="sc" data-rowopen="sc" tabindex="0" title="Open all details of this scenario">
     <td class="mk">${n ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
     <td><b>${esc(r.name)}</b><div class="sub2">${r.tags.length ? chips(r.tags) : `<span class="mono muted">${esc(r.id)}</span>`}</div></td>
@@ -1299,8 +1370,10 @@ async function flowPanel(rec, spec, flagRefs) {
 const X = { stack: [], row: null, kind: null };       // explorer state for the open row
 function nodeKey(t, id) { return t + "|" + id; }
 function scNode(id) {
-  const s = S.scenarios.get(id), r = s.latest, fl = flaggedRefs(s), ov = overlapsOf(id);
-  const left = ov.slice(0, 8).map((o) => ({ label: scenarioName(o.id), sub: "shares " + o.shared.length, title: "Shares: " + o.shared.map(refName).join(", "), cls: "ov", attr: `data-node="${esc(nodeKey("s", o.id))}"` }));
+  const s = S.scenarios.get(id), r = s.latest, fl = flaggedRefs(s), ov = overlapsOf(id, { strongOnly: X.strongOnly });
+  const left = ov.slice(0, 8).map((o) => ({ label: scenarioName(o.id), sub: tierLabel(o), cls: "ov t-" + TIERS[o.tier].k + (o.strong ? "" : " weak"),
+    title: `${tierLabel(o)} — ` + Object.entries(o.byTier).map(([t, refs]) => `${TIERS.find((x) => x.k === t).label}: ${refs.map((q) => q.includes(" > ") ? q.split(" > ").map(refName).join(" → ") : refName(q)).join(", ")}`).join(" · "),
+    attr: `data-node="${esc(nodeKey("s", o.id))}"` }));
   if (ov.length > 8) left.push({ label: `+ ${ov.length - 8} more`, cls: "more" });
   const right = [];
   for (const k of r.containers || []) {
@@ -1312,8 +1385,10 @@ function scNode(id) {
         cls: fl.has(ref) || behind ? "attn" : x && x.scenarios.size > 1 ? "shared" : "", attr: `data-node="${esc(nodeKey("c", ref))}"`, title: refName(ref) + " — click to explore it here, double-click (or hold) to dive into it" });
     }
   }
-  return { center: { label: r.name, cls: activeFlags(s).length ? "attn" : "" }, left, right, lt: "Overlaps with", rt: "Uses — components by asset",
-    foot: activeFlags(s).slice(0, 3).map((f) => f.text), open: `data-open="${esc(id)}"`, openLabel: "Open scenario" };
+  const ss = sameSourceOf(id);
+  return { center: { label: r.name, cls: activeFlags(s).length ? "attn" : "" }, left, right, lt: X.strongOnly ? "Overlaps with — strong only" : "Overlaps with", rt: "Uses — components by asset",
+    foot: activeFlags(s).slice(0, 3).map((f) => f.text), open: `data-open="${esc(id)}"`, openLabel: "Open scenario", scen: true,
+    note: ss.map((x) => `Same source: ${refName(x.ref)} also triggers ${x.others.length} other scenario${x.others.length === 1 ? "" : "s"} (not counted as overlap)`).join(" · ") };
 }
 function coNode(ref) {
   const x = S.refs.get(ref), ar = attnRefs().get(ref) || [];
@@ -1330,9 +1405,11 @@ function explorerSvg2(n) {
   const W = 940, BW = 270, xL = 10, xR = W - BW - 10, cx = W / 2;
   const yOf = (i, cnt) => 30 + i * ROW + (H - 30 - cnt * ROW) / 2;
   let s = `<svg class="explorer" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Relationship explorer for ${esc(n.center.label)}">
+    <defs><marker id="xarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0f7c7a"/></marker></defs>
     <text x="${xL}" y="16" class="xl">${esc(n.lt)}</text><text x="${xR}" y="16" class="xl">${esc(n.rt)}</text>`;
   n.left.forEach((it, i) => { const y = yOf(i, n.left.length);
-    s += `<path d="M${xL + BW} ${y + 13} C${cx - 150} ${y + 13} ${cx - 170} ${cy} ${cx - 100} ${cy}" class="xe ${it.cls || ""}"/>
+    const fe = /t-feeds/.test(it.cls || "") ? (it.sub.startsWith("feeds") ? 'marker-end="url(#xarr)"' : it.sub.startsWith("←") ? 'marker-start="url(#xarr)"' : 'marker-start="url(#xarr)" marker-end="url(#xarr)"') : "";
+    s += `<path d="M${xL + BW} ${y + 13} C${cx - 150} ${y + 13} ${cx - 170} ${cy} ${cx - 100} ${cy}" class="xe ${it.cls || ""}" ${fe && it.sub.startsWith("feeds") ? 'marker-start="url(#xarr)"' : fe && it.sub.startsWith("←") ? 'marker-end="url(#xarr)"' : fe}/>
       <g class="xn ${it.cls || ""}" ${it.attr || ""}><rect x="${xL}" y="${y}" width="${BW}" height="26" rx="7"/><text x="${xL + 12}" y="${y + 17}">${esc(short(it.label, it.sub ? 26 : 36))}</text>
       ${it.sub ? `<text x="${xL + BW - 10}" y="${y + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 18))}</text>` : ""}<title>${esc(it.title || it.label)}</title></g>`; });
   n.right.forEach((it, i) => { const y = yOf(i, n.right.length);
@@ -1351,8 +1428,11 @@ function explorerHtml() {
   const crumbs = X.stack.map((k, i) => { const [tt, ii] = k.split(/\|(.*)/s); const nm = tt === "c" ? refName(ii) : scenarioName(ii);
     return i < X.stack.length - 1 ? `<span class="crumb" data-crumb="${i}">${esc(short(nm, 28))}</span><span class="sep">›</span>` : `<b>${esc(short(nm, 34))}</b>`; }).join("");
   return `<div class="xin"><div class="xcrumbs"><span class="xkind ${t}">${t === "c" ? "component" : "scenario"}</span>${crumbs}
+      ${t === "s" ? `<label class="pill-toggle sm ${X.strongOnly ? "on2" : ""}"><input type="checkbox" data-strong="1" ${X.strongOnly ? "checked" : ""}>Strong overlaps only</label>` : ""}
       <span class="xhint">click a box to explore it here · double-click or hold to dive in</span></div>
     <div class="xstage">${explorerSvg2(n)}</div>
+    ${n.scen ? `<div class="xlegend"><span class="lg path">━ same path</span><span class="lg feeds">➝ feeds / fed by</span><span class="lg api">━ shared API</span><span class="lg asset">━ shared asset</span><span class="lg endpoint">┄ shared endpoint (weak)</span></div>` : ""}
+    ${n.note ? `<div class="xnote">${esc(n.note)}</div>` : ""}
     <div class="xfoot">${n.foot.length ? `<div class="xflags">${n.foot.map((f) => `<div class="flag"><span class="ico">⚠</span><div>${esc(f)}</div></div>`).join("")}</div>` : ""}
       <button class="btn small" ${n.open}>${n.openLabel}</button></div></div>`;
 }
@@ -1479,10 +1559,11 @@ async function scenarioView(param) {
   const overlap = [];
   for (const o of S.scenarios.values()) {
     if (o.latest.id === rec.id) continue;
-    const sharedRefs = Object.keys(rec.uses).filter((r) => o.latest.uses[r]);
-    const sharedLinks = rec.links.filter((l) => o.latest.links.includes(l));
-    if (sharedRefs.length) overlap.push({ s: o.latest, sharedRefs, sharedLinks });
+    const ov = overlapBetween(rec, o.latest);
+    if (ov.tier >= 0) overlap.push({ s: o.latest, ...ov });
   }
+  overlap.sort((a, b) => a.tier - b.tier || b.shared.length - a.shared.length);
+  const srcNote = isLatest ? sameSourceOf(rec.id) : [];
 
   const flowHtml = await flowPanel(rec, spec, flagRefs);
   return `<div class="world ${S.enterDetail ? "enter" : ""}">
@@ -1539,8 +1620,9 @@ async function scenarioView(param) {
     </div>
     <div>
       <div class="panel"><h2>Overlap with other flows <span class="count">(${overlap.length})</span></h2>
-        ${overlap.map((o) => `<div class="list-item" data-open="${esc(o.s.id)}"><div class="t">${esc(o.s.name)}</div>
-          <div class="s">shares ${o.sharedRefs.map((r) => esc(refName(r))).join(", ")}${o.sharedLinks.length ? ` · ${o.sharedLinks.length} shared connection(s)` : ""}</div></div>`).join("") || '<div class="muted">No shared components.</div>'}
+        ${overlap.map((o) => `<div class="list-item" data-open="${esc(o.s.id)}"><div class="t">${esc(o.s.name)} <span class="tchip t-${TIERS[o.tier].k}">${esc(tierLabel(o))}</span></div>
+          <div class="s">${Object.entries(o.byTier).map(([t, refs]) => `${TIERS.find((x) => x.k === t).label}: ${refs.map((q) => q.includes(" > ") ? q.split(" > ").map(refName).join(" → ") : refName(q)).map(esc).join(", ")}`).join(" · ")}</div></div>`).join("") || '<div class="muted">No overlap with other flows.</div>'}
+        ${srcNote.map((x) => `<div class="note" style="margin-top:8px">Same source: ${esc(refName(x.ref))} also triggers ${x.others.length} other scenario(s) — not counted as overlap.</div>`).join("")}
       </div>
       <div class="panel"><h2>Relations</h2>
         ${rec.relations.map((r) => `<div class="list-item" ${S.scenarios.has(r.scenarioId) ? `data-open="${esc(r.scenarioId)}"` : ""}><div class="t">${esc(r.type)}</div>
@@ -1682,6 +1764,7 @@ document.addEventListener("input", (ev) => {
   if (ev.target.id === "flagsOnly") { S.listFlagsOnly = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.listFlagsOnly); $("#listTable").innerHTML = listTable(); }
   if (ev.target.id === "compAttn") { S.compAttn = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.compAttn); $("#compTable").innerHTML = compTable(); return; }
   if (ev.target.id === "compShared") { S.compShared = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.compShared); $("#compTable").innerHTML = compTable(); return; }
+  if (ev.target.dataset?.strong) { X.strongOnly = ev.target.checked; rerenderExplorer(0); return; }
   if (ev.target.id === "mapAll") { S.mapAll = ev.target.checked; S.sel = null; refreshOverviewParts(); return; }
   if (ev.target.id === "decSearch") { S.decQuery = ev.target.value; $("#decTable").innerHTML = decisionsTable(); return; }
   if (ev.target.id === "decOpen") { S.decOpenOnly = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.decOpenOnly); $("#decTable").innerHTML = decisionsTable(); return; }
