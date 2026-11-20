@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Integration Registry — draft 0.2</title>
+<title>Integration Registry — draft 0.3</title>
 <style>
   :root {
     --bg: #f5f6f8; --panel: #ffffff; --ink: #1d2433; --muted: #667085; --line: #e3e6ec;
@@ -122,18 +122,119 @@
   .matrix td.d { background: transparent; }
   .src-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; background: rgba(255,255,255,.14); }
   .banner { background: var(--amber-bg); color: var(--amber); padding: 8px 12px; border-radius: 6px; display: inline-block; font-size: 12px; }
+  /* ===== draft 0.3: bands + worlds ===== */
+  body { background: radial-gradient(1200px 600px at 20% -10%, #eef3fa 0%, transparent 60%), radial-gradient(900px 500px at 100% 0%, #f1eefb 0%, transparent 55%), var(--bg); background-attachment: fixed; }
+  .home { display: flex; flex-direction: column; gap: 18px; padding: 6px 0 28px; perspective: 1600px; transform-origin: 50% 20%;
+    transition: transform .7s cubic-bezier(.16,1,.3,1), opacity .55s ease, filter .6s ease; }
+  .home.recede { transform: scale(.93) translateY(14px); opacity: .14; filter: saturate(.2) blur(2px); pointer-events: none; }
+  .home.instant { transition: none !important; }
+  .band { position: relative; display: flex; align-items: center; gap: 24px; min-height: 124px; padding: 22px 32px; border-radius: 22px; cursor: pointer; overflow: hidden; outline: none;
+    background: linear-gradient(140deg, #ffffff 0%, #f6f8fc 55%, #eef2f8 100%);
+    border: 1px solid rgba(16,24,40,.07);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.95), inset 0 -2px 0 rgba(16,24,40,.03), 0 1px 2px rgba(16,24,40,.05), 0 18px 40px -22px rgba(16,24,40,.35);
+    transform-style: preserve-3d; transition: transform .45s cubic-bezier(.16,1,.3,1), box-shadow .45s cubic-bezier(.16,1,.3,1);
+    animation: bandIn .7s cubic-bezier(.16,1,.3,1) both; animation-delay: calc(var(--i) * 70ms); }
+  @keyframes bandIn { from { opacity: 0; transform: translateY(18px) rotateX(8deg); } }
+  .band::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    background: linear-gradient(115deg, rgba(255,255,255,0) 30%, rgba(255,255,255,.55) 48%, rgba(255,255,255,0) 62%); transform: translateX(-60%); transition: transform .9s cubic-bezier(.16,1,.3,1); }
+  .band:hover, .band:focus-visible { transform: translateY(-5px) rotateX(4deg); box-shadow: inset 0 1px 0 #fff, 0 2px 4px rgba(16,24,40,.06), 0 34px 60px -26px rgba(16,24,40,.45); }
+  .band:hover::after, .band:focus-visible::after { transform: translateX(60%); }
+  .band:focus-visible { box-shadow: 0 0 0 3px rgba(15,124,122,.35), 0 34px 60px -26px rgba(16,24,40,.45); }
+  .band .deco { position: absolute; right: 120px; top: 50%; width: 220px; height: 220px; transform: translateY(-50%) translateZ(-20px); color: var(--c2); opacity: .06; pointer-events: none; }
+  .orb { flex: none; width: 70px; height: 70px; border-radius: 20px; display: grid; place-items: center; color: #fff;
+    background: radial-gradient(120% 120% at 30% 20%, var(--c1) 0%, var(--c2) 75%);
+    box-shadow: inset 0 2px 0 rgba(255,255,255,.4), inset 0 -8px 16px rgba(0,0,0,.22), 0 14px 26px -12px var(--c2), 0 4px 8px -4px rgba(16,24,40,.25);
+    transform: translateZ(40px); }
+  .orb svg { width: 32px; height: 32px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
+  .orb.sm { width: 48px; height: 48px; border-radius: 14px; } .orb.sm svg { width: 24px; height: 24px; }
+  .band .big, .world-head .big { font-size: 48px; font-weight: 700; letter-spacing: -2px; line-height: 1; color: #101828; min-width: 84px; transform: translateZ(30px);
+    background: linear-gradient(180deg, #1d2433 0%, #475467 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  .world-head .big { font-size: 34px; min-width: 0; }
+  .band .txt, .world-head .txt { display: flex; flex-direction: column; min-width: 0; transform: translateZ(20px); }
+  .band .name { font-size: 20px; font-weight: 650; color: #101828; letter-spacing: -.2px; }
+  .world-head .name { font-size: 18px; font-weight: 650; color: #101828; }
+  .band .desc, .world-head .desc { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .apill { margin-left: auto; flex: none; display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px 11px 14px; border-radius: 16px; color: #7a4600; font-size: 13px; font-weight: 500;
+    background: linear-gradient(150deg, #fff8e8 0%, #ffe7b8 100%); border: 1px solid rgba(184,110,0,.18);
+    box-shadow: inset 0 1px 0 #fff, 0 10px 22px -12px rgba(184,110,0,.65); transform: translateZ(36px); }
+  .apill b { font-size: 26px; font-weight: 700; letter-spacing: -.5px; color: #8a4f00; }
+  .apill .ico { width: 30px; height: 30px; border-radius: 10px; display: grid; place-items: center; color: #fff; background: radial-gradient(120% 120% at 30% 20%, #f5a524, #b86e00); box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 0 0 0 rgba(245,165,36,.5); animation: attnPulse 2.4s ease-out infinite; }
+  .apill .ico svg { width: 17px; height: 17px; }
+  @keyframes attnPulse { 0% { box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 0 0 0 rgba(245,165,36,.45); } 70%, 100% { box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 0 0 10px rgba(245,165,36,0); } }
+  .apill.sm { padding: 7px 14px 7px 10px; } .apill.sm b { font-size: 20px; } .apill.sm .ico { width: 24px; height: 24px; }
+  .clear { margin-left: auto; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: #2e7d5b; transform: translateZ(30px); }
+  .clear .ico { width: 26px; height: 26px; border-radius: 9px; display: grid; place-items: center; color: #fff; background: radial-gradient(120% 120% at 30% 20%, #3fbf86, #1f7a52); }
+  .clear .ico svg { width: 15px; height: 15px; }
+  .explore { margin-left: auto; display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: var(--c2); font-weight: 500; transform: translateZ(30px); }
+  .explore svg { width: 18px; height: 18px; transition: transform .3s; } .band:hover .explore svg { transform: translateX(4px); }
+  /* the morphing card and the world it becomes */
+  .morph { position: fixed; z-index: 60; overflow: hidden; pointer-events: none; background: linear-gradient(140deg, #ffffff 0%, #f4f7fb 100%);
+    border: 1px solid rgba(16,24,40,.08); box-shadow: 0 40px 80px -30px rgba(16,24,40,.45), 0 2px 6px rgba(16,24,40,.06); }
+  .world { background: #fff; border-radius: 20px; border: 1px solid rgba(16,24,40,.08); box-shadow: 0 30px 70px -36px rgba(16,24,40,.4), 0 1px 2px rgba(16,24,40,.04); min-height: calc(100vh - 120px); overflow: hidden; }
+  .world-head { display: flex; align-items: center; gap: 16px; padding: 18px 24px; background: linear-gradient(140deg, #ffffff 0%, #f4f7fb 100%); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 2; }
+  .wback { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--line); background: #fff; display: grid; place-items: center; cursor: pointer; color: var(--ink); box-shadow: 0 1px 2px rgba(16,24,40,.06); transition: transform .2s, box-shadow .2s; }
+  .wback:hover { transform: translateX(-2px); box-shadow: 0 4px 10px -4px rgba(16,24,40,.25); } .wback svg { width: 20px; height: 20px; }
+  .world-body { padding: 16px 24px 26px; }
+  .world.enter .world-body > .toolbar, .world.enter .world-body > .grid { animation: rise .55s cubic-bezier(.16,1,.3,1) both; animation-delay: .05s; }
+  .world.enter tr.r { animation: rise .55s cubic-bezier(.16,1,.3,1) both; animation-delay: calc(min(var(--i), 18) * 30ms + 120ms); }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+  .pill-toggle { display: inline-flex !important; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--line); background: #fff; cursor: pointer; font-size: 13px; color: var(--muted); user-select: none; }
+  .pill-toggle input { display: none; }
+  .pill-toggle .ico svg { width: 15px; height: 15px; vertical-align: -3px; }
+  .pill-toggle.on { background: var(--amber-bg); border-color: rgba(184,110,0,.35); color: var(--amber); }
+  .wtable th { position: sticky; top: 85px; background: #fff; z-index: 1; }
+  .wtable td { vertical-align: middle; }
+  .wtable th.mk, .wtable td.mk { width: 30px; padding-right: 0; }
+  .wtable tr.r { cursor: pointer; transition: background .2s; }
+  .wtable tr.r:hover td { background: #f7f9fc; }
+  .wtable tr.r.attn td { background: #fffaf0; }
+  .wtable tr.r.attn:hover td { background: #fff4de; }
+  .wtable tr.r.attn td:first-child { box-shadow: inset 4px 0 0 #f5a524; }
+  .wtable tr.r.open td { background: #f2f7f7; border-bottom-color: transparent; }
+  .wtable tr.r.attn.open td { background: #fff1d6; }
+  .wmark { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 7px; color: #fff; background: radial-gradient(120% 120% at 30% 20%, #f5a524, #b86e00); }
+  .wmark svg { width: 13px; height: 13px; }
+  .sub2 { margin-top: 2px; }
+  td.why { font-size: 12px; color: var(--amber); max-width: 280px; }
+  tr.xrow td { padding: 0 !important; border-bottom: 0; background: #fbfcfe; }
+  tr.xrow.on td { border-bottom: 1px solid var(--line); }
+  .xwrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .55s cubic-bezier(.16,1,.3,1); }
+  tr.xrow.on .xwrap { grid-template-rows: 1fr; }
+  .xwrap > .xslot { overflow: hidden; min-height: 0; }
+  .xin { padding: 14px 18px 16px 46px; opacity: 0; transform: translateY(-6px); transition: opacity .4s .12s, transform .5s .08s cubic-bezier(.16,1,.3,1); }
+  tr.xrow.on .xin { opacity: 1; transform: none; }
+  .explorer { width: 100%; max-width: 1000px; height: auto; display: block; font-family: var(--font); }
+  .explorer .xl { font-size: 11px; fill: #667085; letter-spacing: .4px; text-transform: uppercase; }
+  .explorer .xs { font-size: 11px; fill: #667085; }
+  .explorer .xe { fill: none; stroke: #b4bcc8; stroke-width: 1.6; }
+  .explorer .xe.ov { stroke: #0f7c7a; stroke-dasharray: 5 4; }
+  .explorer .xe.attn { stroke: #f5a524; stroke-width: 2.2; }
+  .explorer .xe.new { stroke: #6b4fd8; }
+  .explorer .xn rect:first-of-type { fill: #fff; stroke: #c9cfd9; stroke-width: 1.2; }
+  .explorer .xn text { font-size: 12.5px; fill: #1d2433; }
+  .explorer .xn[data-xjump], .explorer .xn[data-mapsel], .explorer .xn[data-open] { cursor: pointer; }
+  .explorer .xn[data-xjump]:hover rect:first-of-type, .explorer .xn[data-mapsel]:hover rect:first-of-type, .explorer .xn[data-open]:hover rect:first-of-type { stroke: #0f7c7a; stroke-width: 2; }
+  .explorer .xn.ov rect:first-of-type { stroke: #0f7c7a; stroke-dasharray: 4 3; }
+  .explorer .xn.attn rect:first-of-type { stroke: #f5a524; fill: #fff8ea; stroke-width: 1.6; }
+  .explorer .xn.new rect:first-of-type { stroke: #6b4fd8; fill: #f5f2fe; }
+  .explorer .xn.more text { fill: #667085; }
+  .explorer .xn.more rect:first-of-type { stroke-dasharray: 2 3; }
+  .explorer .xc rect { fill: #0f7c7a; filter: drop-shadow(0 6px 10px rgba(15,124,122,.35)); }
+  .explorer .xc.attn rect { fill: #b86e00; filter: drop-shadow(0 6px 10px rgba(184,110,0,.35)); }
+  .explorer .xc text { fill: #fff; font-size: 13px; font-weight: 600; }
+  .xfoot { display: flex; align-items: flex-start; gap: 16px; margin-top: 10px; flex-wrap: wrap; }
+  .xflags { flex: 1; min-width: 280px; } .xflags .flag { margin-bottom: 4px; font-size: 12.5px; }
+  .strip line { stroke: #c4cad4; stroke-width: 1.2; } .strip .ov { fill: #fff; stroke: #0f7c7a; stroke-width: 1.4; stroke-dasharray: 2 1.6; }
+  .strip .me { fill: #0f7c7a; } .strip .me.attn { fill: #f5a524; }
+  .selcard { background: #fbfcfe; border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; align-self: start; position: sticky; top: 100px; }
+  @media (max-width: 760px) { .band { flex-wrap: wrap; gap: 14px; padding: 18px; } .band .big { font-size: 38px; min-width: 0; } .apill, .clear, .explore { margin-left: 0; } .band .deco { display: none; } }
+  @media (prefers-reduced-motion: reduce) { .home, .band, .band::after, .xwrap, .xin { transition: none !important; animation: none !important; } .world.enter tr.r, .world.enter .world-body > * { animation: none !important; } .apill .ico { animation: none; } }
 </style>
 </head>
 <body>
 <header>
-  <h1>Integration Registry</h1>
-  <span class="draft">draft 0.2 · schema 0.5</span>
-  <nav id="nav">
-    <button data-view="overview" disabled>Overview</button>
-    <button data-view="list" disabled>All scenarios</button>
-    <button data-view="components" disabled>Components</button>
-    <button data-view="decisions" disabled>Decisions</button>
-  </nav>
+  <h1 data-act="home" style="cursor:pointer" title="Home">Integration Registry</h1>
+  <span class="draft">draft 0.3 · schema 0.5</span>
   <span class="spacer"></span>
   <span class="folder" id="folderName"></span>
   <button class="btn ghost small hidden" id="reloadBtn" title="Read the registry again">Reload</button>
@@ -149,14 +250,14 @@
 <script>
 "use strict";
 /* ============================================================================
-   Integration Registry — draft 0.2
+   Integration Registry — draft 0.3 (home = bands that open into lists)
    Default source: the registry folder in the GitHub repo (read-only); a local folder can be
    opened for the current browser session instead. Reads a registry folder of Pattern Bench "registry entry" files (schema 0.5),
    keeps index.json as a rebuildable cache, shows overview, directory, components
    and scenario detail with cross-scenario flags. Single self-contained file.
    ========================================================================== */
 
-const APP_VERSION = "0.2";
+const APP_VERSION = "0.3";
 const INDEX_FILE = "index.json";
 const LIFECYCLE_FILE = "lifecycle.json";
 const INDEX_SCHEMA = "pattern-bench.registry-index";
@@ -191,8 +292,8 @@ const S = {
   refs: new Map(),     // ref -> aggregated info
   specCache: new Map(),// path -> parsed full spec
   view: "overview", param: null,
-  listSort: { key: "changed", dir: -1 }, listQuery: "", listFlagsOnly: false,
-  compQuery: "", compShared: false,
+  listSort: { key: "flags", dir: -1 }, listQuery: "", listFlagsOnly: false,
+  compQuery: "", compShared: false, compAttn: false,
   assets: new Map(),   // container ref -> aggregated asset info
   mapMode: "asset", mapAll: false, sel: null,   // overview relationship map
   decQuery: "", decOpenOnly: true,
@@ -362,8 +463,7 @@ async function ingest(files) {
     (errors.length ? ` · could not read: ${errors.join(", ")}` : ""));
   S.ghError = ""; S.sel = null;
   renderSource();
-  document.querySelectorAll("#nav button").forEach((b) => (b.disabled = false));
-  go(S.view === "scenario" && !S.scenarios.has(S.param?.id) ? "overview" : S.view, S.param);
+  go(S.view === "scenario" && !S.scenarios.has(S.param?.id) ? "home" : S.view, S.param);
 }
 
 async function writeIndex() {
@@ -537,17 +637,14 @@ const activeFlags = (s) => s.flags.filter((f) => !f.acked && f.sev !== "grey");
 /* ============================================================================
    4. Views
    ========================================================================== */
-function go(view, param) {
+function go(view, param, opts = {}) {
   S.view = view; S.param = param || null;
-  document.querySelectorAll("#nav button").forEach((b) => b.classList.toggle("on", b.dataset.view === view));
   const v = $("#view");
   if (!S.records.length && !S.folderName) { v.innerHTML = emptyView(); return; }
-  if (view === "list") v.innerHTML = listView();
-  else if (view === "components") v.innerHTML = componentsView();
-  else if (view === "decisions") v.innerHTML = decisionsView();
-  else if (view === "scenario") { v.innerHTML = `<div class="panel">Loading …</div>`; scenarioView(param).then((h) => { if (S.view === "scenario") v.innerHTML = h; }); }
-  else v.innerHTML = overviewView();
-  window.scrollTo(0, 0);
+  if (view === "scenario") { v.innerHTML = `<div class="panel">Loading …</div>`; scenarioView(param).then((h) => { if (S.view === "scenario") v.innerHTML = h; }); }
+  else if (view === "band") v.innerHTML = worldView(param.k, opts.enter);
+  else { S.view = "home"; v.innerHTML = homeView(); }
+  if (!opts.keepScroll) window.scrollTo(0, 0);
 }
 
 function emptyView() {
@@ -674,7 +771,6 @@ function mapSvg(g) {
       <rect x="${x2}" y="${y}" width="5" height="${NH}" rx="2" fill="${k.col}"/>
       <text x="${x2 + 14}" y="${y + 16}" font-size="12.5" font-weight="600" fill="#1d2433">${esc(short(t.name, 30))}</text>
       <text x="${x2 + 14}" y="${y + 31}" font-size="10.5" fill="#667085">${esc(short(t.sub, 36))}</text>
-      ${t.n > 1 ? `<rect x="${x2 + NW - 42}" y="${y + 11}" width="32" height="18" rx="9" fill="#0f7c7a"/><text x="${x2 + NW - 26}" y="${y + 24}" font-size="11" text-anchor="middle" fill="#fff" font-weight="600">×${t.n}</text>` : ""}
       <title>${esc(t.name)} — used by ${t.n} scenario${t.n === 1 ? "" : "s"}</title></g>`;
   }
   return svg + "</svg>";
@@ -743,102 +839,7 @@ function selPanel(g) {
   return "";
 }
 
-/* Scenario × scenario overlap matrix (shared assets or components). */
-function matrixHtml(g) {
-  const ids = g.L;
-  if (ids.length < 2) return `<div class="muted">Overlap needs at least two scenarios.</div>`;
-  const tset = new Map(ids.map((id) => [id, new Set(g.edges.filter((e) => e.s === id).map((e) => e.t))]));
-  const cnt = (a, b) => { let n = 0; for (const t of tset.get(a)) if (tset.get(b).has(t)) n++; return n; };
-  let max = 1; for (const a of ids) for (const b of ids) if (a !== b) max = Math.max(max, cnt(a, b));
-  const on = (a, b) => S.sel && S.sel.type === "p" && ((S.sel.a === a && S.sel.b === b) || (S.sel.a === b && S.sel.b === a));
-  return `<div class="scroll"><table class="matrix"><tr><th></th>${ids.map((id, i) => `<th class="ch" title="${esc(scenarioName(id))}">${i + 1}</th>`).join("")}</tr>
-    ${ids.map((a, i) => `<tr><th class="rh" title="${esc(scenarioName(a))}">${i + 1}. ${esc(short(scenarioName(a), 30))}</th>${ids.map((b) => {
-      if (a === b) return `<td class="c d"></td>`;
-      const n = cnt(a, b);
-      return n ? `<td class="c n ${on(a, b) ? "on" : ""}" data-sel="p|${esc(a)}|${esc(b)}" style="background:rgba(15,124,122,${(0.25 + 0.75 * n / max).toFixed(2)})" title="${esc(scenarioName(a))} ∩ ${esc(scenarioName(b))}: ${n}">${n}</td>` : `<td class="c">·</td>`;
-    }).join("")}</tr>`).join("")}</table></div>
-    <div class="note" style="margin-top:6px">Number = ${S.mapMode === "asset" ? "assets" : "components"} two scenarios share. Click a cell to see which.</div>`;
-}
-
-function overviewView() {
-  const all = [...S.scenarios.values()];
-  if (!all.length) return `<div class="panel">No registry entries found in <b>${esc(S.folderName)}</b>. Files must use schema <code>${ENTRY_SCHEMA}</code>.
-    ${S.source === "github" ? `<div class="note" style="margin-top:6px">Put Pattern Bench registry exports into <code>${esc(GH.path)}/</code> in the repo, or open a local folder for this session.</div>` : ""}</div>`;
-  const attention = all.filter((s) => activeFlags(s).length).sort((a, b) => activeFlags(b).length - activeFlags(a).length);
-  const recent = all.slice().sort((a, b) => String(b.latest.exportedAt).localeCompare(String(a.latest.exportedAt))).slice(0, 6);
-  const openVers = all.reduce((n, s) => n + s.latest.openVersions, 0);
-  const withOpen = all.filter((s) => s.latest.openVersions).length;
-  const shared = [...S.refs.values()].filter((x) => x.scenarios.size > 1).length;
-  const sharedAssets = [...S.assets.values()].filter((a) => a.scenarios.size > 1).length;
-  const retire = S.lifecycle ? S.lifecycle.events.filter((e) => S.lifecycle.byKey.get(e.ref + "@" + e.version) === e && e.stage === "deprecated")
-    .sort((a, b) => String(a.retireOn || "9").localeCompare(String(b.retireOn || "9"))) : [];
-  const g = mapGraph();
-  if (S.sel && ((S.sel.type === "t" && !g.targets.has(S.sel.id)) || (S.sel.type === "s" && !S.scenarios.has(S.sel.id)))) S.sel = null;
-  return `
-  <div class="grid g4" style="margin-bottom:16px">
-    <div class="tile click" data-go="list" tabindex="0"><div class="num">${all.length}</div><div class="lbl">Scenarios (end-to-end flows)</div>
-      <div class="split">${sharedAssets} of ${S.assets.size} assets shared</div><div class="go">See all scenarios →</div></div>
-    <div class="tile click" data-go="components:shared" tabindex="0"><div class="num">${S.refs.size}</div><div class="lbl">Components</div>
-      <div class="split">${shared} shared by several flows</div><div class="go">See shared components →</div></div>
-    <div class="tile click" data-go="decisions" tabindex="0"><div class="num">${openVers}</div><div class="lbl">Open versioning decisions</div>
-      <div class="split">across ${withOpen} scenario${withOpen === 1 ? "" : "s"}</div><div class="go">See decisions →</div></div>
-    <div class="tile click ${attention.length ? "warn" : ""}" data-go="list:flags" tabindex="0"><div class="num">${attention.length}</div><div class="lbl">Scenarios need attention</div>
-      <div class="split">${attention.reduce((n, s) => n + activeFlags(s).length, 0)} open flags</div><div class="go">See flagged scenarios →</div></div>
-  </div>
-
-  <div class="grid g-map">
-    <div class="panel">
-      <div class="panel-head"><h2>Relationship map</h2>
-        <span class="seg"><button data-map="asset" class="${S.mapMode === "asset" ? "on" : ""}">By asset</button><button data-map="ref" class="${S.mapMode === "ref" ? "on" : ""}">By component</button></span>
-        <label class="note" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="mapAll" ${S.mapAll ? "checked" : ""}> show unshared too</label>
-        <span class="spacer" style="flex:1"></span>
-        ${S.sel ? `<button class="btn ghost small" style="color:var(--teal)" data-act="clearsel">Clear selection</button>` : ""}
-      </div>
-      <div id="mapBox">${g.R.length ? mapSvg(g) : `<div class="muted">Nothing shared yet — switch on “show unshared too”.</div>`}</div>
-      <div class="legend"><span><i style="background:#0f7c7a"></i>iPaaS</span><span><i style="background:#6b4fd8"></i>message broker</span><span><i style="background:#8a94a6"></i>end application / caller</span>
-        <span style="color:#6b4fd8">━ open new version</span><span style="color:#b86e00">━ flagged</span><span>– – overlapping scenario</span></div>
-    </div>
-    <div class="panel" id="selBox">${selPanel(g)}</div>
-  </div>
-
-  <div class="grid g2">
-    <div class="panel"><h2>Overlap matrix <span class="count">(${S.mapMode === "asset" ? "shared assets" : "shared components"})</span></h2>${matrixHtml(g)}</div>
-    <div class="panel"><h2>Needs attention <span class="count">(${attention.length})</span></h2>
-      ${attention.length ? attention.slice(0, 6).map((s) => `<div class="list-item" data-open="${esc(s.latest.id)}">
-          <div class="t">${esc(s.latest.name)} <span class="chip amber">⚠ ${activeFlags(s).length}</span></div>
-          <div class="s">${esc(activeFlags(s)[0].text)}</div></div>`).join("") + (attention.length > 6 ? `<div class="list-item linkish" data-go="list:flags">All ${attention.length} →</div>` : "") : `<div class="muted">Nothing flagged.</div>`}
-    </div>
-  </div>
-  <div class="grid g2">
-    <div class="panel"><h2>Recently changed</h2>
-      ${recent.map((s) => `<div class="list-item" data-open="${esc(s.latest.id)}">
-          <div class="t">${esc(s.latest.name)} <span class="chip">v${s.latest.version}</span></div>
-          <div class="s">${esc(fmtDate(s.latest.exportedAt))}${s.latest.author ? " · " + esc(s.latest.author) : ""} · ${esc(s.latest.platforms.join(", "))}</div></div>`).join("")}
-    </div>
-    <div class="panel"><h2>Upcoming retirements ${S.lifecycle ? '<span class="count">(from lifecycle.json)</span>' : ""}</h2>
-    ${!S.lifecycle ? `<div class="muted">No <code>lifecycle.json</code> in the registry folder.</div>` : retire.length ? `<table><tr><th>Component</th><th>Version</th><th>Retires on</th><th>Still used by</th></tr>
-      ${retire.map((e) => { const users = [...S.scenarios.values()].filter((s) => (s.latest.uses[e.ref] || []).includes(e.version));
-        return `<tr><td>${esc(refName(e.ref))}<div class="mono muted">${esc(e.ref)}</div></td><td>${esc(e.version)}</td><td class="nowrap">${esc(e.retireOn || "—")}</td>
-        <td>${users.map((s) => `<span class="chip amber" data-open="${esc(s.latest.id)}" style="cursor:pointer">${esc(s.latest.name)}</span>`).join("") || '<span class="muted">none</span>'}</td></tr>`; }).join("")}</table>`
-      : `<div class="muted">No deprecated versions.</div>`}</div>
-  </div>`;
-}
-
-/* Re-draw only the map, side panel and matrix after a selection change. */
-function refreshOverviewParts() {
-  if (S.view !== "overview") return;
-  $("#view").innerHTML = overviewView();
-}
-
 /* ---- decisions across all scenarios ---- */
-function decisionsView() {
-  return `<div class="panel">
-    <div class="toolbar">
-      <input type="search" id="decSearch" placeholder="Search decision, component, option, reason, scenario …" value="${esc(S.decQuery)}">
-      <label><input type="checkbox" id="decOpen" ${S.decOpenOnly ? "checked" : ""}> open only</label>
-    </div>
-    <div id="decTable">${decisionsTable()}</div></div>`;
-}
 function decisionsTable() {
   const q = S.decQuery.trim().toLowerCase();
   const rows = [];
@@ -851,8 +852,8 @@ function decisionsTable() {
   rows.sort((a, b) => a.s.name.localeCompare(b.s.name) || String(b.d.when).localeCompare(String(a.d.when)));
   const nsc = new Set(rows.map((r) => r.s.id)).size;
   return `<div class="note" style="margin-bottom:6px">${rows.length} decision${rows.length === 1 ? "" : "s"} in ${nsc} scenario${nsc === 1 ? "" : "s"} · click a row to open the scenario</div>
-  <table><thead><tr><th>Scenario</th><th>Decision</th><th>On</th><th>Change</th><th>Why</th><th>Who / when</th><th>Status</th></tr></thead><tbody>
-  ${rows.map(({ s, d }) => `<tr class="row" data-open="${esc(s.id)}">
+  <table class="wtable"><thead><tr><th>Scenario</th><th>Decision</th><th>On</th><th>Change</th><th>Why</th><th>Who / when</th><th>Status</th></tr></thead><tbody>
+  ${rows.map(({ s, d }, i) => `<tr class="row r ${d.warnings ? "attn" : ""}" style="--i:${i}" data-open="${esc(s.id)}">
     <td><b>${esc(s.name)}</b></td>
     <td>${esc(d.label)}${d.option ? ` <span class="chip">${esc(d.option)}</span>` : ""}${d.warnings ? ` <span class="chip amber">⚠ ${d.warnings}</span>` : ""}</td>
     <td>${esc(d.on)}${d.side ? `<div class="muted" style="font-size:12px">${esc(d.side)}</div>` : ""}</td>
@@ -886,49 +887,294 @@ function listRows() {
   rows.sort((a, b) => { const x = col.get(a.latest, a), y = col.get(b.latest, b); return (x > y ? 1 : x < y ? -1 : 0) * S.listSort.dir; });
   return rows;
 }
-function listView() {
-  return `<div class="panel">
-    <div class="toolbar">
-      <input type="search" id="listSearch" placeholder="Search name, platform, asset, end application, component, tag …" value="${esc(S.listQuery)}">
-      <label><input type="checkbox" id="flagsOnly" ${S.listFlagsOnly ? "checked" : ""}> only with flags</label>
-    </div>
-    <div id="listTable">${listTable()}</div>
+/* ==========================================================================
+   Home = bands; a band opens into a full-frame "world" (draft 0.3)
+   ========================================================================== */
+const EASE = "cubic-bezier(.16,1,.3,1)";
+const reduced = () => !!window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+const ICON = {
+  sc: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.3"/><circle cx="19" cy="18" r="2.3"/><path d="M7.3 6H14a3.5 3.5 0 0 1 0 7h-4a3.5 3.5 0 0 0 0 7h6.7"/></svg>`,
+  co: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2.8 20 7v10l-8 4.2L4 17V7z"/><path d="M4 7l8 4.2L20 7M12 11.2v10"/></svg>`,
+  de: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="9" r="2.2"/><path d="M6 7.2v9.6M18 11.2c0 4-6 3-11 6"/></svg>`,
+  map: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="2.6"/><circle cx="4.5" cy="5" r="2"/><circle cx="19.5" cy="5" r="2"/><circle cx="4.5" cy="19" r="2"/><circle cx="19.5" cy="19" r="2"/><path d="M6.2 6.4 10 10M17.8 6.4 14 10M6.2 17.6 10 14M17.8 17.6 14 14"/></svg>`,
+  warn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.2M12 17.2h.01"/></svg>`,
+  check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>`,
+  back: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`,
+  chev: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`,
+};
+const BANDS = [
+  { k: "sc", name: "Scenarios", desc: "End-to-end integration flows", c1: "#19b3ad", c2: "#0a5f5c", attnLabel: "need attention" },
+  { k: "co", name: "Components", desc: "APIs, processes, topics, queues and folders", c1: "#6b8cff", c2: "#2f43c2", attnLabel: "need attention" },
+  { k: "de", name: "Open decisions", desc: "Versioning decisions not yet completed", c1: "#9a7cf5", c2: "#5333c4", attnLabel: "with open warnings" },
+  { k: "map", name: "Relationship map", desc: "Where scenarios meet — shared platforms, brokers and end applications", c1: "#5f6f88", c2: "#222d40" },
+];
+
+/* components that need attention: flagged in a scenario, or a version in use is deprecated / retired */
+function attnRefs() {
+  const m = new Map();
+  const add = (ref, txt) => { if (!ref) return; if (!m.has(ref)) m.set(ref, []); if (!m.get(ref).includes(txt)) m.get(ref).push(txt); };
+  for (const s of S.scenarios.values()) for (const f of activeFlags(s)) if (f.ref) add(f.ref, f.text);
+  if (S.lifecycle) for (const x of S.refs.values()) for (const v of x.versions) {
+    const st = S.lifecycle.byKey.get(x.ref + "@" + v)?.stage;
+    if (st === "deprecated" || st === "retired") add(x.ref, `${v} is ${st}`);
+  }
+  return m;
+}
+function openDecisions() {
+  const out = [];
+  for (const s of S.scenarios.values()) for (const d of s.latest.decisionList || []) if (d.status !== "completed") out.push({ s: s.latest, d });
+  return out;
+}
+function bandStats(k) {
+  if (k === "sc") return { n: S.scenarios.size, a: [...S.scenarios.values()].filter((s) => activeFlags(s).length).length };
+  if (k === "co") return { n: S.refs.size, a: attnRefs().size };
+  if (k === "de") { const o = openDecisions(); return { n: o.length, a: o.filter((x) => x.d.warnings).length }; }
+  return { n: null, a: 0 };
+}
+/* scenarios sharing components with this one, most shared first */
+function overlapsOf(id) {
+  const me = S.scenarios.get(id)?.latest; if (!me) return [];
+  const mine = new Set(Object.keys(me.uses));
+  const out = [];
+  for (const o of S.scenarios.values()) {
+    if (o.latest.id === id) continue;
+    const shared = Object.keys(o.latest.uses).filter((r) => mine.has(r));
+    if (shared.length) out.push({ id: o.latest.id, shared });
+  }
+  return out.sort((a, b) => b.shared.length - a.shared.length);
+}
+
+function orb(k, size) { const b = BANDS.find((x) => x.k === k); return `<span class="orb ${size || ""}" style="--c1:${b.c1};--c2:${b.c2}">${ICON[k]}</span>`; }
+function decoSvg(k) {   // large faint motif in the band's corner
+  const p = { sc: `<path d="M20 40h70a30 30 0 0 1 0 60H60a30 30 0 0 0 0 60h90" /><circle cx="20" cy="40" r="10"/><circle cx="150" cy="160" r="10"/>`,
+    co: `<path d="M100 20 170 58v84l-70 38-70-38V58z"/><path d="M30 58l70 38 70-38M100 96v84"/>`,
+    de: `<circle cx="50" cy="30" r="12"/><circle cx="50" cy="170" r="12"/><circle cx="150" cy="70" r="12"/><path d="M50 42v116M150 82c0 40-50 30-95 76"/>`,
+    map: `<circle cx="100" cy="100" r="18"/><circle cx="30" cy="30" r="12"/><circle cx="170" cy="30" r="12"/><circle cx="30" cy="170" r="12"/><circle cx="170" cy="170" r="12"/><path d="M40 40l46 46M160 40l-46 46M40 160l46-46M160 160l-46-46"/>` }[k];
+  return `<svg class="deco" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" aria-hidden="true">${p}</svg>`;
+}
+
+function homeView() {
+  if (!S.scenarios.size) return `<div class="panel">No registry entries found in <b>${esc(S.folderName)}</b>. Files must use schema <code>${ENTRY_SCHEMA}</code>.
+    ${S.source === "github" ? `<div class="note" style="margin-top:6px">Put Pattern Bench registry exports into <code>${esc(GH.path)}/</code> in the repo, or open a local folder for this session.</div>` : ""}</div>`;
+  return `<div class="home">${BANDS.map((b, i) => {
+    const st = bandStats(b.k);
+    const right = b.k === "map" ? `<span class="explore">Explore ${ICON.chev}</span>`
+      : st.a ? `<span class="apill" title="${st.a} ${b.attnLabel}"><span class="ico">${ICON.warn}</span><b>${st.a}</b><span>${b.attnLabel}</span></span>`
+      : `<span class="clear"><span class="ico">${ICON.check}</span>All clear</span>`;
+    return `<div class="band" data-band="${b.k}" tabindex="0" role="button" aria-label="Open ${b.name}" style="--i:${i};--c1:${b.c1};--c2:${b.c2}">
+      ${decoSvg(b.k)}${orb(b.k)}
+      ${st.n !== null ? `<span class="big">${st.n}</span>` : ""}
+      <span class="txt"><span class="name">${b.name}</span><span class="desc">${b.desc}</span></span>
+      ${right}</div>`;
+  }).join("")}</div>`;
+}
+
+function worldHead(k) {
+  const b = BANDS.find((x) => x.k === k), st = bandStats(k);
+  return `<div class="world-head">
+    <button class="wback" data-act="home" aria-label="Back to all bands">${ICON.back}</button>
+    ${orb(k, "sm")}${st.n !== null ? `<span class="big">${st.n}</span>` : ""}
+    <span class="txt"><span class="name">${b.name}</span><span class="desc">${b.desc}</span></span>
+    ${st.a ? `<span class="apill sm"><span class="ico">${ICON.warn}</span><b>${st.a}</b><span>${b.attnLabel}</span></span>` : ""}
   </div>`;
+}
+function worldView(k, enter) {
+  const body = k === "sc" ? scWorld() : k === "co" ? coWorld() : k === "de" ? deWorld() : mapWorld();
+  return `<div class="world ${enter ? "enter" : ""}" data-world="${k}">${worldHead(k)}<div class="world-body" id="worldBody">${body}</div></div>`;
+}
+
+/* ---- the opening / closing transition (shared-element morph) ---- */
+function openWorld(el, k) {
+  // every band opens fresh: no filters left over from an earlier visit
+  S.listQuery = ""; S.listFlagsOnly = false; S.compQuery = ""; S.compAttn = false; S.compShared = false; S.decQuery = ""; S.decOpenOnly = true;
+  if (k === "map") S.sel = null;
+  if (reduced() || !el.animate) return go("band", { k });
+  window.scrollTo(0, 0);
+  const r = el.getBoundingClientRect(), v = $("#view").getBoundingClientRect();
+  $(".home")?.classList.add("recede");
+  const mo = document.createElement("div");
+  mo.className = "morph"; mo.innerHTML = worldHead(k);
+  document.body.appendChild(mo);
+  const from = { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", borderRadius: "22px" };
+  const to = { left: v.left + "px", top: v.top + "px", width: v.width + "px", height: Math.max(320, innerHeight - v.top - 18) + "px", borderRadius: "20px" };
+  Object.assign(mo.style, from);
+  el.style.visibility = "hidden";
+  mo.animate([from, to], { duration: 720, easing: EASE, fill: "forwards" }).onfinish = () => {
+    go("band", { k }, { enter: true });
+    mo.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 260, easing: "ease-out", fill: "forwards" }).onfinish = () => mo.remove();
+  };
+}
+function closeWorld() {
+  const k = S.param?.k, w = $(".world");
+  if (reduced() || !w || !w.animate) return go("home");
+  window.scrollTo(0, 0);
+  const wr = w.getBoundingClientRect();
+  go("home");
+  const home = $(".home"), el = home?.querySelector(`[data-band="${k}"]`);
+  if (!el) return;
+  const r = el.getBoundingClientRect();
+  home.classList.add("recede", "instant"); void home.offsetWidth; home.classList.remove("instant");
+  const mo = document.createElement("div");
+  mo.className = "morph"; mo.innerHTML = worldHead(k);
+  document.body.appendChild(mo);
+  const from = { left: wr.left + "px", top: wr.top + "px", width: wr.width + "px", height: Math.min(wr.height, innerHeight - wr.top - 18) + "px", borderRadius: "20px" };
+  const to = { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", borderRadius: "22px" };
+  el.style.visibility = "hidden";
+  requestAnimationFrame(() => home.classList.remove("recede"));
+  mo.animate([from, to], { duration: 600, easing: EASE, fill: "forwards" }).onfinish = () => {
+    el.style.visibility = "";
+    mo.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, fill: "forwards" }).onfinish = () => mo.remove();
+  };
+}
+
+/* ---- relationship explorer (per list row) ---- */
+function explorerSvg(center, left, right, lt, rt) {
+  const ROW = 34, H = Math.max(left.length, right.length, 1) * ROW + 40, cy = 26 + (H - 26) / 2;
+  const W = 900, BW = 250, xL = 10, xR = W - BW - 10, cx = W / 2;
+  const yOf = (i, n) => 30 + i * ROW + (H - 30 - n * ROW) / 2;
+  let s = `<svg class="explorer" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Relationship explorer for ${esc(center.label)}">
+    <text x="${xL}" y="16" class="xl">${esc(lt)}</text><text x="${xR}" y="16" class="xl">${esc(rt)}</text>`;
+  left.forEach((it, i) => { const y = yOf(i, left.length);
+    s += `<path d="M${xL + BW} ${y + 13} C${cx - 140} ${y + 13} ${cx - 160} ${cy} ${cx - 95} ${cy}" class="xe ${it.cls || ""}" />
+      <g class="xn ${it.cls || ""}" ${it.attr || ""}><rect x="${xL}" y="${y}" width="${BW}" height="26" rx="7"/>
+      <text x="${xL + 12}" y="${y + 17}">${esc(short(it.label, it.sub ? 26 : 34))}</text>${it.sub ? `<text x="${xL + BW - 10}" y="${y + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 16))}</text>` : ""}<title>${esc(it.title || it.label)}</title></g>`; });
+  right.forEach((it, i) => { const y = yOf(i, right.length);
+    s += `<path d="M${cx + 95} ${cy} C${cx + 160} ${cy} ${cx + 140} ${y + 13} ${xR} ${y + 13}" class="xe ${it.cls || ""}" />
+      <g class="xn ${it.cls || ""}" ${it.attr || ""}><rect x="${xR}" y="${y}" width="${BW}" height="26" rx="7"/>${it.col ? `<rect x="${xR}" y="${y}" width="5" height="26" rx="2" fill="${it.col}" stroke="none"/>` : ""}
+      <text x="${xR + 14}" y="${y + 17}">${esc(short(it.label, it.sub ? 24 : 32))}</text>${it.sub ? `<text x="${xR + BW - 10}" y="${y + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 18))}</text>` : ""}<title>${esc(it.title || it.label)}</title></g>`; });
+  if (!left.length) s += `<text x="${xL}" y="${cy + 4}" class="xs">no overlap with other scenarios</text>`;
+  s += `<g class="xc ${center.cls || ""}"><rect x="${cx - 95}" y="${cy - 20}" width="190" height="40" rx="10"/><text x="${cx}" y="${cy + 5}" text-anchor="middle">${esc(short(center.label, 24))}</text></g>`;
+  return s + "</svg>";
+}
+function stripSvg(nLeft, rightCols, attn) {
+  let s = `<svg class="strip" width="132" height="22" viewBox="0 0 132 22" aria-hidden="true">`;
+  for (let i = 0; i < Math.min(nLeft, 4); i++) { const x = 10 + i * 13; s += `<line x1="${x}" y1="11" x2="60" y2="11"/><circle cx="${x}" cy="11" r="4.2" class="ov"/>`; }
+  rightCols.slice(0, 5).forEach((c, i) => { const x = 78 + i * 12; s += `<line x1="70" y1="11" x2="${x}" y2="11"/><rect x="${x - 4}" y="7" width="8" height="8" rx="2" fill="${c}" stroke="none"/>`; });
+  return s + `<circle cx="65" cy="11" r="6" class="me ${attn ? "attn" : ""}"/></svg>`;
+}
+function scExplorer(id) {
+  const s = S.scenarios.get(id), r = s.latest, fl = flaggedRefs(s), ov = overlapsOf(id);
+  const left = ov.slice(0, 8).map((o) => ({ label: scenarioName(o.id), sub: o.shared.length > 1 ? "shares " + o.shared.length : "shares 1",
+    title: "Shares: " + o.shared.map(refName).join(", "), cls: "ov", attr: `data-xjump="${esc(o.id)}"` }));
+  if (ov.length > 8) left.push({ label: `+ ${ov.length - 8} more`, cls: "more" });
+  const right = (r.containers || []).map((k) => ({ label: k.name, sub: k.platform || kindInfo(k.kind).label, col: kindInfo(k.kind).col,
+    cls: k.refs.some((x) => fl.has(x)) ? "attn" : "", attr: `data-mapsel="${esc(k.key)}"`, title: k.name + " — click to see it on the relationship map" }));
+  const fls = activeFlags(s);
+  return `<div class="xin">${explorerSvg({ label: r.name, cls: fls.length ? "attn" : "" }, left, right, "Overlaps with", "Uses")}
+    <div class="xfoot">${fls.length ? `<div class="xflags">${fls.slice(0, 3).map((f) => `<div class="flag ${f.sev === "red" ? "red" : ""}"><span class="ico">⚠</span><div>${esc(f.text)}</div></div>`).join("")}</div>` : ""}
+      <button class="btn small" data-open="${esc(id)}">Open scenario</button></div></div>`;
+}
+function coExplorer(ref) {
+  const x = S.refs.get(ref), ar = attnRefs().get(ref) || [];
+  const lc = (v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
+  const left = [...x.scenarios].map((id) => { const v = S.scenarios.get(id).latest.uses[ref] || [], behind = Math.max(...v.map(vnum)) < x.max;
+    return { label: scenarioName(id), sub: v.join("+") + (behind ? " · behind" : ""), cls: behind ? "attn" : "ov", attr: `data-open="${esc(id)}"` }; });
+  const right = [...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => { const st = lc(v);
+    return { label: v, sub: st || "", cls: st === "deprecated" || st === "retired" ? "attn" : vnum(v) === x.max && x.versions.size > 1 ? "new" : "" }; });
+  return `<div class="xin">${explorerSvg({ label: refName(ref), cls: ar.length ? "attn" : "" }, left, right, "Used by", "Versions")}
+    <div class="xfoot">${ar.length ? `<div class="xflags">${ar.slice(0, 3).map((t) => `<div class="flag"><span class="ico">⚠</span><div>${esc(t)}</div></div>`).join("")}</div>` : ""}
+      <span class="mono muted">${esc(ref)}</span></div></div>`;
+}
+
+/* ---- Scenarios world ---- */
+function scWorld() {
+  return `<div class="toolbar">
+      <input type="search" id="listSearch" placeholder="Search name, platform, asset, end application, component, tag …" value="${esc(S.listQuery)}">
+      <label class="pill-toggle ${S.listFlagsOnly ? "on" : ""}"><input type="checkbox" id="flagsOnly" ${S.listFlagsOnly ? "checked" : ""}><span class="ico">${ICON.warn}</span>Needs attention only</label>
+    </div>
+    <div id="listTable">${listTable()}</div>`;
 }
 function listTable() {
   const rows = listRows();
   const arrow = (k) => (S.listSort.key === k ? (S.listSort.dir > 0 ? " ▲" : " ▼") : "");
-  return `<div class="note" style="margin-bottom:6px">${rows.length} of ${S.scenarios.size} scenarios · click a column to sort · click a row to open</div>
-  <table><thead><tr>${LIST_COLS.map((c) => `<th class="sort" data-sort="${c.key}">${c.label}${arrow(c.key)}</th>`).join("")}</tr></thead>
-  <tbody>${rows.map((s) => { const r = s.latest, n = activeFlags(s).length; return `<tr class="row" data-open="${esc(r.id)}">
-    <td><b>${esc(r.name)}</b><div class="mono muted">${esc(r.id)}</div></td>
+  const cols = LIST_COLS.filter((c) => c.key !== "tags");
+  return `<table class="wtable"><thead><tr><th class="mk"></th>${cols.map((c) => `<th class="sort" data-sort="${c.key}">${c.label}${arrow(c.key)}</th>`).join("")}<th>Relations</th></tr></thead>
+  <tbody>${rows.map((s, i) => { const r = s.latest, n = activeFlags(s).length, ov = overlapsOf(r.id).length;
+    return `<tr class="r ${n ? "attn" : ""}" style="--i:${i}" data-xrow="${esc(r.id)}" data-xkind="sc" tabindex="0">
+    <td class="mk">${n ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
+    <td><b>${esc(r.name)}</b><div class="sub2">${r.tags.length ? chips(r.tags) : `<span class="mono muted">${esc(r.id)}</span>`}</div></td>
     <td>${chips(r.platforms)}</td><td>${chips(r.assets)}</td><td>${chips(r.endApps)}</td>
     <td class="nowrap">v${r.version}</td>
-    <td>${r.decisions}${r.openVersions ? ` <span class="chip violet">${r.openVersions} open</span>` : ""}</td>
-    <td>${n ? `<span class="chip amber">⚠ ${n}</span>` : '<span class="muted">—</span>'}</td>
-    <td class="nowrap">${esc(fmtDate(r.exportedAt))}</td><td>${esc(r.author)}</td><td>${chips(r.tags)}</td></tr>`; }).join("")}
+    <td class="nowrap">${r.decisions}${r.openVersions ? ` <span class="chip violet">${r.openVersions} open</span>` : ""}</td>
+    <td class="nowrap">${n ? `<span class="chip amber">⚠ ${n}</span>` : '<span class="muted">—</span>'}</td>
+    <td class="nowrap">${esc(fmtDate(r.exportedAt))}</td><td>${esc(r.author)}</td>
+    <td>${stripSvg(ov, (r.containers || []).map((k) => kindInfo(k.kind).col), n)}</td></tr>
+    <tr class="xrow" data-for="${esc(r.id)}"><td colspan="${cols.length + 2}"><div class="xwrap"><div class="xslot"></div></div></td></tr>`; }).join("")
+    || `<tr><td colspan="${cols.length + 2}" class="muted" style="padding:18px">No scenarios match.</td></tr>`}
   </tbody></table>`;
 }
 
-/* ---- components (by ref) ---- */
-function componentsView() {
-  const q = S.compQuery.trim().toLowerCase();
+/* ---- Components world ---- */
+function coWorld() {
+  return `<div class="toolbar"><input type="search" id="compSearch" placeholder="Search component name, ref or type …" value="${esc(S.compQuery)}">
+      <label class="pill-toggle ${S.compAttn ? "on" : ""}"><input type="checkbox" id="compAttn" ${S.compAttn ? "checked" : ""}><span class="ico">${ICON.warn}</span>Needs attention only</label>
+      <label class="pill-toggle ${S.compShared ? "on" : ""}"><input type="checkbox" id="compShared" ${S.compShared ? "checked" : ""}>Shared only</label></div>
+    <div id="compTable">${compTable()}</div>`;
+}
+function compTable() {
+  const q = S.compQuery.trim().toLowerCase(), ar = attnRefs();
   let list = [...S.refs.values()];
-  if (q) list = list.filter((x) => (x.ref + " " + [...x.names].join(" ") + " " + x.type).toLowerCase().includes(q));
+  if (q) list = list.filter((x) => (x.ref + " " + [...x.names].join(" ") + " " + x.type + " " + (x.asset || "")).toLowerCase().includes(q));
   if (S.compShared) list = list.filter((x) => x.scenarios.size > 1);
-  list.sort((a, b) => b.scenarios.size - a.scenarios.size || a.ref.localeCompare(b.ref));
+  if (S.compAttn) list = list.filter((x) => ar.has(x.ref));
+  list.sort((a, b) => (ar.has(b.ref) - ar.has(a.ref)) || b.scenarios.size - a.scenarios.size || a.ref.localeCompare(b.ref));
   const lc = (ref, v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
-  return `<div class="panel">
-    <div class="toolbar"><input type="search" id="compSearch" placeholder="Search component name, ref or type …" value="${esc(S.compQuery)}">
-      <label><input type="checkbox" id="compShared" ${S.compShared ? "checked" : ""}> shared only</label></div>
-    <div class="note" style="margin-bottom:6px">${list.length} components (one row per <code>ref</code>, across the latest version of every scenario)</div>
-    <table><thead><tr><th>Component</th><th>Type</th><th>Versions in the registry</th><th>Used by</th></tr></thead><tbody>
-    ${list.map((x) => `<tr><td><b>${esc([...x.names].join(" / ") || "(unnamed)")}</b><div class="mono muted">${esc(x.ref)}</div></td>
-      <td>${esc(x.type)}</td>
-      <td>${[...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>${stageChip(lc(x.ref, v))}`).join(" ")}</td>
-      <td>${[...x.scenarios].map((id) => { const users = S.scenarios.get(id); const vers = users.latest.uses[x.ref] || [];
-        return `<span class="chip ${Math.max(...vers.map(vnum)) < x.max ? "amber" : ""}" data-open="${esc(id)}" style="cursor:pointer">${esc(users.latest.name)} · ${esc(vers.join("+"))}</span>`; }).join("")}</td></tr>`).join("")}
-    </tbody></table></div>`;
+  return `<table class="wtable"><thead><tr><th class="mk"></th><th>Component</th><th>Type</th><th>Platform · asset</th><th>Versions in the registry</th><th>Used by</th><th>Needs attention because</th><th>Relations</th></tr></thead><tbody>
+    ${list.map((x, i) => { const a = ar.get(x.ref) || [];
+      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-xrow="${esc(x.ref)}" data-xkind="co" tabindex="0">
+      <td class="mk">${a.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
+      <td><b title="${esc([...x.names].join(" / "))}">${esc([...x.names][0] || "(unnamed)")}</b>${x.names.size > 1 ? ` <span class="muted" style="font-size:12px">+${x.names.size - 1} name${x.names.size > 2 ? "s" : ""}</span>` : ""}<div class="sub2 mono muted">${esc(x.ref)}</div></td>
+      <td>${esc(x.type)}</td><td>${esc([kindInfo(x.kind).label, x.asset].filter(Boolean).join(" · "))}</td>
+      <td>${[...x.versions].sort((p, q2) => vnum(p) - vnum(q2)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>${stageChip(lc(x.ref, v))}`).join(" ")}</td>
+      <td>${[...x.scenarios].slice(0, 3).map((id) => `<span class="chip" data-open="${esc(id)}" style="cursor:pointer">${esc(short(scenarioName(id), 26))}</span>`).join("")}${x.scenarios.size > 3 ? `<span class="chip">+${x.scenarios.size - 3}</span>` : ""}</td>
+      <td class="why">${a.length ? esc(a[0]) + (a.length > 1 ? ` <span class="muted">(+${a.length - 1})</span>` : "") : '<span class="muted">—</span>'}</td>
+      <td>${stripSvg(x.scenarios.size, [...x.versions].map((v) => vnum(v) === x.max && x.versions.size > 1 ? "#6b4fd8" : "#9aa4b5"), a.length)}</td></tr>
+      <tr class="xrow" data-for="${esc(x.ref)}"><td colspan="8"><div class="xwrap"><div class="xslot"></div></div></td></tr>`; }).join("")
+      || `<tr><td colspan="8" class="muted" style="padding:18px">No components match.</td></tr>`}
+    </tbody></table>`;
+}
+
+/* ---- Decisions world ---- */
+function deWorld() {
+  return `<div class="toolbar">
+      <input type="search" id="decSearch" placeholder="Search decision, component, option, reason, scenario …" value="${esc(S.decQuery)}">
+      <label class="pill-toggle ${S.decOpenOnly ? "on" : ""}"><input type="checkbox" id="decOpen" ${S.decOpenOnly ? "checked" : ""}>Open only</label>
+    </div>
+    <div id="decTable">${decisionsTable()}</div>`;
+}
+
+/* ---- Relationship map world ---- */
+function mapWorld() {
+  const g = mapGraph();
+  if (S.sel && ((S.sel.type === "t" && !g.targets.has(S.sel.id)) || (S.sel.type === "s" && !S.scenarios.has(S.sel.id)))) S.sel = null;
+  return `<div class="grid g-map">
+    <div>
+      <div class="panel-head">
+        <span class="seg"><button data-map="asset" class="${S.mapMode === "asset" ? "on" : ""}">By asset</button><button data-map="ref" class="${S.mapMode === "ref" ? "on" : ""}">By component</button></span>
+        <label class="note" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="mapAll" ${S.mapAll ? "checked" : ""}> show unshared too</label>
+        <span class="spacer" style="flex:1"></span>
+        ${S.sel ? `<button class="btn ghost small" style="color:var(--teal)" data-act="clearsel">Clear selection</button>` : ""}
+      </div>
+      <div id="mapBox">${g.R.length ? mapSvg(g) : `<div class="muted">Nothing shared yet — switch on “show unshared too”.</div>`}</div>
+      <div class="legend"><span><i style="background:#0f7c7a"></i>iPaaS</span><span><i style="background:#6b4fd8"></i>message broker</span><span><i style="background:#8a94a6"></i>end application / caller</span>
+        <span style="color:#6b4fd8">━ open new version</span><span style="color:#b86e00">━ needs attention</span><span>– – overlapping scenario</span></div>
+    </div>
+    <div class="selcard" id="selBox">${selPanel(g)}</div>
+  </div>`;
+}
+function refreshOverviewParts() {
+  if (S.view === "band" && S.param?.k === "map") $("#worldBody").innerHTML = mapWorld();
+}
+function toggleXrow(tr) {
+  const id = tr.dataset.xrow, kind = tr.dataset.xkind;
+  const x = tr.nextElementSibling; if (!x || !x.classList.contains("xrow")) return;
+  const was = x.classList.contains("on");
+  document.querySelectorAll("tr.xrow.on").forEach((o) => { o.classList.remove("on"); o.previousElementSibling?.classList.remove("open"); });
+  if (was) return;
+  const slot = x.querySelector(".xslot");
+  slot.innerHTML = kind === "co" ? coExplorer(id) : scExplorer(id);
+  tr.classList.add("open");
+  requestAnimationFrame(() => requestAnimationFrame(() => x.classList.add("on")));
 }
 
 /* ---- scenario detail ---- */
@@ -1118,15 +1364,18 @@ async function downloadMarkers(id, version) {
    5. Events
    ========================================================================== */
 document.addEventListener("click", (ev) => {
-  const t = ev.target.closest("[data-open],[data-act],[data-view],[data-sort],[data-go],[data-sel],[data-map]");
+  const t = ev.target.closest("[data-open],[data-act],[data-sort],[data-sel],[data-map],[data-band],[data-xjump],[data-mapsel],[data-xrow]");
   if (!t) return;
-  if (t.dataset.view && !t.disabled) return go(t.dataset.view);
-  if (t.dataset.go) {                                   // drill-down from the overview tiles
-    const [view, opt] = t.dataset.go.split(":");
-    if (view === "list") { S.listFlagsOnly = opt === "flags"; S.listQuery = ""; }
-    if (view === "components") { S.compShared = opt === "shared"; S.compQuery = ""; }
-    if (view === "decisions") { S.decOpenOnly = true; S.decQuery = ""; }
-    return go(view);
+  if (t.dataset.band) return openWorld(t, t.dataset.band);           // a band opens into its world
+  if (t.dataset.xjump) {                                             // explorer: jump to an overlapping scenario's row
+    const row = document.querySelector(`tr.r[data-xrow="${CSS.escape(t.dataset.xjump)}"]`);
+    if (row) { toggleXrow(row); row.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "center" }); }
+    return;
+  }
+  if (t.dataset.mapsel) {                                            // explorer: show an asset on the map
+    const a = S.assets.get(t.dataset.mapsel);
+    S.mapMode = "asset"; S.mapAll = !(a && a.scenarios.size > 1); S.sel = { type: "t", id: t.dataset.mapsel };
+    return go("band", { k: "map" }, { enter: true });
   }
   if (t.dataset.sel) {                                  // relationship map / matrix selection
     const [type, a, b] = t.dataset.sel.split("|");
@@ -1142,27 +1391,30 @@ document.addEventListener("click", (ev) => {
     $("#listTable").innerHTML = listTable(); return;
   }
   if (t.dataset.open) { S.prev = { view: S.view, param: S.param }; return go("scenario", { id: t.dataset.open, version: t.dataset.v ? Number(t.dataset.v) : null }); }
+  if (t.dataset.xrow) return toggleXrow(t);
   const act = t.dataset.act;
   if (act === "open") openFolder();
   if (act === "github") loadFromGitHub();
   if (act === "clearsel") { S.sel = null; refreshOverviewParts(); }
-  if (act === "back") { const p = S.prev && S.prev.view !== "scenario" ? S.prev : { view: "list" }; go(p.view, p.param); }
+  if (act === "back") { const p = S.prev && S.prev.view !== "scenario" ? S.prev : { view: "home" }; go(p.view, p.param); }
+  if (act === "home") { if (S.view === "band") closeWorld(); else go("home"); }
   if (act === "markers") downloadMarkers(t.dataset.id, Number(t.dataset.v));
 });
 document.addEventListener("input", (ev) => {
   if (ev.target.id === "listSearch") { S.listQuery = ev.target.value; $("#listTable").innerHTML = listTable(); }
-  if (ev.target.id === "flagsOnly") { S.listFlagsOnly = ev.target.checked; $("#listTable").innerHTML = listTable(); }
-  if (ev.target.id === "compShared") { S.compShared = ev.target.checked; $("#view").innerHTML = componentsView(); return; }
+  if (ev.target.id === "flagsOnly") { S.listFlagsOnly = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.listFlagsOnly); $("#listTable").innerHTML = listTable(); }
+  if (ev.target.id === "compAttn") { S.compAttn = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.compAttn); $("#compTable").innerHTML = compTable(); return; }
+  if (ev.target.id === "compShared") { S.compShared = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.compShared); $("#compTable").innerHTML = compTable(); return; }
   if (ev.target.id === "mapAll") { S.mapAll = ev.target.checked; S.sel = null; refreshOverviewParts(); return; }
   if (ev.target.id === "decSearch") { S.decQuery = ev.target.value; $("#decTable").innerHTML = decisionsTable(); return; }
-  if (ev.target.id === "decOpen") { S.decOpenOnly = ev.target.checked; $("#decTable").innerHTML = decisionsTable(); return; }
-  if (ev.target.id === "compSearch") { S.compQuery = ev.target.value; const pos = ev.target.selectionStart; $("#view").innerHTML = componentsView(); const i = $("#compSearch"); i.focus(); i.setSelectionRange(pos, pos); }
+  if (ev.target.id === "decOpen") { S.decOpenOnly = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.decOpenOnly); $("#decTable").innerHTML = decisionsTable(); return; }
+  if (ev.target.id === "compSearch") { S.compQuery = ev.target.value; $("#compTable").innerHTML = compTable(); }
 });
 $("#openBtn").addEventListener("click", openFolder);
 $("#reloadBtn").addEventListener("click", () => (S.source === "github" ? loadFromGitHub() : S.root && loadFromHandle()));
 $("#ghBtn").addEventListener("click", () => loadFromGitHub());
 document.addEventListener("keydown", (ev) => {     // Enter / Space on tiles and map nodes
-  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches?.("[data-go],[data-sel]")) { ev.preventDefault(); ev.target.click(); }
+  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches?.("[data-band],[data-sel],[data-xrow]")) { ev.preventDefault(); ev.target.click(); }
 });
 $("#dirInput").addEventListener("change", (e) => e.target.files.length && loadFromInput(e.target.files));
 

@@ -4,7 +4,7 @@ A registry and traceability app for integration designs exported from
 [Pattern Bench](https://github.com/suddhasattaguha/pattern-bench). It reads a folder
 of registry entries and traces scenarios, components, versions and decisions across them.
 
-**Status:** draft 0.2, reads Pattern Bench export schema v0.5.
+**Status:** draft 0.3, reads Pattern Bench export schema v0.5.
 
 ## How it works
 
@@ -35,15 +35,17 @@ To add a scenario: put the Pattern Bench registry export (`*.registry.json`, wit
 `registry-data/_sample/` holds generated sample scenarios to try the app — delete that
 folder when real data is in.
 
-## What draft 0.2 does
+## What draft 0.3 does
 
-- **Overview:** clickable tiles that drill down (scenarios, shared components, open decisions,
-  flagged scenarios); a **relationship map** (scenarios ↔ shared assets or components — click a
-  scenario, asset/component to see what it touches and which scenarios overlap); a
-  scenario × scenario **overlap matrix**; needs attention, recently changed, upcoming retirements.
-- **Decisions:** every versioning decision across all scenarios, searchable, open only or all.
-- **All scenarios:** searchable, sortable directory with flags.
-- **Components:** each `ref` with its versions, lifecycle stage and which scenarios use which version.
+- **Home = bands:** Scenarios, Components, Open decisions and Relationship map — big number,
+  plus how many need attention. No top menu: the bands are the navigation.
+- **A band opens into its own full-frame view** (the band morphs open; Back reverses it):
+  - **Scenarios / Components:** sortable, searchable lists; rows that need attention are
+    highlighted and come first ("Needs attention only" filter). Click a row → its
+    **relationship explorer** grows open: overlapping scenarios (or users of a component) on the
+    left, the assets it uses (or its versions) on the right; click a box to jump.
+  - **Open decisions:** every versioning decision across scenarios; rows with open warnings highlighted.
+  - **Relationship map:** scenarios ↔ shared assets or components; click to highlight.
 - **Scenario detail:** simple flow diagram, versioning decisions, components, overlap with other flows, relations, history.
 - **Flags:** impact (newer version of a shared component elsewhere), lifecycle (deprecated or retired version),
   warning (unacknowledged ⚠ in the design), data (container without platform or asset label).
