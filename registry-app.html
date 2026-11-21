@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Integration Registry — draft 0.7</title>
+<title>Integration Registry — draft 0.8</title>
 <style>
   :root {
     --bg: #f5f6f8; --panel: #ffffff; --ink: #1d2433; --muted: #667085; --line: #e3e6ec;
@@ -203,7 +203,7 @@
   .xwrap > .xslot { overflow: hidden; min-height: 0; }
   .xin { padding: 14px 18px 16px 46px; opacity: 0; transform: translateY(-6px); transition: opacity .4s .12s, transform .5s .08s cubic-bezier(.16,1,.3,1); }
   tr.xrow.on .xin { opacity: 1; transform: none; }
-  .explorer { width: 100%; max-width: 1000px; height: auto; display: block; font-family: var(--font); }
+  .explorer { width: 100%; max-width: 1180px; height: auto; display: block; font-family: var(--font); }
   .explorer .xl { font-size: 11px; fill: #667085; letter-spacing: .4px; text-transform: uppercase; }
   .explorer .xs { font-size: 11px; fill: #667085; }
   .explorer .xe { fill: none; stroke: #b4bcc8; stroke-width: 1.6; }
@@ -328,6 +328,30 @@
   .chain .ce { fill: none; stroke: #8a94a6; stroke-width: 1.6; } .chain .ce.v { stroke: #6b4fd8; }
   .chain [data-node], .chain [data-copen] { cursor: pointer; } .chain .art[data-copen]:hover > rect:first-child, .chain .sys[data-node]:hover > rect:first-child { stroke: #0f7c7a; stroke-width: 2; }
 
+  /* ===== draft 0.8: two concepts (platform / component), explorer start, path on the left ===== */
+  .explorer .xn.k-p rect:first-of-type { fill: #f3f5f8; stroke: #a9b3c3; }
+  .explorer .xc.k-p rect { fill: #5f6f88; filter: drop-shadow(0 6px 10px rgba(95,111,136,.35)); }
+  .explorer .xe.back { stroke: #98a2b3; stroke-width: 1.6; stroke-dasharray: 4 3; }
+  .explorer .xvia { font-size: 11px; fill: #475467; font-weight: 600; }
+  .explorer .xprev { cursor: pointer; } .explorer .xprev rect:first-of-type { fill: #f7f8fa; stroke: #b4bcc8; stroke-dasharray: 3 3; }
+  .explorer .xprev:hover rect:first-of-type { stroke: #0f7c7a; stroke-width: 2; stroke-dasharray: none; } .explorer .xprev text { fill: #475467; }
+  .xkind.p { background: #5f6f88; } .kdot.k-p { background: #5f6f88; }
+  .mstart h2 { font-size: 18px; margin: 4px 0 14px; font-weight: 600; }
+  .mtypes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 900px) { .mtypes { grid-template-columns: 1fr 1fr; } }
+  .mtype { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: #fff; cursor: pointer; font: inherit; text-align: left; transition: transform .2s, box-shadow .2s; --kc: #0f7c7a; }
+  .mtype.k-c { --kc: #3346c8; } .mtype.k-p { --kc: #5f6f88; } .mtype.k-a { --kc: #b4472a; }
+  .mtype:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(16,24,40,.10); }
+  .mtype.on { border-color: var(--kc); box-shadow: 0 0 0 2px var(--kc) inset; }
+  .mtype .mi { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--kc); color: #fff; flex: none; } .mtype .mi svg { width: 20px; height: 20px; }
+  .mtype .ml { flex: 1; font-weight: 600; } .mtype .mn { font-size: 20px; font-weight: 600; color: var(--kc); }
+  .mpick { margin-top: 16px; } .mpick input { width: 100%; max-width: 520px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font: inherit; }
+  .mlist { margin-top: 10px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 8px; max-height: 60vh; overflow: auto; }
+  .mobj { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff; cursor: pointer; }
+  .mobj:hover { border-color: #0f7c7a; } .mobj.attn { border-color: #f5c46e; background: #fffaf0; } .mobj .ms { flex-basis: 100%; font-size: 12px; color: var(--muted); padding-left: 15px; }
+  .mobj .wmark { margin-left: auto; }
+  .mhead { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .prow { display: flex; gap: 14px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--line); } .prow:last-of-type { border-bottom: 0; } .prow .ph { width: 220px; flex: none; }
   /* ===== draft 0.7: one detail-page pattern, flow columns, Open in Pattern Bench ===== */
   .facts { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; }
   .fact { background: #fff; border: 1px solid var(--line, #e3e6ec); border-radius: 12px; padding: 9px 14px; min-width: 120px; box-shadow: 0 2px 6px rgba(16,24,40,.04); }
@@ -371,7 +395,7 @@
 <body>
 <header>
   <h1 data-act="home" style="cursor:pointer" title="Home">Integration Registry</h1>
-  <span class="draft">draft 0.7 · schema 0.6</span>
+  <span class="draft">draft 0.8 · schema 0.6</span>
   <span class="spacer"></span>
   <span class="folder" id="folderName"></span>
   <button class="btn ghost small hidden" id="reloadBtn" title="Read the registry again">Reload</button>
@@ -449,8 +473,11 @@ const S = {
   view: "overview", param: null,
   listSort: { key: "flags", dir: -1 }, listQuery: "", listFlagsOnly: false,
   compQuery: "", compShared: false, compAttn: false,
-  assets: new Map(),   // container ref -> aggregated asset info
-  mapMode: "asset", mapAll: false, sel: null,   // overview relationship map
+  assets: new Map(),   // container ref -> aggregated container info (iPaaS / broker / end application)
+  comps: new Map(),    // V-2 (0.8): integration component = named artifact on a platform / broker (container ref)
+  partComp: new Map(), // part ref (…#api, #process, #topic, #queue) -> component key
+  platforms: new Map(),// plat/<slug> -> integration platform / broker
+  mx: { type: null, q: "", stack: null, via: null },   // V-1 (0.8): relationship map = explorer start
   decQuery: "", decOpenOnly: true,
 };
 
@@ -753,6 +780,19 @@ function derive() {
   }
   S.assets = assets;
 
+  // V-2 (0.8): two concepts only — integration platform / broker  ›  integration component (named artifact).
+  // API / process / topic / queue are the component's parts; refs, links, overlaps and lifecycle stay at part level.
+  const comps = new Map(), partComp = new Map(), platforms = new Map();
+  for (const a of assets.values()) {
+    if (!isIntegrationKind(a.kind) || String(a.key).startsWith("noref:")) continue;
+    const pk = platKey(a.platform);
+    comps.set(a.key, { key: a.key, name: a.name, platform: a.platform || "", platKey: pk, kind: a.kind, parts: new Set(a.refs), scenarios: new Set(a.scenarios) });
+    for (const r of a.refs) partComp.set(r, a.key);
+    const p = platforms.get(pk) || platforms.set(pk, { key: pk, name: a.platform || "(no platform)", kinds: new Set(), comps: new Set(), scenarios: new Set() }).get(pk);
+    p.kinds.add(a.kind); p.comps.add(a.key); a.scenarios.forEach((id) => p.scenarios.add(id));
+  }
+  S.comps = comps; S.partComp = partComp; S.platforms = platforms;
+
   // connected systems (R-13): one per application, callers and end applications merged by name
   const systems = new Map();
   const SY = (name) => { const key = sysKey(name);
@@ -781,8 +821,22 @@ function derive() {
 
 function scenarioName(id) { return S.scenarios.get(id)?.latest.name || id; }
 function sysName(key) { return S.systems.get(key)?.name || key; }
-const compRefs = () => [...S.refs.values()].filter((x) => isIntegrationKind(x.kind));   // components = integration-layer items only
+const compRefs = () => [...S.refs.values()].filter((x) => isIntegrationKind(x.kind));   // parts of integration components
 const isCompRef = (ref) => isIntegrationKind(S.refs.get(ref)?.kind);
+/* V-2 (0.8): component / part / platform helpers */
+function platKey(name) { return "plat/" + (slug(name) || "none"); }
+function compKeyOf(x) { return S.comps.has(x) ? x : S.partComp.get(x) || null; }
+function compName(key) { return S.comps.get(key)?.name || key; }
+function platName(key) { return S.platforms.get(key)?.name || key; }
+const PART_LABEL = { api: "API", process: "Process", topic: "Topic", queue: "Queue", file: "Folder", sftp: "Folder" };
+function partLabel(ref) { const x = S.refs.get(ref); const t = x?.type || (ref.split("#")[1] || "").replace(/-\d+$/, ""); return PART_LABEL[t] || t || "part"; }
+/* the parts of a component that a scenario uses, with versions and whether they lag behind */
+function partsIn(key, r) {
+  const c = S.comps.get(key); if (!c) return [];
+  return [...c.parts].filter((ref) => r.uses[ref]).map((ref) => { const v = r.uses[ref], x = S.refs.get(ref);
+    return { ref, label: partLabel(ref), v: v.join("+"), behind: !!x && Math.max(...v.map(vnum)) < x.max }; });
+}
+const partsText = (ps) => ps.map((p) => `${p.label} ${p.v}`).join(" · ");
 /* a ref as a readable thing: a component name, or "System · endpoint" for a connected system */
 function thingName(ref) {
   const k = S.refSys?.get(ref); if (!k) return refName(ref);
@@ -819,7 +873,7 @@ function flagsFor(r) {
   // c) open warnings inside the design
   for (const w of r.warnings) flags.push({ kind: "warning", sev: "amber", ref: w.ref, key: "warn:" + w.text, acked: false, text: w.text });
   // d) data quality
-  if (r.missingRefs) flags.push({ kind: "data", sev: "grey", ref: null, key: "data:refs", acked: false, text: `${r.missingRefs} container(s) without platform / asset label — those components can't be traced across scenarios.` });
+  if (r.missingRefs) flags.push({ kind: "data", sev: "grey", ref: null, key: "data:refs", acked: false, text: `${r.missingRefs} container(s) without platform / component name — those components can't be traced across scenarios.` });
   return flags;
 }
 const activeFlags = (s) => s.flags.filter((f) => !f.acked && f.sev !== "grey");
@@ -833,7 +887,8 @@ function go(view, param, opts = {}) {
   if (!S.records.length && !S.folderName) { v.innerHTML = emptyView(); return; }
   S.enterDetail = !!opts.enter;
   if (view === "scenario") { v.innerHTML = `<div class="world"><div class="world-body">Loading …</div></div>`; scenarioView(param).then((h) => { if (S.view === "scenario") v.innerHTML = h; }); }
-  else if (view === "component") v.innerHTML = componentView(param.ref);
+  else if (view === "component") v.innerHTML = componentView(param);
+  else if (view === "platform") v.innerHTML = platformView(param.key);
   else if (view === "system") v.innerHTML = systemView(param.key);
   else if (view === "band") v.innerHTML = worldView(param.k, opts.enter);
   else { S.view = "home"; S.diveFrom = null; S.nav = []; v.innerHTML = homeView(); }
@@ -866,182 +921,6 @@ const kindInfo = (k) => KIND[k] || { label: k || "other", col: "#b0b7c3" };
 const flaggedRefs = (s) => new Set(activeFlags(s).map((f) => f.ref).filter(Boolean));
 const openIntroRefs = (r) => new Set(r.introduced.filter((i) => i.status !== "completed").map((i) => i.ref));
 const short = (t, n) => { t = String(t ?? ""); return t.length > n ? t.slice(0, n - 1) + "…" : t; };
-
-/* Graph for the relationship map: scenarios (left) ↔ assets or components (right). */
-function mapGraph() {
-  const scen = [...S.scenarios.values()];
-  const targets = new Map(), edges = [];
-  if (S.mapMode === "asset") {
-    for (const a of S.assets.values()) if (isIntegrationKind(a.kind) && (S.mapAll || a.scenarios.size > 1)) targets.set(a.key, { id: a.key, name: a.name, sub: a.platform || kindInfo(a.kind).label, kind: a.kind, n: a.scenarios.size });
-    // connected systems (R-13): one node per application; receiving counts, calling only with "show unshared too"
-    for (const y of S.systems.values()) { const ids = new Set([...y.receives.keys(), ...(S.mapAll ? y.triggers.keys() : [])]);
-      if (ids.size && (S.mapAll || ids.size > 1)) targets.set("sys:" + y.key, { id: "sys:" + y.key, name: y.name, sub: "connected system", kind: "system", n: ids.size }); }
-    for (const s of scen) {
-      const r = s.latest, fl = flaggedRefs(s), op = openIntroRefs(r);
-      for (const k of r.containers || []) if (targets.has(k.key)) edges.push({ s: r.id, t: k.key, w: Math.max(1, k.refs.length),
-        flag: k.refs.some((x) => fl.has(x)), ver: k.refs.some((x) => op.has(x)), label: k.refs.length + " comp." });
-      const seen = new Set();
-      for (const d of [...(r.sys?.deliversTo || []), ...(S.mapAll ? (r.sys?.triggeredBy || []) : [])]) { const t = "sys:" + d.key;
-        if (!targets.has(t) || seen.has(t)) continue; seen.add(t);
-        edges.push({ s: r.id, t, w: 1, flag: d.ref ? fl.has(d.ref) : false, ver: false, label: d.endpoint ? "delivers to " + d.endpoint : "triggered by" }); }
-    }
-  } else {
-    for (const x of compRefs()) if (S.mapAll || x.scenarios.size > 1)
-      targets.set(x.ref, { id: x.ref, name: refName(x.ref), sub: [x.type, x.asset].filter(Boolean).join(" · "), kind: x.kind, n: x.scenarios.size });
-    for (const s of scen) {
-      const r = s.latest, fl = flaggedRefs(s), op = openIntroRefs(r);
-      for (const [ref, vers] of Object.entries(r.uses)) if (targets.has(ref))
-        edges.push({ s: r.id, t: ref, w: 1, flag: fl.has(ref), ver: op.has(ref), label: vers.join("+") });
-    }
-  }
-  // order both columns by barycentre to reduce crossings
-  let L = scen.map((s) => s.latest.id).sort((a, b) => scenarioName(a).localeCompare(scenarioName(b)));
-  let R = [...targets.keys()].sort((a, b) => targets.get(b).n - targets.get(a).n || String(targets.get(a).name).localeCompare(String(targets.get(b).name)));
-  const bary = (ids, other, key, okey) => {
-    const pos = new Map(other.map((id, i) => [id, i]));
-    const score = new Map(ids.map((id, i) => {
-      const ps = edges.filter((e) => e[key] === id).map((e) => pos.get(e[okey])).filter((p) => p !== undefined);
-      return [id, ps.length ? ps.reduce((a, b) => a + b, 0) / ps.length : i];
-    }));
-    return ids.slice().sort((a, b) => score.get(a) - score.get(b));
-  };
-  for (let i = 0; i < 3; i++) { R = bary(R, L, "t", "s"); L = bary(L, R, "s", "t"); }
-  // R-13: connected systems are their own group, below the platform / broker assets
-  R = [...R.filter((id) => targets.get(id).kind !== "system"), ...R.filter((id) => targets.get(id).kind === "system")];
-  return { L, R, targets, edges };
-}
-
-/* What the current selection highlights. */
-function selection(g) {
-  const sel = S.sel; if (!sel) return null;
-  const pS = new Set(), sS = new Set(), pT = new Set(), eOn = new Set();
-  if (sel.type === "s") {
-    pS.add(sel.id);
-    g.edges.forEach((e, i) => { if (e.s === sel.id) { pT.add(e.t); eOn.add(i); } });
-    g.edges.forEach((e, i) => { if (e.s !== sel.id && pT.has(e.t)) { sS.add(e.s); eOn.add(i); } });
-  } else if (sel.type === "t") {
-    pT.add(sel.id);
-    g.edges.forEach((e, i) => { if (e.t === sel.id) { pS.add(e.s); eOn.add(i); } });
-  } else if (sel.type === "p") {
-    pS.add(sel.a); pS.add(sel.b);
-    const ta = new Set(g.edges.filter((e) => e.s === sel.a).map((e) => e.t));
-    g.edges.forEach((e) => { if (e.s === sel.b && ta.has(e.t)) pT.add(e.t); });
-    g.edges.forEach((e, i) => { if (pS.has(e.s) && pT.has(e.t)) eOn.add(i); });
-  }
-  return { pS, sS, pT, eOn };
-}
-
-function mapSvg(g) {
-  const W = 960, NW = 270, NH = 40, GAP = 10, TOP = 34, x1 = 4, x2 = W - NW - 4;
-  const firstSys = g.R.findIndex((id) => g.targets.get(id).kind === "system"), SG = firstSys > 0 ? 30 : 0;   // gap + header before the systems group
-  const rows = Math.max(g.L.length, g.R.length + SG / (NH + GAP), 1);
-  const H = TOP + rows * (NH + GAP) + 6;
-  const yOf = (i, n) => TOP + (rows - n) * (NH + GAP) / 2 + i * (NH + GAP);
-  const yl = new Map(g.L.map((id, i) => [id, yOf(i, g.L.length)]));
-  const yr = new Map(g.R.map((id, i) => [id, yOf(i, g.R.length + SG / (NH + GAP)) + (firstSys >= 0 && i >= firstSys ? SG : 0)]));
-  const hl = selection(g);
-  const font = getComputedStyle(document.body).fontFamily.replace(/"/g, "'");
-  let svg = `<svg class="map" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="${font}" role="img" aria-label="Relationship map">
-    <text x="${x1}" y="16" font-size="11" fill="#667085" font-weight="600">SCENARIOS (${g.L.length})</text>
-    <text x="${x2}" y="16" font-size="11" fill="#667085" font-weight="600">${S.mapMode === "asset" ? "PLATFORM / BROKER ASSETS" : "COMPONENTS"}${S.mapAll ? "" : " — shared only"} (${firstSys >= 0 ? firstSys : g.R.length})</text>
-    ${firstSys >= 0 ? `<text x="${x2}" y="${yr.get(g.R[firstSys]) - 10}" font-size="11" fill="#b4472a" font-weight="600">CONNECTED SYSTEMS (${g.R.length - firstSys})</text>` : ""}`;
-  // edges first
-  g.edges.forEach((e, i) => {
-    if (!yl.has(e.s) || !yr.has(e.t)) return;
-    const ya = yl.get(e.s) + NH / 2, yb = yr.get(e.t) + NH / 2, xa = x1 + NW, xb = x2, mx = (xa + xb) / 2;
-    const col = e.flag ? "#b86e00" : e.ver ? "#6b4fd8" : "#9aa4b5";
-    const on = hl ? hl.eOn.has(i) : true;
-    const secondary = hl && hl.sS.has(e.s);
-    svg += `<path d="M${xa} ${ya} C${mx} ${ya} ${mx} ${yb} ${xb} ${yb}" fill="none" stroke="${col}" stroke-width="${(1 + Math.min(e.w, 6) * 0.5).toFixed(1)}"
-      ${secondary ? 'stroke-dasharray="5 4"' : ""} class="${on ? "" : "dim"}" opacity="${hl ? (on ? 0.95 : 1) : 0.6}"><title>${esc(scenarioName(e.s))} → ${esc(g.targets.get(e.t).name)} · ${esc(e.label)}${e.flag ? " · flagged" : ""}${e.ver ? " · open new version" : ""}</title></path>`;
-  });
-  // scenario nodes
-  for (const id of g.L) {
-    const s = S.scenarios.get(id), r = s.latest, y = yl.get(id), nf = activeFlags(s).length;
-    const on = !hl || hl.pS.has(id) || hl.sS.has(id), prim = hl && hl.pS.has(id), sec = hl && hl.sS.has(id);
-    svg += `<g class="node ${on ? "" : "dim"}" data-sel="s|${esc(id)}" tabindex="0">
-      <rect class="box" x="${x1}" y="${y}" width="${NW}" height="${NH}" rx="7" fill="${prim ? "#e3f3f2" : "#fff"}" stroke="${prim ? "#0f7c7a" : sec ? "#0f7c7a" : "#c9cfd9"}" stroke-width="${prim ? 2 : 1.2}" ${sec ? 'stroke-dasharray="4 3"' : ""}/>
-      <text x="${x1 + 10}" y="${y + 16}" font-size="12.5" font-weight="600" fill="#1d2433">${esc(short(r.name, 34))}</text>
-      <text x="${x1 + 10}" y="${y + 31}" font-size="10.5" fill="#667085">${r.components.filter((c) => !isSystemKind(c.kind)).length} comp. · ${r.openVersions} open decision${r.openVersions === 1 ? "" : "s"}</text>
-      ${nf ? `<text x="${x1 + NW - 10}" y="${y + 24}" font-size="12" text-anchor="end" fill="#b86e00" font-weight="600">⚠ ${nf}</text>` : ""}
-      <title>${esc(r.name)} — click to see its relationships</title></g>`;
-  }
-  // asset / component nodes
-  for (const id of g.R) {
-    const t = g.targets.get(id), y = yr.get(id), k = kindInfo(t.kind);
-    const on = !hl || hl.pT.has(id), prim = hl && S.sel.type === "t" && S.sel.id === id;
-    svg += `<g class="node ${on ? "" : "dim"}" data-sel="t|${esc(id)}" tabindex="0">
-      <rect class="box" x="${x2}" y="${y}" width="${NW}" height="${NH}" rx="7" fill="${prim ? "#e3f3f2" : "#fff"}" stroke="${prim ? "#0f7c7a" : "#c9cfd9"}" stroke-width="${prim ? 2 : 1.2}"/>
-      <rect x="${x2}" y="${y}" width="5" height="${NH}" rx="2" fill="${k.col}"/>
-      <text x="${x2 + 14}" y="${y + 16}" font-size="12.5" font-weight="600" fill="#1d2433">${esc(short(t.name, 30))}</text>
-      <text x="${x2 + 14}" y="${y + 31}" font-size="10.5" fill="#667085">${esc(short(t.sub, 36))}</text>
-      <title>${esc(t.name)} — used by ${t.n} scenario${t.n === 1 ? "" : "s"}</title></g>`;
-  }
-  return svg + "</svg>";
-}
-
-/* Side panel for the current selection. */
-function selPanel(g) {
-  const sel = S.sel;
-  if (!sel) return `<h2>Selection</h2><div class="muted">Click a scenario, ${S.mapMode === "asset" ? "an asset" : "a component"} or a matrix cell to see how they relate.</div>
-    <div class="sec">Reading the map</div>
-    <div class="note">Lines = “uses”. Thicker = more components in that asset. <span style="color:#6b4fd8">Violet</span> = an open decision brings a new version there. <span style="color:#b86e00">Amber</span> = flagged. <b>×n</b> = shared by n scenarios.</div>`;
-  const tname = (id) => g.targets.get(id)?.name || id;
-  if (sel.type === "s") {
-    const s = S.scenarios.get(sel.id); if (!s) return "";
-    const r = s.latest, mine = new Set(g.edges.filter((e) => e.s === r.id).map((e) => e.t));
-    const shares = [];
-    for (const o of S.scenarios.values()) {
-      if (o.latest.id === r.id) continue;
-      const common = g.edges.filter((e) => e.s === o.latest.id && mine.has(e.t)).map((e) => e.t);
-      if (common.length) shares.push({ o: o.latest, common });
-    }
-    shares.sort((a, b) => b.common.length - a.common.length);
-    const fl = activeFlags(s);
-    return `<div class="sel-panel"><h3>${esc(r.name)}</h3>
-      <div class="kv">v${r.version} · ${r.components.length} components · ${r.openVersions} open decision${r.openVersions === 1 ? "" : "s"}${r.author ? " · " + esc(r.author) : ""}</div>
-      <button class="btn small" data-open="${esc(r.id)}">Open scenario →</button>
-      <div class="sec">Overlaps with (${shares.length})</div>
-      ${shares.map((x) => `<div class="list-item" data-sel="p|${esc(r.id)}|${esc(x.o.id)}"><div class="t">${esc(x.o.name)}</div>
-        <div class="s">shares ${x.common.length}: ${esc(x.common.map(tname).slice(0, 4).join(", "))}${x.common.length > 4 ? " …" : ""}</div></div>`).join("") || '<div class="muted">No overlap with other scenarios.</div>'}
-      ${fl.length ? `<div class="sec">Flags (${fl.length})</div>${fl.slice(0, 3).map((f) => `<div class="flag ${f.sev === "red" ? "red" : ""}"><span class="ico">⚠</span><div style="font-size:12px">${esc(f.text)}</div></div>`).join("")}` : ""}
-    </div>`;
-  }
-  if (sel.type === "t") {
-    const t = g.targets.get(sel.id); if (!t) return "";
-    const users = g.edges.filter((e) => e.t === sel.id);
-    let comps = "";
-    if (S.mapMode === "asset") {
-      const a = S.assets.get(sel.id);
-      comps = [...(a?.refs || [])].map((ref) => {
-        const x = S.refs.get(ref); if (!x) return "";
-        return `<div class="list-item" style="cursor:default"><div class="t">${esc(refName(ref))} <span class="muted" style="font-weight:400">${esc(x.type)}</span></div>
-          <div class="s">${[...x.scenarios].map((id) => { const v = S.scenarios.get(id).latest.uses[ref] || [];
-            return `<span class="chip ${Math.max(...v.map(vnum)) < x.max ? "amber" : ""}">${esc(short(scenarioName(id), 22))} · ${esc(v.join("+"))}</span>`; }).join("")}</div></div>`;
-      }).join("");
-    } else {
-      const x = S.refs.get(sel.id);
-      comps = `<div class="note">Versions in the registry: ${[...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>`).join("")}</div>`;
-    }
-    return `<div class="sel-panel"><h3>${esc(t.name)}</h3>
-      <div class="kv">${esc(kindInfo(t.kind).label)}${t.sub ? " · " + esc(t.sub) : ""} · used by ${users.length} scenario${users.length === 1 ? "" : "s"}</div>
-      <div class="sec">Used by</div>
-      ${users.map((e) => `<div class="list-item" data-sel="s|${esc(e.s)}"><div class="t">${esc(scenarioName(e.s))}</div>
-        <div class="s">${esc(e.label)}${e.ver ? ' · <span style="color:#6b4fd8">open new version</span>' : ""}${e.flag ? ' · <span style="color:#b86e00">flagged</span>' : ""}</div></div>`).join("")}
-      ${comps ? `<div class="sec">${S.mapMode === "asset" ? "Components in this asset" : "Versions"}</div>${comps}` : ""}
-    </div>`;
-  }
-  if (sel.type === "p") {
-    const ta = new Set(g.edges.filter((e) => e.s === sel.a).map((e) => e.t));
-    const common = g.edges.filter((e) => e.s === sel.b && ta.has(e.t)).map((e) => e.t);
-    return `<div class="sel-panel"><h3>${esc(scenarioName(sel.a))}<br><span class="muted" style="font-weight:400">and</span> ${esc(scenarioName(sel.b))}</h3>
-      <div class="kv">share ${common.length} ${S.mapMode === "asset" ? "asset" : "component"}${common.length === 1 ? "" : "s"}</div>
-      ${common.map((id) => `<div class="list-item" data-sel="t|${esc(id)}"><div class="t">${esc(tname(id))}</div><div class="s">${esc(g.targets.get(id)?.sub || "")}</div></div>`).join("") || '<div class="muted">Nothing in common.</div>'}
-      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn small" data-open="${esc(sel.a)}">Open first →</button><button class="btn small" data-open="${esc(sel.b)}">Open second →</button></div>
-    </div>`;
-  }
-  return "";
-}
 
 /* ---- decisions across all scenarios ---- */
 function decisionsTable() {
@@ -1108,15 +987,16 @@ const ICON = {
   map: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="2.6"/><circle cx="4.5" cy="5" r="2"/><circle cx="19.5" cy="5" r="2"/><circle cx="4.5" cy="19" r="2"/><circle cx="19.5" cy="19" r="2"/><path d="M6.2 6.4 10 10M17.8 6.4 14 10M6.2 17.6 10 14M17.8 17.6 14 14"/></svg>`,
   warn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.2M12 17.2h.01"/></svg>`,
   check: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg>`,
+  pl: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3 21 7.5 12 12 3 7.5z"/><path d="m3 12 9 4.5 9-4.5M3 16.5 12 21l9-4.5"/></svg>`,
   back: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>`,
   chev: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>`,
 };
 const BANDS = [
   { k: "sc", name: "Scenarios", desc: "End-to-end integration flows", c1: "#19b3ad", c2: "#0a5f5c", attnLabel: "need attention" },
-  { k: "co", name: "Components", desc: "Named artifacts on integration platforms and brokers — APIs, processes, topics, queues", c1: "#6b8cff", c2: "#2f43c2", attnLabel: "need attention" },
+  { k: "co", name: "Components", desc: "Integration components — named artifacts on platforms and brokers (iFlows, topics, queues …)", c1: "#6b8cff", c2: "#2f43c2", attnLabel: "need attention" },
   { k: "cs", name: "Connected systems", desc: "Applications that trigger flows or receive them — S/4HANA, Salesforce, DHL …", c1: "#f08a5d", c2: "#b4472a", attnLabel: "need attention" },
   { k: "de", name: "Open decisions", desc: "Versioning decisions not yet completed", c1: "#9a7cf5", c2: "#5333c4", attnLabel: "with open warnings" },
-  { k: "map", name: "Relationship map", desc: "Where scenarios meet — shared platforms, brokers and connected systems", c1: "#5f6f88", c2: "#222d40" },
+  { k: "map", name: "Relationship map", desc: "Start from any object and follow its relationships, step by step", c1: "#5f6f88", c2: "#222d40" },
 ];
 
 /* components that need attention: flagged in a scenario, or a version in use is deprecated / retired */
@@ -1128,6 +1008,12 @@ function attnRefs() {
     const st = S.lifecycle.byKey.get(x.ref + "@" + v)?.stage;
     if ((st === "deprecated" || st === "retired") && !(m.get(x.ref) || []).some((t) => t.includes(st))) add(x.ref, `${v} is ${st}`);
   }
+  return m;
+}
+/* V-2: components that need attention — any of their parts does */
+function compAttn() {
+  const m = new Map();
+  for (const [ref, txt] of attnRefs()) { const k = S.partComp.get(ref); if (k) m.set(k, uniq([...(m.get(k) || []), ...txt])); }
   return m;
 }
 /* connected systems that need attention: a flag points at one of their endpoints */
@@ -1143,7 +1029,7 @@ function openDecisions() {
 }
 function bandStats(k) {
   if (k === "sc") return { n: S.scenarios.size, a: [...S.scenarios.values()].filter((s) => activeFlags(s).length).length };
-  if (k === "co") { const ar = attnRefs(); return { n: compRefs().length, a: compRefs().filter((x) => ar.has(x.ref)).length }; }
+  if (k === "co") return { n: S.comps.size, a: compAttn().size };
   if (k === "cs") return { n: S.systems.size, a: sysAttn().size };
   if (k === "de") { const o = openDecisions(); return { n: o.length, a: o.filter((x) => x.d.warnings).length }; }
   return { n: null, a: 0 };
@@ -1155,7 +1041,7 @@ const TIERS = [
   { k: "path", label: "same path", strong: true },          // the same connection (A → B link)
   { k: "feeds", label: "feeds", strong: true },             // one publishes on a topic the other consumes
   { k: "api", label: "shared API", strong: true },          // the same integration (iPaaS) API, called by several apps
-  { k: "asset", label: "shared asset", strong: true },      // the same process / queue / topic in iPaaS or broker
+  { k: "asset", label: "shared component", strong: true },  // the same process / queue / topic in iPaaS or broker
   { k: "endpoint", label: "shared endpoint", strong: false } // the same end-application API or folder
 ];
 function scenFacts(r) {
@@ -1215,7 +1101,7 @@ function sameSourceOf(id) {
   return callers.map((ref) => ({ ref, others: [...(S.refs.get(ref)?.scenarios || [])].filter((x) => x !== id) })).filter((x) => x.others.length);
 }
 
-function orb(k, size) { const b = BANDS.find((x) => x.k === k); return `<span class="orb ${size || ""}" style="--c1:${b.c1};--c2:${b.c2}">${ICON[k]}</span>`; }
+function orb(k, size) { const b = BANDS.find((x) => x.k === k) || { c1: "#8a97ad", c2: "#3b4a63" }; return `<span class="orb ${size || ""}" style="--c1:${b.c1};--c2:${b.c2}">${ICON[k]}</span>`; }
 function decoSvg(k) {   // large faint motif in the band's corner
   const p = { sc: `<path d="M20 40h70a30 30 0 0 1 0 60H60a30 30 0 0 0 0 60h90" /><circle cx="20" cy="40" r="10"/><circle cx="150" cy="160" r="10"/>`,
     co: `<path d="M100 20 170 58v84l-70 38-70-38V58z"/><path d="M30 58l70 38 70-38M100 96v84"/>`,
@@ -1232,7 +1118,7 @@ function homeView() {
     const st = bandStats(b.k);
     const right = b.k === "map" ? `<span class="explore">Explore ${ICON.chev}</span>`
       : st.a ? `<span class="apill" title="${st.a} ${b.attnLabel}"><span class="ico">${ICON.warn}</span><b>${st.a}</b><span>${b.attnLabel}</span></span>`
-      : `<span class="clear"><span class="ico">${ICON.check}</span>All clear</span>`;
+      : `<span class="clear"><span class="ico">${ICON.check}</span>No warnings</span>`;
     return `<div class="band" data-band="${b.k}" tabindex="0" role="button" aria-label="Open ${b.name}" style="--i:${i};--c1:${b.c1};--c2:${b.c2}">
       ${decoSvg(b.k)}${orb(b.k)}
       ${st.n !== null ? `<span class="big">${st.n}</span>` : ""}
@@ -1259,7 +1145,7 @@ function worldView(k, enter) {
 function openWorld(el, k) {
   // every band opens fresh: no filters left over from an earlier visit
   S.listQuery = ""; S.listFlagsOnly = false; S.compQuery = ""; S.compAttn = false; S.compShared = false; S.decQuery = ""; S.decOpenOnly = true; S.sysQuery = "";
-  if (k === "map") S.sel = null;
+  if (k === "map") S.mx = { type: null, q: "", stack: null, via: null };
   if (reduced() || !el.animate) return go("band", { k });
   window.scrollTo(0, 0);
   const r = el.getBoundingClientRect(), v = $("#view").getBoundingClientRect();
@@ -1309,7 +1195,7 @@ function stripSvg(nLeft, rightCols, attn) {
 /* ---- Scenarios world ---- */
 function scWorld() {
   return `<div class="toolbar">
-      <input type="search" id="listSearch" placeholder="Search name, source, target, platform, asset, component, tag …" value="${esc(S.listQuery)}">
+      <input type="search" id="listSearch" placeholder="Search name, source, target, platform, component, tag …" value="${esc(S.listQuery)}">
       <label class="pill-toggle ${S.listFlagsOnly ? "on" : ""}"><input type="checkbox" id="flagsOnly" ${S.listFlagsOnly ? "checked" : ""}><span class="ico">${ICON.warn}</span>Needs attention only</label>
     </div>
     <div id="listTable">${listTable()}</div>`;
@@ -1333,32 +1219,37 @@ function listTable() {
   </tbody></table>`;
 }
 
-/* ---- Components world ---- */
+/* ---- Components world (V-2: one row per integration component; parts inside) ---- */
 function coWorld() {
-  return `<div class="toolbar"><input type="search" id="compSearch" placeholder="Search component name, ref or type …" value="${esc(S.compQuery)}">
+  return `<div class="toolbar"><input type="search" id="compSearch" placeholder="Search component, platform or part …" value="${esc(S.compQuery)}">
       <label class="pill-toggle ${S.compAttn ? "on" : ""}"><input type="checkbox" id="compAttn" ${S.compAttn ? "checked" : ""}><span class="ico">${ICON.warn}</span>Needs attention only</label>
       <label class="pill-toggle ${S.compShared ? "on" : ""}"><input type="checkbox" id="compShared" ${S.compShared ? "checked" : ""}>Shared only</label></div>
     <div id="compTable">${compTable()}</div>`;
 }
-function compTable() {
-  const q = S.compQuery.trim().toLowerCase(), ar = attnRefs();
-  let list = compRefs();
-  if (q) list = list.filter((x) => (x.ref + " " + [...x.names].join(" ") + " " + x.type + " " + (x.asset || "")).toLowerCase().includes(q));
-  if (S.compShared) list = list.filter((x) => x.scenarios.size > 1);
-  if (S.compAttn) list = list.filter((x) => ar.has(x.ref));
-  list.sort((a, b) => (ar.has(b.ref) - ar.has(a.ref)) || b.scenarios.size - a.scenarios.size || a.ref.localeCompare(b.ref));
+function partChips(key) {
   const lc = (ref, v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
-  return `<table class="wtable"><thead><tr><th class="mk"></th><th>Component</th><th>Type</th><th>Platform · asset</th><th>Versions in the registry</th><th>Used by</th><th>Needs attention because</th></tr></thead><tbody>
-    ${list.map((x, i) => { const a = ar.get(x.ref) || [];
-      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(x.ref)}" data-xkind="co" data-rowopen="co" tabindex="0" title="Open this component">
+  return [...S.comps.get(key).parts].map((ref) => { const x = S.refs.get(ref); if (!x) return "";
+    const vs = [...x.versions].sort((a, b) => vnum(a) - vnum(b)), bad = vs.map((v) => lc(ref, v)).find((st) => st === "deprecated" || st === "retired");
+    return `<span class="chip ${vs.length > 1 ? "violet" : ""}" title="${esc(refName(ref))} · ${esc(ref)}">${esc(partLabel(ref))} ${esc(vs.join(" / "))}</span>${bad ? stageChip(bad) : ""}`; }).join(" ");
+}
+function compTable() {
+  const q = S.compQuery.trim().toLowerCase(), ca = compAttn();
+  let list = [...S.comps.values()];
+  if (q) list = list.filter((x) => [x.name, x.key, x.platform, ...[...x.parts].map((r) => partLabel(r) + " " + refName(r) + " " + r)].join(" ").toLowerCase().includes(q));
+  if (S.compShared) list = list.filter((x) => x.scenarios.size > 1);
+  if (S.compAttn) list = list.filter((x) => ca.has(x.key));
+  list.sort((a, b) => (ca.has(b.key) - ca.has(a.key)) || b.scenarios.size - a.scenarios.size || a.name.localeCompare(b.name));
+  return `<table class="wtable"><thead><tr><th class="mk"></th><th>Component</th><th>Platform / broker</th><th>Parts and versions</th><th>Used by</th><th>Needs attention because</th></tr></thead><tbody>
+    ${list.map((x, i) => { const a = ca.get(x.key) || [];
+      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(x.key)}" data-xkind="co" data-rowopen="co" tabindex="0" title="Open this component">
       <td class="mk">${a.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
-      <td><b title="${esc([...x.names].join(" / "))}">${esc([...x.names][0] || "(unnamed)")}</b>${x.names.size > 1 ? ` <span class="muted" style="font-size:12px">+${x.names.size - 1} name${x.names.size > 2 ? "s" : ""}</span>` : ""}<div class="sub2 mono muted">${esc(x.ref)}</div></td>
-      <td>${esc(x.type)}</td><td>${esc([x.platform || kindInfo(x.kind).label, x.asset].filter(Boolean).join(" · "))}</td>
-      <td>${[...x.versions].sort((p, q2) => vnum(p) - vnum(q2)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>${stageChip(lc(x.ref, v))}`).join(" ")}</td>
+      <td><b>${esc(x.name)}</b><div class="sub2 mono muted">${esc(x.key)}</div></td>
+      <td>${esc(x.platform || "—")}<div class="muted" style="font-size:12px">${esc(kindInfo(x.kind).label)}</div></td>
+      <td>${partChips(x.key)}</td>
       <td>${[...x.scenarios].slice(0, 3).map((id) => `<span class="chip" data-open="${esc(id)}" style="cursor:pointer">${esc(short(scenarioName(id), 26))}</span>`).join("")}${x.scenarios.size > 3 ? `<span class="chip">+${x.scenarios.size - 3}</span>` : ""}</td>
       <td class="why">${a.length ? esc(a[0]) + (a.length > 1 ? ` <span class="muted">(+${a.length - 1})</span>` : "") : '<span class="muted">—</span>'}</td>
 </tr>`; }).join("")
-      || `<tr><td colspan="7" class="muted" style="padding:18px">No components match.</td></tr>`}
+      || `<tr><td colspan="6" class="muted" style="padding:18px">No components match.</td></tr>`}
     </tbody></table>`;
 }
 
@@ -1398,31 +1289,48 @@ function deWorld() {
     <div id="decTable">${decisionsTable()}</div>`;
 }
 
-/* ---- Relationship map world ---- */
+/* ---- Relationship map world (V-1, 0.8): an empty start — pick an object type, then an object, then explore ---- */
+const MTYPES = [
+  { t: "s", label: "Scenario", icon: "sc" },
+  { t: "c", label: "Integration component", icon: "co" },
+  { t: "p", label: "Platform / broker", icon: "pl" },
+  { t: "a", label: "Connected system", icon: "cs" },
+];
+function mapObjects(t) {
+  if (t === "s") return [...S.scenarios.values()].map((s) => ({ key: nodeKey("s", s.latest.id), label: s.latest.name, sub: [srcNames(s.latest)[0], s.latest.platforms.join(", "), tgtNames(s.latest)[0]].filter(Boolean).join(" → "), attn: activeFlags(s).length > 0 }));
+  if (t === "c") { const ca = compAttn(); return [...S.comps.values()].map((x) => ({ key: nodeKey("c", x.key), label: x.name, sub: `${x.platform} · ${[...x.parts].map(partLabel).join(", ")}`, attn: ca.has(x.key) })); }
+  if (t === "p") return [...S.platforms.values()].map((p) => ({ key: nodeKey("p", p.key), label: p.name, sub: `${[...p.kinds].map((k) => kindInfo(k).label).join(" + ")} · ${p.comps.size} component${p.comps.size === 1 ? "" : "s"}`, attn: false }));
+  const sa = sysAttn(); return [...S.systems.values()].map((y) => ({ key: nodeKey("a", y.key), label: y.name, sub: [y.triggers.size ? "caller" : "", y.receives.size ? "receiver" : ""].filter(Boolean).join(" · "), attn: sa.has(y.key) }));
+}
+function mapList() {
+  const q = S.mx.q.trim().toLowerCase();
+  const list = mapObjects(S.mx.type).filter((o) => !q || (o.label + " " + o.sub).toLowerCase().includes(q))
+    .sort((a, b) => (b.attn - a.attn) || a.label.localeCompare(b.label));
+  return list.map((o) => `<div class="mobj ${o.attn ? "attn" : ""}" data-mstart="${esc(o.key)}" tabindex="0" role="button"><span class="kdot k-${S.mx.type}"></span><b>${esc(o.label)}</b>
+      <span class="ms">${esc(o.sub)}</span>${o.attn ? `<span class="wmark">${ICON.warn}</span>` : ""}</div>`).join("") || '<div class="muted" style="padding:10px">Nothing matches.</div>';
+}
 function mapWorld() {
-  const g = mapGraph();
-  if (S.sel && ((S.sel.type === "t" && !g.targets.has(S.sel.id)) || (S.sel.type === "s" && !S.scenarios.has(S.sel.id)))) S.sel = null;
-  return `<div class="grid g-map">
-    <div>
-      <div class="panel-head">
-        <span class="seg"><button data-map="asset" class="${S.mapMode === "asset" ? "on" : ""}">By asset</button><button data-map="ref" class="${S.mapMode === "ref" ? "on" : ""}">By component</button></span>
-        <label class="note" style="display:flex;gap:6px;align-items:center"><input type="checkbox" id="mapAll" ${S.mapAll ? "checked" : ""}> show unshared too</label>
-        <span class="spacer" style="flex:1"></span>
-        ${S.sel ? `<button class="btn ghost small" style="color:var(--teal)" data-act="clearsel">Clear selection</button>` : ""}
-      </div>
-      <div id="mapBox">${g.R.length ? mapSvg(g) : `<div class="muted">Nothing shared yet — switch on “show unshared too”.</div>`}</div>
-      <div class="legend"><span><i style="background:#0f7c7a"></i>iPaaS</span><span><i style="background:#6b4fd8"></i>message broker</span><span><i style="background:#b4472a"></i>connected system</span>
-        <span style="color:#6b4fd8">━ open new version</span><span style="color:#b86e00">━ needs attention</span><span>– – overlapping scenario</span></div>
-    </div>
-    <div class="selcard" id="selBox">${selPanel(g)}</div>
-  </div>`;
+  if (S.mx.stack) {
+    X.stack = S.mx.stack; X.via = S.mx.via;
+    const [t] = X.stack[0].split(/\|(.*)/s);
+    return `<div class="mhead"><span class="note">Started from the ${esc(NODE_KIND[t].label)} <b>${esc(nodeName(X.stack[0]))}</b></span><span style="flex:1"></span>
+        <button class="btn ghost small" style="color:var(--teal)" data-act="mreset">Start over</button></div>
+      <div class="panel"><div id="pageRel">${explorerHtml()}</div></div>`;
+  }
+  const count = { s: S.scenarios.size, c: S.comps.size, p: S.platforms.size, a: S.systems.size };
+  return `<div class="mstart">
+      <h2>Where do you want to start?</h2>
+      <div class="mtypes">${MTYPES.map((m) => `<button class="mtype k-${m.t} ${S.mx.type === m.t ? "on" : ""}" data-mtype="${m.t}"><span class="mi">${ICON[m.icon]}</span><span class="ml">${m.label}</span><span class="mn">${count[m.t]}</span></button>`).join("")}</div>
+      ${S.mx.type ? `<div class="mpick"><input type="search" id="mapSearch" placeholder="Search ${esc(MTYPES.find((m) => m.t === S.mx.type).label.toLowerCase())} …" value="${esc(S.mx.q)}">
+        <div class="mlist" id="mapList">${mapList()}</div></div>` : `<div class="note" style="margin-top:14px">Pick an object type, then the object to start from. The explorer then shows its relationships; follow them step by step and step back the same way.</div>`}
+    </div>`;
 }
 function refreshOverviewParts() {
   if (S.view === "band" && S.param?.k === "map") $("#worldBody").innerHTML = mapWorld();
 }
 
 /* ---- R-13 point 6: the flow as a chain of named artifacts (no Pattern Bench pattern blocks) ----
-   One box per platform / broker asset with the components inside it; connected systems at the ends. */
+   One box per integration component (platform / broker) with its parts inside; connected systems at the ends. */
 function chainSvg(spec, flagRefs) {
   const base = spec.base || {}, conts = base.containers || [];
   const contById = Object.fromEntries(conts.map((k) => [k.id, k]));
@@ -1474,7 +1382,7 @@ function chainSvg(spec, flagRefs) {
     }
     const col = k.kind === "broker" ? "#6b4fd8" : "#0f7c7a";
     const flagged = n.items.some((it) => flagRefs.has(it.c.ref)), ver = n.items.some((it) => it.added || it.change);
-    s += `<g class="art ${flagged ? "attn" : ver ? "ver" : ""}"><rect x="${p.x}" y="${p.y}" width="${W}" height="${p.h}" rx="10"/>
+    s += `<g class="art ${flagged ? "attn" : ver ? "ver" : ""}" ${k.ref ? `data-copen="${esc(k.ref)}"` : ""}><rect x="${p.x}" y="${p.y}" width="${W}" height="${p.h}" rx="10"/>
       <rect x="${p.x}" y="${p.y}" width="${W}" height="5" rx="2" fill="${col}"/>
       <text x="${p.x + 12}" y="${p.y + 19}" class="gl" fill="${col}">${esc(short(k.platform || "", 20))} · ${k.kind === "broker" ? "broker" : "iPaaS"}</text>
       <text x="${p.x + 12}" y="${p.y + 35}" class="an">${esc(short(k.asset || "(unlabelled)", 26))}</text>`;
@@ -1484,7 +1392,7 @@ function chainSvg(spec, flagRefs) {
       s += `<g ${c.ref ? `data-copen="${esc(c.ref)}"` : ""}><rect x="${p.x + 8}" y="${y}" width="${W - 16}" height="${CH - 3}" rx="4" class="ccb" ${it.added ? 'style="fill:#efebfd;stroke:#c9bdf6"' : fl ? 'style="fill:#fff3dc;stroke:#f5c46e"' : ""}/>
         <text x="${p.x + 14}" y="${y + 11.5}" class="cc">${it.added ? "+ " : ""}${esc(short(c.name || c.type, 22))}</text>
         <text x="${p.x + W - 14}" y="${y + 11.5}" text-anchor="end" class="cc" ${it.change || it.added ? 'fill="#6b4fd8" font-weight="700"' : ""}>${esc(v)}${fl ? " ⚠" : ""}${st === "deprecated" || st === "retired" ? " · " + esc(STAGE_LABEL[st]) : ""}</text>
-        <title>${esc(c.name || c.type)} · ${esc(c.type)} ${esc(c.version || "")}${c.ref ? " · " + esc(c.ref) + " — click to open the component" : ""}</title></g>`;
+        <title>${esc(c.name || c.type)} · ${esc(c.type)} ${esc(c.version || "")}${c.ref ? " · part of " + esc(k.asset || "") + " — click to open the component" : ""}</title></g>`;
     });
     s += `</g>`;
   }
@@ -1493,16 +1401,17 @@ function chainSvg(spec, flagRefs) {
 function flowPanel(rec, spec, flagRefs) {
   return `<div class="panel"><h2>Flow <span class="count">(named artifacts)</span></h2>
     <div class="diagram pbwrap">${chainSvg(spec, flagRefs)}</div>
-    <div class="legend"><span><i style="background:#0f7c7a"></i>iPaaS asset</span><span><i style="background:#6b4fd8"></i>broker asset (topic / queue)</span>
+    <div class="legend"><span><i style="background:#0f7c7a"></i>iPaaS component</span><span><i style="background:#6b4fd8"></i>broker component (topic / queue)</span>
       <span><i style="background:#fff6f2;border:1.5px solid #b4472a;border-radius:6px"></i>connected system</span>
       <span><i style="background:#efebfd;border:1.5px solid #6b4fd8"></i>new / changed version</span><span><i style="background:#fff8ea;border:1.5px solid #f5a524"></i>needs attention</span></div>
     <div class="note" style="margin-top:6px">Built from the registry entry. Click a component to open it, or a system to see it in Connected systems. The Pattern Bench canvas (pattern blocks) is a design-time view and stays in Pattern Bench.</div></div>`;
 }
 
 /* ---- R-8 / R-9 / R-10: explorer with in-place pivot, 3D dive, visible Explore button ---- */
-const X = { stack: [], row: null, kind: null, open: new Map() };   // explorer state for the open row
+const X = { stack: [], via: [], row: null, kind: null, open: new Map() };   // explorer state; via[i] = relationship that led to stack[i] (V-3)
 function nodeKey(t, id) { return t + "|" + id; }
-const NODE_KIND = { s: { label: "scenario", col: "#0f7c7a" }, c: { label: "component", col: "#3346c8" }, a: { label: "connected system", col: "#b4472a" }, v: { label: "version", col: "#98a2b3" } };
+const NODE_KIND = { s: { label: "scenario", col: "#0f7c7a" }, c: { label: "component", col: "#3346c8" }, p: { label: "platform / broker", col: "#5f6f88" }, a: { label: "connected system", col: "#b4472a" }, v: { label: "part", col: "#98a2b3" } };
+function nodeName(k) { const [t, id] = k.split(/\|(.*)/s); return t === "c" ? compName(id) : t === "p" ? platName(id) : t === "a" ? sysName(id) : scenarioName(id); }
 const pairText = (q) => (q.includes(" > ") ? q.split(" > ").map(thingName).join(" → ") : thingName(q));
 
 /* R-13: every node offers its relationship types (verbs); the user opens the ones to explore.
@@ -1515,10 +1424,10 @@ function scRel(id) {
   const feedsOut = ov.filter((o) => TIERS[o.tier].k === "feeds" && o.dir !== "in"), feedsIn = ov.filter((o) => TIERS[o.tier].k === "feeds" && o.dir !== "out");
   const topics = (o) => (o.byTier.feeds || []).map(refName).join(", ");
   const made = [];
-  for (const c of r.components) if (c.ref && isIntegrationKind(c.kind) && !made.some((m) => m.ref === c.ref)) {
-    const x = S.refs.get(c.ref), v = r.uses[c.ref] || [c.version], behind = x && Math.max(...v.map(vnum)) < x.max;
-    made.push({ ref: c.ref, kind: "c", label: refName(c.ref), sub: [c.platform, v.join("+"), x && x.scenarios.size > 1 ? x.scenarios.size + " flows" : ""].filter(Boolean).join(" · "),
-      cls: fl.has(c.ref) || behind ? "attn" : x && x.scenarios.size > 1 ? "shared" : "", attr: `data-node="${esc(nodeKey("c", c.ref))}"`, title: `${refName(c.ref)} — ${c.type} on ${c.platform} · ${c.asset}` });
+  for (const k of r.containers || []) if (S.comps.has(k.key) && !made.some((m) => m.key === k.key)) {
+    const x = S.comps.get(k.key), ps = partsIn(k.key, r), behind = ps.some((p) => p.behind), flagged = ps.some((p) => fl.has(p.ref));
+    made.push({ key: k.key, kind: "c", label: x.name, sub: [x.platform, x.scenarios.size > 1 ? x.scenarios.size + " flows" : ""].filter(Boolean).join(" · "),
+      cls: flagged || behind ? "attn" : x.scenarios.size > 1 ? "shared" : "", attr: `data-node="${esc(nodeKey("c", k.key))}"`, title: `${x.name} on ${x.platform} — ${partsText(ps)}` });
   }
   const deliv = new Map(); for (const d of r.sys.deliversTo) deliv.set(d.key, uniq([...(deliv.get(d.key) || []), d.endpoint]));
   const groups = [
@@ -1528,37 +1437,56 @@ function scRel(id) {
     { k: "feeds", verb: "feeds", flow: "out", items: feedsOut.map((o) => sn(o, "via " + topics(o))) },
     { k: "fedby", verb: "fed by", flow: "in", items: feedsIn.map((o) => sn(o, "via " + topics(o))) },
     { k: "along", verb: "runs alongside", flow: "", hint: "same path", items: ov.filter((o) => TIERS[o.tier].k === "path").map((o) => sn(o, `${o.sharedLinks.length} shared link${o.sharedLinks.length === 1 ? "" : "s"}`)) },
-    { k: "shares", verb: "shares", flow: "", hint: "API, asset, endpoint", items: ov.filter((o) => ["api", "asset", "endpoint"].includes(TIERS[o.tier].k)).map((o) => sn(o, o.tier >= 0 && TIERS[o.tier].k === "endpoint" ? "same endpoint (weak)" : tierLabel(o))) },
+    { k: "shares", verb: "shares", flow: "", hint: "API, component, endpoint", items: ov.filter((o) => ["api", "asset", "endpoint"].includes(TIERS[o.tier].k)).map((o) => sn(o, o.tier >= 0 && TIERS[o.tier].k === "endpoint" ? "same endpoint (weak)" : tierLabel(o))) },
   ];
   const ss = sameSourceOf(id);
   return { kind: "s", center: { label: r.name, cls: activeFlags(s).length ? "attn" : "" }, groups, scen: true,
     foot: activeFlags(s).slice(0, 3).map((f) => f.text), open: `data-open="${esc(id)}"`, openLabel: "Open scenario",
     note: ss.map((x) => `Same source: ${sysName(S.refSys.get(x.ref) || "")} also triggers ${x.others.length} other scenario${x.others.length === 1 ? "" : "s"} — not counted as overlap`).join(" · ") };
 }
-function neighbours(ref, dirUp) {
-  const m = new Map();
-  for (const s of S.scenarios.values()) for (const l of s.latest.links || []) { const [a, b] = l.split(" > ");
-    const other = dirUp ? (b === ref ? a : null) : (a === ref ? b : null);
-    if (other) m.set(other, (m.get(other) || new Set()).add(s.latest.id)); }
-  return [...m].map(([o, ids]) => { const sk = S.refSys.get(o);
-    return sk ? { kind: "a", label: thingName(o), sub: `in ${ids.size} flow${ids.size === 1 ? "" : "s"}`, attr: `data-node="${esc(nodeKey("a", sk))}"`, title: [...ids].map(scenarioName).join(", ") }
-      : { kind: "c", label: refName(o), sub: `in ${ids.size} flow${ids.size === 1 ? "" : "s"}`, attr: `data-node="${esc(nodeKey("c", o))}"`, title: [...ids].map(scenarioName).join(", ") }; });
+/* V-2: who a component calls / is called by — part links lifted to component (or connected system) level */
+function compNeighbours(key, dirUp) {
+  const parts = S.comps.get(key).parts, m = new Map();
+  for (const s of S.scenarios.values()) for (const l of s.latest.links || []) {
+    const [a, b] = l.split(" > "), mine = dirUp ? b : a, other = dirUp ? a : b;
+    if (!parts.has(mine) || parts.has(other)) continue;
+    const sk = S.refSys.get(other), ck = sk ? null : compKeyOf(other);
+    const nk = sk ? nodeKey("a", sk) : ck ? nodeKey("c", ck) : null; if (!nk) continue;
+    const e = m.get(nk) || m.set(nk, { ids: new Set(), via: new Set() }).get(nk);
+    e.ids.add(s.latest.id); e.via.add(partLabel(mine) + (sk ? " → " + thingName(other) : ""));
+  }
+  return [...m].map(([nk, e]) => { const [t, id] = nk.split(/\|(.*)/s);
+    return { kind: t, label: t === "a" ? sysName(id) : compName(id), sub: `in ${e.ids.size} flow${e.ids.size === 1 ? "" : "s"}`, attr: `data-node="${esc(nk)}"`,
+      title: `via ${[...e.via].join(", ")} · ${[...e.ids].map(scenarioName).join(", ")}` }; });
 }
-function coRel(ref) {
-  const x = S.refs.get(ref), ar = attnRefs().get(ref) || [];
-  const lc = (v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
-  const used = [...x.scenarios].map((id) => { const v = S.scenarios.get(id).latest.uses[ref] || [], behind = Math.max(...v.map(vnum)) < x.max;
-    return { kind: "s", label: scenarioName(id), sub: v.join("+") + (behind ? " · behind" : ""), cls: behind ? "attn" : "", attr: `data-node="${esc(nodeKey("s", id))}"`, title: scenarioName(id) }; });
-  const vers = [...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => { const st = lc(v);
-    return { kind: "v", label: v, sub: st ? STAGE_LABEL[st] || st : "", cls: st === "deprecated" || st === "retired" ? "attn" : vnum(v) === x.max && x.versions.size > 1 ? "new" : "", title: `${refName(ref)} ${v}` }; });
+function coRel(key) {
+  const x = S.comps.get(key), ar = compAttn().get(key) || [];
+  const lc = (ref, v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
+  const used = [...x.scenarios].map((id) => { const ps = partsIn(key, S.scenarios.get(id).latest), behind = ps.some((p) => p.behind);
+    return { kind: "s", label: scenarioName(id), sub: partsText(ps) + (behind ? " · behind" : ""), cls: behind ? "attn" : "", attr: `data-node="${esc(nodeKey("s", id))}"`, title: `${scenarioName(id)} — ${partsText(ps)}` }; });
+  const parts = [...x.parts].map((ref) => { const p = S.refs.get(ref); const vs = [...(p?.versions || [])].sort((a, b) => vnum(a) - vnum(b));
+    const bad = vs.some((v) => ["deprecated", "retired"].includes(lc(ref, v)));
+    return { kind: "v", label: partLabel(ref), sub: vs.join(", "), cls: bad ? "attn" : vs.length > 1 ? "new" : "", title: `${refName(ref)} · ${ref} · versions ${vs.join(", ")}` }; });
   const groups = [
     { k: "used", verb: "used in", flow: "", items: used },
-    { k: "calledby", verb: "called by", flow: "in", items: neighbours(ref, true) },
-    { k: "calls", verb: "calls", flow: "out", items: neighbours(ref, false) },
-    { k: "vers", verb: "has versions", flow: "", items: vers },
+    { k: "calledby", verb: "called by", flow: "in", items: compNeighbours(key, true) },
+    { k: "calls", verb: "calls", flow: "out", items: compNeighbours(key, false) },
+    { k: "parts", verb: "has parts", flow: "", items: parts },
+    { k: "runs", verb: "runs on", flow: "", items: [{ kind: "p", label: platName(x.platKey), sub: kindInfo(x.kind).label, attr: `data-node="${esc(nodeKey("p", x.platKey))}"`, title: `${x.name} runs on ${platName(x.platKey)}` }] },
   ];
-  return { kind: "c", center: { label: refName(ref), cls: ar.length ? "attn" : "" }, groups, foot: ar.slice(0, 3),
-    open: `data-copen="${esc(ref)}"`, openLabel: "Open component", sub: [x.type, x.asset].filter(Boolean).join(" · ") };
+  return { kind: "c", center: { label: x.name, cls: ar.length ? "attn" : "" }, groups, foot: ar.slice(0, 3),
+    open: `data-copen="${esc(key)}"`, openLabel: "Open component", sub: x.platform };
+}
+/* V-2: integration platform / broker */
+function plRel(key) {
+  const p = S.platforms.get(key), ca = compAttn();
+  const groups = [
+    { k: "hosts", verb: "hosts", flow: "", items: [...p.comps].map((ck) => { const x = S.comps.get(ck);
+      return { kind: "c", label: x.name, sub: [...x.parts].map(partLabel).join(", "), cls: ca.has(ck) ? "attn" : x.scenarios.size > 1 ? "shared" : "", attr: `data-node="${esc(nodeKey("c", ck))}"`, title: `${x.name} — used in ${x.scenarios.size} scenario(s)` }; }) },
+    { k: "usedby", verb: "used by", flow: "", items: [...p.scenarios].map((id) => ({ kind: "s", label: scenarioName(id),
+      sub: [...p.comps].filter((ck) => S.comps.get(ck).scenarios.has(id)).map(compName).join(", "), attr: `data-node="${esc(nodeKey("s", id))}"`, title: scenarioName(id) })) },
+  ];
+  return { kind: "p", center: { label: p.name, cls: "" }, groups, foot: [] };
 }
 function sysRel(key) {
   const y = S.systems.get(key), a = sysAttn().get(key) || [];
@@ -1571,29 +1499,30 @@ function sysRel(key) {
   return { kind: "a", center: { label: y.name, cls: a.length ? "attn" : "" }, groups, foot: a.slice(0, 3),
     open: `data-sysrow="${esc(key)}"`, openLabel: "Show in Connected systems" };
 }
-function relOf(key) { const [t, id] = key.split(/\|(.*)/s); return t === "c" ? coRel(id) : t === "a" ? sysRel(id) : scRel(id); }
+function relOf(key) { const [t, id] = key.split(/\|(.*)/s); return t === "c" ? coRel(id) : t === "p" ? plRel(id) : t === "a" ? sysRel(id) : scRel(id); }
 function openSetOf(key) { return X.open.get(key) || X.open.set(key, new Set()).get(key); }
 
 const MAXI = 10;     // entities shown per open relationship
-function relSvg(n, open) {
-  const ROW = 32, W = 940, CW = 210, VX = 268, VW = 196, EX = 520, EW = W - EX - 8;
+function relSvg(n, open, prev) {
+  // V-3: left column = the object you came from + the relationship that led here (one level); click it to step back
+  const ROW = 32, PX = 10, PW = 160, CX = 290, W = 1160, CW = 210, VX = 558, VW = 196, EX = 810, EW = W - EX - 8;
   const groups = n.groups.filter((g) => g.items.length);
   const rowsOf = (g) => (open.has(g.k) ? Math.min(g.items.length, MAXI) + (g.items.length > MAXI ? 1 : 0) : 1);
   const total = Math.max(1, groups.reduce((a, g) => a + rowsOf(g), 0));
   const H = total * ROW + 34, cy = 28 + (total * ROW) / 2;
   let s = `<svg class="explorer rel" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Relationships of ${esc(n.center.label)}">
     <defs><marker id="rarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#667085"/></marker></defs>
-    <text x="10" y="16" class="xl">${esc(NODE_KIND[n.kind].label)}</text><text x="${VX}" y="16" class="xl">relationship — click to expand</text>${open.size ? `<text x="${EX}" y="16" class="xl">related</text>` : ""}`;
+    <text x="${PX}" y="16" class="xl">${prev ? "came from — click to step back" : ""}</text><text x="${CX}" y="16" class="xl">${esc(NODE_KIND[n.kind].label)}</text><text x="${VX}" y="16" class="xl">relationship — click to expand</text>${open.size ? `<text x="${EX}" y="16" class="xl">related</text>` : ""}`;
   let y0 = 28;
   for (const g of groups) {
     const rows = rowsOf(g), on = open.has(g.k), vy = y0 + (rows * ROW) / 2 - 14;
-    s += `<path d="M${10 + CW} ${cy} C${VX - 30} ${cy} ${VX - 40} ${vy + 14} ${VX} ${vy + 14}" class="xe rv"/>`;
+    s += `<path d="M${CX + CW} ${cy} C${VX - 30} ${cy} ${VX - 40} ${vy + 14} ${VX} ${vy + 14}" class="xe rv"/>`;
     if (on) g.items.slice(0, MAXI).concat(g.items.length > MAXI ? [{ more: g.items.length - MAXI }] : []).forEach((it, i) => {
       const ey = y0 + i * ROW + 2, col = NODE_KIND[it.kind || "v"]?.col;
       const mk = g.flow === "out" ? 'marker-end="url(#rarr)"' : g.flow === "in" ? 'marker-start="url(#rarr)"' : "";
       s += `<path d="M${VX + VW} ${vy + 14} C${EX - 30} ${vy + 14} ${EX - 40} ${ey + 13} ${EX - 2} ${ey + 13}" class="xe ${it.cls || ""}" ${mk}/>`;
       if (it.more) { s += `<g class="xn more"><rect x="${EX}" y="${ey}" width="${EW}" height="26" rx="7"/><text x="${EX + 12}" y="${ey + 17}">+ ${it.more} more</text></g>`; return; }
-      s += `<g class="xn ${it.cls || ""} k-${it.kind}" ${it.attr || ""}><rect x="${EX}" y="${ey}" width="${EW}" height="26" rx="${it.kind === "a" ? 13 : 7}"/>
+      s += `<g class="xn ${it.cls || ""} k-${it.kind}" ${it.attr || ""} ${it.attr ? `data-via="${g.k}"` : ""}><rect x="${EX}" y="${ey}" width="${EW}" height="26" rx="${it.kind === "a" ? 13 : 7}"/>
         <rect x="${EX}" y="${ey}" width="5" height="26" rx="2" fill="${col}" stroke="none"/>
         <text x="${EX + 14}" y="${ey + 17}">${esc(short(it.label, it.sub ? 31 : 56))}</text>${it.sub ? `<text x="${EX + EW - 10}" y="${ey + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 22))}</text>` : ""}
         <title>${esc(it.title || it.label)}</title></g>`;
@@ -1606,23 +1535,34 @@ function relSvg(n, open) {
     y0 += rows * ROW;
   }
   if (!groups.length) s += `<text x="${VX}" y="${cy + 4}" class="xs">no relationships</text>`;
-  s += `<g class="xc ${n.center.cls || ""} k-${n.kind}"><rect x="10" y="${cy - 22}" width="${CW}" height="44" rx="${n.kind === "a" ? 22 : 11}"/><text x="${10 + CW / 2}" y="${cy + 5}" text-anchor="middle">${esc(short(n.center.label, 26))}</text><title>${esc(n.center.label)}</title></g>`;
+  if (prev) {
+    const col = NODE_KIND[prev.kind]?.col || "#98a2b3", mx = (PX + PW + CX) / 2;
+    const mk = prev.flow === "out" ? 'marker-end="url(#rarr)"' : prev.flow === "in" ? 'marker-start="url(#rarr)"' : "";
+    s += `<path d="M${PX + PW} ${cy} L${CX - 2} ${cy}" class="xe back" ${mk}/>
+      <text x="${mx}" y="${cy - 8}" text-anchor="middle" class="xs xvia">${esc(short(prev.verb || "", 18))}</text>
+      <g class="xn xprev k-${prev.kind}" data-back="1" tabindex="0" role="button"><rect x="${PX}" y="${cy - 16}" width="${PW}" height="32" rx="${prev.kind === "a" ? 16 : 7}"/>
+        <rect x="${PX}" y="${cy - 16}" width="5" height="32" rx="2" fill="${col}" stroke="none"/>
+        <text x="${PX + 14}" y="${cy + 4}">‹ ${esc(short(prev.label, 18))}</text><title>Step back to ${esc(prev.label)} (${esc(NODE_KIND[prev.kind]?.label || "")})</title></g>`;
+  }
+  s += `<g class="xc ${n.center.cls || ""} k-${n.kind}"><rect x="${CX}" y="${cy - 22}" width="${CW}" height="44" rx="${n.kind === "a" ? 22 : 11}"/><text x="${CX + CW / 2}" y="${cy + 5}" text-anchor="middle">${esc(short(n.center.label, 26))}</text><title>${esc(n.center.label)}</title></g>`;
   return s + "</svg>";
 }
 function explorerHtml(forceAll) {
   const top = X.stack[X.stack.length - 1]; const [t] = top.split(/\|(.*)/s);
   const n = relOf(top), open = openSetOf(top);
   if (forceAll) n.groups.forEach((g) => open.add(g.k));
-  const nm = (k) => { const [tt, ii] = k.split(/\|(.*)/s); return tt === "c" ? refName(ii) : tt === "a" ? sysName(ii) : scenarioName(ii); };
+  const nm = nodeName;
+  const L = X.stack.length, pk = L > 1 ? X.stack[L - 2] : null;
+  const prev = pk ? { kind: pk.split("|")[0], label: nodeName(pk), ...(X.via[L - 1] || {}) } : null;
   const crumbs = X.stack.map((k, i) => (i < X.stack.length - 1 ? `<span class="crumb" data-crumb="${i}">${esc(short(nm(k), 28))}</span><span class="sep">›</span>` : `<b>${esc(short(nm(k), 34))}</b>`)).join("");
   const avail = n.groups.filter((g) => g.items.length);
   return `<div class="xin"><div class="xcrumbs"><span class="xkind ${t}">${NODE_KIND[t].label}</span>${crumbs}
       ${t === "s" ? `<label class="pill-toggle sm ${X.strongOnly ? "on2" : ""}"><input type="checkbox" data-strong="1" ${X.strongOnly ? "checked" : ""}>Strong overlaps only</label>` : ""}
-      <span class="xhint"><span class="linkish" data-verbs="all">expand all</span> · <span class="linkish" data-verbs="none">collapse</span> · click a box to re-centre · double-click or hold to open its page</span></div>
-    <div class="xstage">${relSvg(n, open)}</div>
+      <span class="xhint"><span class="linkish" data-verbs="all">expand all</span> · <span class="linkish" data-verbs="none">collapse</span> · click a box to re-centre · left box steps back · double-click or hold to open its page</span></div>
+    <div class="xstage">${relSvg(n, open, prev)}</div>
     ${!open.size && avail.length ? `<div class="xnote">Pick a relationship to explore: ${avail.map((g) => `<span class="vchip" data-verb="${g.k}">${esc(g.verb)} · ${g.items.length}</span>`).join(" ")}</div>` : ""}
-    ${n.scen && [...open].some((k) => ["feeds", "fedby", "along", "shares"].includes(k)) ? `<div class="xlegend"><span class="lg path">━ runs alongside (same path)</span><span class="lg feeds">➝ feeds / fed by</span><span class="lg api">━ shares API</span><span class="lg asset">━ shares asset</span><span class="lg endpoint">┄ same endpoint (weak)</span></div>` : ""}
-    <div class="xlegend"><span style="color:#0f7c7a">▌scenario</span><span style="color:#3346c8">▌component</span><span style="color:#b4472a">▌connected system</span><span>→ / ← direction of the message</span></div>
+    ${n.scen && [...open].some((k) => ["feeds", "fedby", "along", "shares"].includes(k)) ? `<div class="xlegend"><span class="lg path">━ runs alongside (same path)</span><span class="lg feeds">➝ feeds / fed by</span><span class="lg api">━ shares API</span><span class="lg asset">━ shares component</span><span class="lg endpoint">┄ same endpoint (weak)</span></div>` : ""}
+    <div class="xlegend"><span style="color:#0f7c7a">▌scenario</span><span style="color:#3346c8">▌component</span><span style="color:#5f6f88">▌platform / broker</span><span style="color:#b4472a">▌connected system</span><span>→ / ← direction of the message</span></div>
     ${n.note ? `<div class="xnote">${esc(n.note)}</div>` : ""}
     <div class="xfoot">${n.foot.length ? `<div class="xflags">${n.foot.map((f) => `<div class="flag"><span class="ico">⚠</span><div>${esc(f)}</div></div>`).join("")}</div>` : ""}
 </div></div>`;
@@ -1637,7 +1577,7 @@ function openExplorer(rowEl, keepStack) {
   const was = x.classList.contains("on");
   document.querySelectorAll("tr.xrow.on").forEach((o) => { o.classList.remove("on"); o.previousElementSibling?.classList.remove("open"); });
   if (was && !keepStack) return;
-  if (!keepStack) X.stack = [nodeKey({ co: "c", cs: "a", sc: "s" }[rowEl.dataset.xkind] || "s", rowEl.dataset.id)];
+  if (!keepStack) { X.stack = [nodeKey({ co: "c", cs: "a", sc: "s" }[rowEl.dataset.xkind] || "s", rowEl.dataset.id)]; X.via = []; }
   X.row = rowEl.dataset.id; X.kind = rowEl.dataset.xkind;
   x.querySelector(".xslot").innerHTML = explorerHtml();
   rowEl.classList.add("open");
@@ -1652,8 +1592,14 @@ function rerenderExplorer(dir) {
     x.querySelector(".xstage").animate([{ transform: `translateX(${dir * 60}px)`, opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 420, easing: EASE });
   };
 }
-function pivot(key) { if (X.stack[X.stack.length - 1] === key) return; X.stack.push(key); rerenderExplorer(1); }
-function crumbTo(i) { X.stack = X.stack.slice(0, i + 1); rerenderExplorer(-1); }
+function syncMx() { if (S.view === "band" && S.param?.k === "map" && S.mx.stack) { S.mx.stack = X.stack; S.mx.via = X.via; } }
+function pivot(key, viaK) {
+  const top = X.stack[X.stack.length - 1]; if (top === key) return;
+  const g = viaK ? relOf(top).groups.find((x) => x.k === viaK) : null;
+  X.via = X.via.slice(0, X.stack.length); X.via[X.stack.length] = g ? { verb: g.verb, flow: g.flow } : null;
+  X.stack.push(key); syncMx(); rerenderExplorer(1);
+}
+function crumbTo(i) { X.stack = X.stack.slice(0, i + 1); X.via = X.via.slice(0, i + 1); syncMx(); rerenderExplorer(-1); }
 /* R-9: dive — the box rises toward the viewer, the page sinks back, the box swells into the target band */
 function dive(el, key) {
   const [t, id] = key.split(/\|(.*)/s), k = t === "c" ? "co" : t === "a" ? "cs" : "sc";
@@ -1663,7 +1609,7 @@ function dive(el, key) {
   if (reduced() || !el.animate) return go2();
   const r = el.getBoundingClientRect(), v = $("#view").getBoundingClientRect();
   const fly = document.createElement("div"); fly.className = "dive";
-  fly.innerHTML = `<span>${esc(t === "c" ? refName(id) : t === "a" ? sysName(id) : scenarioName(id))}</span>`;
+  fly.innerHTML = `<span>${esc(nodeName(key))}</span>`;
   document.body.appendChild(fly);
   const w = $(".world"); w?.classList.add("sink");
   const from = { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", transform: "perspective(900px) translateZ(0) rotateX(0deg)", borderRadius: "8px" };
@@ -1683,7 +1629,7 @@ function openDetail(el, view, param) {
   if (reduced() || !el?.animate || !el.getBoundingClientRect) return go(view, param, { enter: true });
   const r = el.getBoundingClientRect(), v = $("#view").getBoundingClientRect();
   const mo = document.createElement("div"); mo.className = "morph row-morph";
-  mo.innerHTML = `<div class="rm-title">${esc(view === "component" ? refName(param.ref) : view === "system" ? sysName(param.key) : scenarioName(param.id))}</div>`;
+  mo.innerHTML = `<div class="rm-title">${esc(view === "component" ? compName(compKeyOf(param.key || param.ref)) : view === "platform" ? platName(param.key) : view === "system" ? sysName(param.key) : scenarioName(param.id))}</div>`;
   document.body.appendChild(mo);
   $(".world")?.classList.add("sink");
   const from = { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", borderRadius: "10px" };
@@ -1710,44 +1656,59 @@ function sideLists(n, keys) {
 function detailHead(k, title, sub, attnN) {
   return `<div class="world-head"><button class="wback" data-act="back" aria-label="Back">${ICON.back}</button>${orb(k, "sm")}
     <span class="txt"><span class="name">${esc(title)}</span><span class="desc">${sub}</span></span>
-    ${attnN ? `<span class="apill sm"><span class="ico">${ICON.warn}</span>${attnN > 1 ? `<b>${attnN}</b>` : ""}<span>needs attention</span></span>` : `<span class="clear"><span class="ico">${ICON.check}</span>All clear</span>`}</div>`;
+    ${attnN ? `<span class="apill sm"><span class="ico">${ICON.warn}</span>${attnN > 1 ? `<b>${attnN}</b>` : ""}<span>needs attention</span></span>` : `<span class="clear"><span class="ico">${ICON.check}</span>No warnings</span>`}</div>`;
 }
 const relPanel = (title) => `<div class="panel"><h2>${title}</h2><div id="pageRel">${explorerHtml(true)}</div></div>`;
 
-function componentView(ref) {
-  const x = S.refs.get(ref); if (!x) return `<div class="panel">Component not found.</div>`;
-  const ar = attnRefs().get(ref) || [], lcEv = (S.lifecycle?.events || []).filter((e) => e.ref === ref).sort((a, b) => String(a.date).localeCompare(String(b.date)));
-  const lc = (v) => S.lifecycle?.byKey.get(ref + "@" + v);
-  const users = [...x.scenarios].map((id) => S.scenarios.get(id).latest.uses[ref] || []);
-  const decs = []; for (const s of S.scenarios.values()) for (const d of s.latest.decisionList || []) if (d.refs.includes(ref) && d.status !== "completed") decs.push({ s: s.latest, d });
-  X.stack = [nodeKey("c", ref)]; X.open.delete(X.stack[0]);
-  const n = coRel(ref);
-  const vers = [...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>${stageChip(lc(v)?.stage)}`).join(" ");
+function componentView(param) {
+  const key = compKeyOf(param.key || param.ref), x = S.comps.get(key); if (!x) return `<div class="panel">Component not found.</div>`;
+  const ar = compAttn().get(key) || [], parts = [...x.parts];
+  const lc = (ref, v) => S.lifecycle?.byKey.get(ref + "@" + v);
+  const lcEv = (S.lifecycle?.events || []).filter((e) => x.parts.has(e.ref)).sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  const decs = []; for (const s of S.scenarios.values()) for (const d of s.latest.decisionList || []) if (d.status !== "completed" && d.refs.some((r) => x.parts.has(r))) decs.push({ s: s.latest, d });
+  X.stack = [nodeKey("c", key)]; X.via = []; X.open.delete(X.stack[0]);
+  const n = coRel(key);
+  const partRows = parts.map((ref) => { const p = S.refs.get(ref); if (!p) return "";
+    const users = [...p.scenarios].map((id) => S.scenarios.get(id).latest.uses[ref] || []);
+    return `<div class="prow"><div class="ph"><b>${esc(partLabel(ref))}</b> <span class="muted">${esc(refName(ref))}</span><div class="mono muted" style="font-size:11px">${esc(ref)}</div></div>
+      <div class="vlane">${[...p.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => { const e = lc(ref, v);
+        return `<div class="vcard ${e && (e.stage === "deprecated" || e.stage === "retired") ? "attn" : vnum(v) === p.max && p.versions.size > 1 ? "new" : ""}"><div class="vn">${esc(v)}</div>${stageChip(e?.stage)}${e?.retireOn ? `<div class="note">retires ${esc(e.retireOn)}</div>` : ""}
+          <div class="note">${users.filter((u) => u.includes(v)).length} scenario(s)</div></div>`; }).join("")}</div></div>`; }).join("");
   return `<div class="world ${S.enterDetail ? "enter" : ""}">
-    ${detailHead("co", refName(ref), `Component · <span class="mono">${esc(ref)}</span>`, ar.length)}
+    ${detailHead("co", x.name, `Integration component · <span class="mono">${esc(key)}</span>`, ar.length)}
     <div class="world-body">
-      ${factsHtml([["Platform", esc(x.platform || "—")], ["Type", esc(x.type)], ["Asset", esc(x.asset || "—")], ["Kind", esc(kindInfo(x.kind).label)], ["Versions", vers], ["Used in", `${x.scenarios.size} scenario${x.scenarios.size === 1 ? "" : "s"}`]])}
+      ${factsHtml([["Platform / broker", `<span class="linkish" data-go="${esc(nodeKey("p", x.platKey))}">${esc(x.platform || "—")}</span>`], ["Kind", esc(kindInfo(x.kind).label)], ["Parts", esc(parts.map(partLabel).join(", "))], ["Used in", `${x.scenarios.size} scenario${x.scenarios.size === 1 ? "" : "s"}`]])}
       <div class="dlayout"><div class="dmain">
         ${ar.length ? `<div class="panel"><h2>Why it needs attention</h2>${ar.map((t) => `<div class="flag"><span class="ico">⚠</span><div>${esc(t)}</div></div>`).join("")}</div>` : ""}
         ${relPanel("Relationships")}
-        <div class="panel"><h2>Versions and lifecycle</h2>
-          <div class="vlane">${[...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => { const e = lc(v);
-            return `<div class="vcard ${e && (e.stage === "deprecated" || e.stage === "retired") ? "attn" : vnum(v) === x.max && x.versions.size > 1 ? "new" : ""}"><div class="vn">${esc(v)}</div>${stageChip(e?.stage)}${e?.retireOn ? `<div class="note">retires ${esc(e.retireOn)}</div>` : ""}
-              <div class="note">${users.filter((u) => u.includes(v)).length} scenario(s)</div></div>`; }).join("")}</div>
-          ${lcEv.length ? `<div class="sec">Lifecycle events</div><table>${lcEv.map((e) => `<tr><td class="nowrap">${esc(e.date)}</td><td>${esc(e.version)}</td><td>${stageChip(e.stage)}</td><td>${esc(e.who || "")}</td><td class="muted">${esc(e.note || "")}</td></tr>`).join("")}</table>` : '<div class="note">No lifecycle events recorded.</div>'}
+        <div class="panel"><h2>Parts, versions and lifecycle</h2>${partRows || '<div class="muted">No parts.</div>'}
+          ${lcEv.length ? `<div class="sec">Lifecycle events</div><table>${lcEv.map((e) => `<tr><td class="nowrap">${esc(e.date)}</td><td>${esc(partLabel(e.ref))} ${esc(e.version)}</td><td>${stageChip(e.stage)}</td><td>${esc(e.who || "")}</td><td class="muted">${esc(e.note || "")}</td></tr>`).join("")}</table>` : '<div class="note">No lifecycle events recorded.</div>'}
         </div>
       </div><aside class="dside">
-        <div class="panel"><h2>Relationships</h2>${sideLists(n, ["used", "calledby", "calls"])}</div>
+        <div class="panel"><h2>Relationships</h2>${sideLists(n, ["used", "calledby", "calls", "runs"])}</div>
         <div class="panel"><h2>Open decisions that touch it</h2>
           ${decs.map(({ s, d }) => `<div class="list-item" data-go="${esc(nodeKey("s", s.id))}"><div class="t">${esc(d.label)} ${d.option ? `<span class="chip">${esc(d.option)}</span>` : ""}</div><div class="s">${esc(s.name)}${d.why ? " — " + esc(d.why) : ""}</div></div>`).join("") || '<div class="muted">None.</div>'}</div>
       </aside></div>
     </div></div>`;
 }
 
+function platformView(key) {
+  const p = S.platforms.get(key); if (!p) return `<div class="panel">Platform not found.</div>`;
+  X.stack = [nodeKey("p", key)]; X.via = []; X.open.delete(X.stack[0]);
+  const n = plRel(key);
+  return `<div class="world ${S.enterDetail ? "enter" : ""}">
+    ${detailHead("pl", p.name, "Integration platform / broker", 0)}
+    <div class="world-body">
+      ${factsHtml([["Kind", esc([...p.kinds].map((k) => kindInfo(k).label).join(" + "))], ["Components", String(p.comps.size)], ["Used by", `${p.scenarios.size} scenario${p.scenarios.size === 1 ? "" : "s"}`]])}
+      <div class="dlayout"><div class="dmain">${relPanel("Relationships")}</div>
+      <aside class="dside"><div class="panel"><h2>Relationships</h2>${sideLists(n, ["hosts", "usedby"])}</div></aside></div>
+    </div></div>`;
+}
+
 function systemView(key) {
   const y = S.systems.get(key); if (!y) return `<div class="panel">Connected system not found.</div>`;
   const a = sysAttn().get(key) || [];
-  X.stack = [nodeKey("a", key)]; X.open.delete(X.stack[0]);
+  X.stack = [nodeKey("a", key)]; X.via = []; X.open.delete(X.stack[0]);
   const n = sysRel(key), eps = [...y.endpoints.values()];
   const role = [y.triggers.size ? "caller" : "", y.receives.size ? "receiver" : ""].filter(Boolean);
   return `<div class="world ${S.enterDetail ? "enter" : ""}">
@@ -1797,7 +1758,7 @@ async function scenarioView(param) {
   const srcNote = isLatest ? sameSourceOf(rec.id) : [];
 
   const flowHtml = flowPanel(rec, spec, flagRefs);
-  X.stack = [nodeKey("s", rec.id)]; X.open.delete(X.stack[0]);
+  X.stack = [nodeKey("s", rec.id)]; X.via = []; X.open.delete(X.stack[0]);
   const n = scRel(rec.id), nFlags = flags.filter((f) => !f.acked && f.sev !== "grey").length;
   const typeTxt = rec.mode === "composite" ? "Composite flow" : rec.mode === "single" ? "Single flow" : rec.mode ? esc(rec.mode) : "—";
   const decisionsHtml = (spec.versions || []).map((v) => { const d = v.decision || {}; return `<div class="ver">
@@ -1830,10 +1791,8 @@ async function scenarioView(param) {
         <div class="note">Acting on a flag = re-export the scenario from Pattern Bench. Acknowledgements are stored in the scenario's own file.</div></div>` : ""}
       ${flowHtml}
       <div class="panel"><h2>Made of — components</h2>
-        <table><tr><th>Name</th><th>Type</th><th>Version</th><th>Platform / asset</th><th>Lifecycle</th></tr>
-        ${rec.components.filter((c) => !isSystemKind(c.kind)).map((c) => `<tr class="row" ${c.ref ? `data-go="${esc(nodeKey("c", c.ref))}"` : ""}><td>${esc(c.name || "(unnamed)")}<div class="mono muted">${esc(c.ref || "no ref")}</div></td><td>${esc(c.type)}</td>
-          <td>${esc(c.version)}${c.origin !== "base" ? ' <span class="chip violet">added</span>' : ""}</td><td>${esc([c.platform, c.asset].filter(Boolean).join(" / "))}</td>
-          <td>${stageChip(S.lifecycle?.byKey.get(c.ref + "@" + c.version)?.stage || c.stage)}</td></tr>`).join("")}</table>
+        <table><tr><th>Component</th><th>Platform / broker</th><th>Parts and versions</th></tr>
+        ${madeOfRows(rec)}</table>
       </div>
       <div class="panel"><h2>Versioning decisions <span class="count">(${(spec.versions || []).length})</span></h2>${decisionsHtml}</div>
       ${relPanel("Relationships")}
@@ -1849,6 +1808,16 @@ async function scenarioView(param) {
           : `<div><a data-open="${esc(h.id)}" data-v="${h.version}">v${h.version}</a> · ${esc(fmtDate(h.exportedAt))}</div>`).join("")}
       </div>
     </aside></div></div></div>`;
+}
+/* V-2: the scenario's integration components, one row each, with the parts it uses */
+function madeOfRows(rec) {
+  const groups = new Map();
+  for (const c of rec.components) if (!isSystemKind(c.kind)) (groups.get(c.container) || groups.set(c.container, []).get(c.container)).push(c);
+  return [...groups.values()].map((cs) => { const c0 = cs[0], key = cs.map((c) => compKeyOf(c.ref)).find(Boolean);
+    const parts = cs.map((c) => { const st = S.lifecycle?.byKey.get(c.ref + "@" + c.version)?.stage || c.stage;
+      return `<span class="chip ${c.origin !== "base" ? "violet" : ""}" title="${esc(c.name || "")} ${esc(c.ref || "no ref")}">${c.origin !== "base" ? "+ " : ""}${esc(c.ref ? partLabel(c.ref) : c.type)} ${esc(c.version)}</span>${st ? stageChip(st) : ""}`; }).join(" ");
+    return `<tr class="row" ${key ? `data-go="${esc(nodeKey("c", key))}"` : ""}><td><b>${esc(key ? compName(key) : c0.asset || "(unlabelled)")}</b><div class="mono muted">${esc(key || "no ref")}</div></td>
+      <td>${esc(c0.platform || "—")}<div class="muted" style="font-size:12px">${esc(kindInfo(c0.kind).label)}</div></td><td>${parts}</td></tr>`; }).join("");
 }
 const dirOf = (p) => (p.includes("/") ? p.slice(0, p.lastIndexOf("/") + 1) : "");
 
@@ -1960,7 +1929,7 @@ async function openInPB(id, version) {
 }
 
 /* ---- navigation: one detail page per object type, a back stack between them ---- */
-function keyView(key) { const [t, id] = key.split(/\|(.*)/s); return t === "c" ? ["component", { ref: id }] : t === "a" ? ["system", { key: id }] : ["scenario", { id, version: null }]; }
+function keyView(key) { const [t, id] = key.split(/\|(.*)/s); return t === "c" ? ["component", { key: id }] : t === "p" ? ["platform", { key: id }] : t === "a" ? ["system", { key: id }] : ["scenario", { id, version: null }]; }
 function pushNav() { if (S.view) (S.nav ||= []).push({ view: S.view, param: S.param, scroll: window.scrollY }); }
 function goKey(key, el) { const [v, p] = keyView(key); openDetail(el, v, p); }
 
@@ -1969,7 +1938,7 @@ function goKey(key, el) { const [v, p] = keyView(key); openDetail(el, v, p); }
    ========================================================================== */
 document.addEventListener("click", (ev) => {
   if (S.holdFired) { S.holdFired = false; return; }
-  const t = ev.target.closest("[data-open],[data-copen],[data-act],[data-sort],[data-sel],[data-map],[data-band],[data-node],[data-crumb],[data-xopen],[data-mapsel],[data-rowopen],[data-verb],[data-verbs],[data-sysrow],[data-go]");
+  const t = ev.target.closest("[data-open],[data-copen],[data-act],[data-sort],[data-sel],[data-map],[data-band],[data-node],[data-crumb],[data-xopen],[data-rowopen],[data-verb],[data-verbs],[data-sysrow],[data-go],[data-back],[data-mtype],[data-mstart]");
   if (!t) return;
   if (t.dataset.act === "pb") { ev.stopPropagation(); return openInPB(t.dataset.id, Number(t.dataset.v)); }
   if (t.dataset.act === "pbset") return pbDialog();
@@ -1977,27 +1946,17 @@ document.addEventListener("click", (ev) => {
   if (t.dataset.verb) return toggleVerb(t.dataset.verb);
   if (t.dataset.verbs) return toggleVerb(t.dataset.verbs);
   if (t.dataset.sysrow) return openDetail(t.closest("tr, .list-item") || t, "system", { key: t.dataset.sysrow });
-  if (t.dataset.node) { clearTimeout(S.clickT); const key = t.dataset.node; S.clickT = setTimeout(() => pivot(key), 240); return; }
+  if (t.dataset.node) { clearTimeout(S.clickT); const key = t.dataset.node, via = t.dataset.via; S.clickT = setTimeout(() => pivot(key, via), 240); return; }
+  if (t.dataset.back) return crumbTo(X.stack.length - 2);
+  if (t.dataset.mtype) { S.mx.type = S.mx.type === t.dataset.mtype ? null : t.dataset.mtype; S.mx.q = ""; refreshOverviewParts(); $("#mapSearch")?.focus(); return; }
+  if (t.dataset.mstart) { S.mx.stack = [t.dataset.mstart]; S.mx.via = []; X.open.delete(t.dataset.mstart); return refreshOverviewParts(); }
   if (t.dataset.crumb !== undefined) return crumbTo(Number(t.dataset.crumb));
   if (t.dataset.xopen) { ev.stopPropagation(); return openExplorer(t.closest("tr.r")); }
-  if (t.dataset.copen) return openDetail(t.closest("tr, .list-item") || t, "component", { ref: t.dataset.copen });
+  if (t.dataset.copen) return openDetail(t.closest("tr, .list-item") || t, "component", { key: compKeyOf(t.dataset.copen) });
   // R-16 / R-17: every row opens its detail page the same way (lift and morph)
   if (t.dataset.rowopen) return openDetail(t, t.dataset.rowopen === "co" ? "component" : t.dataset.rowopen === "cs" ? "system" : "scenario",
-    t.dataset.rowopen === "co" ? { ref: t.dataset.id } : t.dataset.rowopen === "cs" ? { key: t.dataset.id } : { id: t.dataset.id, version: null });
+    t.dataset.rowopen === "co" ? { key: t.dataset.id } : t.dataset.rowopen === "cs" ? { key: t.dataset.id } : { id: t.dataset.id, version: null });
   if (t.dataset.band) return openWorld(t, t.dataset.band);           // a band opens into its world
-  if (t.dataset.mapsel) {                                            // explorer: show an asset on the map
-    const a = S.assets.get(t.dataset.mapsel);
-    S.mapMode = "asset"; S.mapAll = !(a && a.scenarios.size > 1); S.sel = { type: "t", id: t.dataset.mapsel };
-    return go("band", { k: "map" }, { enter: true });
-  }
-  if (t.dataset.sel) {                                  // relationship map / matrix selection
-    const [type, a, b] = t.dataset.sel.split("|");
-    const next = type === "p" ? { type, a, b } : { type, id: a };
-    const same = S.sel && S.sel.type === next.type && (type === "p" ? S.sel.a === a && S.sel.b === b : S.sel.id === a);
-    S.sel = same ? null : next;
-    return refreshOverviewParts();
-  }
-  if (t.dataset.map) { S.mapMode = t.dataset.map; S.sel = null; return refreshOverviewParts(); }
   if (t.dataset.sort) {
     const k = t.dataset.sort;
     S.listSort = S.listSort.key === k ? { key: k, dir: -S.listSort.dir } : { key: k, dir: k === "changed" || k === "flags" || k === "decisions" || k === "version" ? -1 : 1 };
@@ -2007,7 +1966,7 @@ document.addEventListener("click", (ev) => {
   const act = t.dataset.act;
   if (act === "open") openFolder();
   if (act === "github") loadFromGitHub();
-  if (act === "clearsel") { S.sel = null; refreshOverviewParts(); }
+  if (act === "mreset") { S.mx = { type: S.mx.type, q: "", stack: null, via: null }; refreshOverviewParts(); }
   if (act === "back") { const p = (S.nav || []).pop() || { view: "home" }; go(p.view, p.param, { keepScroll: true }); if (p.scroll) window.scrollTo(0, p.scroll); }
   if (act === "home") { if (S.view === "band") closeWorld(); else go("home"); }
   if (act === "diveback") { const d = S.diveFrom; S.diveFrom = null; go("band", { k: d.k }, { enter: true });
@@ -2020,7 +1979,7 @@ document.addEventListener("input", (ev) => {
   if (ev.target.id === "compAttn") { S.compAttn = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.compAttn); $("#compTable").innerHTML = compTable(); return; }
   if (ev.target.id === "compShared") { S.compShared = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.compShared); $("#compTable").innerHTML = compTable(); return; }
   if (ev.target.dataset?.strong) { X.strongOnly = ev.target.checked; rerenderExplorer(0); return; }
-  if (ev.target.id === "mapAll") { S.mapAll = ev.target.checked; S.sel = null; refreshOverviewParts(); return; }
+  if (ev.target.id === "mapSearch") { S.mx.q = ev.target.value; $("#mapList").innerHTML = mapList(); return; }
   if (ev.target.id === "decSearch") { S.decQuery = ev.target.value; $("#decTable").innerHTML = decisionsTable(); return; }
   if (ev.target.id === "decOpen") { S.decOpenOnly = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.decOpenOnly); $("#decTable").innerHTML = decisionsTable(); return; }
   if (ev.target.id === "compSearch") { S.compQuery = ev.target.value; $("#compTable").innerHTML = compTable(); }
@@ -2042,7 +2001,7 @@ $("#openBtn").addEventListener("click", openFolder);
 $("#reloadBtn").addEventListener("click", () => (S.source === "github" ? loadFromGitHub() : S.root && loadFromHandle()));
 $("#ghBtn").addEventListener("click", () => loadFromGitHub());
 document.addEventListener("keydown", (ev) => {     // Enter / Space on tiles and map nodes
-  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches?.("[data-band],[data-sel],[data-rowopen],[data-verb]")) { ev.preventDefault(); ev.target.click(); }
+  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches?.("[data-band],[data-rowopen],[data-verb],[data-back],[data-mstart]")) { ev.preventDefault(); ev.target.click(); }
 });
 $("#dirInput").addEventListener("change", (e) => e.target.files.length && loadFromInput(e.target.files));
 

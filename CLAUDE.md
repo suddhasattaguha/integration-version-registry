@@ -23,18 +23,21 @@ entries (`*.registry.json`, schema 0.6) + canvas exports (`*.canvas.json`) from 
 | Overlap tiers (R-12) | `TIERS`, `overlapBetween`, `overlapsOf`, `sameSourceOf` |
 | Router / navigation | `function go(` (views: home, band, scenario, component, system), `openDetail` (row → page morph), `pushNav`, `keyView`, `goKey`, act `back` |
 | Home bands, worlds | `BANDS`, `bandStats`, `homeView`, `worldView`, `openWorld`, `closeWorld` |
-| Lists | `LIST_COLS` + `listTable` (scenarios: Source → Platforms → Targets, PB column), `compTable`, `sysTable`, `decisionsTable`, `mapWorld`/`mapGraph`/`mapSvg` |
-| Explorer (verbs) | `scRel`, `coRel`, `sysRel` (relationship groups), `relSvg` (drawing), `explorerHtml`, `toggleVerb`, `pivot`, `dive` (opens node page), `#pageRel` |
-| Detail pages | `factsHtml`, `sideLists`, `detailHead`, `componentView`, `systemView`, `scenarioView` |
+| Lists | `LIST_COLS` + `listTable` (scenarios: Source → Platforms → Targets, PB column), `compTable` (one row per component, `partChips`), `sysTable`, `decisionsTable` |
+| Relationship map = explorer start (V-1, 0.8) | `MTYPES`, `mapObjects`, `mapList`, `mapWorld`, `S.mx` (type, q, stack, via), events `data-mtype` / `data-mstart` / act `mreset` |
+| Explorer (verbs) | `scRel`, `coRel` (component), `plRel` (platform), `sysRel`, `compNeighbours`; `relSvg` (drawing; left column = previous node, V-3), `explorerHtml`, `toggleVerb`, `pivot(key, via)`, `crumbTo`, `X.via`, `dive`, `#pageRel` |
+| Detail pages | `factsHtml`, `sideLists`, `detailHead`, `componentView`, `platformView`, `systemView`, `scenarioView`, `madeOfRows` |
 | Flow diagram (named artifacts) | `chainSvg`, `flowPanel` |
 | Open in Pattern Bench (R-14) | `pbAddress`, `canvasEntry`, `pbButton`, `statusMarkers`, `pbPayload`, `openInPB`, `pbDialog`, `toast`, `saveBlob` |
 | 5. Events | `5. Events` — one delegated click handler (data-act, data-go, data-rowopen, data-node, data-verb …), input, dblclick / hold |
 
 ## Data model in memory (after derive)
 - `S.scenarios: id → { latest, history[], flags[] }`; record: `components[] {ref, kind, app, endpoint, …}`, `links[] "a > b"`, `containers[]`, `sys {triggeredBy[], deliversTo[]}`.
-- `S.refs: ref → {kind, type, platform, asset, versions, scenarios, max}` — components = refs with kind iPaaS / broker.
+- Two concepts (0.8): **platform / broker** › **integration component** (= container ref, e.g. `btp/salesorderiflow`). API / process / topic / queue are its **parts** (`…#api`).
+- `S.comps: key → {name, platform, platKey, kind, parts Set, scenarios}`; `S.partComp: part ref → component key`; `S.platforms: plat/<slug> → {name, kinds, comps, scenarios}`. Helpers `compKeyOf`, `compName`, `platName`, `partLabel`, `partsIn`, `compAttn`.
+- `S.refs: ref → {kind, type, platform, asset, versions, scenarios, max}` — part level; links, overlaps, flags and lifecycle stay on parts.
 - `S.systems: sys/<slug> → {name, endpoints Map, triggers Map, receives Map, refs}`; `S.refSys: ref → system key`.
-- Node keys in the explorer: `s|<scenarioId>`, `c|<ref>`, `a|<systemKey>`.
+- Node keys in the explorer: `s|<scenarioId>`, `c|<componentKey>`, `p|<platformKey>`, `a|<systemKey>`.
 
 ## Testing
 - Headless: Playwright (Python). Load data with `page.evaluate("items => window.__registryLoad(items, 'landscape')", items)`
