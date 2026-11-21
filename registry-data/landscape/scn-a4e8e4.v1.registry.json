@@ -138,6 +138,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Salesforce Invoice API",
+        "name": "Salesforce Sales Cloud",
         "process": "Invoice visibility"
       }
     ]

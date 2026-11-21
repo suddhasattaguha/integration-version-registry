@@ -123,6 +123,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "S/4 API_PURCHASEORDER_PROCESS_SRV",
+        "name": "SAP S/4HANA (P01)",
         "process": "PO confirmation"
       },
       {
@@ -131,6 +132,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SAP Ariba",
+        "name": "SAP Ariba",
         "process": "Supplier document"
       }
     ]

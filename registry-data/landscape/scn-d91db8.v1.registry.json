@@ -252,6 +252,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "EWM Warehouse Request API",
+        "name": "SAP EWM",
         "process": "Outbound picking"
       },
       {
@@ -274,6 +275,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "DHL Shipment API",
+        "name": "DHL Parcel",
         "process": "Shipment booking"
       },
       {
@@ -282,6 +284,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
         "process": "Business event"
       }
     ]

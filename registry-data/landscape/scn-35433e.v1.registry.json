@@ -188,6 +188,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "S/4 Payment Medium folder",
+        "name": "SAP S/4HANA (P01)",
         "process": "Payment run (F110)"
       },
       {
@@ -217,6 +218,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Nordea SFTP outbox (pain.001)",
+        "name": "Nordea Bank",
         "process": "Payments"
       },
       {
@@ -232,6 +234,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Kyriba Payments API",
+        "name": "Kyriba Treasury",
         "process": "Cash positioning"
       }
     ]

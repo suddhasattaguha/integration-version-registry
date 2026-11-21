@@ -252,6 +252,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "S/4 API_OUTBOUND_DELIVERY_SRV",
+        "name": "SAP S/4HANA (P01)",
         "process": "Goods issue posting"
       },
       {
@@ -274,6 +275,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "DHL Shipment API",
+        "name": "DHL Parcel",
         "process": "Shipment booking"
       },
       {
@@ -282,6 +284,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SAP EWM",
+        "name": "SAP EWM",
         "process": "Goods issue confirmation"
       }
     ]

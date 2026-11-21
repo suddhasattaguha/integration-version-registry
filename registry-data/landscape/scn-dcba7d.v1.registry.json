@@ -252,6 +252,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "S/4 API_SALES_ORDER_SRV",
+        "name": "SAP S/4HANA (P01)",
         "process": "Sales order creation"
       },
       {
@@ -274,6 +275,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Data Lake landing folder",
+        "name": "Azure Data Lake",
         "process": "Analytics ingest"
       },
       {
@@ -282,6 +284,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "Salesforce Sales Cloud",
+        "name": "Salesforce Sales Cloud",
         "process": "Order / account change"
       }
     ]

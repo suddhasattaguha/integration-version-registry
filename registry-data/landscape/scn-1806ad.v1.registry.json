@@ -269,6 +269,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Microsoft Graph Users API",
+        "name": "Microsoft Entra ID",
         "process": "Identity lifecycle"
       },
       {
@@ -284,6 +285,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "ServiceNow HR Case API",
+        "name": "ServiceNow HRSD",
         "process": "Onboarding tasks"
       },
       {
@@ -299,6 +301,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "S/4 API_BUSINESS_PARTNER",
+        "name": "SAP S/4HANA (P01)",
         "process": "Business partner maintenance"
       },
       {
@@ -307,6 +310,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SuccessFactors Employee Central",
+        "name": "SuccessFactors Employee Central",
         "process": "Employee change"
       }
     ]

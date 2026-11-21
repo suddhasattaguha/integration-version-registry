@@ -224,6 +224,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "commercetools Price API",
+        "name": "Webshop (commercetools)",
         "process": "Pricing"
       },
       {
@@ -239,6 +240,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Salesforce Pricebook API",
+        "name": "Salesforce Sales Cloud",
         "process": "Price list sync"
       },
       {
@@ -247,6 +249,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
         "process": "Business event"
       }
     ]

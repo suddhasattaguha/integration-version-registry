@@ -295,6 +295,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Salesforce Account API",
+        "name": "Salesforce Sales Cloud",
         "process": "Account sync"
       },
       {
@@ -310,6 +311,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Ariba Supplier API",
+        "name": "SAP Ariba",
         "process": "Supplier master"
       },
       {
@@ -332,6 +334,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Data Lake landing folder",
+        "name": "Azure Data Lake",
         "process": "Analytics ingest"
       },
       {
@@ -340,6 +343,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
         "process": "Business event"
       }
     ]

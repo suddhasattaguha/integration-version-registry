@@ -193,6 +193,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "S/4 API_BUSINESS_PARTNER",
+        "name": "SAP S/4HANA (P01)",
         "process": "Business partner maintenance"
       },
       {
@@ -208,6 +209,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "Salesforce Sales Cloud",
+        "name": "Salesforce Sales Cloud",
         "process": "Order / account change"
       },
       {
@@ -216,6 +218,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "Webshop (commercetools)",
+        "name": "Webshop (commercetools)",
         "process": "Place order"
       }
     ]

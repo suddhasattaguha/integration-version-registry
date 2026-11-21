@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Integration Registry — draft 0.5</title>
+<title>Integration Registry — draft 0.6</title>
 <style>
   :root {
     --bg: #f5f6f8; --panel: #ffffff; --ink: #1d2433; --muted: #667085; --line: #e3e6ec;
@@ -295,12 +295,44 @@
   .pill-toggle.sm { padding: 3px 10px; font-size: 12px; } .pill-toggle.on2 { background: var(--teal-bg); border-color: rgba(15,124,122,.4); color: var(--teal); }
   .tchip { display: inline-block; font-size: 11px; font-weight: 500; padding: 1px 8px; border-radius: 10px; margin-left: 4px; background: var(--teal-bg); color: var(--teal); }
   .tchip.t-path { background: #0b5d5b; color: #fff; } .tchip.t-api { background: #e8ebfd; color: #3346c8; } .tchip.t-endpoint { background: var(--grey-bg); color: #667085; }
+  /* ===== draft 0.6: relationship types (verbs), connected systems, artifact chain ===== */
+  .explorer .xe.rv { stroke: #c4cad4; stroke-width: 1.4; }
+  .explorer .xv { cursor: pointer; transform-box: fill-box; transform-origin: center; transition: transform .25s cubic-bezier(.16,1,.3,1); }
+  .explorer .xv:hover { transform: translateY(-1px) scale(1.03); }
+  .explorer .xv > rect:first-of-type { fill: #fff; stroke: #98a2b3; stroke-width: 1.3; filter: drop-shadow(0 3px 5px rgba(16,24,40,.10)); }
+  .explorer .xv.on > rect:first-of-type { fill: #1f2a3c; stroke: #1f2a3c; }
+  .explorer .xv .vb { font-size: 12.5px; font-weight: 600; fill: #344054; } .explorer .xv.on .vb { fill: #fff; }
+  .explorer .xv .vc { fill: #eef0f3; } .explorer .xv.on .vc { fill: rgba(255,255,255,.18); }
+  .explorer .xv .vn { font-size: 10.5px; font-weight: 700; fill: #475467; } .explorer .xv.on .vn { fill: #fff; }
+  .explorer .xv .vch { font-size: 11px; fill: #667085; } .explorer .xv.on .vch { fill: #c9d1de; }
+  .explorer .xv:focus-visible > rect:first-of-type { stroke: #0f7c7a; stroke-width: 2.4; }
+  .explorer .xn.k-a rect:first-of-type { fill: #fff6f2; stroke: #e2b4a3; }
+  .explorer .xn.k-v rect:first-of-type { fill: #f7f8fa; }
+  .explorer .xc.k-c rect { fill: #3346c8; filter: drop-shadow(0 6px 10px rgba(51,70,200,.35)); }
+  .explorer .xc.k-a rect { fill: #b4472a; filter: drop-shadow(0 6px 10px rgba(180,71,42,.35)); }
+  .xkind.a { background: #b4472a; } .xkind.s { background: #0f7c7a; }
+  .vchip { display: inline-block; cursor: pointer; padding: 2px 10px; border-radius: 12px; border: 1px solid #98a2b3; background: #fff; color: #344054; font-weight: 600; font-size: 12px; margin: 2px 2px; }
+  .vchip:hover { border-color: #0f7c7a; color: #0f7c7a; }
+  #pageRel .xin { opacity: 1; transform: none; padding-left: 0; }
+  .chain { display: block; width: 100%; height: auto; font-family: var(--font); }
+  .chain .grp { fill: none; stroke-width: 1.2; stroke-dasharray: 5 4; }
+  .chain .grp.ipaas { stroke: #0f7c7a; fill: rgba(15,124,122,.035); } .chain .grp.broker { stroke: #6b4fd8; fill: rgba(107,79,216,.035); }
+  .chain .gl { font-size: 11px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; }
+  .chain .art > rect:first-child { fill: #fff; stroke: #c9cfd9; stroke-width: 1.3; filter: drop-shadow(0 4px 6px rgba(16,24,40,.10)); }
+  .chain .art.attn > rect:first-child { fill: #fff8ea; stroke: #f5a524; stroke-width: 2; }
+  .chain .art.ver > rect:first-child { fill: #f5f2fe; stroke: #6b4fd8; stroke-width: 1.8; }
+  .chain .art .an { font-size: 12.5px; font-weight: 650; fill: #1d2433; } .chain .art .ap { font-size: 10.5px; fill: #667085; }
+  .chain .cc { font-size: 10.5px; fill: #475467; } .chain .ccb { fill: #f2f4f7; stroke: #e3e6ec; }
+  .chain .sys > rect:first-child { fill: #fff6f2; stroke: #b4472a; stroke-width: 1.4; }
+  .chain .sys .an { font-size: 12.5px; font-weight: 650; fill: #7a2e18; } .chain .sys .ap { font-size: 10.5px; fill: #9a5a45; }
+  .chain .ce { fill: none; stroke: #8a94a6; stroke-width: 1.6; } .chain .ce.v { stroke: #6b4fd8; }
+  .chain [data-node], .chain [data-copen] { cursor: pointer; } .chain .art[data-copen]:hover > rect:first-child, .chain .sys[data-node]:hover > rect:first-child { stroke: #0f7c7a; stroke-width: 2; }
 </style>
 </head>
 <body>
 <header>
   <h1 data-act="home" style="cursor:pointer" title="Home">Integration Registry</h1>
-  <span class="draft">draft 0.5 · schema 0.5</span>
+  <span class="draft">draft 0.6 · schema 0.6</span>
   <span class="spacer"></span>
   <span class="folder" id="folderName"></span>
   <button class="btn ghost small hidden" id="reloadBtn" title="Read the registry again">Reload</button>
@@ -323,12 +355,30 @@
    and scenario detail with cross-scenario flags. Single self-contained file.
    ========================================================================== */
 
-const APP_VERSION = "0.5";
+const APP_VERSION = "0.6";
 const INDEX_FILE = "index.json";
 const LIFECYCLE_FILE = "lifecycle.json";
 const INDEX_SCHEMA = "pattern-bench.registry-index";
 const ENTRY_SCHEMA = "pattern-bench.registry-entry";
-const RECORD_FORMAT = 2;            // bump when the cached record shape changes
+const RECORD_FORMAT = 3;            // bump when the cached record shape changes (3 = connected systems, 0.6)
+
+/* R-13 (0.6): end applications and callers are not components — they are connected systems.
+   One identity per application, whether it calls (caller) or receives (end application). */
+const isSystemKind = (kind) => kind === "endApp" || kind === "caller";
+const isIntegrationKind = (kind) => kind === "iPaaS" || kind === "broker";
+const slug = (t) => String(t ?? "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+function appNameOf(k) {             // the application a caller / end-application container belongs to
+  if (!k) return "";
+  if (k.app) return k.app;
+  if (k.name) return k.name;        // Pattern Bench: end application / caller name
+  const m = /^endapp\/([^/]+)\/.+/.exec(k.ref || "");   // endapp/<app>/<endpoint>
+  return k.asset || (m ? m[1] : "") || k.platform || "";
+}
+function endpointNameOf(c, k) {     // the API / folder of the application this flow uses
+  if (k.asset && k.asset !== appNameOf(k)) return k.asset;
+  return c.name || k.asset || c.type;
+}
+const sysKey = (name) => "sys/" + (slug(name) || "unlabelled");
 
 /* Default registry source (R-1): one folder in the GitHub repo. When the app is served from
    <owner>.github.io/<repo>/ the owner and repo are taken from the address. */
@@ -554,15 +604,17 @@ function extract(spec, path, lastModified, size) {
 
   const platforms = uniq(conts.filter((k) => k.kind === "iPaaS" || k.kind === "broker").map((k) => k.platform));
   const assets = uniq(conts.filter((k) => k.kind === "iPaaS" || k.kind === "broker").map((k) => k.asset));
-  const endApps = uniq(conts.filter((k) => k.kind === "endApp" || k.kind === "caller").map((k) => label(k) || "(unlabelled)"));
+  const endApps = uniq(conts.filter((k) => k.kind === "endApp" || k.kind === "caller").map((k) => appNameOf(k) || "(unlabelled)"));
 
   const uses = {};                      // ref -> versions used in this scenario
   const addUse = (ref, ver) => { if (!ref) return; (uses[ref] ||= []); if (!uses[ref].includes(ver)) uses[ref].push(ver); };
   const components = [];
   const pushComp = (c, origin) => {
     const k = contById[c.container];
+    const sys = k && isSystemKind(k.kind);
     components.push({ ref: c.ref || null, name: c.name || "", type: c.type, version: c.version, origin,
-      platform: k ? k.platform || "" : "", asset: k ? k.asset || "" : "", kind: k ? k.kind || "" : "", container: c.container, stage: c.stage || null });
+      platform: k ? k.platform || "" : "", asset: k ? k.asset || "" : "", kind: k ? k.kind || "" : "", container: c.container, stage: c.stage || null,
+      app: sys ? appNameOf(k) : "", endpoint: sys && k.kind === "endApp" ? endpointNameOf(c, k) : "", process: sys ? k.process || "" : "" });
   };
   comps.forEach((c) => { addUse(c.ref, c.version); pushComp(c, "base"); });
 
@@ -600,6 +652,7 @@ function extract(spec, path, lastModified, size) {
   const containers = conts.map((k) => ({
     key: k.ref || "noref:" + k.id, name: label(k) || "(unlabelled)", platform: k.platform || "", kind: k.kind || "",
     refs: uniq(components.filter((c) => c.container === k.id).map((c) => c.ref)),
+    app: isSystemKind(k.kind) ? appNameOf(k) : "", process: k.process || "",
   }));
   // every versioning decision, compact (for the cross-scenario Decisions view)
   const cname = (id) => { const c = compById[id]; return c ? c.name || c.type : id; };
@@ -649,7 +702,7 @@ function derive() {
   }
   for (const x of refs.values()) x.max = Math.max(0, ...[...x.versions].map(vnum));
   for (const s of sc.values()) for (const c of s.latest.components) if (c.ref && refs.has(c.ref)) {
-    const x = refs.get(c.ref); x.kind ||= c.kind; x.asset ||= c.asset || c.platform;
+    const x = refs.get(c.ref); x.kind ||= c.kind; x.asset ||= c.asset || c.platform; x.platform ||= c.platform;
   }
   S.refs = refs;
 
@@ -661,10 +714,42 @@ function derive() {
   }
   S.assets = assets;
 
+  // connected systems (R-13): one per application, callers and end applications merged by name
+  const systems = new Map();
+  const SY = (name) => { const key = sysKey(name);
+    return systems.get(key) || systems.set(key, { key, name, names: new Set(), endpoints: new Map(), triggers: new Map(), receives: new Map(), refs: new Set() }).get(key); };
+  for (const s of sc.values()) {
+    const r = s.latest; r.sys = { triggeredBy: [], deliversTo: [] };
+    for (const c of r.components) {
+      if (!isSystemKind(c.kind)) continue;
+      const y = SY(c.app || "(unlabelled)"); y.names.add(c.app); if (c.ref) y.refs.add(c.ref);
+      if (c.kind === "caller") {
+        y.triggers.set(r.id, c.process || "");
+        if (!r.sys.triggeredBy.some((t) => t.key === y.key)) r.sys.triggeredBy.push({ key: y.key, process: c.process || "" });
+      } else {
+        const ep = y.endpoints.get(c.ref) || y.endpoints.set(c.ref, { ref: c.ref, name: c.endpoint, type: c.type, process: c.process, scenarios: new Set() }).get(c.ref);
+        ep.scenarios.add(r.id);
+        y.receives.set(r.id, uniq([...(y.receives.get(r.id) || []), c.endpoint]));
+        r.sys.deliversTo.push({ key: y.key, ref: c.ref, endpoint: c.endpoint });
+      }
+    }
+  }
+  S.systems = systems;
+  S.refSys = new Map(); for (const y of systems.values()) for (const ref of y.refs) S.refSys.set(ref, y.key);
+
   for (const s of sc.values()) s.flags = flagsFor(s.latest);
 }
 
 function scenarioName(id) { return S.scenarios.get(id)?.latest.name || id; }
+function sysName(key) { return S.systems.get(key)?.name || key; }
+const compRefs = () => [...S.refs.values()].filter((x) => isIntegrationKind(x.kind));   // components = integration-layer items only
+const isCompRef = (ref) => isIntegrationKind(S.refs.get(ref)?.kind);
+/* a ref as a readable thing: a component name, or "System · endpoint" for a connected system */
+function thingName(ref) {
+  const k = S.refSys?.get(ref); if (!k) return refName(ref);
+  const y = S.systems.get(k), ep = y?.endpoints.get(ref);
+  return ep ? `${y.name} · ${ep.name}` : y?.name || ref;
+}
 function refName(ref) { const x = S.refs.get(ref); return x && x.names.size ? [...x.names][0] : ref; }
 
 function flagsFor(r) {
@@ -735,7 +820,7 @@ function emptyView() {
 /* ---------- overview helpers ---------- */
 const KIND = {
   iPaaS: { label: "iPaaS", col: "#0f7c7a" }, broker: { label: "Message broker", col: "#6b4fd8" },
-  endApp: { label: "End application", col: "#8a94a6" }, caller: { label: "Caller", col: "#8a94a6" },
+  endApp: { label: "Connected system", col: "#b4472a" }, caller: { label: "Connected system (caller)", col: "#b4472a" }, system: { label: "Connected system", col: "#b4472a" },
 };
 const kindInfo = (k) => KIND[k] || { label: k || "other", col: "#b0b7c3" };
 const flaggedRefs = (s) => new Set(activeFlags(s).map((f) => f.ref).filter(Boolean));
@@ -747,14 +832,21 @@ function mapGraph() {
   const scen = [...S.scenarios.values()];
   const targets = new Map(), edges = [];
   if (S.mapMode === "asset") {
-    for (const a of S.assets.values()) if (S.mapAll || (a.scenarios.size > 1 && a.kind !== "caller")) targets.set(a.key, { id: a.key, name: a.name, sub: a.platform || kindInfo(a.kind).label, kind: a.kind, n: a.scenarios.size });
+    for (const a of S.assets.values()) if (isIntegrationKind(a.kind) && (S.mapAll || a.scenarios.size > 1)) targets.set(a.key, { id: a.key, name: a.name, sub: a.platform || kindInfo(a.kind).label, kind: a.kind, n: a.scenarios.size });
+    // connected systems (R-13): one node per application; receiving counts, calling only with "show unshared too"
+    for (const y of S.systems.values()) { const ids = new Set([...y.receives.keys(), ...(S.mapAll ? y.triggers.keys() : [])]);
+      if (ids.size && (S.mapAll || ids.size > 1)) targets.set("sys:" + y.key, { id: "sys:" + y.key, name: y.name, sub: "connected system", kind: "system", n: ids.size }); }
     for (const s of scen) {
       const r = s.latest, fl = flaggedRefs(s), op = openIntroRefs(r);
       for (const k of r.containers || []) if (targets.has(k.key)) edges.push({ s: r.id, t: k.key, w: Math.max(1, k.refs.length),
         flag: k.refs.some((x) => fl.has(x)), ver: k.refs.some((x) => op.has(x)), label: k.refs.length + " comp." });
+      const seen = new Set();
+      for (const d of [...(r.sys?.deliversTo || []), ...(S.mapAll ? (r.sys?.triggeredBy || []) : [])]) { const t = "sys:" + d.key;
+        if (!targets.has(t) || seen.has(t)) continue; seen.add(t);
+        edges.push({ s: r.id, t, w: 1, flag: d.ref ? fl.has(d.ref) : false, ver: false, label: d.endpoint ? "delivers to " + d.endpoint : "triggered by" }); }
     }
   } else {
-    for (const x of S.refs.values()) if (S.mapAll || x.scenarios.size > 1)
+    for (const x of compRefs()) if (S.mapAll || x.scenarios.size > 1)
       targets.set(x.ref, { id: x.ref, name: refName(x.ref), sub: [x.type, x.asset].filter(Boolean).join(" · "), kind: x.kind, n: x.scenarios.size });
     for (const s of scen) {
       const r = s.latest, fl = flaggedRefs(s), op = openIntroRefs(r);
@@ -774,6 +866,8 @@ function mapGraph() {
     return ids.slice().sort((a, b) => score.get(a) - score.get(b));
   };
   for (let i = 0; i < 3; i++) { R = bary(R, L, "t", "s"); L = bary(L, R, "s", "t"); }
+  // R-13: connected systems are their own group, below the platform / broker assets
+  R = [...R.filter((id) => targets.get(id).kind !== "system"), ...R.filter((id) => targets.get(id).kind === "system")];
   return { L, R, targets, edges };
 }
 
@@ -799,16 +893,18 @@ function selection(g) {
 
 function mapSvg(g) {
   const W = 960, NW = 270, NH = 40, GAP = 10, TOP = 34, x1 = 4, x2 = W - NW - 4;
-  const rows = Math.max(g.L.length, g.R.length, 1);
+  const firstSys = g.R.findIndex((id) => g.targets.get(id).kind === "system"), SG = firstSys > 0 ? 30 : 0;   // gap + header before the systems group
+  const rows = Math.max(g.L.length, g.R.length + SG / (NH + GAP), 1);
   const H = TOP + rows * (NH + GAP) + 6;
   const yOf = (i, n) => TOP + (rows - n) * (NH + GAP) / 2 + i * (NH + GAP);
   const yl = new Map(g.L.map((id, i) => [id, yOf(i, g.L.length)]));
-  const yr = new Map(g.R.map((id, i) => [id, yOf(i, g.R.length)]));
+  const yr = new Map(g.R.map((id, i) => [id, yOf(i, g.R.length + SG / (NH + GAP)) + (firstSys >= 0 && i >= firstSys ? SG : 0)]));
   const hl = selection(g);
   const font = getComputedStyle(document.body).fontFamily.replace(/"/g, "'");
   let svg = `<svg class="map" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="${font}" role="img" aria-label="Relationship map">
     <text x="${x1}" y="16" font-size="11" fill="#667085" font-weight="600">SCENARIOS (${g.L.length})</text>
-    <text x="${x2}" y="16" font-size="11" fill="#667085" font-weight="600">${S.mapMode === "asset" ? "ASSETS" : "COMPONENTS"}${S.mapAll ? "" : " — shared only"} (${g.R.length})</text>`;
+    <text x="${x2}" y="16" font-size="11" fill="#667085" font-weight="600">${S.mapMode === "asset" ? "PLATFORM / BROKER ASSETS" : "COMPONENTS"}${S.mapAll ? "" : " — shared only"} (${firstSys >= 0 ? firstSys : g.R.length})</text>
+    ${firstSys >= 0 ? `<text x="${x2}" y="${yr.get(g.R[firstSys]) - 10}" font-size="11" fill="#b4472a" font-weight="600">CONNECTED SYSTEMS (${g.R.length - firstSys})</text>` : ""}`;
   // edges first
   g.edges.forEach((e, i) => {
     if (!yl.has(e.s) || !yr.has(e.t)) return;
@@ -826,7 +922,7 @@ function mapSvg(g) {
     svg += `<g class="node ${on ? "" : "dim"}" data-sel="s|${esc(id)}" tabindex="0">
       <rect class="box" x="${x1}" y="${y}" width="${NW}" height="${NH}" rx="7" fill="${prim ? "#e3f3f2" : "#fff"}" stroke="${prim ? "#0f7c7a" : sec ? "#0f7c7a" : "#c9cfd9"}" stroke-width="${prim ? 2 : 1.2}" ${sec ? 'stroke-dasharray="4 3"' : ""}/>
       <text x="${x1 + 10}" y="${y + 16}" font-size="12.5" font-weight="600" fill="#1d2433">${esc(short(r.name, 34))}</text>
-      <text x="${x1 + 10}" y="${y + 31}" font-size="10.5" fill="#667085">${r.components.length} comp. · ${r.openVersions} open decision${r.openVersions === 1 ? "" : "s"}</text>
+      <text x="${x1 + 10}" y="${y + 31}" font-size="10.5" fill="#667085">${r.components.filter((c) => !isSystemKind(c.kind)).length} comp. · ${r.openVersions} open decision${r.openVersions === 1 ? "" : "s"}</text>
       ${nf ? `<text x="${x1 + NW - 10}" y="${y + 24}" font-size="12" text-anchor="end" fill="#b86e00" font-weight="600">⚠ ${nf}</text>` : ""}
       <title>${esc(r.name)} — click to see its relationships</title></g>`;
   }
@@ -937,7 +1033,7 @@ const LIST_COLS = [
   { key: "name", label: "Name", get: (r) => r.name.toLowerCase() },
   { key: "platforms", label: "Platforms", get: (r) => r.platforms.join(",").toLowerCase() },
   { key: "assets", label: "Assets", get: (r) => r.assets.join(",").toLowerCase() },
-  { key: "endApps", label: "End applications", get: (r) => r.endApps.join(",").toLowerCase() },
+  { key: "endApps", label: "Connected systems", get: (r) => r.endApps.join(",").toLowerCase() },
   { key: "version", label: "Version", get: (r) => r.version },
   { key: "decisions", label: "Decisions", get: (r) => r.decisions },
   { key: "flags", label: "Flags", get: (r, s) => activeFlags(s).length },
@@ -963,6 +1059,7 @@ const reduced = () => !!window.matchMedia?.("(prefers-reduced-motion: reduce)").
 const ICON = {
   sc: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="5" cy="6" r="2.3"/><circle cx="19" cy="18" r="2.3"/><path d="M7.3 6H14a3.5 3.5 0 0 1 0 7h-4a3.5 3.5 0 0 0 0 7h6.7"/></svg>`,
   co: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2.8 20 7v10l-8 4.2L4 17V7z"/><path d="M4 7l8 4.2L20 7M12 11.2v10"/></svg>`,
+  cs: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>`,
   de: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="6" cy="5" r="2.2"/><circle cx="6" cy="19" r="2.2"/><circle cx="18" cy="9" r="2.2"/><path d="M6 7.2v9.6M18 11.2c0 4-6 3-11 6"/></svg>`,
   map: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="2.6"/><circle cx="4.5" cy="5" r="2"/><circle cx="19.5" cy="5" r="2"/><circle cx="4.5" cy="19" r="2"/><circle cx="19.5" cy="19" r="2"/><path d="M6.2 6.4 10 10M17.8 6.4 14 10M6.2 17.6 10 14M17.8 17.6 14 14"/></svg>`,
   warn: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 2.4 17.5A2 2 0 0 0 4.1 20.5h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9.5v4.2M12 17.2h.01"/></svg>`,
@@ -972,9 +1069,10 @@ const ICON = {
 };
 const BANDS = [
   { k: "sc", name: "Scenarios", desc: "End-to-end integration flows", c1: "#19b3ad", c2: "#0a5f5c", attnLabel: "need attention" },
-  { k: "co", name: "Components", desc: "APIs, processes, topics, queues and folders", c1: "#6b8cff", c2: "#2f43c2", attnLabel: "need attention" },
+  { k: "co", name: "Components", desc: "Named artifacts on integration platforms and brokers — APIs, processes, topics, queues", c1: "#6b8cff", c2: "#2f43c2", attnLabel: "need attention" },
+  { k: "cs", name: "Connected systems", desc: "Applications that trigger flows or receive them — S/4HANA, Salesforce, DHL …", c1: "#f08a5d", c2: "#b4472a", attnLabel: "need attention" },
   { k: "de", name: "Open decisions", desc: "Versioning decisions not yet completed", c1: "#9a7cf5", c2: "#5333c4", attnLabel: "with open warnings" },
-  { k: "map", name: "Relationship map", desc: "Where scenarios meet — shared platforms, brokers and end applications", c1: "#5f6f88", c2: "#222d40" },
+  { k: "map", name: "Relationship map", desc: "Where scenarios meet — shared platforms, brokers and connected systems", c1: "#5f6f88", c2: "#222d40" },
 ];
 
 /* components that need attention: flagged in a scenario, or a version in use is deprecated / retired */
@@ -988,6 +1086,12 @@ function attnRefs() {
   }
   return m;
 }
+/* connected systems that need attention: a flag points at one of their endpoints */
+function sysAttn() {
+  const m = new Map(), ar = attnRefs();
+  for (const [ref, txt] of ar) { const k = S.refSys.get(ref); if (k) m.set(k, [...(m.get(k) || []), ...txt]); }
+  return m;
+}
 function openDecisions() {
   const out = [];
   for (const s of S.scenarios.values()) for (const d of s.latest.decisionList || []) if (d.status !== "completed") out.push({ s: s.latest, d });
@@ -995,7 +1099,8 @@ function openDecisions() {
 }
 function bandStats(k) {
   if (k === "sc") return { n: S.scenarios.size, a: [...S.scenarios.values()].filter((s) => activeFlags(s).length).length };
-  if (k === "co") return { n: S.refs.size, a: attnRefs().size };
+  if (k === "co") { const ar = attnRefs(); return { n: compRefs().length, a: compRefs().filter((x) => ar.has(x.ref)).length }; }
+  if (k === "cs") return { n: S.systems.size, a: sysAttn().size };
   if (k === "de") { const o = openDecisions(); return { n: o.length, a: o.filter((x) => x.d.warnings).length }; }
   return { n: null, a: 0 };
 }
@@ -1070,6 +1175,7 @@ function orb(k, size) { const b = BANDS.find((x) => x.k === k); return `<span cl
 function decoSvg(k) {   // large faint motif in the band's corner
   const p = { sc: `<path d="M20 40h70a30 30 0 0 1 0 60H60a30 30 0 0 0 0 60h90" /><circle cx="20" cy="40" r="10"/><circle cx="150" cy="160" r="10"/>`,
     co: `<path d="M100 20 170 58v84l-70 38-70-38V58z"/><path d="M30 58l70 38 70-38M100 96v84"/>`,
+    cs: `<rect x="20" y="30" width="160" height="110" rx="14"/><path d="M60 175h80M100 140v35"/>`,
     de: `<circle cx="50" cy="30" r="12"/><circle cx="50" cy="170" r="12"/><circle cx="150" cy="70" r="12"/><path d="M50 42v116M150 82c0 40-50 30-95 76"/>`,
     map: `<circle cx="100" cy="100" r="18"/><circle cx="30" cy="30" r="12"/><circle cx="170" cy="30" r="12"/><circle cx="30" cy="170" r="12"/><circle cx="170" cy="170" r="12"/><path d="M40 40l46 46M160 40l-46 46M40 160l46-46M160 160l-46-46"/>` }[k];
   return `<svg class="deco" viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round" aria-hidden="true">${p}</svg>`;
@@ -1101,14 +1207,14 @@ function worldHead(k) {
   </div>`;
 }
 function worldView(k, enter) {
-  const body = k === "sc" ? scWorld() : k === "co" ? coWorld() : k === "de" ? deWorld() : mapWorld();
+  const body = k === "sc" ? scWorld() : k === "co" ? coWorld() : k === "cs" ? csWorld() : k === "de" ? deWorld() : mapWorld();
   return `<div class="world ${enter ? "enter" : ""}" data-world="${k}">${worldHead(k)}<div class="world-body" id="worldBody">${body}</div></div>`;
 }
 
 /* ---- the opening / closing transition (shared-element morph) ---- */
 function openWorld(el, k) {
   // every band opens fresh: no filters left over from an earlier visit
-  S.listQuery = ""; S.listFlagsOnly = false; S.compQuery = ""; S.compAttn = false; S.compShared = false; S.decQuery = ""; S.decOpenOnly = true;
+  S.listQuery = ""; S.listFlagsOnly = false; S.compQuery = ""; S.compAttn = false; S.compShared = false; S.decQuery = ""; S.decOpenOnly = true; S.sysQuery = "";
   if (k === "map") S.sel = null;
   if (reduced() || !el.animate) return go("band", { k });
   window.scrollTo(0, 0);
@@ -1150,24 +1256,6 @@ function closeWorld() {
 }
 
 /* ---- relationship explorer (per list row) ---- */
-function explorerSvg(center, left, right, lt, rt) {
-  const ROW = 34, H = Math.max(left.length, right.length, 1) * ROW + 40, cy = 26 + (H - 26) / 2;
-  const W = 900, BW = 250, xL = 10, xR = W - BW - 10, cx = W / 2;
-  const yOf = (i, n) => 30 + i * ROW + (H - 30 - n * ROW) / 2;
-  let s = `<svg class="explorer" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Relationship explorer for ${esc(center.label)}">
-    <text x="${xL}" y="16" class="xl">${esc(lt)}</text><text x="${xR}" y="16" class="xl">${esc(rt)}</text>`;
-  left.forEach((it, i) => { const y = yOf(i, left.length);
-    s += `<path d="M${xL + BW} ${y + 13} C${cx - 140} ${y + 13} ${cx - 160} ${cy} ${cx - 95} ${cy}" class="xe ${it.cls || ""}" />
-      <g class="xn ${it.cls || ""}" ${it.attr || ""}><rect x="${xL}" y="${y}" width="${BW}" height="26" rx="7"/>
-      <text x="${xL + 12}" y="${y + 17}">${esc(short(it.label, it.sub ? 26 : 34))}</text>${it.sub ? `<text x="${xL + BW - 10}" y="${y + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 16))}</text>` : ""}<title>${esc(it.title || it.label)}</title></g>`; });
-  right.forEach((it, i) => { const y = yOf(i, right.length);
-    s += `<path d="M${cx + 95} ${cy} C${cx + 160} ${cy} ${cx + 140} ${y + 13} ${xR} ${y + 13}" class="xe ${it.cls || ""}" />
-      <g class="xn ${it.cls || ""}" ${it.attr || ""}><rect x="${xR}" y="${y}" width="${BW}" height="26" rx="7"/>${it.col ? `<rect x="${xR}" y="${y}" width="5" height="26" rx="2" fill="${it.col}" stroke="none"/>` : ""}
-      <text x="${xR + 14}" y="${y + 17}">${esc(short(it.label, it.sub ? 24 : 32))}</text>${it.sub ? `<text x="${xR + BW - 10}" y="${y + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 18))}</text>` : ""}<title>${esc(it.title || it.label)}</title></g>`; });
-  if (!left.length) s += `<text x="${xL}" y="${cy + 4}" class="xs">no overlap with other scenarios</text>`;
-  s += `<g class="xc ${center.cls || ""}"><rect x="${cx - 95}" y="${cy - 20}" width="190" height="40" rx="10"/><text x="${cx}" y="${cy + 5}" text-anchor="middle">${esc(short(center.label, 24))}</text></g>`;
-  return s + "</svg>";
-}
 function stripSvg(nLeft, rightCols, attn) {
   let s = `<svg class="strip" width="132" height="22" viewBox="0 0 132 22" aria-hidden="true">`;
   for (let i = 0; i < Math.min(nLeft, 4); i++) { const x = 10 + i * 13; s += `<line x1="${x}" y1="11" x2="60" y2="11"/><circle cx="${x}" cy="11" r="4.2" class="ov"/>`; }
@@ -1177,7 +1265,7 @@ function stripSvg(nLeft, rightCols, attn) {
 /* ---- Scenarios world ---- */
 function scWorld() {
   return `<div class="toolbar">
-      <input type="search" id="listSearch" placeholder="Search name, platform, asset, end application, component, tag …" value="${esc(S.listQuery)}">
+      <input type="search" id="listSearch" placeholder="Search name, platform, asset, connected system, component, tag …" value="${esc(S.listQuery)}">
       <label class="pill-toggle ${S.listFlagsOnly ? "on" : ""}"><input type="checkbox" id="flagsOnly" ${S.listFlagsOnly ? "checked" : ""}><span class="ico">${ICON.warn}</span>Needs attention only</label>
     </div>
     <div id="listTable">${listTable()}</div>`;
@@ -1211,7 +1299,7 @@ function coWorld() {
 }
 function compTable() {
   const q = S.compQuery.trim().toLowerCase(), ar = attnRefs();
-  let list = [...S.refs.values()];
+  let list = compRefs();
   if (q) list = list.filter((x) => (x.ref + " " + [...x.names].join(" ") + " " + x.type + " " + (x.asset || "")).toLowerCase().includes(q));
   if (S.compShared) list = list.filter((x) => x.scenarios.size > 1);
   if (S.compAttn) list = list.filter((x) => ar.has(x.ref));
@@ -1222,13 +1310,41 @@ function compTable() {
       return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(x.ref)}" data-xkind="co" data-rowopen="co" tabindex="0" title="Explore this component's relationships">
       <td class="mk">${a.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
       <td><b title="${esc([...x.names].join(" / "))}">${esc([...x.names][0] || "(unnamed)")}</b>${x.names.size > 1 ? ` <span class="muted" style="font-size:12px">+${x.names.size - 1} name${x.names.size > 2 ? "s" : ""}</span>` : ""}<div class="sub2 mono muted">${esc(x.ref)}</div></td>
-      <td>${esc(x.type)}</td><td>${esc([kindInfo(x.kind).label, x.asset].filter(Boolean).join(" · "))}</td>
+      <td>${esc(x.type)}</td><td>${esc([x.platform || kindInfo(x.kind).label, x.asset].filter(Boolean).join(" · "))}</td>
       <td>${[...x.versions].sort((p, q2) => vnum(p) - vnum(q2)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>${stageChip(lc(x.ref, v))}`).join(" ")}</td>
       <td>${[...x.scenarios].slice(0, 3).map((id) => `<span class="chip" data-open="${esc(id)}" style="cursor:pointer">${esc(short(scenarioName(id), 26))}</span>`).join("")}${x.scenarios.size > 3 ? `<span class="chip">+${x.scenarios.size - 3}</span>` : ""}</td>
       <td class="why">${a.length ? esc(a[0]) + (a.length > 1 ? ` <span class="muted">(+${a.length - 1})</span>` : "") : '<span class="muted">—</span>'}</td>
       <td class="xcell"><button class="xbtn" data-xopen="1" title="Explore relations">${stripSvg(x.scenarios.size, [...x.versions].map((v) => vnum(v) === x.max && x.versions.size > 1 ? "#6b4fd8" : "#9aa4b5"), a.length)}<span>Explore</span></button></td></tr>
       <tr class="xrow" data-for="${esc(x.ref)}"><td colspan="8"><div class="xwrap"><div class="xslot"></div></div></td></tr>`; }).join("")
       || `<tr><td colspan="8" class="muted" style="padding:18px">No components match.</td></tr>`}
+    </tbody></table>`;
+}
+
+/* ---- Connected systems world (R-13) ---- */
+function csWorld() {
+  return `<div class="toolbar"><input type="search" id="sysSearch" placeholder="Search application or endpoint …" value="${esc(S.sysQuery || "")}"></div>
+    <div class="note" style="margin:-4px 0 8px">Applications at the ends of the flows. They are not components: each one <b>triggers</b> flows (as caller) and/or <b>receives from</b> flows through its endpoints (APIs, folders).</div>
+    <div id="sysTable">${sysTable()}</div>`;
+}
+function sysTable() {
+  const q = (S.sysQuery || "").trim().toLowerCase(), sa = sysAttn();
+  let list = [...S.systems.values()];
+  if (q) list = list.filter((y) => (y.name + " " + [...y.endpoints.values()].map((e) => e.name).join(" ")).toLowerCase().includes(q));
+  list.sort((a, b) => (sa.has(b.key) - sa.has(a.key)) || (b.triggers.size + b.receives.size) - (a.triggers.size + a.receives.size) || a.name.localeCompare(b.name));
+  const role = (y) => [y.triggers.size ? "caller" : "", y.receives.size ? "receiver" : ""].filter(Boolean);
+  return `<table class="wtable"><thead><tr><th class="mk"></th><th>Connected system</th><th>Role</th><th>Endpoints (exposes)</th><th>Triggers</th><th>Receives from</th><th>Needs attention because</th><th>Relations</th></tr></thead><tbody>
+    ${list.map((y, i) => { const a = sa.get(y.key) || [], eps = [...y.endpoints.values()];
+      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(y.key)}" data-xkind="cs" data-rowopen="cs" tabindex="0" title="Explore this system's relationships">
+      <td class="mk">${a.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
+      <td><b>${esc(y.name)}</b></td>
+      <td>${role(y).map((r) => `<span class="chip ${r === "caller" ? "" : "teal"}">${r}</span>`).join("")}</td>
+      <td>${eps.slice(0, 3).map((e) => `<span class="chip" title="${esc(e.process || "")}">${esc(short(e.name, 30))}${e.scenarios.size > 1 ? ` · ${e.scenarios.size} flows` : ""}</span>`).join("")}${eps.length > 3 ? `<span class="chip">+${eps.length - 3}</span>` : ""}${eps.length ? "" : '<span class="muted">—</span>'}</td>
+      <td class="nowrap">${y.triggers.size ? `${y.triggers.size} flow${y.triggers.size === 1 ? "" : "s"}` : '<span class="muted">—</span>'}</td>
+      <td class="nowrap">${y.receives.size ? `${y.receives.size} flow${y.receives.size === 1 ? "" : "s"}` : '<span class="muted">—</span>'}</td>
+      <td class="why">${a.length ? esc(a[0]) : '<span class="muted">—</span>'}</td>
+      <td class="xcell"><button class="xbtn" data-xopen="1" title="Explore relations">${stripSvg(y.triggers.size + y.receives.size, eps.map(() => "#b4472a"), a.length)}<span>Explore</span></button></td></tr>
+      <tr class="xrow" data-for="${esc(y.key)}"><td colspan="8"><div class="xwrap"><div class="xslot"></div></div></td></tr>`; }).join("")
+      || `<tr><td colspan="8" class="muted" style="padding:18px">No connected systems match.</td></tr>`}
     </tbody></table>`;
 }
 
@@ -1254,7 +1370,7 @@ function mapWorld() {
         ${S.sel ? `<button class="btn ghost small" style="color:var(--teal)" data-act="clearsel">Clear selection</button>` : ""}
       </div>
       <div id="mapBox">${g.R.length ? mapSvg(g) : `<div class="muted">Nothing shared yet — switch on “show unshared too”.</div>`}</div>
-      <div class="legend"><span><i style="background:#0f7c7a"></i>iPaaS</span><span><i style="background:#6b4fd8"></i>message broker</span><span><i style="background:#8a94a6"></i>end application / caller</span>
+      <div class="legend"><span><i style="background:#0f7c7a"></i>iPaaS</span><span><i style="background:#6b4fd8"></i>message broker</span><span><i style="background:#b4472a"></i>connected system</span>
         <span style="color:#6b4fd8">━ open new version</span><span style="color:#b86e00">━ needs attention</span><span>– – overlapping scenario</span></div>
     </div>
     <div class="selcard" id="selBox">${selPanel(g)}</div>
@@ -1264,195 +1380,234 @@ function refreshOverviewParts() {
   if (S.view === "band" && S.param?.k === "map") $("#worldBody").innerHTML = mapWorld();
 }
 
-/* ---- R-11: simplified Pattern Bench canvas, laid out from the exported canvas JSON ---- */
-const PB_TOKEN = { api: "api", process: "process", publish: "topic", consume: "topic", topic: "topic", queue: "queue", file: "file", sftp: "file", folder: "file" };
-function patternEnds(p) {
-  const [a, b] = String(p || "").split("-to-");
-  return [PB_TOKEN[(a || "").split("-").pop()] || "process", PB_TOKEN[(b || "").split("-")[0]] || "process"];
-}
-function pbIcon(type, x, y) {
-  const c = "#344054";
-  if (type === "api") return `<path d="M${x - 9} ${y - 7}h12l6 7-6 7h-12z" fill="#fff" stroke="${c}" stroke-width="1.6"/>`;
-  if (type === "topic") return `<rect x="${x - 11}" y="${y - 6}" width="22" height="12" rx="6" fill="#fff" stroke="#6b4fd8" stroke-width="1.6"/><path d="M${x - 4} ${y - 6}v12M${x + 3} ${y - 6}v12" stroke="#6b4fd8" stroke-width="1.2"/>`;
-  if (type === "queue") return `<rect x="${x - 13}" y="${y - 5}" width="26" height="10" rx="5" fill="#fff" stroke="#6b4fd8" stroke-width="1.6"/>`;
-  if (type === "file") return `<path d="M${x - 9} ${y - 6}h6l2 2h10v10h-18z" fill="#fff" stroke="${c}" stroke-width="1.6"/>`;
-  const r = 8, pts = [...Array(6)].map((_, i) => `${(x + r * Math.cos(Math.PI / 3 * i)).toFixed(1)},${(y + r * Math.sin(Math.PI / 3 * i)).toFixed(1)}`).join(" ");
-  return `<polygon points="${pts}" fill="#fff" stroke="#0f7c7a" stroke-width="1.6"/>`;
-}
-function canvasSvg(cv, spec, flagRefs) {
-  const W = 176, H = 60, LANE = 118, PADX = 120, PADY = 70;
-  const blocks = [];                         // {key, label, pattern, col, lane}
-  const at = new Map();                      // key -> block
-  (cv.blocks || []).forEach((b, i) => { const o = { key: "t" + i, label: b.label || b.pattern, pattern: b.pattern, col: i, lane: 0 }; blocks.push(o); at.set(o.key, o); });
-  const used = new Set(blocks.map((b) => b.lane + ":" + b.col));
-  const links = [];
-  (cv.branches || []).forEach((br, k) => {
-    const anc = at.get(br.anchor?.[0]?.ref) || blocks[0]; if (!anc) return;
-    const n = (br.blocks || []).length, sign = (br.row || 1) < 0 ? -1 : 1;
-    const start = br.kind === "in" ? anc.col - n : anc.col + 1;
-    let lane = anc.lane + (br.row || 1);
-    const free = (l) => [...Array(n)].every((_, j) => !used.has(l + ":" + (start + j)));
-    while (!free(lane)) lane += sign;
-    (br.blocks || []).forEach((b, j) => { const o = { key: `b${k}.${j}`, label: b.label || b.pattern, pattern: b.pattern, col: start + j, lane, branch: k };
-      blocks.push(o); at.set(o.key, o); used.add(lane + ":" + o.col); });
-    links.push({ x: br.kind === "in" ? anc.col : anc.col + 1, from: anc.lane, to: lane });
-  });
-  // map canvas blocks to registry-entry blocks (row 0 = main, row k+1 = branch k) for attention marks
-  const eb = new Map((spec.base?.blocks || []).map((b) => [b.row + ":" + b.order, b]));
-  const compRef = {}; for (const c of spec.base?.components || []) compRef[c.id] = c.ref;
-  const verKeys = new Map();
-  (cv.versions || []).forEach((v) => verKeys.set("t" + v.block, v.variant));
-  (cv.branchVersions || []).forEach((v) => verKeys.set(v.ref, v.variant));
-  const why = new Map((cv.scenario?.why || []).map((w) => [String(w.key).replace(/^ver\|@/, ""), w.text]));
-  const delta = new Set((cv.compositeRipples || []).filter((r) => r.code).map((r) => r.path));
-  const minCol = Math.min(0, ...blocks.map((b) => b.col)), lanes = blocks.map((b) => b.lane);
-  const minLane = Math.min(0, ...lanes), maxLane = Math.max(0, ...lanes);
-  const X = (col) => PADX + (col - minCol) * W, Y = (lane) => PADY + (lane - minLane) * LANE;
-  const width = PADX * 2 + (Math.max(...blocks.map((b) => b.col)) - minCol + 1) * W, height = PADY + (maxLane - minLane) * LANE + H + 40;
-  let s = `<svg class="pbcanvas" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Simplified canvas">`;
-  for (const l of links) { const x = X(l.x), y1 = Y(l.from) + H / 2, y2 = Y(l.to) + H / 2;
-    s += `<path d="M${x} ${y1} V${y2}" stroke="#0f7c7a" stroke-width="2" stroke-dasharray="5 4" fill="none"/><circle cx="${x}" cy="${y1}" r="4" fill="#0f7c7a"/>`; }
-  const seams = new Map();                   // fused connector icons at shared seams
-  for (const b of blocks) {
-    const x = X(b.col), y = Y(b.lane), ent = eb.get((b.branch === undefined ? 0 : b.branch + 1) + ":" + (b.branch === undefined ? b.col : Number(b.key.split(".")[1])));
-    const flagged = ent && ent.components.some((cid) => flagRefs.has(compRef[cid]));
-    const ver = verKeys.get(b.key), cls = flagged ? "attn" : ver ? "ver" : "";
-    s += `<g class="pbb ${cls}"><rect x="${x + 2}" y="${y}" width="${W - 4}" height="${H}" rx="12"/>
-      <text x="${x + W / 2}" y="${y + H / 2 + 22}" text-anchor="middle" class="pbl">${esc(short(b.label, 22))}</text>
-      ${ver ? `<g><rect x="${x + W - 40}" y="${y - 10}" width="34" height="20" rx="10" class="vb"/><text x="${x + W - 23}" y="${y + 4}" text-anchor="middle" class="vt">v2</text><title>${esc(ver)}${why.get(b.key) ? " — " + esc(why.get(b.key)) : ""}</title></g>` : ""}
-      ${delta.has(b.key) ? `<g><circle cx="${x + 18}" cy="${y}" r="10" class="db"/><text x="${x + 18}" y="${y + 4}" text-anchor="middle" class="dt">Δ</text><title>Code change in the same version</title></g>` : ""}
-      ${flagged ? `<g><circle cx="${x + W / 2}" cy="${y}" r="10" class="ab"/><text x="${x + W / 2}" y="${y + 4}" text-anchor="middle" class="at">!</text><title>Needs attention</title></g>` : ""}</g>`;
-    const [a, z] = patternEnds(b.pattern);
-    seams.set(`${b.lane}:${b.col}:L`, { x: x, y: y + H / 2 - 6, t: a });
-    if (!seams.has(`${b.lane}:${b.col + 1}:L`)) seams.set(`${b.lane}:${b.col + 1}:L`, { x: x + W, y: y + H / 2 - 6, t: z });
+/* ---- R-13 point 6: the flow as a chain of named artifacts (no Pattern Bench pattern blocks) ----
+   One box per platform / broker asset with the components inside it; connected systems at the ends. */
+function chainSvg(spec, flagRefs) {
+  const base = spec.base || {}, conts = base.containers || [];
+  const contById = Object.fromEntries(conts.map((k) => [k.id, k]));
+  const openVers = (spec.versions || []).filter((v) => v.status !== "completed");
+  const comps = new Map();                                    // component id -> {c, added, change}
+  for (const c of base.components || []) comps.set(c.id, { c, added: false });
+  for (const v of openVers) {
+    for (const ch of v.changed || []) { const x = comps.get(ch.component); if (x) x.change = ch; }
+    for (const a of v.added || []) comps.set(a.id, { c: a, added: true });
   }
-  for (const v of seams.values()) s += pbIcon(v.t, v.x, v.y);
-  // containers (platform / end application labels) and callers
-  for (const k of cv.containers || []) {
-    const b = at.get("t" + k.block); if (!b) continue;
-    const x = X(b.col), y = Y(b.lane), ext = !k.platform;
-    const txt = ext ? [k.name, k.process].filter(Boolean).join(" · ") : [k.platform, k.asset].filter(Boolean).join(" · ");
-    if (k.at === "caller") { s += `<g class="pbcall"><rect x="${x - 104}" y="${y + 10}" width="92" height="40" rx="9"/><text x="${x - 58}" y="${y + 28}" text-anchor="middle">${esc(short(k.name || "Caller", 14))}</text><text x="${x - 58}" y="${y + 42}" text-anchor="middle" class="sm">${esc(short(k.process || "", 16))}</text></g><path d="M${x - 12} ${y + 30}H${x + 2}" stroke="#8a94a6" stroke-width="1.6"/>`; continue; }
-    const label = short(txt, 26), tw = Math.min(W - 10, 14 + label.length * 6.1), tx = k.at === "in" ? x + 4 : x + W - tw - 4;
-    const ty = y - (k.at === "in" ? 30 : 30);
-    s += `<g class="pbc ${ext ? "ext" : ""}"><rect x="${tx}" y="${ty}" width="${tw}" height="20" rx="6"/><text x="${tx + 7}" y="${ty + 14}">${esc(label)}</text><title>${esc(txt)}</title></g>`;
+  const order = new Map(); let i = 0;
+  for (const { c } of comps.values()) if (!order.has(c.container)) order.set(c.container, i++);
+  const nodes = [...order.keys()].filter((id) => contById[id]).map((id) => ({ id, k: contById[id], items: [...comps.values()].filter((x) => x.c.container === id) }));
+  const nodeOf = new Map(); for (const n of nodes) for (const it of n.items) nodeOf.set(it.c.id, n.id);
+  const edges = new Map();
+  const addE = (l, added) => { const a = nodeOf.get(l.from), b = nodeOf.get(l.to); if (!a || !b || a === b) return;
+    const key = a + ">" + b; if (!edges.has(key) || !added) edges.set(key, { a, b, added }); };
+  for (const l of base.links || []) addE(l, false);
+  for (const v of openVers) for (const l of v.addedLinks || []) addE(l, true);
+  // longest-path layers, callers first
+  const layer = new Map(nodes.map((n) => [n.id, 0]));
+  for (let r = 0; r < nodes.length; r++) for (const e of edges.values()) if (layer.get(e.b) < layer.get(e.a) + 1) layer.set(e.b, layer.get(e.a) + 1);
+  const cols = []; for (const n of nodes) (cols[layer.get(n.id)] ||= []).push(n);
+  const W = 196, GX = 64, PX = 16, PY = 16, GY = 18, CH = 18;
+  const hOf = (n) => (isSystemKind(n.k.kind) ? 50 : 50 + n.items.length * CH);
+  const pos = new Map();
+  let height = 0;
+  cols.forEach((col, L) => { let y = PY; for (const n of col || []) { pos.set(n.id, { x: PX + L * (W + GX), y, h: hOf(n) }); y += hOf(n) + GY; } height = Math.max(height, y); });
+  const width = PX * 2 + cols.length * W + (cols.length - 1) * GX;
+  let s = `<svg class="chain" viewBox="0 0 ${width} ${height + 4}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flow as named artifacts" style="min-width:${Math.min(width, 900)}px">
+    <defs><marker id="cah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8a94a6"/></marker>
+    <marker id="cahv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6b4fd8"/></marker></defs>`;
+  for (const e of edges.values()) {
+    const a = pos.get(e.a), b = pos.get(e.b); if (!a || !b) continue;
+    const x1 = a.x + W, y1 = a.y + Math.min(a.h / 2, 25), x2 = b.x - 2, y2 = b.y + Math.min(b.h / 2, 25), mx = (x1 + x2) / 2;
+    s += `<path d="M${x1} ${y1} C${mx} ${y1} ${mx} ${y2} ${x2} ${y2}" class="ce ${e.added ? "v" : ""}" marker-end="url(#${e.added ? "cahv" : "cah"})"/>`;
   }
-  (cv.callers || []).forEach((c, i) => {
-    const b = at.get(c.anchor?.[0]?.ref); if (!b) return;
-    const x = X(b.col), y = Y(b.lane) + H + 12 + i * 0;
-    s += `<g class="pbcall"><rect x="${x - 104}" y="${y}" width="92" height="34" rx="9"/><text x="${x - 58}" y="${y + 15}" text-anchor="middle">${esc(short(c.name || "Caller", 14))}</text><text x="${x - 58}" y="${y + 28}" text-anchor="middle" class="sm">${esc(short(c.process || "", 16))}</text></g>
-      <path d="M${x - 12} ${y + 17} H${x + 8} V${Y(b.lane) + H}" stroke="#8a94a6" stroke-width="1.4" fill="none" stroke-dasharray="3 3"/>`;
-  });
+  const lc = (c) => S.lifecycle?.byKey.get(c.ref + "@" + c.version)?.stage;
+  for (const n of nodes) {
+    const p = pos.get(n.id), k = n.k;
+    if (isSystemKind(k.kind)) {
+      const app = appNameOf(k), sub = k.kind === "caller" ? (k.process || "caller") : endpointNameOf(n.items[0]?.c || {}, k);
+      const flagged = n.items.some((it) => flagRefs.has(it.c.ref));
+      s += `<g class="sys ${flagged ? "attn" : ""}" data-sysrow="${esc(sysKey(app))}"><rect x="${p.x}" y="${p.y}" width="${W}" height="${p.h}" rx="${p.h / 2}"/>
+        <text x="${p.x + W / 2}" y="${p.y + 21}" text-anchor="middle" class="an">${esc(short(app, 26))}</text>
+        <text x="${p.x + W / 2}" y="${p.y + 37}" text-anchor="middle" class="ap">${esc(short(sub, 32))}</text>
+        <title>${esc(app)} — connected system${k.kind === "caller" ? " (triggers this flow)" : " · endpoint " + esc(sub)} · click to see it in Connected systems</title></g>`;
+      continue;
+    }
+    const col = k.kind === "broker" ? "#6b4fd8" : "#0f7c7a";
+    const flagged = n.items.some((it) => flagRefs.has(it.c.ref)), ver = n.items.some((it) => it.added || it.change);
+    s += `<g class="art ${flagged ? "attn" : ver ? "ver" : ""}"><rect x="${p.x}" y="${p.y}" width="${W}" height="${p.h}" rx="10"/>
+      <rect x="${p.x}" y="${p.y}" width="${W}" height="5" rx="2" fill="${col}"/>
+      <text x="${p.x + 12}" y="${p.y + 19}" class="gl" fill="${col}">${esc(short(k.platform || "", 20))} · ${k.kind === "broker" ? "broker" : "iPaaS"}</text>
+      <text x="${p.x + 12}" y="${p.y + 35}" class="an">${esc(short(k.asset || "(unlabelled)", 26))}</text>`;
+    n.items.forEach((it, j) => {
+      const c = it.c, y = p.y + 43 + j * CH, st = lc(c), fl = flagRefs.get(c.ref);
+      const v = it.change ? `${it.change.from}→${it.change.to}` : c.version || "";
+      s += `<g ${c.ref ? `data-copen="${esc(c.ref)}"` : ""}><rect x="${p.x + 8}" y="${y}" width="${W - 16}" height="${CH - 3}" rx="4" class="ccb" ${it.added ? 'style="fill:#efebfd;stroke:#c9bdf6"' : fl ? 'style="fill:#fff3dc;stroke:#f5c46e"' : ""}/>
+        <text x="${p.x + 14}" y="${y + 11.5}" class="cc">${it.added ? "+ " : ""}${esc(short(c.name || c.type, 22))}</text>
+        <text x="${p.x + W - 14}" y="${y + 11.5}" text-anchor="end" class="cc" ${it.change || it.added ? 'fill="#6b4fd8" font-weight="700"' : ""}>${esc(v)}${fl ? " ⚠" : ""}${st === "deprecated" || st === "retired" ? " · " + esc(STAGE_LABEL[st]) : ""}</text>
+        <title>${esc(c.name || c.type)} · ${esc(c.type)} ${esc(c.version || "")}${c.ref ? " · " + esc(c.ref) + " — click to open the component" : ""}</title></g>`;
+    });
+    s += `</g>`;
+  }
   return s + "</svg>";
 }
-async function flowPanel(rec, spec, flagRefs) {
-  const path = rec.canvas ? dirOf(rec.path) + rec.canvas : "";
-  if (path && S.files.has(path)) {
-    try {
-      const cv = await loadSpec(path);
-      if (cv && (cv.format === "pattern-bench-flow" || Array.isArray(cv.blocks))) return `<div class="panel"><h2>Flow <span class="count">(from the Pattern Bench canvas)</span></h2>
-        <div class="diagram pbwrap">${canvasSvg(cv, spec, flagRefs)}</div>
-        <div class="legend"><span>${'<svg width="16" height="12"><polygon points="8,1 14,4 14,9 8,11 2,9 2,4" fill="#fff" stroke="#0f7c7a" stroke-width="1.5"/></svg>'} process</span><span>topic / queue</span><span>API</span>
-          <span><i style="background:#f5f2fe;border:1.5px solid #6b4fd8"></i>versioned (v2)</span><span><i style="background:#fff8ea;border:1.5px solid #f5a524"></i>needs attention</span><span>Δ code change, same version</span><span>– – branch (fan-out / fan-in)</span></div>
-        <div class="note" style="margin-top:6px">Simplified from <span class="mono">${esc(rec.canvas)}</span>. Open it in Pattern Bench for the full canvas.</div></div>`;
-    } catch (e) { /* fall through to the generated view */ }
-  }
-  return `<div class="panel"><h2>Flow</h2>
-    <div class="diagram">${diagramSvg(spec, flagRefs)}</div>
-    <div class="legend"><span><i style="background:#fff;border:1.5px solid #8a94a6"></i>base flow</span>
-      <span><i style="background:var(--violet-bg);border:1.5px solid var(--violet)"></i>added by a version</span>
-      <span><i style="background:var(--amber-bg);border:1.5px solid var(--amber)"></i>flagged</span>
-      <span><i style="background:var(--red-bg);border:1.5px solid var(--red)"></i>retired</span></div>
-    <div class="note" style="margin-top:6px">Generated from the registry entry${rec.canvas ? " — the canvas file isn't in the registry folder" : ""}.</div></div>`;
+function flowPanel(rec, spec, flagRefs) {
+  return `<div class="panel"><h2>Flow <span class="count">(named artifacts)</span></h2>
+    <div class="diagram pbwrap">${chainSvg(spec, flagRefs)}</div>
+    <div class="legend"><span><i style="background:#0f7c7a"></i>iPaaS asset</span><span><i style="background:#6b4fd8"></i>broker asset (topic / queue)</span>
+      <span><i style="background:#fff6f2;border:1.5px solid #b4472a;border-radius:6px"></i>connected system</span>
+      <span><i style="background:#efebfd;border:1.5px solid #6b4fd8"></i>new / changed version</span><span><i style="background:#fff8ea;border:1.5px solid #f5a524"></i>needs attention</span></div>
+    <div class="note" style="margin-top:6px">Built from the registry entry. Click a component to open it, or a system to see it in Connected systems. The Pattern Bench canvas (pattern blocks) is a design-time view and stays in Pattern Bench.</div></div>`;
 }
 
 /* ---- R-8 / R-9 / R-10: explorer with in-place pivot, 3D dive, visible Explore button ---- */
-const X = { stack: [], row: null, kind: null };       // explorer state for the open row
+const X = { stack: [], row: null, kind: null, open: new Map() };   // explorer state for the open row
 function nodeKey(t, id) { return t + "|" + id; }
-function scNode(id) {
-  const s = S.scenarios.get(id), r = s.latest, fl = flaggedRefs(s), ov = overlapsOf(id, { strongOnly: X.strongOnly });
-  const left = ov.slice(0, 8).map((o) => ({ label: scenarioName(o.id), sub: tierLabel(o), cls: "ov t-" + TIERS[o.tier].k + (o.strong ? "" : " weak"),
-    title: `${tierLabel(o)} — ` + Object.entries(o.byTier).map(([t, refs]) => `${TIERS.find((x) => x.k === t).label}: ${refs.map((q) => q.includes(" > ") ? q.split(" > ").map(refName).join(" → ") : refName(q)).join(", ")}`).join(" · "),
-    attr: `data-node="${esc(nodeKey("s", o.id))}"` }));
-  if (ov.length > 8) left.push({ label: `+ ${ov.length - 8} more`, cls: "more" });
-  const right = [];
-  for (const k of r.containers || []) {
-    if (!k.refs.length) continue;
-    right.push({ head: true, label: k.name, sub: k.platform || kindInfo(k.kind).label, col: kindInfo(k.kind).col, attr: `data-mapsel="${esc(k.key)}"`, title: k.name + " — click to see this asset on the relationship map" });
-    for (const ref of k.refs) {
-      const x = S.refs.get(ref), v = r.uses[ref] || [], behind = x && Math.max(...v.map(vnum)) < x.max;
-      right.push({ label: refName(ref), sub: v.join("+") + (x && x.scenarios.size > 1 ? ` · ${x.scenarios.size} flows` : ""), col: kindInfo(k.kind).col,
-        cls: fl.has(ref) || behind ? "attn" : x && x.scenarios.size > 1 ? "shared" : "", attr: `data-node="${esc(nodeKey("c", ref))}"`, title: refName(ref) + " — click to explore it here, double-click (or hold) to dive into it" });
-    }
+const NODE_KIND = { s: { label: "scenario", col: "#0f7c7a" }, c: { label: "component", col: "#3346c8" }, a: { label: "connected system", col: "#b4472a" }, v: { label: "version", col: "#98a2b3" } };
+const pairText = (q) => (q.includes(" > ") ? q.split(" > ").map(thingName).join(" → ") : thingName(q));
+
+/* R-13: every node offers its relationship types (verbs); the user opens the ones to explore.
+   Verbs read from the centre outward; each has its inverse on the other node (made of ↔ used in …). */
+function scRel(id) {
+  const s = S.scenarios.get(id), r = s.latest, fl = flaggedRefs(s);
+  const ov = overlapsOf(id, { strongOnly: X.strongOnly });
+  const sn = (o, sub, extra = "") => ({ kind: "s", label: scenarioName(o.id), sub, cls: "t-" + TIERS[o.tier].k + (o.strong ? "" : " weak") + extra, attr: `data-node="${esc(nodeKey("s", o.id))}"`,
+    title: `${scenarioName(o.id)} — ` + Object.entries(o.byTier).map(([t, refs]) => `${TIERS.find((x) => x.k === t).label}: ${refs.map(pairText).join(", ")}`).join(" · ") });
+  const feedsOut = ov.filter((o) => TIERS[o.tier].k === "feeds" && o.dir !== "in"), feedsIn = ov.filter((o) => TIERS[o.tier].k === "feeds" && o.dir !== "out");
+  const topics = (o) => (o.byTier.feeds || []).map(refName).join(", ");
+  const made = [];
+  for (const c of r.components) if (c.ref && isIntegrationKind(c.kind) && !made.some((m) => m.ref === c.ref)) {
+    const x = S.refs.get(c.ref), v = r.uses[c.ref] || [c.version], behind = x && Math.max(...v.map(vnum)) < x.max;
+    made.push({ ref: c.ref, kind: "c", label: refName(c.ref), sub: [c.platform, v.join("+"), x && x.scenarios.size > 1 ? x.scenarios.size + " flows" : ""].filter(Boolean).join(" · "),
+      cls: fl.has(c.ref) || behind ? "attn" : x && x.scenarios.size > 1 ? "shared" : "", attr: `data-node="${esc(nodeKey("c", c.ref))}"`, title: `${refName(c.ref)} — ${c.type} on ${c.platform} · ${c.asset}` });
   }
+  const deliv = new Map(); for (const d of r.sys.deliversTo) deliv.set(d.key, uniq([...(deliv.get(d.key) || []), d.endpoint]));
+  const groups = [
+    { k: "made", verb: "made of", flow: "", items: made },
+    { k: "trig", verb: "triggered by", flow: "in", items: r.sys.triggeredBy.map((t) => ({ kind: "a", label: sysName(t.key), sub: t.process, attr: `data-node="${esc(nodeKey("a", t.key))}"`, title: `${sysName(t.key)} triggers this flow (${t.process || "caller"})` })) },
+    { k: "deliv", verb: "delivers to", flow: "out", items: [...deliv].map(([k, eps]) => ({ kind: "a", label: sysName(k), sub: eps.join(", "), attr: `data-node="${esc(nodeKey("a", k))}"`, title: `delivers to ${sysName(k)} through ${eps.join(", ")}` })) },
+    { k: "feeds", verb: "feeds", flow: "out", items: feedsOut.map((o) => sn(o, "via " + topics(o))) },
+    { k: "fedby", verb: "fed by", flow: "in", items: feedsIn.map((o) => sn(o, "via " + topics(o))) },
+    { k: "along", verb: "runs alongside", flow: "", hint: "same path", items: ov.filter((o) => TIERS[o.tier].k === "path").map((o) => sn(o, `${o.sharedLinks.length} shared link${o.sharedLinks.length === 1 ? "" : "s"}`)) },
+    { k: "shares", verb: "shares", flow: "", hint: "API, asset, endpoint", items: ov.filter((o) => ["api", "asset", "endpoint"].includes(TIERS[o.tier].k)).map((o) => sn(o, o.tier >= 0 && TIERS[o.tier].k === "endpoint" ? "same endpoint (weak)" : tierLabel(o))) },
+  ];
   const ss = sameSourceOf(id);
-  return { center: { label: r.name, cls: activeFlags(s).length ? "attn" : "" }, left, right, lt: X.strongOnly ? "Overlaps with — strong only" : "Overlaps with", rt: "Uses — components by asset",
-    foot: activeFlags(s).slice(0, 3).map((f) => f.text), open: `data-open="${esc(id)}"`, openLabel: "Open scenario", scen: true,
-    note: ss.map((x) => `Same source: ${refName(x.ref)} also triggers ${x.others.length} other scenario${x.others.length === 1 ? "" : "s"} (not counted as overlap)`).join(" · ") };
+  return { kind: "s", center: { label: r.name, cls: activeFlags(s).length ? "attn" : "" }, groups, scen: true,
+    foot: activeFlags(s).slice(0, 3).map((f) => f.text), open: `data-open="${esc(id)}"`, openLabel: "Open scenario",
+    note: ss.map((x) => `Same source: ${sysName(S.refSys.get(x.ref) || "")} also triggers ${x.others.length} other scenario${x.others.length === 1 ? "" : "s"} — not counted as overlap`).join(" · ") };
 }
-function coNode(ref) {
+function neighbours(ref, dirUp) {
+  const m = new Map();
+  for (const s of S.scenarios.values()) for (const l of s.latest.links || []) { const [a, b] = l.split(" > ");
+    const other = dirUp ? (b === ref ? a : null) : (a === ref ? b : null);
+    if (other) m.set(other, (m.get(other) || new Set()).add(s.latest.id)); }
+  return [...m].map(([o, ids]) => { const sk = S.refSys.get(o);
+    return sk ? { kind: "a", label: thingName(o), sub: `in ${ids.size} flow${ids.size === 1 ? "" : "s"}`, attr: `data-node="${esc(nodeKey("a", sk))}"`, title: [...ids].map(scenarioName).join(", ") }
+      : { kind: "c", label: refName(o), sub: `in ${ids.size} flow${ids.size === 1 ? "" : "s"}`, attr: `data-node="${esc(nodeKey("c", o))}"`, title: [...ids].map(scenarioName).join(", ") }; });
+}
+function coRel(ref) {
   const x = S.refs.get(ref), ar = attnRefs().get(ref) || [];
   const lc = (v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
-  const left = [...x.scenarios].map((id) => { const v = S.scenarios.get(id).latest.uses[ref] || [], behind = Math.max(...v.map(vnum)) < x.max;
-    return { label: scenarioName(id), sub: v.join("+") + (behind ? " · behind" : ""), cls: behind ? "attn" : "ov", attr: `data-node="${esc(nodeKey("s", id))}"`, title: scenarioName(id) + " — click to explore it here, double-click (or hold) to dive into it" }; });
-  const right = [...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => { const st = lc(v);
-    return { label: v, sub: st || "", cls: st === "deprecated" || st === "retired" ? "attn" : vnum(v) === x.max && x.versions.size > 1 ? "new" : "" }; });
-  return { center: { label: refName(ref), cls: ar.length ? "attn" : "" }, left, right, lt: "Used by", rt: "Versions", foot: ar.slice(0, 3),
-    open: `data-copen="${esc(ref)}"`, openLabel: "Open component" };
+  const used = [...x.scenarios].map((id) => { const v = S.scenarios.get(id).latest.uses[ref] || [], behind = Math.max(...v.map(vnum)) < x.max;
+    return { kind: "s", label: scenarioName(id), sub: v.join("+") + (behind ? " · behind" : ""), cls: behind ? "attn" : "", attr: `data-node="${esc(nodeKey("s", id))}"`, title: scenarioName(id) }; });
+  const vers = [...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => { const st = lc(v);
+    return { kind: "v", label: v, sub: st ? STAGE_LABEL[st] || st : "", cls: st === "deprecated" || st === "retired" ? "attn" : vnum(v) === x.max && x.versions.size > 1 ? "new" : "", title: `${refName(ref)} ${v}` }; });
+  const groups = [
+    { k: "used", verb: "used in", flow: "", items: used },
+    { k: "calledby", verb: "called by", flow: "in", items: neighbours(ref, true) },
+    { k: "calls", verb: "calls", flow: "out", items: neighbours(ref, false) },
+    { k: "vers", verb: "has versions", flow: "", items: vers },
+  ];
+  return { kind: "c", center: { label: refName(ref), cls: ar.length ? "attn" : "" }, groups, foot: ar.slice(0, 3),
+    open: `data-copen="${esc(ref)}"`, openLabel: "Open component", sub: [x.type, x.asset].filter(Boolean).join(" · ") };
 }
-function explorerSvg2(n) {
-  const ROW = 34, rows = Math.max(n.left.length, n.right.length, 1), H = rows * ROW + 40, cy = 26 + (H - 26) / 2;
-  const W = 940, BW = 270, xL = 10, xR = W - BW - 10, cx = W / 2;
-  const yOf = (i, cnt) => 30 + i * ROW + (H - 30 - cnt * ROW) / 2;
-  let s = `<svg class="explorer" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Relationship explorer for ${esc(n.center.label)}">
-    <defs><marker id="xarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0f7c7a"/></marker></defs>
-    <text x="${xL}" y="16" class="xl">${esc(n.lt)}</text><text x="${xR}" y="16" class="xl">${esc(n.rt)}</text>`;
-  n.left.forEach((it, i) => { const y = yOf(i, n.left.length);
-    const fe = /t-feeds/.test(it.cls || "") ? (it.sub.startsWith("feeds") ? 'marker-end="url(#xarr)"' : it.sub.startsWith("←") ? 'marker-start="url(#xarr)"' : 'marker-start="url(#xarr)" marker-end="url(#xarr)"') : "";
-    s += `<path d="M${xL + BW} ${y + 13} C${cx - 150} ${y + 13} ${cx - 170} ${cy} ${cx - 100} ${cy}" class="xe ${it.cls || ""}" ${fe && it.sub.startsWith("feeds") ? 'marker-start="url(#xarr)"' : fe && it.sub.startsWith("←") ? 'marker-end="url(#xarr)"' : fe}/>
-      <g class="xn ${it.cls || ""}" ${it.attr || ""}><rect x="${xL}" y="${y}" width="${BW}" height="26" rx="7"/><text x="${xL + 12}" y="${y + 17}">${esc(short(it.label, it.sub ? 26 : 36))}</text>
-      ${it.sub ? `<text x="${xL + BW - 10}" y="${y + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 18))}</text>` : ""}<title>${esc(it.title || it.label)}</title></g>`; });
-  n.right.forEach((it, i) => { const y = yOf(i, n.right.length);
-    if (it.head) { s += `<g class="xh" ${it.attr || ""}><rect x="${xR}" y="${y + 4}" width="5" height="18" rx="2" fill="${it.col}"/><text x="${xR + 12}" y="${y + 18}">${esc(short(it.label, 26))}</text><text x="${xR + BW - 6}" y="${y + 18}" text-anchor="end" class="xs">${esc(short(it.sub, 16))}</text><title>${esc(it.title)}</title></g>`; return; }
-    const ind = n.right.some((r) => r.head) ? 14 : 0;
-    s += `<path d="M${cx + 100} ${cy} C${cx + 170} ${cy} ${cx + 150} ${y + 13} ${xR + ind} ${y + 13}" class="xe ${it.cls || ""}"/>
-      <g class="xn ${it.cls || ""}" ${it.attr || ""}><rect x="${xR + ind}" y="${y}" width="${BW - ind}" height="26" rx="7"/>${it.col ? `<rect x="${xR + ind}" y="${y}" width="4" height="26" rx="2" fill="${it.col}" stroke="none"/>` : ""}
-      <text x="${xR + ind + 12}" y="${y + 17}">${esc(short(it.label, it.sub ? 22 : 32))}</text>${it.sub ? `<text x="${xR + BW - 10}" y="${y + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 18))}</text>` : ""}<title>${esc(it.title || it.label)}</title></g>`; });
-  if (!n.left.length) s += `<text x="${xL}" y="${cy + 4}" class="xs">no overlap with other scenarios</text>`;
-  s += `<g class="xc ${n.center.cls || ""}"><rect x="${cx - 100}" y="${cy - 21}" width="200" height="42" rx="11"/><text x="${cx}" y="${cy + 5}" text-anchor="middle">${esc(short(n.center.label, 26))}</text></g>`;
+function sysRel(key) {
+  const y = S.systems.get(key), a = sysAttn().get(key) || [];
+  const groups = [
+    { k: "triggers", verb: "triggers", flow: "out", items: [...y.triggers].map(([id, p]) => ({ kind: "s", label: scenarioName(id), sub: p, attr: `data-node="${esc(nodeKey("s", id))}"`, title: `${y.name} triggers ${scenarioName(id)}` })) },
+    { k: "receives", verb: "receives from", flow: "in", items: [...y.receives].map(([id, eps]) => ({ kind: "s", label: scenarioName(id), sub: eps.join(", "), attr: `data-node="${esc(nodeKey("s", id))}"`, title: `${y.name} receives from ${scenarioName(id)} through ${eps.join(", ")}` })) },
+    { k: "exposes", verb: "exposes", flow: "", items: [...y.endpoints.values()].map((e) => ({ kind: "v", label: e.name, sub: `${e.scenarios.size} flow${e.scenarios.size === 1 ? "" : "s"}`, cls: e.scenarios.size > 1 ? "shared" : "",
+      title: `${e.name}${e.process ? " — " + e.process : ""} · used by ${[...e.scenarios].map(scenarioName).join(", ")}` })) },
+  ];
+  return { kind: "a", center: { label: y.name, cls: a.length ? "attn" : "" }, groups, foot: a.slice(0, 3),
+    open: `data-sysrow="${esc(key)}"`, openLabel: "Show in Connected systems" };
+}
+function relOf(key) { const [t, id] = key.split(/\|(.*)/s); return t === "c" ? coRel(id) : t === "a" ? sysRel(id) : scRel(id); }
+function openSetOf(key) { return X.open.get(key) || X.open.set(key, new Set()).get(key); }
+
+const MAXI = 10;     // entities shown per open relationship
+function relSvg(n, open) {
+  const ROW = 32, W = 940, CW = 210, VX = 268, VW = 196, EX = 520, EW = W - EX - 8;
+  const groups = n.groups.filter((g) => g.items.length);
+  const rowsOf = (g) => (open.has(g.k) ? Math.min(g.items.length, MAXI) + (g.items.length > MAXI ? 1 : 0) : 1);
+  const total = Math.max(1, groups.reduce((a, g) => a + rowsOf(g), 0));
+  const H = total * ROW + 34, cy = 28 + (total * ROW) / 2;
+  let s = `<svg class="explorer rel" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Relationships of ${esc(n.center.label)}">
+    <defs><marker id="rarr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#667085"/></marker></defs>
+    <text x="10" y="16" class="xl">${esc(NODE_KIND[n.kind].label)}</text><text x="${VX}" y="16" class="xl">relationship — click to expand</text>${open.size ? `<text x="${EX}" y="16" class="xl">related</text>` : ""}`;
+  let y0 = 28;
+  for (const g of groups) {
+    const rows = rowsOf(g), on = open.has(g.k), vy = y0 + (rows * ROW) / 2 - 14;
+    s += `<path d="M${10 + CW} ${cy} C${VX - 30} ${cy} ${VX - 40} ${vy + 14} ${VX} ${vy + 14}" class="xe rv"/>`;
+    if (on) g.items.slice(0, MAXI).concat(g.items.length > MAXI ? [{ more: g.items.length - MAXI }] : []).forEach((it, i) => {
+      const ey = y0 + i * ROW + 2, col = NODE_KIND[it.kind || "v"]?.col;
+      const mk = g.flow === "out" ? 'marker-end="url(#rarr)"' : g.flow === "in" ? 'marker-start="url(#rarr)"' : "";
+      s += `<path d="M${VX + VW} ${vy + 14} C${EX - 30} ${vy + 14} ${EX - 40} ${ey + 13} ${EX - 2} ${ey + 13}" class="xe ${it.cls || ""}" ${mk}/>`;
+      if (it.more) { s += `<g class="xn more"><rect x="${EX}" y="${ey}" width="${EW}" height="26" rx="7"/><text x="${EX + 12}" y="${ey + 17}">+ ${it.more} more</text></g>`; return; }
+      s += `<g class="xn ${it.cls || ""} k-${it.kind}" ${it.attr || ""}><rect x="${EX}" y="${ey}" width="${EW}" height="26" rx="${it.kind === "a" ? 13 : 7}"/>
+        <rect x="${EX}" y="${ey}" width="5" height="26" rx="2" fill="${col}" stroke="none"/>
+        <text x="${EX + 14}" y="${ey + 17}">${esc(short(it.label, it.sub ? 31 : 56))}</text>${it.sub ? `<text x="${EX + EW - 10}" y="${ey + 17}" text-anchor="end" class="xs">${esc(short(it.sub, 22))}</text>` : ""}
+        <title>${esc(it.title || it.label)}</title></g>`;
+    });
+    s += `<g class="xv ${on ? "on" : ""} f-${g.flow || "none"}" data-verb="${g.k}" tabindex="0" role="button" aria-expanded="${on}"><rect x="${VX}" y="${vy}" width="${VW}" height="28" rx="14"/>
+      <text x="${VX + 14}" y="${vy + 18}" class="vb">${g.flow === "in" ? "← " : ""}${esc(g.verb)}${g.flow === "out" ? " →" : ""}</text>
+      <rect x="${VX + VW - 44}" y="${vy + 6}" width="${g.items.length > 99 ? 32 : 26}" height="16" rx="8" class="vc"/><text x="${VX + VW - 31 + (g.items.length > 99 ? 3 : 0)}" y="${vy + 18}" text-anchor="middle" class="vn">${g.items.length}</text>
+      <text x="${VX + VW - 10}" y="${vy + 18}" text-anchor="end" class="vch">${on ? "▾" : "▸"}</text>
+      <title>${esc(g.verb)}${g.hint ? " (" + esc(g.hint) + ")" : ""} — ${g.items.length} · click to ${on ? "collapse" : "expand"}</title></g>`;
+    y0 += rows * ROW;
+  }
+  if (!groups.length) s += `<text x="${VX}" y="${cy + 4}" class="xs">no relationships</text>`;
+  s += `<g class="xc ${n.center.cls || ""} k-${n.kind}"><rect x="10" y="${cy - 22}" width="${CW}" height="44" rx="${n.kind === "a" ? 22 : 11}"/><text x="${10 + CW / 2}" y="${cy + 5}" text-anchor="middle">${esc(short(n.center.label, 26))}</text><title>${esc(n.center.label)}</title></g>`;
   return s + "</svg>";
 }
-function explorerHtml() {
-  const top = X.stack[X.stack.length - 1]; const [t, id] = top.split(/\|(.*)/s);
-  const n = t === "c" ? coNode(id) : scNode(id);
-  const crumbs = X.stack.map((k, i) => { const [tt, ii] = k.split(/\|(.*)/s); const nm = tt === "c" ? refName(ii) : scenarioName(ii);
-    return i < X.stack.length - 1 ? `<span class="crumb" data-crumb="${i}">${esc(short(nm, 28))}</span><span class="sep">›</span>` : `<b>${esc(short(nm, 34))}</b>`; }).join("");
-  return `<div class="xin"><div class="xcrumbs"><span class="xkind ${t}">${t === "c" ? "component" : "scenario"}</span>${crumbs}
+function explorerHtml(forceAll) {
+  const top = X.stack[X.stack.length - 1]; const [t] = top.split(/\|(.*)/s);
+  const n = relOf(top), open = openSetOf(top);
+  if (forceAll) n.groups.forEach((g) => open.add(g.k));
+  const nm = (k) => { const [tt, ii] = k.split(/\|(.*)/s); return tt === "c" ? refName(ii) : tt === "a" ? sysName(ii) : scenarioName(ii); };
+  const crumbs = X.stack.map((k, i) => (i < X.stack.length - 1 ? `<span class="crumb" data-crumb="${i}">${esc(short(nm(k), 28))}</span><span class="sep">›</span>` : `<b>${esc(short(nm(k), 34))}</b>`)).join("");
+  const avail = n.groups.filter((g) => g.items.length);
+  return `<div class="xin"><div class="xcrumbs"><span class="xkind ${t}">${NODE_KIND[t].label}</span>${crumbs}
       ${t === "s" ? `<label class="pill-toggle sm ${X.strongOnly ? "on2" : ""}"><input type="checkbox" data-strong="1" ${X.strongOnly ? "checked" : ""}>Strong overlaps only</label>` : ""}
-      <span class="xhint">click a box to explore it here · double-click or hold to dive in</span></div>
-    <div class="xstage">${explorerSvg2(n)}</div>
-    ${n.scen ? `<div class="xlegend"><span class="lg path">━ same path</span><span class="lg feeds">➝ feeds / fed by</span><span class="lg api">━ shared API</span><span class="lg asset">━ shared asset</span><span class="lg endpoint">┄ shared endpoint (weak)</span></div>` : ""}
+      <span class="xhint"><span class="linkish" data-verbs="all">expand all</span> · <span class="linkish" data-verbs="none">collapse</span> · click a box to re-centre · double-click or hold to dive in</span></div>
+    <div class="xstage">${relSvg(n, open)}</div>
+    ${!open.size && avail.length ? `<div class="xnote">Pick a relationship to explore: ${avail.map((g) => `<span class="vchip" data-verb="${g.k}">${esc(g.verb)} · ${g.items.length}</span>`).join(" ")}</div>` : ""}
+    ${n.scen && [...open].some((k) => ["feeds", "fedby", "along", "shares"].includes(k)) ? `<div class="xlegend"><span class="lg path">━ runs alongside (same path)</span><span class="lg feeds">➝ feeds / fed by</span><span class="lg api">━ shares API</span><span class="lg asset">━ shares asset</span><span class="lg endpoint">┄ same endpoint (weak)</span></div>` : ""}
+    <div class="xlegend"><span style="color:#0f7c7a">▌scenario</span><span style="color:#3346c8">▌component</span><span style="color:#b4472a">▌connected system</span><span>→ / ← direction of the message</span></div>
     ${n.note ? `<div class="xnote">${esc(n.note)}</div>` : ""}
     <div class="xfoot">${n.foot.length ? `<div class="xflags">${n.foot.map((f) => `<div class="flag"><span class="ico">⚠</span><div>${esc(f)}</div></div>`).join("")}</div>` : ""}
       <button class="btn small" ${n.open}>${n.openLabel}</button></div></div>`;
+}
+function toggleVerb(k) {
+  const top = X.stack[X.stack.length - 1], o = openSetOf(top);
+  if (k === "all") relOf(top).groups.forEach((g) => g.items.length && o.add(g.k)); else if (k === "none") o.clear(); else o.has(k) ? o.delete(k) : o.add(k);
+  rerenderExplorer(0);
 }
 function openExplorer(rowEl, keepStack) {
   const x = rowEl.nextElementSibling; if (!x || !x.classList.contains("xrow")) return;
   const was = x.classList.contains("on");
   document.querySelectorAll("tr.xrow.on").forEach((o) => { o.classList.remove("on"); o.previousElementSibling?.classList.remove("open"); });
   if (was && !keepStack) return;
-  if (!keepStack) X.stack = [nodeKey(rowEl.dataset.xkind === "co" ? "c" : "s", rowEl.dataset.id)];
+  if (!keepStack) X.stack = [nodeKey({ co: "c", cs: "a", sc: "s" }[rowEl.dataset.xkind] || "s", rowEl.dataset.id)];
   X.row = rowEl.dataset.id; X.kind = rowEl.dataset.xkind;
   x.querySelector(".xslot").innerHTML = explorerHtml();
   rowEl.classList.add("open");
   requestAnimationFrame(() => requestAnimationFrame(() => x.classList.add("on")));
 }
 function rerenderExplorer(dir) {
-  const x = document.querySelector("tr.xrow.on .xslot"); if (!x) return;
+  const x = document.querySelector("tr.xrow.on .xslot") || document.querySelector("#pageRel"); if (!x) return;
   const stage = x.querySelector(".xstage");
-  if (reduced() || !stage?.animate) { x.innerHTML = explorerHtml(); x.querySelector(".xin").style.cssText = "opacity:1;transform:none"; return; }
+  if (!dir || reduced() || !stage?.animate) { x.innerHTML = explorerHtml(); x.querySelector(".xin").style.cssText = "opacity:1;transform:none;transition:none" + (x.id === "pageRel" ? ";padding-left:0" : ""); return; }
   stage.animate([{ transform: "none", opacity: 1 }, { transform: `translateX(${dir * -60}px)`, opacity: 0 }], { duration: 220, easing: "ease-in", fill: "forwards" }).onfinish = () => {
-    x.innerHTML = explorerHtml(); const inn = x.querySelector(".xin"); inn.style.cssText = "opacity:1;transform:none;transition:none";
+    x.innerHTML = explorerHtml(); const inn = x.querySelector(".xin"); inn.style.cssText = "opacity:1;transform:none;transition:none" + (x.id === "pageRel" ? ";padding-left:0" : "");
     x.querySelector(".xstage").animate([{ transform: `translateX(${dir * 60}px)`, opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 420, easing: EASE });
   };
 }
@@ -1460,13 +1615,13 @@ function pivot(key) { if (X.stack[X.stack.length - 1] === key) return; X.stack.p
 function crumbTo(i) { X.stack = X.stack.slice(0, i + 1); rerenderExplorer(-1); }
 /* R-9: dive — the box rises toward the viewer, the page sinks back, the box swells into the target band */
 function dive(el, key) {
-  const [t, id] = key.split(/\|(.*)/s), k = t === "c" ? "co" : "sc";
+  const [t, id] = key.split(/\|(.*)/s), k = t === "c" ? "co" : t === "a" ? "cs" : "sc";
   S.diveFrom = { k: S.param?.k, row: X.row, stack: X.stack.slice() };
   const go2 = () => { go("band", { k }, { enter: true }); focusRow(id); };
   if (reduced() || !el.animate) return go2();
   const r = el.getBoundingClientRect(), v = $("#view").getBoundingClientRect();
   const fly = document.createElement("div"); fly.className = "dive";
-  fly.innerHTML = `<span>${esc(t === "c" ? refName(id) : scenarioName(id))}</span>`;
+  fly.innerHTML = `<span>${esc(t === "c" ? refName(id) : t === "a" ? sysName(id) : scenarioName(id))}</span>`;
   document.body.appendChild(fly);
   const w = $(".world"); w?.classList.add("sink");
   const from = { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", transform: "perspective(900px) translateZ(0) rotateX(0deg)", borderRadius: "8px" };
@@ -1507,7 +1662,8 @@ function componentView(ref) {
   const up = new Map(), down = new Map();
   for (const s of S.scenarios.values()) for (const l of s.latest.links || []) { const [a, b] = l.split(" > ");
     if (b === ref && a) up.set(a, (up.get(a) || new Set()).add(s.latest.id)); if (a === ref && b) down.set(b, (down.get(b) || new Set()).add(s.latest.id)); }
-  const nb = (m) => [...m].map(([r, ids]) => `<div class="list-item" data-copen="${esc(r)}"><div class="t">${esc(refName(r))} <span class="muted" style="font-weight:400">${esc(S.refs.get(r)?.type || "")}</span></div><div class="s">in ${[...ids].map(scenarioName).map(esc).join(", ")}</div></div>`).join("") || '<div class="muted">None.</div>';
+  const nb = (m) => [...m].map(([r, ids]) => { const sk = S.refSys.get(r);
+    return `<div class="list-item" ${sk ? `data-sysrow="${esc(sk)}"` : `data-copen="${esc(r)}"`}><div class="t">${esc(thingName(r))} <span class="muted" style="font-weight:400">${sk ? "connected system" : esc(S.refs.get(r)?.type || "")}</span></div><div class="s">in ${[...ids].map(scenarioName).map(esc).join(", ")}</div></div>`; }).join("") || '<div class="muted">None.</div>';
   X.stack = [nodeKey("c", ref)];
   return `<div class="world ${S.enterDetail ? "enter" : ""}">
     <div class="world-head"><button class="wback" data-act="back" aria-label="Back">${ICON.back}</button>${orb("co", "sm")}
@@ -1527,11 +1683,11 @@ function componentView(ref) {
             return `<tr class="row" data-open="${esc(s.latest.id)}"><td><b>${esc(s.latest.name)}</b></td><td>${v.map((q) => `<span class="chip ${behind ? "amber" : ""}">${esc(q)}</span>`).join("")}</td><td>${behind ? '<span class="chip amber">behind</span>' : ""}</td></tr>`; }).join("")}</table>
         </div>
       </div>
-      <div class="panel"><h2>Relationships</h2><div class="xin" style="opacity:1;transform:none;padding-left:0">${explorerSvg2(coNode(ref))}</div></div>
+      <div class="panel"><h2>Relationships</h2><div id="pageRel">${explorerHtml(true)}</div></div>
       <div class="grid g2">
         <div class="panel"><h2>Open decisions that touch it</h2>
           ${decs.filter((q) => q.d.status !== "completed").map(({ s, d }) => `<div class="list-item" data-open="${esc(s.id)}"><div class="t">${esc(d.label)} ${d.option ? `<span class="chip">${esc(d.option)}</span>` : ""}</div><div class="s">${esc(s.name)}${d.why ? " — " + esc(d.why) : ""}</div></div>`).join("") || '<div class="muted">None.</div>'}</div>
-        <div class="panel"><h2>Direct neighbours</h2><div class="sec">Upstream (feeds it)</div>${nb(up)}<div class="sec">Downstream (it feeds)</div>${nb(down)}</div>
+        <div class="panel"><h2>Direct neighbours</h2><div class="sec">Called by</div>${nb(up)}<div class="sec">Calls</div>${nb(down)}</div>
       </div>
     </div></div>`;
 }
@@ -1565,7 +1721,7 @@ async function scenarioView(param) {
   overlap.sort((a, b) => a.tier - b.tier || b.shared.length - a.shared.length);
   const srcNote = isLatest ? sameSourceOf(rec.id) : [];
 
-  const flowHtml = await flowPanel(rec, spec, flagRefs);
+  const flowHtml = flowPanel(rec, spec, flagRefs);
   return `<div class="world ${S.enterDetail ? "enter" : ""}">
   <div class="world-head"><button class="wback" data-act="back" aria-label="Back">${ICON.back}</button>${orb("sc", "sm")}
     <span class="txt"><span class="name">${esc(rec.name)}</span><span class="desc">Scenario · v${rec.version}${rec.author ? " · " + esc(rec.author) : ""}</span></span>
@@ -1611,18 +1767,22 @@ async function scenarioView(param) {
             ${(v.retired || []).length ? `<dt>Retired</dt><dd>${v.retired.map((x) => `${esc(x.ref)} on ${esc(x.on)}`).join("<br>")}</dd>` : ""}
           </dl></div>`; }).join("") || '<div class="muted">No versioning decisions — base flow only.</div>'}
       </div>
-      <div class="panel"><h2>Components</h2>
+      <div class="panel"><h2>Made of — components</h2>
         <table><tr><th>Name</th><th>Type</th><th>Version</th><th>Platform / asset</th><th>Lifecycle</th></tr>
-        ${rec.components.map((c) => `<tr><td>${esc(c.name || "(unnamed)")}<div class="mono muted">${esc(c.ref || "no ref")}</div></td><td>${esc(c.type)}</td>
+        ${rec.components.filter((c) => !isSystemKind(c.kind)).map((c) => `<tr><td>${esc(c.name || "(unnamed)")}<div class="mono muted">${esc(c.ref || "no ref")}</div></td><td>${esc(c.type)}</td>
           <td>${esc(c.version)}${c.origin !== "base" ? ' <span class="chip violet">added</span>' : ""}</td><td>${esc([c.platform, c.asset].filter(Boolean).join(" / "))}</td>
           <td>${stageChip(S.lifecycle?.byKey.get(c.ref + "@" + c.version)?.stage || c.stage)}</td></tr>`).join("")}</table>
       </div>
     </div>
     <div>
+      <div class="panel"><h2>Connected systems</h2>
+        <div class="sec">Triggered by</div>${(rec.sys?.triggeredBy || []).map((t) => `<div class="list-item" data-sysrow="${esc(t.key)}"><div class="t">${esc(sysName(t.key))}</div><div class="s">${esc(t.process)}</div></div>`).join("") || '<div class="muted">No caller.</div>'}
+        <div class="sec">Delivers to</div>${(rec.sys?.deliversTo || []).map((d) => `<div class="list-item" data-sysrow="${esc(d.key)}"><div class="t">${esc(sysName(d.key))}</div><div class="s">${esc(d.endpoint)}</div></div>`).join("") || '<div class="muted">None.</div>'}
+      </div>
       <div class="panel"><h2>Overlap with other flows <span class="count">(${overlap.length})</span></h2>
         ${overlap.map((o) => `<div class="list-item" data-open="${esc(o.s.id)}"><div class="t">${esc(o.s.name)} <span class="tchip t-${TIERS[o.tier].k}">${esc(tierLabel(o))}</span></div>
-          <div class="s">${Object.entries(o.byTier).map(([t, refs]) => `${TIERS.find((x) => x.k === t).label}: ${refs.map((q) => q.includes(" > ") ? q.split(" > ").map(refName).join(" → ") : refName(q)).map(esc).join(", ")}`).join(" · ")}</div></div>`).join("") || '<div class="muted">No overlap with other flows.</div>'}
-        ${srcNote.map((x) => `<div class="note" style="margin-top:8px">Same source: ${esc(refName(x.ref))} also triggers ${x.others.length} other scenario(s) — not counted as overlap.</div>`).join("")}
+          <div class="s">${Object.entries(o.byTier).map(([t, refs]) => `${TIERS.find((x) => x.k === t).label}: ${refs.map(pairText).map(esc).join(", ")}`).join(" · ")}</div></div>`).join("") || '<div class="muted">No overlap with other flows.</div>'}
+        ${srcNote.map((x) => `<div class="note" style="margin-top:8px">Same source: ${esc(thingName(x.ref))} also triggers ${x.others.length} other scenario(s) — not counted as overlap.</div>`).join("")}
       </div>
       <div class="panel"><h2>Relations</h2>
         ${rec.relations.map((r) => `<div class="list-item" ${S.scenarios.has(r.scenarioId) ? `data-open="${esc(r.scenarioId)}"` : ""}><div class="t">${esc(r.type)}</div>
@@ -1636,68 +1796,6 @@ async function scenarioView(param) {
   </div></div></div>`;
 }
 const dirOf = (p) => (p.includes("/") ? p.slice(0, p.lastIndexOf("/") + 1) : "");
-
-/* ---- simple flow diagram from the registry entry ---- */
-function diagramSvg(spec, flagRefs) {
-  const base = spec.base || {}, conts = Object.fromEntries((base.containers || []).map((k) => [k.id, k]));
-  const nodes = new Map(); const edges = [];
-  for (const c of base.components || []) nodes.set(c.id, { ...c, added: false });
-  const openVers = (spec.versions || []).filter((v) => v.status !== "completed");
-  const changedTo = {};
-  for (const v of openVers) {
-    for (const ch of v.changed || []) changedTo[ch.component] = ch;
-    for (const a of v.added || []) nodes.set(a.id, { ...a, added: true });
-  }
-  for (const l of base.links || []) edges.push({ ...l, added: false });
-  for (const v of openVers) for (const l of v.addedLinks || []) edges.push({ ...l, added: true });
-  const valid = edges.filter((e) => nodes.has(e.from) && nodes.has(e.to));
-  // longest-path layering
-  const layer = new Map([...nodes.keys()].map((k) => [k, 0]));
-  for (let i = 0; i < nodes.size; i++) for (const e of valid) if (layer.get(e.to) < layer.get(e.from) + 1) layer.set(e.to, layer.get(e.from) + 1);
-  const cols = new Map();
-  for (const [id, n] of nodes) { const L = layer.get(id); (cols.get(L) || cols.set(L, []).get(L)).push(id); }
-  // base nodes first in each column, added below
-  for (const ids of cols.values()) ids.sort((a, b) => (nodes.get(a).added - nodes.get(b).added));
-  const W = 150, H = 62, GX = 70, GY = 34, PX = 24, PY = 24;
-  const pos = {};
-  for (const [L, ids] of cols) ids.forEach((id, i) => (pos[id] = { x: PX + L * (W + GX), y: PY + i * (H + GY) }));
-  const maxL = Math.max(0, ...cols.keys()), maxR = Math.max(1, ...[...cols.values()].map((a) => a.length));
-  const width = PX * 2 + (maxL + 1) * W + maxL * GX, height = PY * 2 + maxR * H + (maxR - 1) * GY;
-  const lc = (n) => S.lifecycle?.byKey.get(n.ref + "@" + n.version)?.stage;
-  const icon = { api: "⇄", process: "⬡", topic: "◎", queue: "≡", file: "▤" };
-
-  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" font-family="${getComputedStyle(document.body).fontFamily.replace(/"/g, "'")}">
-    <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8a94a6"/></marker>
-    <marker id="ahv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6b4fd8"/></marker></defs>`;
-  for (const e of valid) {
-    const a = pos[e.from], b = pos[e.to];
-    const x1 = a.x + W, y1 = a.y + H / 2, x2 = b.x, y2 = b.y + H / 2;
-    let d;
-    if (x2 > x1) { const mx = x1 + (x2 - x1) / 2; d = `M${x1} ${y1} H${mx} V${y2} H${x2 - 2}`; }
-    else { const ty = Math.max(a.y, b.y) + H + GY / 2; d = `M${a.x + W / 2} ${a.y + H} V${ty} H${b.x + W / 2} V${b.y + H + 2}`; }
-    const col = e.added ? "#6b4fd8" : "#8a94a6";
-    svg += `<path d="${d}" fill="none" stroke="${col}" stroke-width="1.6" ${e.line === "dotted" ? 'stroke-dasharray="5 4"' : ""} marker-end="url(#${e.added ? "ahv" : "ah"})"/>`;
-  }
-  for (const [id, n] of nodes) {
-    const p = pos[id], k = conts[n.container] || {};
-    const stage = lc(n), sev = flagRefs.get(n.ref);
-    let fill = "#ffffff", stroke = "#8a94a6";
-    if (n.added) { fill = "#efebfd"; stroke = "#6b4fd8"; }
-    if (sev === "amber") { fill = "#fff3dc"; stroke = "#b86e00"; }
-    if (stage === "retired" || sev === "red") { fill = "#fdecea"; stroke = "#b42318"; }
-    const ch = changedTo[id];
-    const ver = ch ? `${ch.from}→${ch.to}` : n.version || "";
-    const nm = (n.name || "(unnamed)").slice(0, 22), sub = [k.platform, k.asset].filter(Boolean).join(" / ").slice(0, 26) || n.type;
-    svg += `<g><title>${esc((n.ref || "no ref") + (stage ? " · " + (STAGE_LABEL[stage] || stage) : ""))}</title>
-      <rect x="${p.x}" y="${p.y}" width="${W}" height="${H}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="${sev || n.added ? 1.8 : 1.2}" ${stage === "deprecated" ? 'stroke-dasharray="4 3"' : ""}/>
-      <text x="${p.x + 10}" y="${p.y + 18}" font-size="10" fill="#667085">${esc(icon[n.type] || "")} ${esc(n.type)}</text>
-      <text x="${p.x + W - 10}" y="${p.y + 18}" font-size="10" text-anchor="end" fill="${ch ? "#6b4fd8" : "#667085"}" font-weight="${ch ? 700 : 400}">${esc(ver)}</text>
-      <text x="${p.x + 10}" y="${p.y + 36}" font-size="12.5" font-weight="600" fill="#1d2433">${esc(nm)}</text>
-      <text x="${p.x + 10}" y="${p.y + 52}" font-size="10.5" fill="#667085">${esc(sub)}</text>
-      ${sev ? `<text x="${p.x + W - 8}" y="${p.y + 52}" font-size="13" text-anchor="end" fill="${stroke}">⚠</text>` : ""}</g>`;
-  }
-  return svg + "</svg>";
-}
 
 /* ---- marker list (registry → Pattern Bench), schema 0.5 ---- */
 async function downloadMarkers(id, version) {
@@ -1722,14 +1820,17 @@ async function downloadMarkers(id, version) {
    ========================================================================== */
 document.addEventListener("click", (ev) => {
   if (S.holdFired) { S.holdFired = false; return; }
-  const t = ev.target.closest("[data-open],[data-copen],[data-act],[data-sort],[data-sel],[data-map],[data-band],[data-node],[data-crumb],[data-xopen],[data-mapsel],[data-rowopen]");
+  const t = ev.target.closest("[data-open],[data-copen],[data-act],[data-sort],[data-sel],[data-map],[data-band],[data-node],[data-crumb],[data-xopen],[data-mapsel],[data-rowopen],[data-verb],[data-verbs],[data-sysrow]");
   if (!t) return;
+  if (t.dataset.verb) return toggleVerb(t.dataset.verb);
+  if (t.dataset.verbs) return toggleVerb(t.dataset.verbs);
+  if (t.dataset.sysrow) { S.diveFrom = null; go("band", { k: "cs" }, { enter: true }); return focusRow(t.dataset.sysrow); }
   if (t.dataset.node) { clearTimeout(S.clickT); const key = t.dataset.node; S.clickT = setTimeout(() => pivot(key), 240); return; }
   if (t.dataset.crumb !== undefined) return crumbTo(Number(t.dataset.crumb));
   if (t.dataset.xopen) { ev.stopPropagation(); return openExplorer(t.closest("tr.r")); }
   if (t.dataset.copen) return openDetail(t.closest("tr, .list-item") || t, "component", { ref: t.dataset.copen });
   // components: the row opens the relationship explorer directly; scenarios: the row opens the detail page
-  if (t.dataset.rowopen) return t.dataset.rowopen === "co" ? openExplorer(t) : openDetail(t, "scenario", { id: t.dataset.id, version: null });
+  if (t.dataset.rowopen) return t.dataset.rowopen === "co" || t.dataset.rowopen === "cs" ? openExplorer(t) : openDetail(t, "scenario", { id: t.dataset.id, version: null });
   if (t.dataset.band) return openWorld(t, t.dataset.band);           // a band opens into its world
   if (t.dataset.mapsel) {                                            // explorer: show an asset on the map
     const a = S.assets.get(t.dataset.mapsel);
@@ -1770,6 +1871,7 @@ document.addEventListener("input", (ev) => {
   if (ev.target.id === "decSearch") { S.decQuery = ev.target.value; $("#decTable").innerHTML = decisionsTable(); return; }
   if (ev.target.id === "decOpen") { S.decOpenOnly = ev.target.checked; ev.target.closest(".pill-toggle")?.classList.toggle("on", S.decOpenOnly); $("#decTable").innerHTML = decisionsTable(); return; }
   if (ev.target.id === "compSearch") { S.compQuery = ev.target.value; $("#compTable").innerHTML = compTable(); }
+  if (ev.target.id === "sysSearch") { S.sysQuery = ev.target.value; $("#sysTable").innerHTML = sysTable(); }
 });
 document.addEventListener("dblclick", (ev) => {
   const n = ev.target.closest("[data-node]"); if (!n) return;
@@ -1787,7 +1889,7 @@ $("#openBtn").addEventListener("click", openFolder);
 $("#reloadBtn").addEventListener("click", () => (S.source === "github" ? loadFromGitHub() : S.root && loadFromHandle()));
 $("#ghBtn").addEventListener("click", () => loadFromGitHub());
 document.addEventListener("keydown", (ev) => {     // Enter / Space on tiles and map nodes
-  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches?.("[data-band],[data-sel],[data-rowopen]")) { ev.preventDefault(); ev.target.click(); }
+  if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches?.("[data-band],[data-sel],[data-rowopen],[data-verb]")) { ev.preventDefault(); ev.target.click(); }
 });
 $("#dirInput").addEventListener("change", (e) => e.target.files.length && loadFromInput(e.target.files));
 

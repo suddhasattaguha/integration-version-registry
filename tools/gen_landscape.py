@@ -105,7 +105,7 @@ def scenario(name, desc, tags, date, main, branches=(), callers=()):
     def cont_id(cref):
         if cref not in conts:
             a = A[cref]; d = {"id": f"k{len(conts)+1}", "ref": cref, "kind": a["kind"], "platform": a["platform"], "asset": a["asset"]}
-            if a["kind"] in ("endApp", "caller"): d["process"] = a["process"]
+            if a["kind"] in ("endApp", "caller"): d["name"] = a["app"]; d["process"] = a["process"]   # name = the connected system (application)
             conts[cref] = d
         return conts[cref]["id"]
     def comp(ref):

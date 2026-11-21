@@ -181,6 +181,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "commercetools Order API",
+        "name": "Webshop (commercetools)",
         "process": "Order status"
       },
       {
@@ -189,6 +190,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "DHL Parcel",
+        "name": "DHL Parcel",
         "process": "Tracking webhook"
       }
     ]

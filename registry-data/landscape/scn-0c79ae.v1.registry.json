@@ -224,6 +224,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "commercetools Order API",
+        "name": "Webshop (commercetools)",
         "process": "Order status"
       },
       {
@@ -239,6 +240,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Salesforce Order API",
+        "name": "Salesforce Sales Cloud",
         "process": "Order sync"
       },
       {
@@ -247,6 +249,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
         "process": "Business event"
       }
     ]

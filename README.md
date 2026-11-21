@@ -4,7 +4,7 @@ A registry and traceability app for integration designs exported from
 [Pattern Bench](https://github.com/suddhasattaguha/pattern-bench). It reads a folder
 of registry entries and traces scenarios, components, versions and decisions across them.
 
-**Status:** draft 0.5, reads Pattern Bench export schema v0.5.
+**Status:** draft 0.6, reads Pattern Bench export schema v0.5 / v0.6.
 
 ## How it works
 
@@ -37,28 +37,32 @@ Order-to-Cash, master data, Procure-to-Pay, finance and HR (S/4HANA, Salesforce,
 SuccessFactors, EWM, webshop, banks …) that share APIs, processes, topics and queues — no
 versioning yet. Regenerate with `python3 tools/gen_landscape.py registry-data/landscape`.
 
-## What draft 0.3 does
+## What draft 0.6 does
 
-- **Home = bands:** Scenarios, Components, Open decisions and Relationship map — big number,
-  plus how many need attention. No top menu: the bands are the navigation.
-- **A band opens into its own full-frame view** (the band morphs open; Back reverses it):
-  - **Scenarios / Components:** sortable, searchable lists; rows that need attention are
-    highlighted and come first ("Needs attention only" filter).
-    - **Click a scenario row** → its full detail page. **Click a component row** → its relationship
-      explorer opens directly; "Open component" there leads to the component page (versions and
-      lifecycle, who uses which version, open decisions, direct neighbours, relationships).
-    - **Explore** (the button on each row) → the **relationship explorer** grows open: overlapping
-      scenarios (or users of a component) on the left, its components grouped by asset (or its
-      versions) on the right. **Click a box** to explore it in place (breadcrumb to step back);
-      **double-click or press and hold** to dive into it in its own band.
-  - **Open decisions:** every versioning decision across scenarios; rows with open warnings highlighted.
-  - **Relationship map:** scenarios ↔ shared assets or components; click to highlight.
-- **Overlap rule (tiers):** same path (shared connection) · feeds / fed by (one publishes on a topic
-  the other consumes) · shared API (an integration API called by several apps) · shared asset
-  (process, queue, topic) — all strong; shared endpoint (same end-application API or folder) — weak.
-  Sharing only the same source (caller) is not an overlap; it is shown as a note.
-- **Scenario detail:** simplified Pattern Bench canvas (from the exported `*.canvas.json` in the
-  registry folder; falls back to a generated diagram), versioning decisions, versioning decisions, components, overlap with other flows, relations, history.
+- **Three kinds of things:** **scenarios** (end-to-end flows), **components** (named artifacts inside
+  an integration platform or broker — APIs, processes, topics, queues) and **connected systems**
+  (the applications at the ends: S/4HANA, Salesforce, DHL …). Connected systems are not components;
+  one application is one connected system whether it calls a flow or receives from it.
+- **Home = bands:** Scenarios, Components, Connected systems, Open decisions and Relationship map —
+  big number, plus how many need attention. A band opens into its own full-frame view; Back reverses it.
+  - **Click a scenario row** → its detail page. **Click a component or system row** → its relationship explorer.
+- **Relationship explorer — by relationship type.** The selected node shows its relationships as verbs;
+  pick one (or several, or "expand all") to expand it into the related scenarios, components or systems:
+
+  | From | Relationship | To |
+  |---|---|---|
+  | Scenario | made of / triggered by / delivers to | components / connected system |
+  | Scenario | feeds / fed by / runs alongside (same path) / shares (API, asset, endpoint) | scenarios |
+  | Component | used in / called by / calls / has versions | scenarios / components / versions |
+  | Connected system | triggers / receives from / exposes | scenarios / endpoints |
+
+  Click a box to re-centre on it (breadcrumb to step back); double-click or press and hold to dive into its band.
+- **Overlap rule (tiers):** same path · feeds / fed by · shared API · shared asset — strong; same
+  end-application endpoint — weak. Sharing only the same caller is not an overlap (shown as a note).
+- **Scenario detail:** the flow as a chain of named artifacts (connected system → platform / broker
+  assets with their components → connected systems; no Pattern Bench pattern blocks), versioning
+  decisions, components, connected systems, overlap with other flows, relations, history.
+- **Relationship map:** scenarios ↔ shared platform / broker assets, with connected systems as their own group.
 - **Flags:** impact (newer version of a shared component elsewhere), lifecycle (deprecated or retired version),
   warning (unacknowledged ⚠ in the design), data (container without platform or asset label).
 - **Download marker list** for Pattern Bench's planned marker import.
@@ -71,7 +75,7 @@ versioning yet. Regenerate with `python3 tools/gen_landscape.py registry-data/la
                 "date": "...", "who": "...", "note": "...", "retireOn": "..." } ] }
 ```
 
-The latest event per `ref@version` wins. Read-only in draft 0.1.
+The latest event per `ref@version` wins. Read-only.
 
 ## Next candidates
 

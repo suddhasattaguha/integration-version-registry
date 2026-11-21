@@ -296,6 +296,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Akeneo Product API",
+        "name": "PIM (Akeneo)",
         "process": "Product enrichment"
       },
       {
@@ -311,6 +312,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "EWM Product API",
+        "name": "SAP EWM",
         "process": "Warehouse product master"
       },
       {
@@ -333,6 +335,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Data Lake landing folder",
+        "name": "Azure Data Lake",
         "process": "Analytics ingest"
       },
       {
@@ -341,6 +344,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
         "process": "Business event"
       }
     ]

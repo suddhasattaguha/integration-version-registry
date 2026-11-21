@@ -270,6 +270,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "KSeF Invoice API",
+        "name": "KSeF (PL e-invoicing)",
         "process": "Statutory e-invoice"
       },
       {
@@ -285,6 +286,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Peppol AP API",
+        "name": "Peppol Access Point",
         "process": "Cross-border e-invoice"
       },
       {
@@ -300,6 +302,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Data Lake landing folder",
+        "name": "Azure Data Lake",
         "process": "Analytics ingest"
       },
       {
@@ -308,6 +311,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
         "process": "Business event"
       }
     ]

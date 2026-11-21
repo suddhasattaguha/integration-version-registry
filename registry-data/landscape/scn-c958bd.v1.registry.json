@@ -177,6 +177,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "S/4 API_SUPPLIERINVOICE_PROCESS_SRV",
+        "name": "SAP S/4HANA (P01)",
         "process": "Supplier invoice posting"
       },
       {
@@ -185,6 +186,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "OCR outbox SFTP",
+        "name": "Invoice OCR service",
         "process": "Scanned invoices"
       },
       {
@@ -200,6 +202,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SAP Ariba",
+        "name": "SAP Ariba",
         "process": "Supplier document"
       }
     ]

@@ -137,6 +137,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "ADP SFTP inbox",
+        "name": "ADP Payroll",
         "process": "Payroll input"
       }
     ]

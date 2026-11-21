@@ -259,6 +259,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Microsoft Graph Users API",
+        "name": "Microsoft Entra ID",
         "process": "Identity lifecycle"
       },
       {
@@ -274,6 +275,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "ServiceNow HR Case API",
+        "name": "ServiceNow HRSD",
         "process": "Onboarding tasks"
       },
       {
@@ -282,6 +284,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SuccessFactors Employee Central",
+        "name": "SuccessFactors Employee Central",
         "process": "Employee change"
       }
     ]

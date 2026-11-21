@@ -225,6 +225,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Ariba Purchase Order API",
+        "name": "SAP Ariba",
         "process": "PO to supplier"
       },
       {
@@ -240,6 +241,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Data Lake landing folder",
+        "name": "Azure Data Lake",
         "process": "Analytics ingest"
       },
       {
@@ -248,6 +250,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
         "process": "Business event"
       }
     ]

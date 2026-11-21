@@ -100,6 +100,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Nordea SFTP inbox (camt.053)",
+        "name": "Nordea Bank",
         "process": "Statements"
       },
       {
@@ -115,6 +116,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "S/4 Bank Statement Import (CAMT.053)",
+        "name": "SAP S/4HANA (P01)",
         "process": "Electronic bank statement"
       }
     ]

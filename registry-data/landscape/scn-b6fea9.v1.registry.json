@@ -295,6 +295,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "S/4 API_SALES_ORDER_SRV",
+        "name": "SAP S/4HANA (P01)",
         "process": "Sales order creation"
       },
       {
@@ -310,6 +311,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "Salesforce Order API",
+        "name": "Salesforce Sales Cloud",
         "process": "Order sync"
       },
       {
@@ -325,6 +327,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "Sales Rep Mobile App",
+        "name": "Sales Rep Mobile App",
         "process": "Create order"
       },
       {
@@ -333,6 +336,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "Webshop (commercetools)",
+        "name": "Webshop (commercetools)",
         "process": "Place order"
       }
     ]

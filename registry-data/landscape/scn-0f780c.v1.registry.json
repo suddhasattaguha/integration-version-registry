@@ -181,6 +181,7 @@
         "kind": "endApp",
         "platform": "",
         "asset": "commercetools Product API",
+        "name": "Webshop (commercetools)",
         "process": "Catalogue"
       },
       {
@@ -189,6 +190,7 @@
         "kind": "caller",
         "platform": "",
         "asset": "PIM (Akeneo)",
+        "name": "PIM (Akeneo)",
         "process": "Product published"
       }
     ]
