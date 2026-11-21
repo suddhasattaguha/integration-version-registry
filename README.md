@@ -4,7 +4,7 @@ A registry and traceability app for integration designs exported from
 [Pattern Bench](https://github.com/suddhasattaguha/pattern-bench). It reads a folder
 of registry entries and traces scenarios, components, versions and decisions across them.
 
-**Status:** draft 0.6, reads Pattern Bench export schema v0.5 / v0.6.
+**Status:** draft 0.7, reads Pattern Bench export schema v0.5 / v0.6.
 
 ## How it works
 
@@ -37,35 +37,40 @@ Order-to-Cash, master data, Procure-to-Pay, finance and HR (S/4HANA, Salesforce,
 SuccessFactors, EWM, webshop, banks …) that share APIs, processes, topics and queues — no
 versioning yet. Regenerate with `python3 tools/gen_landscape.py registry-data/landscape`.
 
-## What draft 0.6 does
+## What draft 0.7 does
 
 - **Three kinds of things:** **scenarios** (end-to-end flows), **components** (named artifacts inside
   an integration platform or broker — APIs, processes, topics, queues) and **connected systems**
-  (the applications at the ends: S/4HANA, Salesforce, DHL …). Connected systems are not components;
-  one application is one connected system whether it calls a flow or receives from it.
-- **Home = bands:** Scenarios, Components, Connected systems, Open decisions and Relationship map —
-  big number, plus how many need attention. A band opens into its own full-frame view; Back reverses it.
-  - **Click a scenario row** → its detail page. **Click a component or system row** → its relationship explorer.
-- **Relationship explorer — by relationship type.** The selected node shows its relationships as verbs;
-  pick one (or several, or "expand all") to expand it into the related scenarios, components or systems:
-
-  | From | Relationship | To |
-  |---|---|---|
-  | Scenario | made of / triggered by / delivers to | components / connected system |
-  | Scenario | feeds / fed by / runs alongside (same path) / shares (API, asset, endpoint) | scenarios |
-  | Component | used in / called by / calls / has versions | scenarios / components / versions |
-  | Connected system | triggers / receives from / exposes | scenarios / endpoints |
-
-  Click a box to re-centre on it (breadcrumb to step back); double-click or press and hold to dive into its band.
+  (the applications at the ends: S/4HANA, Salesforce, DHL …; one application = one connected system,
+  whether it calls a flow or receives from it).
+- **Home = bands:** Scenarios, Components, Connected systems, Open decisions, Relationship map.
+- **Lists:** Scenarios show the flow in order — **Source → Platforms → Targets** — and an
+  **Open in Pattern Bench** button per row. Components and Connected systems lists are plain lists.
+- **One detail page per object type, opened the same way** (the row lifts into the page):
+  header facts (scenario: id, type, description · component: platform, type, asset, versions ·
+  system: role, endpoints), the main frame, and a side panel with the relationships grouped by type.
+  - Scenario: the flow as named artifacts leads, then made-of components, versioning decisions and the explorer.
+  - Component / connected system: the relationship explorer, open, plus versions & lifecycle / endpoints.
+- **Relationship explorer — by relationship type (verbs):** made of · triggered by · delivers to · feeds ·
+  fed by · runs alongside · shares · used in · called by · calls · has versions · triggers · receives from · exposes.
+  Click a box to re-centre; double-click or hold to open its page.
+- **Open in Pattern Bench:** opens Pattern Bench 2.0 in its own window with this scenario's canvas export
+  (`<id>.v<n>.canvas.json` next to the registry entry) and its **current status** as view-only markers
+  (lifecycle, newer version elsewhere, flags, shared with other scenarios). Pattern Bench address: ⚙ next to
+  the button; default = `pattern-bench.html` **in the same folder as `registry-app.html`** (local use), or
+  `/pattern-bench/pattern-bench.html` on GitHub Pages. If it can't be reached, download canvas + markers instead.
+  Not inside claude.ai artifact previews (new windows are blocked there).
 - **Overlap rule (tiers):** same path · feeds / fed by · shared API · shared asset — strong; same
   end-application endpoint — weak. Sharing only the same caller is not an overlap (shown as a note).
-- **Scenario detail:** the flow as a chain of named artifacts (connected system → platform / broker
-  assets with their components → connected systems; no Pattern Bench pattern blocks), versioning
-  decisions, components, connected systems, overlap with other flows, relations, history.
 - **Relationship map:** scenarios ↔ shared platform / broker assets, with connected systems as their own group.
-- **Flags:** impact (newer version of a shared component elsewhere), lifecycle (deprecated or retired version),
-  warning (unacknowledged ⚠ in the design), data (container without platform or asset label).
-- **Download marker list** for Pattern Bench's planned marker import.
+- **Flags:** impact, lifecycle, warning, data. **Download marker list** (same status markers as a file).
+
+```
+Integration Registry\          (local use)
+├─ registry-app.html
+├─ pattern-bench.html          ← Pattern Bench 2.0, same folder
+└─ registry-data\              ← "Open local folder" points here
+```
 
 ## Lifecycle file (draft format)
 

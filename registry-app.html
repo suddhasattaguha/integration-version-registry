@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Integration Registry — draft 0.6</title>
+<title>Integration Registry — draft 0.7</title>
 <style>
   :root {
     --bg: #f5f6f8; --panel: #ffffff; --ink: #1d2433; --muted: #667085; --line: #e3e6ec;
@@ -327,12 +327,51 @@
   .chain .sys .an { font-size: 12.5px; font-weight: 650; fill: #7a2e18; } .chain .sys .ap { font-size: 10.5px; fill: #9a5a45; }
   .chain .ce { fill: none; stroke: #8a94a6; stroke-width: 1.6; } .chain .ce.v { stroke: #6b4fd8; }
   .chain [data-node], .chain [data-copen] { cursor: pointer; } .chain .art[data-copen]:hover > rect:first-child, .chain .sys[data-node]:hover > rect:first-child { stroke: #0f7c7a; stroke-width: 2; }
+
+  /* ===== draft 0.7: one detail-page pattern, flow columns, Open in Pattern Bench ===== */
+  .facts { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; }
+  .fact { background: #fff; border: 1px solid var(--line, #e3e6ec); border-radius: 12px; padding: 9px 14px; min-width: 120px; box-shadow: 0 2px 6px rgba(16,24,40,.04); }
+  .fact.wide { flex: 1 1 360px; }
+  .fact .fk { display: block; font-size: 11.5px; color: #667085; margin-bottom: 3px; }
+  .fact .fv { font-size: 14.5px; font-weight: 600; color: #1d2433; }
+  .fact.wide .fv { font-weight: 450; line-height: 1.45; }
+  .scenhead { display: flex; gap: 14px; align-items: flex-start; }
+  .scenhead .facts { flex: 1; }
+  .scenact { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; padding-top: 2px; }
+  .scenact > div, .scenact { white-space: nowrap; }
+  .pbrow { display: flex; align-items: center; } .diagram.pbwrap { overflow-x: auto; }
+  .meta.minor { font-size: 12.5px; color: #667085; margin: -4px 0 14px; }
+  .dlayout { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+  .dside .panel { position: relative; }
+  @media (max-width: 1080px) { .dlayout { grid-template-columns: minmax(0, 1fr); } .scenhead { flex-direction: column; } .scenact { align-items: flex-start; flex-direction: row; } }
+  .sec.vsec { display: flex; align-items: center; gap: 6px; text-transform: none; letter-spacing: 0; font-size: 12.5px; color: #344054; font-weight: 700; }
+  .sec.vsec .count { font-weight: 600; color: #98a2b3; }
+  .list-item .kdot { display: inline-block; width: 8px; height: 8px; border-radius: 3px; margin-right: 7px; vertical-align: 1px; background: #98a2b3; }
+  .kdot.k-s { background: #0f7c7a; } .kdot.k-c { background: #3346c8; } .kdot.k-a { background: #b4472a; border-radius: 8px; }
+  .list-item.attn .t { color: #9a5b00; }
+  tr.row[data-go] { cursor: pointer; } tr.row[data-go]:hover td { background: #f6f8fb; }
+  .chip.sysc { background: #fff1ea; color: #8a3a22; border: 1px solid #f2cdbd; }
+  td.flowcell { white-space: nowrap; } .farr { color: #98a2b3; margin: 0 6px; font-weight: 700; }
+  .pbbtn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #c9bdf6; background: #f5f2fe; color: #4b32b8; border-radius: 10px; padding: 6px 12px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 0 #ddd3fb; transition: transform .2s, box-shadow .2s; }
+  .pbbtn:hover:not([disabled]) { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(75,50,184,.18); }
+  .pbbtn[disabled] { opacity: .45; cursor: not-allowed; box-shadow: none; }
+  .pbbtn.row { padding: 4px 10px; font-size: 12.5px; }
+  .pbset { border: 1px solid #e3e6ec; background: #fff; border-radius: 10px; width: 32px; height: 32px; cursor: pointer; color: #667085; margin-left: 6px; }
+  .btn.ghost { background: #fff; color: #344054; border: 1px solid #d0d5dd; }
+  .pbdlg { position: fixed; inset: 0; z-index: 90; background: rgba(16,24,40,.35); display: flex; align-items: center; justify-content: center; padding: 16px; }
+  .pbdlg .box { background: #fff; border-radius: 16px; padding: 20px 22px; width: min(520px, 100%); box-shadow: 0 24px 48px rgba(16,24,40,.25); }
+  .pbdlg h3 { margin: 0 0 8px; font-size: 17px; } .pbdlg .why { margin: 0 0 12px; color: #9a5b00; }
+  .pbdlg label { display: block; font-size: 12.5px; color: #667085; font-weight: 600; }
+  .pbdlg input { display: block; width: 100%; margin-top: 4px; padding: 9px 11px; border: 1px solid #d0d5dd; border-radius: 9px; font: 14px var(--mono, monospace); }
+  .pbdlg .row { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; } .pbdlg .row.end { justify-content: flex-end; margin-top: 18px; }
+  #rtoast { position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 20px); opacity: 0; z-index: 95; background: #1f2a3c; color: #fff; padding: 10px 16px; border-radius: 12px; font-size: 13.5px; max-width: min(640px, calc(100vw - 32px)); transition: opacity .25s, transform .25s; pointer-events: none; box-shadow: 0 12px 28px rgba(16,24,40,.25); }
+  #rtoast.show { opacity: 1; transform: translate(-50%, 0); } #rtoast.err { background: #9a3412; }
 </style>
 </head>
 <body>
 <header>
   <h1 data-act="home" style="cursor:pointer" title="Home">Integration Registry</h1>
-  <span class="draft">draft 0.6 · schema 0.6</span>
+  <span class="draft">draft 0.7 · schema 0.6</span>
   <span class="spacer"></span>
   <span class="folder" id="folderName"></span>
   <button class="btn ghost small hidden" id="reloadBtn" title="Read the registry again">Reload</button>
@@ -355,7 +394,7 @@
    and scenario detail with cross-scenario flags. Single self-contained file.
    ========================================================================== */
 
-const APP_VERSION = "0.6";
+const APP_VERSION = "0.7";
 const INDEX_FILE = "index.json";
 const LIFECYCLE_FILE = "lifecycle.json";
 const INDEX_SCHEMA = "pattern-bench.registry-index";
@@ -795,8 +834,9 @@ function go(view, param, opts = {}) {
   S.enterDetail = !!opts.enter;
   if (view === "scenario") { v.innerHTML = `<div class="world"><div class="world-body">Loading …</div></div>`; scenarioView(param).then((h) => { if (S.view === "scenario") v.innerHTML = h; }); }
   else if (view === "component") v.innerHTML = componentView(param.ref);
+  else if (view === "system") v.innerHTML = systemView(param.key);
   else if (view === "band") v.innerHTML = worldView(param.k, opts.enter);
-  else { S.view = "home"; S.diveFrom = null; v.innerHTML = homeView(); }
+  else { S.view = "home"; S.diveFrom = null; S.nav = []; v.innerHTML = homeView(); }
   if (!opts.keepScroll) window.scrollTo(0, 0);
 }
 
@@ -1031,9 +1071,9 @@ function decisionsTable() {
 /* ---- directory table ---- */
 const LIST_COLS = [
   { key: "name", label: "Name", get: (r) => r.name.toLowerCase() },
+  { key: "source", label: "Source", get: (r) => srcNames(r).join(",").toLowerCase() },
   { key: "platforms", label: "Platforms", get: (r) => r.platforms.join(",").toLowerCase() },
-  { key: "assets", label: "Assets", get: (r) => r.assets.join(",").toLowerCase() },
-  { key: "endApps", label: "Connected systems", get: (r) => r.endApps.join(",").toLowerCase() },
+  { key: "target", label: "Targets", get: (r) => tgtNames(r).join(",").toLowerCase() },
   { key: "version", label: "Version", get: (r) => r.version },
   { key: "decisions", label: "Decisions", get: (r) => r.decisions },
   { key: "flags", label: "Flags", get: (r, s) => activeFlags(s).length },
@@ -1041,6 +1081,10 @@ const LIST_COLS = [
   { key: "author", label: "Author", get: (r) => r.author.toLowerCase() },
   { key: "tags", label: "Tags", get: (r) => r.tags.join(",").toLowerCase() },
 ];
+/* R-18: the flow in order — source system(s) → platforms → target system(s) */
+const srcNames = (r) => uniq((r.sys?.triggeredBy || []).map((t) => sysName(t.key)));
+const tgtNames = (r) => uniq((r.sys?.deliversTo || []).map((d) => sysName(d.key)));
+const firstPlus = (arr, cls = "") => (arr.length ? `<span class="chip ${cls}" title="${esc(arr.join(", "))}">${esc(short(arr[0], 26))}</span>${arr.length > 1 ? `<span class="chip" title="${esc(arr.slice(1).join(", "))}">+${arr.length - 1}</span>` : ""}` : '<span class="muted">—</span>');
 function listRows() {
   const q = S.listQuery.trim().toLowerCase();
   let rows = [...S.scenarios.values()];
@@ -1265,7 +1309,7 @@ function stripSvg(nLeft, rightCols, attn) {
 /* ---- Scenarios world ---- */
 function scWorld() {
   return `<div class="toolbar">
-      <input type="search" id="listSearch" placeholder="Search name, platform, asset, connected system, component, tag …" value="${esc(S.listQuery)}">
+      <input type="search" id="listSearch" placeholder="Search name, source, target, platform, asset, component, tag …" value="${esc(S.listQuery)}">
       <label class="pill-toggle ${S.listFlagsOnly ? "on" : ""}"><input type="checkbox" id="flagsOnly" ${S.listFlagsOnly ? "checked" : ""}><span class="ico">${ICON.warn}</span>Needs attention only</label>
     </div>
     <div id="listTable">${listTable()}</div>`;
@@ -1274,18 +1318,17 @@ function listTable() {
   const rows = listRows();
   const arrow = (k) => (S.listSort.key === k ? (S.listSort.dir > 0 ? " ▲" : " ▼") : "");
   const cols = LIST_COLS.filter((c) => c.key !== "tags");
-  return `<table class="wtable"><thead><tr><th class="mk"></th>${cols.map((c) => `<th class="sort" data-sort="${c.key}">${c.label}${arrow(c.key)}</th>`).join("")}<th>Relations</th></tr></thead>
-  <tbody>${rows.map((s, i) => { const r = s.latest, n = activeFlags(s).length, ov = overlapsOf(r.id, { strongOnly: true }).length;
+  return `<table class="wtable"><thead><tr><th class="mk"></th>${cols.map((c) => `<th class="sort" data-sort="${c.key}">${c.label}${arrow(c.key)}</th>`).join("")}<th>Pattern Bench</th></tr></thead>
+  <tbody>${rows.map((s, i) => { const r = s.latest, n = activeFlags(s).length;
     return `<tr class="r ${n ? "attn" : ""}" style="--i:${i}" data-id="${esc(r.id)}" data-xkind="sc" data-rowopen="sc" tabindex="0" title="Open all details of this scenario">
     <td class="mk">${n ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
     <td><b>${esc(r.name)}</b><div class="sub2">${r.tags.length ? chips(r.tags) : `<span class="mono muted">${esc(r.id)}</span>`}</div></td>
-    <td>${chips(r.platforms)}</td><td>${chips(r.assets)}</td><td>${chips(r.endApps)}</td>
+    <td class="flowcell">${firstPlus(srcNames(r), "sysc")}<span class="farr">→</span></td><td>${chips(r.platforms)}</td><td class="flowcell"><span class="farr">→</span>${firstPlus(tgtNames(r), "sysc")}</td>
     <td class="nowrap">v${r.version}</td>
     <td class="nowrap">${r.decisions}${r.openVersions ? ` <span class="chip violet">${r.openVersions} open</span>` : ""}</td>
     <td class="nowrap">${n ? `<span class="chip amber">⚠ ${n}</span>` : '<span class="muted">—</span>'}</td>
     <td class="nowrap">${esc(fmtDate(r.exportedAt))}</td><td>${esc(r.author)}</td>
-    <td class="xcell"><button class="xbtn" data-xopen="1" title="Explore relations">${stripSvg(ov, (r.containers || []).map((k) => kindInfo(k.kind).col), n)}<span>Explore</span></button></td></tr>
-    <tr class="xrow" data-for="${esc(r.id)}"><td colspan="${cols.length + 2}"><div class="xwrap"><div class="xslot"></div></div></td></tr>`; }).join("")
+    <td class="xcell">${pbButton(r, "row")}</td></tr>`; }).join("")
     || `<tr><td colspan="${cols.length + 2}" class="muted" style="padding:18px">No scenarios match.</td></tr>`}
   </tbody></table>`;
 }
@@ -1305,18 +1348,17 @@ function compTable() {
   if (S.compAttn) list = list.filter((x) => ar.has(x.ref));
   list.sort((a, b) => (ar.has(b.ref) - ar.has(a.ref)) || b.scenarios.size - a.scenarios.size || a.ref.localeCompare(b.ref));
   const lc = (ref, v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
-  return `<table class="wtable"><thead><tr><th class="mk"></th><th>Component</th><th>Type</th><th>Platform · asset</th><th>Versions in the registry</th><th>Used by</th><th>Needs attention because</th><th>Relations</th></tr></thead><tbody>
+  return `<table class="wtable"><thead><tr><th class="mk"></th><th>Component</th><th>Type</th><th>Platform · asset</th><th>Versions in the registry</th><th>Used by</th><th>Needs attention because</th></tr></thead><tbody>
     ${list.map((x, i) => { const a = ar.get(x.ref) || [];
-      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(x.ref)}" data-xkind="co" data-rowopen="co" tabindex="0" title="Explore this component's relationships">
+      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(x.ref)}" data-xkind="co" data-rowopen="co" tabindex="0" title="Open this component">
       <td class="mk">${a.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
       <td><b title="${esc([...x.names].join(" / "))}">${esc([...x.names][0] || "(unnamed)")}</b>${x.names.size > 1 ? ` <span class="muted" style="font-size:12px">+${x.names.size - 1} name${x.names.size > 2 ? "s" : ""}</span>` : ""}<div class="sub2 mono muted">${esc(x.ref)}</div></td>
       <td>${esc(x.type)}</td><td>${esc([x.platform || kindInfo(x.kind).label, x.asset].filter(Boolean).join(" · "))}</td>
       <td>${[...x.versions].sort((p, q2) => vnum(p) - vnum(q2)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>${stageChip(lc(x.ref, v))}`).join(" ")}</td>
       <td>${[...x.scenarios].slice(0, 3).map((id) => `<span class="chip" data-open="${esc(id)}" style="cursor:pointer">${esc(short(scenarioName(id), 26))}</span>`).join("")}${x.scenarios.size > 3 ? `<span class="chip">+${x.scenarios.size - 3}</span>` : ""}</td>
       <td class="why">${a.length ? esc(a[0]) + (a.length > 1 ? ` <span class="muted">(+${a.length - 1})</span>` : "") : '<span class="muted">—</span>'}</td>
-      <td class="xcell"><button class="xbtn" data-xopen="1" title="Explore relations">${stripSvg(x.scenarios.size, [...x.versions].map((v) => vnum(v) === x.max && x.versions.size > 1 ? "#6b4fd8" : "#9aa4b5"), a.length)}<span>Explore</span></button></td></tr>
-      <tr class="xrow" data-for="${esc(x.ref)}"><td colspan="8"><div class="xwrap"><div class="xslot"></div></div></td></tr>`; }).join("")
-      || `<tr><td colspan="8" class="muted" style="padding:18px">No components match.</td></tr>`}
+</tr>`; }).join("")
+      || `<tr><td colspan="7" class="muted" style="padding:18px">No components match.</td></tr>`}
     </tbody></table>`;
 }
 
@@ -1332,9 +1374,9 @@ function sysTable() {
   if (q) list = list.filter((y) => (y.name + " " + [...y.endpoints.values()].map((e) => e.name).join(" ")).toLowerCase().includes(q));
   list.sort((a, b) => (sa.has(b.key) - sa.has(a.key)) || (b.triggers.size + b.receives.size) - (a.triggers.size + a.receives.size) || a.name.localeCompare(b.name));
   const role = (y) => [y.triggers.size ? "caller" : "", y.receives.size ? "receiver" : ""].filter(Boolean);
-  return `<table class="wtable"><thead><tr><th class="mk"></th><th>Connected system</th><th>Role</th><th>Endpoints (exposes)</th><th>Triggers</th><th>Receives from</th><th>Needs attention because</th><th>Relations</th></tr></thead><tbody>
+  return `<table class="wtable"><thead><tr><th class="mk"></th><th>Connected system</th><th>Role</th><th>Endpoints (exposes)</th><th>Triggers</th><th>Receives from</th><th>Needs attention because</th></tr></thead><tbody>
     ${list.map((y, i) => { const a = sa.get(y.key) || [], eps = [...y.endpoints.values()];
-      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(y.key)}" data-xkind="cs" data-rowopen="cs" tabindex="0" title="Explore this system's relationships">
+      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(y.key)}" data-xkind="cs" data-rowopen="cs" tabindex="0" title="Open this connected system">
       <td class="mk">${a.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
       <td><b>${esc(y.name)}</b></td>
       <td>${role(y).map((r) => `<span class="chip ${r === "caller" ? "" : "teal"}">${r}</span>`).join("")}</td>
@@ -1342,9 +1384,8 @@ function sysTable() {
       <td class="nowrap">${y.triggers.size ? `${y.triggers.size} flow${y.triggers.size === 1 ? "" : "s"}` : '<span class="muted">—</span>'}</td>
       <td class="nowrap">${y.receives.size ? `${y.receives.size} flow${y.receives.size === 1 ? "" : "s"}` : '<span class="muted">—</span>'}</td>
       <td class="why">${a.length ? esc(a[0]) : '<span class="muted">—</span>'}</td>
-      <td class="xcell"><button class="xbtn" data-xopen="1" title="Explore relations">${stripSvg(y.triggers.size + y.receives.size, eps.map(() => "#b4472a"), a.length)}<span>Explore</span></button></td></tr>
-      <tr class="xrow" data-for="${esc(y.key)}"><td colspan="8"><div class="xwrap"><div class="xslot"></div></div></td></tr>`; }).join("")
-      || `<tr><td colspan="8" class="muted" style="padding:18px">No connected systems match.</td></tr>`}
+</tr>`; }).join("")
+      || `<tr><td colspan="7" class="muted" style="padding:18px">No connected systems match.</td></tr>`}
     </tbody></table>`;
 }
 
@@ -1411,7 +1452,7 @@ function chainSvg(spec, flagRefs) {
   let height = 0;
   cols.forEach((col, L) => { let y = PY; for (const n of col || []) { pos.set(n.id, { x: PX + L * (W + GX), y, h: hOf(n) }); y += hOf(n) + GY; } height = Math.max(height, y); });
   const width = PX * 2 + cols.length * W + (cols.length - 1) * GX;
-  let s = `<svg class="chain" viewBox="0 0 ${width} ${height + 4}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flow as named artifacts" style="min-width:${Math.min(width, 900)}px">
+  let s = `<svg class="chain" viewBox="0 0 ${width} ${height + 4}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flow as named artifacts" style="width:${Math.max(width, 600)}px;max-width:none">
     <defs><marker id="cah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8a94a6"/></marker>
     <marker id="cahv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#6b4fd8"/></marker></defs>`;
   for (const e of edges.values()) {
@@ -1577,14 +1618,14 @@ function explorerHtml(forceAll) {
   const avail = n.groups.filter((g) => g.items.length);
   return `<div class="xin"><div class="xcrumbs"><span class="xkind ${t}">${NODE_KIND[t].label}</span>${crumbs}
       ${t === "s" ? `<label class="pill-toggle sm ${X.strongOnly ? "on2" : ""}"><input type="checkbox" data-strong="1" ${X.strongOnly ? "checked" : ""}>Strong overlaps only</label>` : ""}
-      <span class="xhint"><span class="linkish" data-verbs="all">expand all</span> · <span class="linkish" data-verbs="none">collapse</span> · click a box to re-centre · double-click or hold to dive in</span></div>
+      <span class="xhint"><span class="linkish" data-verbs="all">expand all</span> · <span class="linkish" data-verbs="none">collapse</span> · click a box to re-centre · double-click or hold to open its page</span></div>
     <div class="xstage">${relSvg(n, open)}</div>
     ${!open.size && avail.length ? `<div class="xnote">Pick a relationship to explore: ${avail.map((g) => `<span class="vchip" data-verb="${g.k}">${esc(g.verb)} · ${g.items.length}</span>`).join(" ")}</div>` : ""}
     ${n.scen && [...open].some((k) => ["feeds", "fedby", "along", "shares"].includes(k)) ? `<div class="xlegend"><span class="lg path">━ runs alongside (same path)</span><span class="lg feeds">➝ feeds / fed by</span><span class="lg api">━ shares API</span><span class="lg asset">━ shares asset</span><span class="lg endpoint">┄ same endpoint (weak)</span></div>` : ""}
     <div class="xlegend"><span style="color:#0f7c7a">▌scenario</span><span style="color:#3346c8">▌component</span><span style="color:#b4472a">▌connected system</span><span>→ / ← direction of the message</span></div>
     ${n.note ? `<div class="xnote">${esc(n.note)}</div>` : ""}
     <div class="xfoot">${n.foot.length ? `<div class="xflags">${n.foot.map((f) => `<div class="flag"><span class="ico">⚠</span><div>${esc(f)}</div></div>`).join("")}</div>` : ""}
-      <button class="btn small" ${n.open}>${n.openLabel}</button></div></div>`;
+</div></div>`;
 }
 function toggleVerb(k) {
   const top = X.stack[X.stack.length - 1], o = openSetOf(top);
@@ -1616,8 +1657,9 @@ function crumbTo(i) { X.stack = X.stack.slice(0, i + 1); rerenderExplorer(-1); }
 /* R-9: dive — the box rises toward the viewer, the page sinks back, the box swells into the target band */
 function dive(el, key) {
   const [t, id] = key.split(/\|(.*)/s), k = t === "c" ? "co" : t === "a" ? "cs" : "sc";
-  S.diveFrom = { k: S.param?.k, row: X.row, stack: X.stack.slice() };
-  const go2 = () => { go("band", { k }, { enter: true }); focusRow(id); };
+  pushNav();
+  const [view, param] = keyView(key);
+  const go2 = () => go(view, param, { enter: true });
   if (reduced() || !el.animate) return go2();
   const r = el.getBoundingClientRect(), v = $("#view").getBoundingClientRect();
   const fly = document.createElement("div"); fly.className = "dive";
@@ -1637,11 +1679,11 @@ function focusRow(id) {
 }
 /* R-10: the entry lifts and morphs into its detail page */
 function openDetail(el, view, param) {
-  S.prev = { view: S.view, param: S.param };
-  if (reduced() || !el?.animate) return go(view, param);
+  pushNav();
+  if (reduced() || !el?.animate || !el.getBoundingClientRect) return go(view, param, { enter: true });
   const r = el.getBoundingClientRect(), v = $("#view").getBoundingClientRect();
   const mo = document.createElement("div"); mo.className = "morph row-morph";
-  mo.innerHTML = `<div class="rm-title">${esc(view === "component" ? refName(param.ref) : scenarioName(param.id))}</div>`;
+  mo.innerHTML = `<div class="rm-title">${esc(view === "component" ? refName(param.ref) : view === "system" ? sysName(param.key) : scenarioName(param.id))}</div>`;
   document.body.appendChild(mo);
   $(".world")?.classList.add("sink");
   const from = { left: r.left + "px", top: r.top + "px", width: r.width + "px", height: r.height + "px", borderRadius: "10px" };
@@ -1652,43 +1694,76 @@ function openDetail(el, view, param) {
   };
 }
 
-/* ---- R-10: component detail page ---- */
+/* ---- R-16 / R-17: one detail-page pattern for every object type ----
+   header facts → main frame (explorer open; for scenarios the flow leads) → side panel lists by relationship type */
+function factsHtml(pairs) {
+  return `<div class="facts">${pairs.filter((p) => p && p[1] !== undefined && p[1] !== "").map(([k, v, wide]) => `<div class="fact ${wide ? "wide" : ""}"><span class="fk">${esc(k)}</span><span class="fv">${v}</span></div>`).join("")}</div>`;
+}
+/* the side panel: the node's relationships, one sub-header per relationship type (verb) */
+function sideLists(n, keys) {
+  const gs = keys.map((k) => n.groups.find((g) => g.k === k)).filter((g) => g && g.items.length);
+  if (!gs.length) return '<div class="muted">No relationships.</div>';
+  return gs.map((g) => `<div class="sec vsec">${g.flow === "in" ? "← " : ""}${esc(g.verb)}${g.flow === "out" ? " →" : ""} <span class="count">${g.items.length}</span></div>
+    ${g.items.map((it) => `<div class="list-item ${it.cls && /attn/.test(it.cls) ? "attn" : ""}" ${String(it.attr || "").replace("data-node=", "data-go=")} title="${esc(it.title || it.label)}">
+      <div class="t"><span class="kdot k-${it.kind}"></span>${esc(it.label)}</div>${it.sub ? `<div class="s">${esc(it.sub)}</div>` : ""}</div>`).join("") || '<div class="muted">None.</div>'}`).join("");
+}
+function detailHead(k, title, sub, attnN) {
+  return `<div class="world-head"><button class="wback" data-act="back" aria-label="Back">${ICON.back}</button>${orb(k, "sm")}
+    <span class="txt"><span class="name">${esc(title)}</span><span class="desc">${sub}</span></span>
+    ${attnN ? `<span class="apill sm"><span class="ico">${ICON.warn}</span>${attnN > 1 ? `<b>${attnN}</b>` : ""}<span>needs attention</span></span>` : `<span class="clear"><span class="ico">${ICON.check}</span>All clear</span>`}</div>`;
+}
+const relPanel = (title) => `<div class="panel"><h2>${title}</h2><div id="pageRel">${explorerHtml(true)}</div></div>`;
+
 function componentView(ref) {
   const x = S.refs.get(ref); if (!x) return `<div class="panel">Component not found.</div>`;
   const ar = attnRefs().get(ref) || [], lcEv = (S.lifecycle?.events || []).filter((e) => e.ref === ref).sort((a, b) => String(a.date).localeCompare(String(b.date)));
   const lc = (v) => S.lifecycle?.byKey.get(ref + "@" + v);
-  const users = [...x.scenarios].map((id) => ({ s: S.scenarios.get(id), v: S.scenarios.get(id).latest.uses[ref] || [] }));
-  const decs = []; for (const s of S.scenarios.values()) for (const d of s.latest.decisionList || []) if (d.refs.includes(ref)) decs.push({ s: s.latest, d });
-  const up = new Map(), down = new Map();
-  for (const s of S.scenarios.values()) for (const l of s.latest.links || []) { const [a, b] = l.split(" > ");
-    if (b === ref && a) up.set(a, (up.get(a) || new Set()).add(s.latest.id)); if (a === ref && b) down.set(b, (down.get(b) || new Set()).add(s.latest.id)); }
-  const nb = (m) => [...m].map(([r, ids]) => { const sk = S.refSys.get(r);
-    return `<div class="list-item" ${sk ? `data-sysrow="${esc(sk)}"` : `data-copen="${esc(r)}"`}><div class="t">${esc(thingName(r))} <span class="muted" style="font-weight:400">${sk ? "connected system" : esc(S.refs.get(r)?.type || "")}</span></div><div class="s">in ${[...ids].map(scenarioName).map(esc).join(", ")}</div></div>`; }).join("") || '<div class="muted">None.</div>';
-  X.stack = [nodeKey("c", ref)];
+  const users = [...x.scenarios].map((id) => S.scenarios.get(id).latest.uses[ref] || []);
+  const decs = []; for (const s of S.scenarios.values()) for (const d of s.latest.decisionList || []) if (d.refs.includes(ref) && d.status !== "completed") decs.push({ s: s.latest, d });
+  X.stack = [nodeKey("c", ref)]; X.open.delete(X.stack[0]);
+  const n = coRel(ref);
+  const vers = [...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => `<span class="chip ${vnum(v) === x.max && x.versions.size > 1 ? "violet" : ""}">${esc(v)}</span>${stageChip(lc(v)?.stage)}`).join(" ");
   return `<div class="world ${S.enterDetail ? "enter" : ""}">
-    <div class="world-head"><button class="wback" data-act="back" aria-label="Back">${ICON.back}</button>${orb("co", "sm")}
-      <span class="txt"><span class="name">${esc(refName(ref))}</span><span class="desc"><span class="mono">${esc(ref)}</span> · ${esc(x.type)} · ${esc([kindInfo(x.kind).label, x.asset].filter(Boolean).join(" · "))}</span></span>
-      ${ar.length ? `<span class="apill sm"><span class="ico">${ICON.warn}</span><span>needs attention</span></span>` : `<span class="clear"><span class="ico">${ICON.check}</span>All clear</span>`}</div>
+    ${detailHead("co", refName(ref), `Component · <span class="mono">${esc(ref)}</span>`, ar.length)}
     <div class="world-body">
-      ${ar.length ? `<div class="panel"><h2>Why it needs attention</h2>${ar.map((t) => `<div class="flag"><span class="ico">⚠</span><div>${esc(t)}</div></div>`).join("")}</div>` : ""}
-      <div class="grid g2">
-        <div class="panel"><h2>Versions</h2>
+      ${factsHtml([["Platform", esc(x.platform || "—")], ["Type", esc(x.type)], ["Asset", esc(x.asset || "—")], ["Kind", esc(kindInfo(x.kind).label)], ["Versions", vers], ["Used in", `${x.scenarios.size} scenario${x.scenarios.size === 1 ? "" : "s"}`]])}
+      <div class="dlayout"><div class="dmain">
+        ${ar.length ? `<div class="panel"><h2>Why it needs attention</h2>${ar.map((t) => `<div class="flag"><span class="ico">⚠</span><div>${esc(t)}</div></div>`).join("")}</div>` : ""}
+        ${relPanel("Relationships")}
+        <div class="panel"><h2>Versions and lifecycle</h2>
           <div class="vlane">${[...x.versions].sort((a, b) => vnum(a) - vnum(b)).map((v) => { const e = lc(v);
             return `<div class="vcard ${e && (e.stage === "deprecated" || e.stage === "retired") ? "attn" : vnum(v) === x.max && x.versions.size > 1 ? "new" : ""}"><div class="vn">${esc(v)}</div>${stageChip(e?.stage)}${e?.retireOn ? `<div class="note">retires ${esc(e.retireOn)}</div>` : ""}
-              <div class="note">${users.filter((u) => u.v.includes(v)).length} scenario(s)</div></div>`; }).join("")}</div>
+              <div class="note">${users.filter((u) => u.includes(v)).length} scenario(s)</div></div>`; }).join("")}</div>
           ${lcEv.length ? `<div class="sec">Lifecycle events</div><table>${lcEv.map((e) => `<tr><td class="nowrap">${esc(e.date)}</td><td>${esc(e.version)}</td><td>${stageChip(e.stage)}</td><td>${esc(e.who || "")}</td><td class="muted">${esc(e.note || "")}</td></tr>`).join("")}</table>` : '<div class="note">No lifecycle events recorded.</div>'}
         </div>
-        <div class="panel"><h2>Used by</h2>
-          <table><tr><th>Scenario</th><th>Version</th><th></th></tr>${users.map(({ s, v }) => { const behind = Math.max(...v.map(vnum)) < x.max;
-            return `<tr class="row" data-open="${esc(s.latest.id)}"><td><b>${esc(s.latest.name)}</b></td><td>${v.map((q) => `<span class="chip ${behind ? "amber" : ""}">${esc(q)}</span>`).join("")}</td><td>${behind ? '<span class="chip amber">behind</span>' : ""}</td></tr>`; }).join("")}</table>
-        </div>
-      </div>
-      <div class="panel"><h2>Relationships</h2><div id="pageRel">${explorerHtml(true)}</div></div>
-      <div class="grid g2">
+      </div><aside class="dside">
+        <div class="panel"><h2>Relationships</h2>${sideLists(n, ["used", "calledby", "calls"])}</div>
         <div class="panel"><h2>Open decisions that touch it</h2>
-          ${decs.filter((q) => q.d.status !== "completed").map(({ s, d }) => `<div class="list-item" data-open="${esc(s.id)}"><div class="t">${esc(d.label)} ${d.option ? `<span class="chip">${esc(d.option)}</span>` : ""}</div><div class="s">${esc(s.name)}${d.why ? " — " + esc(d.why) : ""}</div></div>`).join("") || '<div class="muted">None.</div>'}</div>
-        <div class="panel"><h2>Direct neighbours</h2><div class="sec">Called by</div>${nb(up)}<div class="sec">Calls</div>${nb(down)}</div>
-      </div>
+          ${decs.map(({ s, d }) => `<div class="list-item" data-go="${esc(nodeKey("s", s.id))}"><div class="t">${esc(d.label)} ${d.option ? `<span class="chip">${esc(d.option)}</span>` : ""}</div><div class="s">${esc(s.name)}${d.why ? " — " + esc(d.why) : ""}</div></div>`).join("") || '<div class="muted">None.</div>'}</div>
+      </aside></div>
+    </div></div>`;
+}
+
+function systemView(key) {
+  const y = S.systems.get(key); if (!y) return `<div class="panel">Connected system not found.</div>`;
+  const a = sysAttn().get(key) || [];
+  X.stack = [nodeKey("a", key)]; X.open.delete(X.stack[0]);
+  const n = sysRel(key), eps = [...y.endpoints.values()];
+  const role = [y.triggers.size ? "caller" : "", y.receives.size ? "receiver" : ""].filter(Boolean);
+  return `<div class="world ${S.enterDetail ? "enter" : ""}">
+    ${detailHead("cs", y.name, "Connected system", a.length)}
+    <div class="world-body">
+      ${factsHtml([["Role", role.map((r) => `<span class="chip ${r === "caller" ? "" : "teal"}">${r}</span>`).join(" ") || "—"], ["Endpoints", String(eps.length)], ["Triggers", `${y.triggers.size} flow${y.triggers.size === 1 ? "" : "s"}`], ["Receives from", `${y.receives.size} flow${y.receives.size === 1 ? "" : "s"}`]])}
+      <div class="dlayout"><div class="dmain">
+        ${a.length ? `<div class="panel"><h2>Why it needs attention</h2>${a.map((t) => `<div class="flag"><span class="ico">⚠</span><div>${esc(t)}</div></div>`).join("")}</div>` : ""}
+        ${relPanel("Relationships")}
+        <div class="panel"><h2>Endpoints</h2>
+          ${eps.length ? `<table><tr><th>Endpoint</th><th>Kind</th><th>Used by</th></tr>${eps.map((e) => `<tr><td><b>${esc(e.name)}</b><div class="mono muted">${esc(e.ref)}</div></td><td>${esc(e.process || e.type || "")}</td>
+            <td>${[...e.scenarios].map((id) => `<span class="chip" data-go="${esc(nodeKey("s", id))}" style="cursor:pointer">${esc(short(scenarioName(id), 30))}</span>`).join("")}</td></tr>`).join("")}</table>` : '<div class="muted">This system only triggers flows; it exposes no endpoint in the registry.</div>'}
+        </div>
+      </div><aside class="dside">
+        <div class="panel"><h2>Relationships</h2>${sideLists(n, ["triggers", "receives", "exposes"])}</div>
+      </aside></div>
     </div></div>`;
 }
 
@@ -1722,38 +1797,10 @@ async function scenarioView(param) {
   const srcNote = isLatest ? sameSourceOf(rec.id) : [];
 
   const flowHtml = flowPanel(rec, spec, flagRefs);
-  return `<div class="world ${S.enterDetail ? "enter" : ""}">
-  <div class="world-head"><button class="wback" data-act="back" aria-label="Back">${ICON.back}</button>${orb("sc", "sm")}
-    <span class="txt"><span class="name">${esc(rec.name)}</span><span class="desc">Scenario · v${rec.version}${rec.author ? " · " + esc(rec.author) : ""}</span></span>
-    ${flags.filter((f) => !f.acked && f.sev !== "grey").length ? `<span class="apill sm"><span class="ico">${ICON.warn}</span><b>${flags.filter((f) => !f.acked && f.sev !== "grey").length}</b><span>flags</span></span>` : `<span class="clear"><span class="ico">${ICON.check}</span>All clear</span>`}</div>
-  <div class="world-body">
-  <div class="panel">
-    <div class="detail-head">
-      <div style="flex:1">
-        <h2>${esc(rec.name)} <span class="chip">v${rec.version}</span>${isLatest ? "" : ' <span class="chip amber">older version</span>'}</h2>
-        <div class="meta"><span class="mono">${esc(rec.id)}</span> · exported ${esc(fmtDate(rec.exportedAt))}${rec.author ? " by " + esc(rec.author) : ""}
-          ${rec.mode ? " · " + esc(rec.mode) + " flow" : ""} · ${chips(rec.tags)}</div>
-        ${rec.description ? `<p style="margin:8px 0 0">${esc(rec.description)}</p>` : ""}
-      </div>
-      <div style="text-align:right">
-        <button class="btn small" data-act="markers" data-id="${esc(rec.id)}" data-v="${rec.version}" title="Marker list for Pattern Bench (schema 0.5); the Pattern Bench marker import is not built yet">Download marker list</button>
-        <div class="note" style="margin-top:6px">Canvas: <span class="mono">${esc(rec.canvas || "—")}</span>${rec.canvas && !S.files.has(dirOf(rec.path) + rec.canvas) ? ' <span class="chip red">missing</span>' : ""}</div>
-      </div>
-    </div>
-  </div>
-
-  ${flags.length ? `<div class="panel"><h2>Flags <span class="count">(${flags.length})</span></h2>
-    ${flags.map((f) => `<div class="flag ${f.acked ? "grey" : f.sev === "red" ? "red" : f.sev === "grey" ? "grey" : ""}">
-      <span class="ico">${f.acked ? "✓" : f.sev === "grey" ? "i" : "⚠"}</span>
-      <div><div class="k">${esc(f.kind)}${f.acked ? " · acknowledged" : ""}</div>${esc(f.text)}</div></div>`).join("")}
-    <div class="note">Acting on a flag = re-export the scenario from Pattern Bench (same id, version + 1). Acknowledgements are stored in the scenario's own file.</div></div>` : ""}
-
-  ${flowHtml}
-
-  <div class="grid g3">
-    <div>
-      <div class="panel"><h2>Versioning decisions <span class="count">(${(spec.versions || []).length})</span></h2>
-        ${(spec.versions || []).map((v) => { const d = v.decision || {}; return `<div class="ver">
+  X.stack = [nodeKey("s", rec.id)]; X.open.delete(X.stack[0]);
+  const n = scRel(rec.id), nFlags = flags.filter((f) => !f.acked && f.sev !== "grey").length;
+  const typeTxt = rec.mode === "composite" ? "Composite flow" : rec.mode === "single" ? "Single flow" : rec.mode ? esc(rec.mode) : "—";
+  const decisionsHtml = (spec.versions || []).map((v) => { const d = v.decision || {}; return `<div class="ver">
           <div class="vt">${esc(v.label || v.id)} ${v.status === "completed" ? '<span class="chip done">completed</span>' : '<span class="chip violet">open</span>'}
             ${d.option ? `<span class="chip">${esc(d.option)}</span>` : ""}</div>
           <dl>
@@ -1765,35 +1812,43 @@ async function scenarioView(param) {
             ${(v.added || []).length ? `<dt>Added</dt><dd>${v.added.map((a) => `${esc(a.name || a.type)} ${esc(a.version)} ${stageChip(a.stage)}`).join("<br>")}</dd>` : ""}
             ${(v.impacts || []).length ? `<dt>Impacts</dt><dd>${v.impacts.map((im) => `${esc(cname(im.affected))}: ${esc(im.decision)}${im.codeChange ? " · code change" : ""}${im.warning ? (im.acknowledged ? ' <span class="chip">⚠ acknowledged</span>' : ' <span class="chip amber">⚠</span>') : ""}${im.note ? " — " + esc(im.note) : ""}`).join("<br>")}</dd>` : ""}
             ${(v.retired || []).length ? `<dt>Retired</dt><dd>${v.retired.map((x) => `${esc(x.ref)} on ${esc(x.on)}`).join("<br>")}</dd>` : ""}
-          </dl></div>`; }).join("") || '<div class="muted">No versioning decisions — base flow only.</div>'}
-      </div>
+          </dl></div>`; }).join("") || '<div class="muted">No versioning decisions — base flow only.</div>';
+  return `<div class="world ${S.enterDetail ? "enter" : ""}">
+  ${detailHead("sc", rec.name, `Scenario${isLatest ? "" : ' · <span class="chip amber">older version</span>'}`, nFlags)}
+  <div class="world-body">
+    <div class="scenhead">
+      ${factsHtml([["ID", `<span class="mono">${esc(rec.id)}</span>`], ["Type", typeTxt], ["Description", rec.description ? esc(rec.description) : '<span class="muted">—</span>', true]])}
+      <div class="scenact"><div class="pbrow">${pbButton(rec, "page")}</div>
+        <button class="btn small ghost" data-act="markers" data-id="${esc(rec.id)}" data-v="${rec.version}" title="Status markers for Pattern Bench as a file">Download marker list</button></div>
+    </div>
+    <div class="meta minor">v${rec.version} · exported ${esc(fmtDate(rec.exportedAt))}${rec.author ? " by " + esc(rec.author) : ""} ${rec.tags.length ? "· " + chips(rec.tags) : ""} · canvas <span class="mono">${esc(rec.canvas || "—")}</span>${rec.canvas && !canvasEntry(rec) ? ' <span class="chip red">missing</span>' : ""}</div>
+    <div class="dlayout"><div class="dmain">
+      ${flags.length ? `<div class="panel"><h2>Flags <span class="count">(${flags.length})</span></h2>
+        ${flags.map((f) => `<div class="flag ${f.acked ? "grey" : f.sev === "red" ? "red" : f.sev === "grey" ? "grey" : ""}">
+          <span class="ico">${f.acked ? "✓" : f.sev === "grey" ? "i" : "⚠"}</span>
+          <div><div class="k">${esc(f.kind)}${f.acked ? " · acknowledged" : ""}</div>${esc(f.text)}</div></div>`).join("")}
+        <div class="note">Acting on a flag = re-export the scenario from Pattern Bench. Acknowledgements are stored in the scenario's own file.</div></div>` : ""}
+      ${flowHtml}
       <div class="panel"><h2>Made of — components</h2>
         <table><tr><th>Name</th><th>Type</th><th>Version</th><th>Platform / asset</th><th>Lifecycle</th></tr>
-        ${rec.components.filter((c) => !isSystemKind(c.kind)).map((c) => `<tr><td>${esc(c.name || "(unnamed)")}<div class="mono muted">${esc(c.ref || "no ref")}</div></td><td>${esc(c.type)}</td>
+        ${rec.components.filter((c) => !isSystemKind(c.kind)).map((c) => `<tr class="row" ${c.ref ? `data-go="${esc(nodeKey("c", c.ref))}"` : ""}><td>${esc(c.name || "(unnamed)")}<div class="mono muted">${esc(c.ref || "no ref")}</div></td><td>${esc(c.type)}</td>
           <td>${esc(c.version)}${c.origin !== "base" ? ' <span class="chip violet">added</span>' : ""}</td><td>${esc([c.platform, c.asset].filter(Boolean).join(" / "))}</td>
           <td>${stageChip(S.lifecycle?.byKey.get(c.ref + "@" + c.version)?.stage || c.stage)}</td></tr>`).join("")}</table>
       </div>
-    </div>
-    <div>
-      <div class="panel"><h2>Connected systems</h2>
-        <div class="sec">Triggered by</div>${(rec.sys?.triggeredBy || []).map((t) => `<div class="list-item" data-sysrow="${esc(t.key)}"><div class="t">${esc(sysName(t.key))}</div><div class="s">${esc(t.process)}</div></div>`).join("") || '<div class="muted">No caller.</div>'}
-        <div class="sec">Delivers to</div>${(rec.sys?.deliversTo || []).map((d) => `<div class="list-item" data-sysrow="${esc(d.key)}"><div class="t">${esc(sysName(d.key))}</div><div class="s">${esc(d.endpoint)}</div></div>`).join("") || '<div class="muted">None.</div>'}
-      </div>
-      <div class="panel"><h2>Overlap with other flows <span class="count">(${overlap.length})</span></h2>
-        ${overlap.map((o) => `<div class="list-item" data-open="${esc(o.s.id)}"><div class="t">${esc(o.s.name)} <span class="tchip t-${TIERS[o.tier].k}">${esc(tierLabel(o))}</span></div>
-          <div class="s">${Object.entries(o.byTier).map(([t, refs]) => `${TIERS.find((x) => x.k === t).label}: ${refs.map(pairText).map(esc).join(", ")}`).join(" · ")}</div></div>`).join("") || '<div class="muted">No overlap with other flows.</div>'}
-        ${srcNote.map((x) => `<div class="note" style="margin-top:8px">Same source: ${esc(thingName(x.ref))} also triggers ${x.others.length} other scenario(s) — not counted as overlap.</div>`).join("")}
-      </div>
+      <div class="panel"><h2>Versioning decisions <span class="count">(${(spec.versions || []).length})</span></h2>${decisionsHtml}</div>
+      ${relPanel("Relationships")}
+    </div><aside class="dside">
+      <div class="panel"><h2>Relationships</h2>${sideLists(n, ["trig", "deliv", "feeds", "fedby", "along", "shares"])}
+        ${srcNote.map((x) => `<div class="note" style="margin-top:8px">Same source: ${esc(thingName(x.ref))} also triggers ${x.others.length} other scenario(s) — not counted as overlap.</div>`).join("")}</div>
       <div class="panel"><h2>Relations</h2>
-        ${rec.relations.map((r) => `<div class="list-item" ${S.scenarios.has(r.scenarioId) ? `data-open="${esc(r.scenarioId)}"` : ""}><div class="t">${esc(r.type)}</div>
+        ${rec.relations.map((r) => `<div class="list-item" ${S.scenarios.has(r.scenarioId) ? `data-go="${esc(nodeKey("s", r.scenarioId))}"` : ""}><div class="t">${esc(r.type)}</div>
           <div class="s">${esc(scenarioName(r.scenarioId))} ${r.version ? "v" + esc(r.version) : ""}</div></div>`).join("") || '<div class="muted">None declared.</div>'}
       </div>
       <div class="panel hist"><h2>History</h2>
         ${s.history.map((h) => h === rec ? `<div><b>v${h.version}</b> · ${esc(fmtDate(h.exportedAt))} (shown)</div>`
           : `<div><a data-open="${esc(h.id)}" data-v="${h.version}">v${h.version}</a> · ${esc(fmtDate(h.exportedAt))}</div>`).join("")}
       </div>
-    </div>
-  </div></div></div>`;
+    </aside></div></div></div>`;
 }
 const dirOf = (p) => (p.includes("/") ? p.slice(0, p.lastIndexOf("/") + 1) : "");
 
@@ -1801,36 +1856,134 @@ const dirOf = (p) => (p.includes("/") ? p.slice(0, p.lastIndexOf("/") + 1) : "")
 async function downloadMarkers(id, version) {
   const s = S.scenarios.get(id); const rec = s.history.find((h) => h.version === version) || s.latest;
   const spec = await loadSpec(rec.path);
-  const idsByRef = {};
-  for (const c of spec.base?.components || []) if (c.ref) (idsByRef[c.ref] ||= []).push(c.id);
-  const markers = [];
-  for (const f of rec === s.latest ? s.flags : []) {
-    if (!f.ref || f.acked) continue;
-    for (const cid of idsByRef[f.ref] || []) markers.push({ target: { component: cid }, kind: f.kind === "lifecycle" && f.sev === "red" ? "retired" : f.kind === "impact" ? "impact" : "flag", text: f.text });
-  }
-  const body = { schema: "pattern-bench.markers", schemaVersion: "0.5", scenarioId: rec.id, version: rec.version, markers, origin: "registry" };
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(body, null, 2)], { type: "application/json" }));
-  a.download = `${rec.id}.v${rec.version}.markers.json`; a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  saveBlob({ schema: "pattern-bench.markers", schemaVersion: "0.6", scenarioId: rec.id, version: rec.version, markers: statusMarkers(s, rec, spec), origin: "registry" }, `${rec.id}.v${rec.version}.markers.json`);
 }
+
+/* ============================================================================
+   R-14: Open in Pattern Bench — the registry opens a Pattern Bench window and sends it
+   this scenario version's canvas export plus view-only status markers (contract pattern-bench.open 0.1)
+   ========================================================================== */
+const PB_KEY = "integrationRegistry.pbAddress";
+function pbDefault() {
+  if (/\.github\.io$/i.test(location.hostname)) return location.origin + "/pattern-bench/pattern-bench.html";
+  try { return new URL("pattern-bench.html", location.href).href; } catch { return "pattern-bench.html"; }
+}
+function pbAddress() { try { return localStorage.getItem(PB_KEY) || pbDefault(); } catch { return pbDefault(); } }
+const framed = () => { try { return window.self !== window.top; } catch { return true; } };
+function canvasEntry(rec) {
+  const d = dirOf(rec.path);
+  return (rec.canvas && S.files.get(d + rec.canvas)) || S.files.get(d + `${rec.id}.v${rec.version}.canvas.json`) || null;
+}
+function pbButton(rec, where) {
+  const ok = !!canvasEntry(rec);
+  return `<button class="pbbtn ${where}" data-act="pb" data-id="${esc(rec.id)}" data-v="${rec.version}" ${ok ? `title="Open this flow in Pattern Bench with its current status"` : `disabled title="No canvas export (${esc(rec.id)}.v${rec.version}.canvas.json) next to this registry entry — re-export from Pattern Bench"`}>
+    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4a3 3 0 0 1 3 3V14"/></svg>
+    <span>${where === "row" ? "Open" : "Open in Pattern Bench"}</span></button>${where === "page" ? `<button class="pbset" data-act="pbset" title="Pattern Bench address">⚙</button>` : ""}`;
+}
+/* "current status" of a scenario version, as markers on its canvas components (schema 0.6) */
+function statusMarkers(s, rec, spec) {
+  const comps = (spec.base?.components || []).filter((c) => c.ref), markers = [], seen = new Set();
+  const add = (c, kind, text) => { const k = c.id + "|" + text; if (seen.has(k)) return; seen.add(k); markers.push({ target: { component: c.id, ref: c.ref }, kind, text }); };
+  const latest = rec === s.latest;
+  for (const f of latest ? s.flags : []) {
+    if (!f.ref || f.acked) continue;
+    for (const c of comps.filter((c) => c.ref === f.ref)) add(c, f.kind === "lifecycle" && f.sev === "red" ? "retired" : f.kind === "impact" ? "impact" : "flag", f.text);
+  }
+  for (const c of comps) {
+    const st = S.lifecycle?.byKey.get(c.ref + "@" + c.version)?.stage;
+    if (st) add(c, st === "retired" ? "retired" : st === "deprecated" ? "flag" : "info", `${c.version} is ${STAGE_LABEL[st] || st}`);
+    const x = S.refs.get(c.ref);
+    if (x && x.scenarios.size > 1 && isCompRef(c.ref)) { const others = [...x.scenarios].filter((id) => id !== rec.id);
+      add(c, "info", `Shared with ${others.length} other scenario${others.length === 1 ? "" : "s"}: ${others.slice(0, 4).map(scenarioName).join(", ")}${others.length > 4 ? " …" : ""}`); }
+    if (x && Math.max(...[c.version].map(vnum)) < x.max) add(c, "impact", `A newer version (v${x.max}) exists in another scenario`);
+  }
+  return markers;
+}
+async function pbPayload(id, version) {
+  const s = S.scenarios.get(id); const rec = s.history.find((h) => h.version === version) || s.latest;
+  const ce = canvasEntry(rec); if (!ce) throw new Error(`no canvas export next to ${rec.path}`);
+  const [canvas, spec] = await Promise.all([readJson(ce), loadSpec(rec.path)]);
+  return { rec, payload: { type: "pb-open", schema: "pattern-bench.open", schemaVersion: "0.1",
+    scenario: { id: rec.id, version: rec.version, name: rec.name }, canvas,
+    markers: { schema: "pattern-bench.markers", schemaVersion: "0.6", scenarioId: rec.id, version: rec.version, markers: statusMarkers(s, rec, spec), origin: "registry" },
+    statusAt: new Date().toISOString(), origin: "registry" } };
+}
+function toast(msg, err) {
+  let t = $("#rtoast"); if (!t) { t = document.createElement("div"); t.id = "rtoast"; document.body.appendChild(t); }
+  t.className = err ? "err show" : "show"; t.textContent = msg; clearTimeout(S.toastT); S.toastT = setTimeout(() => t.classList.remove("show"), 4200);
+}
+function saveBlob(obj, name) {
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" }));
+  a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+/* dialog: the address setting, and the fallback when Pattern Bench can't be reached */
+function pbDialog(reason, pl) {
+  $("#pbdlg")?.remove();
+  const d = document.createElement("div"); d.id = "pbdlg"; d.className = "pbdlg";
+  d.innerHTML = `<div class="box" role="dialog" aria-modal="true" aria-label="Pattern Bench">
+    <h3>${reason ? "Pattern Bench didn't open" : "Pattern Bench address"}</h3>
+    ${reason ? `<p class="why">${esc(reason)}</p>` : ""}
+    <label>Pattern Bench address<input id="pbaddr" type="text" value="${esc(pbAddress())}" spellcheck="false"></label>
+    <div class="note">Local use: put <span class="mono">pattern-bench.html</span> (2.0) in the same folder as <span class="mono">registry-app.html</span> — that is the default. Online: the Pattern Bench page address.</div>
+    ${pl ? `<div class="note" style="margin-top:10px">Or open it by hand: download both files and use Import in Pattern Bench.</div>
+      <div class="row"><button class="btn small ghost" data-pbd="canvas">Download canvas</button><button class="btn small ghost" data-pbd="markers">Download markers</button></div>` : ""}
+    <div class="row end"><button class="btn small ghost" data-pbd="reset">Use default</button><button class="btn small ghost" data-pbd="close">Close</button><button class="btn small" data-pbd="save">${pl ? "Save and try again" : "Save"}</button></div></div>`;
+  d.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-pbd]"); if (!b) { if (e.target === d) d.remove(); return; }
+    const k = b.dataset.pbd;
+    if (k === "canvas") saveBlob(pl.payload.canvas, `${pl.rec.id}.v${pl.rec.version}.canvas.json`);
+    if (k === "markers") saveBlob(pl.payload.markers, `${pl.rec.id}.v${pl.rec.version}.markers.json`);
+    if (k === "reset") $("#pbaddr").value = pbDefault();
+    if (k === "close") d.remove();
+    if (k === "save") { const v = $("#pbaddr").value.trim(); try { v && v !== pbDefault() ? localStorage.setItem(PB_KEY, v) : localStorage.removeItem(PB_KEY); } catch {}
+      d.remove(); if (pl) openInPB(pl.rec.id, pl.rec.version); else toast("Pattern Bench address saved"); }
+  });
+  document.body.appendChild(d); $("#pbaddr").focus();
+}
+async function openInPB(id, version) {
+  if (framed()) return toast("Open in Pattern Bench works from the registry page itself (GitHub Pages or a local copy) — this preview blocks new windows.", true);
+  let pl; try { pl = await pbPayload(id, version); } catch (e) { return toast("Can't open in Pattern Bench: " + e.message, true); }
+  const url = pbAddress().split("#")[0] + "#registry";
+  let target = "*"; try { const u = new URL(url, location.href); if (u.protocol !== "file:") target = u.origin; } catch {}
+  const w = window.open(url, "pattern-bench");
+  if (!w) return pbDialog("The browser blocked the new window. Allow pop-ups for this page, or open the files by hand.", pl);
+  let done = false;
+  const cleanup = () => { removeEventListener("message", onMsg); clearInterval(ping); clearTimeout(to); };
+  const onMsg = (ev) => {
+    if (ev.source !== w || !ev.data || ev.data.type !== "pb-ready" || done) return;
+    done = true; cleanup(); w.postMessage(pl.payload, target); w.focus?.();
+    toast(`Sent ${pl.rec.name} v${pl.rec.version} to Pattern Bench (${pl.payload.markers.markers.length} status marker${pl.payload.markers.markers.length === 1 ? "" : "s"})`);
+  };
+  addEventListener("message", onMsg);
+  const ping = setInterval(() => { try { w.postMessage({ type: "pb-ping" }, target); } catch {} }, 400);   // a re-used window doesn't reload
+  const to = setTimeout(() => { if (done) return; done = true; cleanup(); pbDialog(`Pattern Bench didn't answer at ${url.replace(/#.*/, "")} — check the address (it must be Pattern Bench 2.0 with registry support).`, pl); }, 10000);
+}
+
+/* ---- navigation: one detail page per object type, a back stack between them ---- */
+function keyView(key) { const [t, id] = key.split(/\|(.*)/s); return t === "c" ? ["component", { ref: id }] : t === "a" ? ["system", { key: id }] : ["scenario", { id, version: null }]; }
+function pushNav() { if (S.view) (S.nav ||= []).push({ view: S.view, param: S.param, scroll: window.scrollY }); }
+function goKey(key, el) { const [v, p] = keyView(key); openDetail(el, v, p); }
 
 /* ============================================================================
    5. Events
    ========================================================================== */
 document.addEventListener("click", (ev) => {
   if (S.holdFired) { S.holdFired = false; return; }
-  const t = ev.target.closest("[data-open],[data-copen],[data-act],[data-sort],[data-sel],[data-map],[data-band],[data-node],[data-crumb],[data-xopen],[data-mapsel],[data-rowopen],[data-verb],[data-verbs],[data-sysrow]");
+  const t = ev.target.closest("[data-open],[data-copen],[data-act],[data-sort],[data-sel],[data-map],[data-band],[data-node],[data-crumb],[data-xopen],[data-mapsel],[data-rowopen],[data-verb],[data-verbs],[data-sysrow],[data-go]");
   if (!t) return;
+  if (t.dataset.act === "pb") { ev.stopPropagation(); return openInPB(t.dataset.id, Number(t.dataset.v)); }
+  if (t.dataset.act === "pbset") return pbDialog();
+  if (t.dataset.go) return goKey(t.dataset.go, t.closest("tr, .list-item, .chip") || t);
   if (t.dataset.verb) return toggleVerb(t.dataset.verb);
   if (t.dataset.verbs) return toggleVerb(t.dataset.verbs);
-  if (t.dataset.sysrow) { S.diveFrom = null; go("band", { k: "cs" }, { enter: true }); return focusRow(t.dataset.sysrow); }
+  if (t.dataset.sysrow) return openDetail(t.closest("tr, .list-item") || t, "system", { key: t.dataset.sysrow });
   if (t.dataset.node) { clearTimeout(S.clickT); const key = t.dataset.node; S.clickT = setTimeout(() => pivot(key), 240); return; }
   if (t.dataset.crumb !== undefined) return crumbTo(Number(t.dataset.crumb));
   if (t.dataset.xopen) { ev.stopPropagation(); return openExplorer(t.closest("tr.r")); }
   if (t.dataset.copen) return openDetail(t.closest("tr, .list-item") || t, "component", { ref: t.dataset.copen });
-  // components: the row opens the relationship explorer directly; scenarios: the row opens the detail page
-  if (t.dataset.rowopen) return t.dataset.rowopen === "co" || t.dataset.rowopen === "cs" ? openExplorer(t) : openDetail(t, "scenario", { id: t.dataset.id, version: null });
+  // R-16 / R-17: every row opens its detail page the same way (lift and morph)
+  if (t.dataset.rowopen) return openDetail(t, t.dataset.rowopen === "co" ? "component" : t.dataset.rowopen === "cs" ? "system" : "scenario",
+    t.dataset.rowopen === "co" ? { ref: t.dataset.id } : t.dataset.rowopen === "cs" ? { key: t.dataset.id } : { id: t.dataset.id, version: null });
   if (t.dataset.band) return openWorld(t, t.dataset.band);           // a band opens into its world
   if (t.dataset.mapsel) {                                            // explorer: show an asset on the map
     const a = S.assets.get(t.dataset.mapsel);
@@ -1850,12 +2003,12 @@ document.addEventListener("click", (ev) => {
     S.listSort = S.listSort.key === k ? { key: k, dir: -S.listSort.dir } : { key: k, dir: k === "changed" || k === "flags" || k === "decisions" || k === "version" ? -1 : 1 };
     $("#listTable").innerHTML = listTable(); return;
   }
-  if (t.dataset.open) { S.prev = { view: S.view, param: S.param }; return go("scenario", { id: t.dataset.open, version: t.dataset.v ? Number(t.dataset.v) : null }); }
+  if (t.dataset.open) { pushNav(); return go("scenario", { id: t.dataset.open, version: t.dataset.v ? Number(t.dataset.v) : null }, { enter: true }); }
   const act = t.dataset.act;
   if (act === "open") openFolder();
   if (act === "github") loadFromGitHub();
   if (act === "clearsel") { S.sel = null; refreshOverviewParts(); }
-  if (act === "back") { const p = S.prev && S.prev.view !== "scenario" ? S.prev : { view: "home" }; go(p.view, p.param); }
+  if (act === "back") { const p = (S.nav || []).pop() || { view: "home" }; go(p.view, p.param, { keepScroll: true }); if (p.scroll) window.scrollTo(0, p.scroll); }
   if (act === "home") { if (S.view === "band") closeWorld(); else go("home"); }
   if (act === "diveback") { const d = S.diveFrom; S.diveFrom = null; go("band", { k: d.k }, { enter: true });
     const row = document.querySelector(`tr.r[data-id="${CSS.escape(d.row || "")}"]`); if (row) { X.stack = d.stack; openExplorer(row, true); row.scrollIntoView({ block: "center" }); } }
