@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Integration Registry — draft 0.8.1</title>
+<title>Integration Registry — draft 0.9</title>
 <style>
   :root {
     --bg: #f5f6f8; --panel: #ffffff; --ink: #1d2433; --muted: #667085; --line: #e3e6ec;
@@ -170,7 +170,7 @@
   /* the morphing card and the world it becomes */
   .morph { position: fixed; z-index: 60; overflow: hidden; pointer-events: none; background: linear-gradient(140deg, #ffffff 0%, #f4f7fb 100%);
     border: 1px solid rgba(16,24,40,.08); box-shadow: 0 40px 80px -30px rgba(16,24,40,.45), 0 2px 6px rgba(16,24,40,.06); }
-  .world { background: #fff; border-radius: 20px; border: 1px solid rgba(16,24,40,.08); box-shadow: 0 30px 70px -36px rgba(16,24,40,.4), 0 1px 2px rgba(16,24,40,.04); min-height: calc(100vh - 120px); overflow: hidden; }
+  .world { background: #fff; border-radius: 20px; border: 1px solid rgba(16,24,40,.08); box-shadow: 0 30px 70px -36px rgba(16,24,40,.4), 0 1px 2px rgba(16,24,40,.04); min-height: calc(100vh - 120px); overflow: clip; }
   .world-head { display: flex; align-items: center; gap: 16px; padding: 18px 24px; background: linear-gradient(140deg, #ffffff 0%, #f4f7fb 100%); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 2; }
   .wback { width: 38px; height: 38px; border-radius: 12px; border: 1px solid var(--line); background: #fff; display: grid; place-items: center; cursor: pointer; color: var(--ink); box-shadow: 0 1px 2px rgba(16,24,40,.06); transition: transform .2s, box-shadow .2s; }
   .wback:hover { transform: translateX(-2px); box-shadow: 0 4px 10px -4px rgba(16,24,40,.25); } .wback svg { width: 20px; height: 20px; }
@@ -352,9 +352,19 @@
   .mobj .wmark { margin-left: auto; }
   .mhead { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .prow { display: flex; gap: 14px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--line); } .prow:last-of-type { border-bottom: 0; } .prow .ph { width: 220px; flex: none; }
+  /* ===== draft 0.9: pinned header, toolbar and column names (W-4); platform kinds (W-3) ===== */
+  :root { --stk-app: 48px; --stk-head: 72px; --stk-tool: 0px; }
+  .world-head { top: var(--stk-app); z-index: 4; }
+  .world.compact .world-head { padding-top: 8px; padding-bottom: 8px; }
+  .world.compact .world-head .desc { display: none; } .world.compact .world-head .big { font-size: 22px; }
+  .world.compact .world-head .orb { transform: scale(.7); margin: -6px -4px; }
+  .world-body > .toolbar { position: sticky; top: calc(var(--stk-app) + var(--stk-head)); z-index: 3; background: #fff; margin: -16px -24px 12px; padding: 12px 24px 10px; border-bottom: 1px solid transparent; }
+  .world.compact .world-body > .toolbar { border-bottom-color: var(--line); box-shadow: 0 6px 10px -10px rgba(16,24,40,.25); }
+  .wtable th { top: calc(var(--stk-app) + var(--stk-head) + var(--stk-tool)); z-index: 2; box-shadow: inset 0 -1px 0 var(--line); }
+  .chip.pk-iPaaS { background: var(--teal-bg); color: var(--teal); } .chip.pk-broker { background: var(--violet-bg); color: var(--violet); }
   /* ===== draft 0.8.1: high-level design document (trial) ===== */
   .hld { max-width: 1000px; margin: 0 auto; }
-  .hbar { position: sticky; top: 48px; z-index: 4; display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: rgba(245,246,248,.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+  .hbar { position: sticky; top: var(--stk-app); z-index: 4; display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: rgba(245,246,248,.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); margin-bottom: 14px; }
   .hbar .hbt { font-weight: 600; }
   .hpage { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 48px 64px 40px; box-shadow: 0 10px 30px rgba(16,24,40,.06); font-size: 14.5px; line-height: 1.6; }
   .hhead { border-bottom: 3px solid var(--head); padding-bottom: 16px; margin-bottom: 18px; }
@@ -414,7 +424,7 @@
 <body>
 <header>
   <h1 data-act="home" style="cursor:pointer" title="Home">Integration Registry</h1>
-  <span class="draft">draft 0.8.1 · schema 0.6</span>
+  <span class="draft">draft 0.9 · schema 0.6</span>
   <span class="spacer"></span>
   <span class="folder" id="folderName"></span>
   <button class="btn ghost small hidden" id="reloadBtn" title="Read the registry again">Reload</button>
@@ -972,15 +982,20 @@ function decisionsTable() {
 const LIST_COLS = [
   { key: "name", label: "Name", get: (r) => r.name.toLowerCase() },
   { key: "source", label: "Source", get: (r) => srcNames(r).join(",").toLowerCase() },
-  { key: "platforms", label: "Platforms", get: (r) => r.platforms.join(",").toLowerCase() },
+  { key: "platforms", label: "Integration platforms", get: (r) => intPlats(r).map((p) => p.name).join(",").toLowerCase() },
   { key: "target", label: "Targets", get: (r) => tgtNames(r).join(",").toLowerCase() },
-  { key: "version", label: "Version", get: (r) => r.version },
   { key: "decisions", label: "Decisions", get: (r) => r.decisions },
   { key: "flags", label: "Flags", get: (r, s) => activeFlags(s).length },
   { key: "changed", label: "Last changed", get: (r) => r.exportedAt },
   { key: "author", label: "Author", get: (r) => r.author.toLowerCase() },
   { key: "tags", label: "Tags", get: (r) => r.tags.join(",").toLowerCase() },
 ];
+/* W-3 (0.9): integration platforms of a scenario with their kind — iPaaS first, then message brokers */
+function intPlats(r) {
+  const m = new Map(); for (const k of r.containers || []) if (isIntegrationKind(k.kind) && k.platform && !m.has(k.platform)) m.set(k.platform, k.kind);
+  return [...m].map(([name, kind]) => ({ name, kind })).sort((a, b) => (a.kind === "broker") - (b.kind === "broker") || a.name.localeCompare(b.name));
+}
+const platChips = (r) => intPlats(r).map((p) => `<span class="chip pk-${p.kind}" title="${p.kind === "broker" ? "Message broker" : "iPaaS"}">${esc(p.name)}</span>`).join("") || '<span class="muted">—</span>';
 /* R-18: the flow in order — source system(s) → platforms → target system(s) */
 const srcNames = (r) => uniq((r.sys?.triggeredBy || []).map((t) => sysName(t.key)));
 const tgtNames = (r) => uniq((r.sys?.deliversTo || []).map((d) => sysName(d.key)));
@@ -1230,8 +1245,7 @@ function listTable() {
     return `<tr class="r ${n ? "attn" : ""}" style="--i:${i}" data-id="${esc(r.id)}" data-xkind="sc" data-rowopen="sc" tabindex="0" title="Open all details of this scenario">
     <td class="mk">${n ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
     <td><b>${esc(r.name)}</b><div class="sub2">${r.tags.length ? chips(r.tags) : `<span class="mono muted">${esc(r.id)}</span>`}</div></td>
-    <td class="flowcell">${firstPlus(srcNames(r), "sysc")}<span class="farr">→</span></td><td>${chips(r.platforms)}</td><td class="flowcell"><span class="farr">→</span>${firstPlus(tgtNames(r), "sysc")}</td>
-    <td class="nowrap">v${r.version}</td>
+    <td class="flowcell">${firstPlus(srcNames(r), "sysc")}<span class="farr">→</span></td><td>${platChips(r)}</td><td class="flowcell"><span class="farr">→</span>${firstPlus(tgtNames(r), "sysc")}</td>
     <td class="nowrap">${r.decisions}${r.openVersions ? ` <span class="chip violet">${r.openVersions} open</span>` : ""}</td>
     <td class="nowrap">${n ? `<span class="chip amber">⚠ ${n}</span>` : '<span class="muted">—</span>'}</td>
     <td class="nowrap">${esc(fmtDate(r.exportedAt))}</td><td>${esc(r.author)}</td>
@@ -1318,7 +1332,7 @@ const MTYPES = [
   { t: "a", label: "Connected system", icon: "cs" },
 ];
 function mapObjects(t) {
-  if (t === "s") return [...S.scenarios.values()].map((s) => ({ key: nodeKey("s", s.latest.id), label: s.latest.name, sub: [srcNames(s.latest)[0], s.latest.platforms.join(", "), tgtNames(s.latest)[0]].filter(Boolean).join(" → "), attn: activeFlags(s).length > 0 }));
+  if (t === "s") return [...S.scenarios.values()].map((s) => ({ key: nodeKey("s", s.latest.id), label: s.latest.name, sub: [srcNames(s.latest)[0], intPlats(s.latest).map((p) => p.name).join(" + "), tgtNames(s.latest)[0]].filter(Boolean).join(" → "), attn: activeFlags(s).length > 0 }));
   if (t === "c") { const ca = compAttn(); return [...S.comps.values()].map((x) => ({ key: nodeKey("c", x.key), label: x.name, sub: `${x.platform} · ${[...x.parts].map(partLabel).join(", ")}`, attn: ca.has(x.key) })); }
   if (t === "p") return [...S.platforms.values()].map((p) => ({ key: nodeKey("p", p.key), label: p.name, sub: `${[...p.kinds].map((k) => kindInfo(k).label).join(" + ")} · ${p.comps.size} component${p.comps.size === 1 ? "" : "s"}`, attn: false }));
   const sa = sysAttn(); return [...S.systems.values()].map((y) => ({ key: nodeKey("a", y.key), label: y.name, sub: [y.triggers.size ? "caller" : "", y.receives.size ? "receiver" : ""].filter(Boolean).join(" · "), attn: sa.has(y.key) }));
@@ -1558,9 +1572,9 @@ function relSvg(n, open, prev) {
   if (!groups.length) s += `<text x="${VX}" y="${cy + 4}" class="xs">no relationships</text>`;
   if (prev) {
     const col = NODE_KIND[prev.kind]?.col || "#98a2b3", mx = (PX + PW + CX) / 2;
-    const mk = prev.flow === "out" ? 'marker-end="url(#rarr)"' : prev.flow === "in" ? 'marker-start="url(#rarr)"' : "";
+    const mk = prev.flow === "out" ? 'marker-start="url(#rarr)"' : prev.flow === "in" ? 'marker-end="url(#rarr)"' : "";
     s += `<path d="M${PX + PW} ${cy} L${CX - 2} ${cy}" class="xe back" ${mk}/>
-      <text x="${mx}" y="${cy - 8}" text-anchor="middle" class="xs xvia">${esc(short(prev.verb || "", 18))}</text>
+      <text x="${mx}" y="${cy - 8}" text-anchor="middle" class="xs xvia">${prev.flow === "out" ? "← " : ""}${esc(short(prev.verb || "", 18))}${prev.flow === "in" ? " ←" : ""}</text>
       <g class="xn xprev k-${prev.kind}" data-back="1" tabindex="0" role="button"><rect x="${PX}" y="${cy - 16}" width="${PW}" height="32" rx="${prev.kind === "a" ? 16 : 7}"/>
         <rect x="${PX}" y="${cy - 16}" width="5" height="32" rx="2" fill="${col}" stroke="none"/>
         <text x="${PX + 14}" y="${cy + 4}">‹ ${esc(short(prev.label, 18))}</text><title>Step back to ${esc(prev.label)} (${esc(NODE_KIND[prev.kind]?.label || "")})</title></g>`;
@@ -1613,11 +1627,16 @@ function rerenderExplorer(dir) {
     x.querySelector(".xstage").animate([{ transform: `translateX(${dir * 60}px)`, opacity: 0 }, { transform: "none", opacity: 1 }], { duration: 420, easing: EASE });
   };
 }
+/* W-1 (0.9): the left link reads from the centre outward — store the inverse of the relationship that led here */
+const INVERSE = { "made of": "used in", "used in": "made of", "triggered by": "triggers", "triggers": "triggered by", "delivers to": "receives from", "receives from": "delivers to",
+  "feeds": "fed by", "fed by": "feeds", "calls": "called by", "called by": "calls", "runs on": "hosts", "hosts": "runs on", "used by": "uses", "uses": "used by",
+  "runs alongside": "runs alongside", "shares": "shares", "has parts": "part of" };
+const FLIP = { out: "in", in: "out" };
 function syncMx() { if (S.view === "band" && S.param?.k === "map" && S.mx.stack) { S.mx.stack = X.stack; S.mx.via = X.via; } }
 function pivot(key, viaK) {
   const top = X.stack[X.stack.length - 1]; if (top === key) return;
   const g = viaK ? relOf(top).groups.find((x) => x.k === viaK) : null;
-  X.via = X.via.slice(0, X.stack.length); X.via[X.stack.length] = g ? { verb: g.verb, flow: g.flow } : null;
+  X.via = X.via.slice(0, X.stack.length); X.via[X.stack.length] = g ? { verb: INVERSE[g.verb] || g.verb, flow: FLIP[g.flow] || "", came: g.verb } : null;
   X.stack.push(key); syncMx(); rerenderExplorer(1);
 }
 function crumbTo(i) { X.stack = X.stack.slice(0, i + 1); X.via = X.via.slice(0, i + 1); syncMx(); rerenderExplorer(-1); }
@@ -1796,7 +1815,7 @@ async function scenarioView(param) {
             ${(v.retired || []).length ? `<dt>Retired</dt><dd>${v.retired.map((x) => `${esc(x.ref)} on ${esc(x.on)}`).join("<br>")}</dd>` : ""}
           </dl></div>`; }).join("") || '<div class="muted">No versioning decisions — base flow only.</div>';
   return `<div class="world ${S.enterDetail ? "enter" : ""}">
-  ${detailHead("sc", rec.name, `Scenario${isLatest ? "" : ' · <span class="chip amber">older version</span>'}`, nFlags)}
+  ${detailHead("sc", rec.name, `Scenario${isLatest ? "" : ` · <span class="chip amber">earlier export (${esc(fmtDate(rec.exportedAt))})</span>`}`, nFlags)}
   <div class="world-body">
     <div class="scenhead">
       ${factsHtml([["ID", `<span class="mono">${esc(rec.id)}</span>`], ["Type", typeTxt], ["Description", rec.description ? esc(rec.description) : '<span class="muted">—</span>', true]])}
@@ -1804,7 +1823,7 @@ async function scenarioView(param) {
         <button class="btn small ghost" data-act="markers" data-id="${esc(rec.id)}" data-v="${rec.version}" title="Status markers for Pattern Bench as a file">Download marker list</button>
         <button class="btn small" data-act="hld" data-id="${esc(rec.id)}" title="Generate a high-level design document from this scenario (trial)">High-level design <span class="chip violet" style="margin-left:4px">trial</span></button></div>
     </div>
-    <div class="meta minor">v${rec.version} · exported ${esc(fmtDate(rec.exportedAt))}${rec.author ? " by " + esc(rec.author) : ""} ${rec.tags.length ? "· " + chips(rec.tags) : ""} · canvas <span class="mono">${esc(rec.canvas || "—")}</span>${rec.canvas && !canvasEntry(rec) ? ' <span class="chip red">missing</span>' : ""}</div>
+    <div class="meta minor">Exported ${esc(fmtDate(rec.exportedAt))}${rec.author ? " by " + esc(rec.author) : ""} ${rec.tags.length ? "· " + chips(rec.tags) : ""} · <span title="${esc(rec.canvas || "")}">canvas ${rec.canvas ? (canvasEntry(rec) ? "✓" : "") : "—"}</span>${rec.canvas && !canvasEntry(rec) ? ' <span class="chip red">missing</span>' : ""}</div>
     <div class="dlayout"><div class="dmain">
       ${flags.length ? `<div class="panel"><h2>Flags <span class="count">(${flags.length})</span></h2>
         ${flags.map((f) => `<div class="flag ${f.acked ? "grey" : f.sev === "red" ? "red" : f.sev === "grey" ? "grey" : ""}">
@@ -1823,11 +1842,12 @@ async function scenarioView(param) {
         ${srcNote.map((x) => `<div class="note" style="margin-top:8px">Same source: ${esc(thingName(x.ref))} also triggers ${x.others.length} other scenario(s) — not counted as overlap.</div>`).join("")}</div>
       <div class="panel"><h2>Relations</h2>
         ${rec.relations.map((r) => `<div class="list-item" ${S.scenarios.has(r.scenarioId) ? `data-go="${esc(nodeKey("s", r.scenarioId))}"` : ""}><div class="t">${esc(r.type)}</div>
-          <div class="s">${esc(scenarioName(r.scenarioId))} ${r.version ? "v" + esc(r.version) : ""}</div></div>`).join("") || '<div class="muted">None declared.</div>'}
+          <div class="s">${esc(scenarioName(r.scenarioId))}</div></div>`).join("") || '<div class="muted">None declared.</div>'}
       </div>
-      <div class="panel hist"><h2>History</h2>
-        ${s.history.map((h) => h === rec ? `<div><b>v${h.version}</b> · ${esc(fmtDate(h.exportedAt))} (shown)</div>`
-          : `<div><a data-open="${esc(h.id)}" data-v="${h.version}">v${h.version}</a> · ${esc(fmtDate(h.exportedAt))}</div>`).join("")}
+      <div class="panel hist"><h2>Exports <span class="count">from Pattern Bench</span></h2>
+        ${s.history.map((h) => h === rec ? `<div><b>Export ${h.version}</b> · ${esc(fmtDate(h.exportedAt))} (shown)</div>`
+          : `<div><a data-open="${esc(h.id)}" data-v="${h.version}">Export ${h.version}</a> · ${esc(fmtDate(h.exportedAt))}</div>`).join("")}
+        <div class="note" style="margin-top:6px">An export is not a new version of the scenario; the newest export is the current design.</div>
       </div>
     </aside></div></div></div>`;
 }
@@ -2001,7 +2021,7 @@ function hldHtml(doc, m) {
       <button class="btn small ghost" data-act="hldcopy">Copy as Markdown</button><button class="btn small ghost" data-act="hldmd">Download .md</button><button class="btn small" data-act="hldprint">Print / PDF</button></div>
     <div class="hpage"><div class="hhead"><div class="hkicker">Integration registry · high-level design</div><h1>${esc(m.rec.name)}</h1><div class="hsub">${esc(doc.sub)}</div></div>
       <nav class="htoc"><b>Contents</b>${toc}</nav>${body}
-      <footer class="hfoot">Generated from the integration registry (draft 0.8.1, trial). Content comes from the Pattern Bench export; sections marked "to be completed" are not held in the registry yet.</footer></div></div>`;
+      <footer class="hfoot">Generated from the integration registry (draft 0.9, trial). Content comes from the Pattern Bench export; sections marked "to be completed" are not held in the registry yet.</footer></div></div>`;
 }
 async function hldView(param) {
   const m = await hldModel(param.id), doc = hldDoc(m);
@@ -2033,7 +2053,7 @@ function canvasEntry(rec) {
 }
 function pbButton(rec, where) {
   const ok = !!canvasEntry(rec);
-  return `<button class="pbbtn ${where}" data-act="pb" data-id="${esc(rec.id)}" data-v="${rec.version}" ${ok ? `title="Open this flow in Pattern Bench with its current status"` : `disabled title="No canvas export (${esc(rec.id)}.v${rec.version}.canvas.json) next to this registry entry — re-export from Pattern Bench"`}>
+  return `<button class="pbbtn ${where}" data-act="pb" data-id="${esc(rec.id)}" data-v="${rec.version}" ${ok ? `title="Open this flow in Pattern Bench with its current status"` : `disabled title="No canvas file next to this registry entry — re-export from Pattern Bench"`}>
     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><path d="M10 6.5h4a3 3 0 0 1 3 3V14"/></svg>
     <span>${where === "row" ? "Open" : "Open in Pattern Bench"}</span></button>${where === "page" ? `<button class="pbset" data-act="pbset" title="Pattern Bench address">⚙</button>` : ""}`;
 }
@@ -2109,7 +2129,7 @@ async function openInPB(id, version) {
   const onMsg = (ev) => {
     if (ev.source !== w || !ev.data || ev.data.type !== "pb-ready" || done) return;
     done = true; cleanup(); w.postMessage(pl.payload, target); w.focus?.();
-    toast(`Sent ${pl.rec.name} v${pl.rec.version} to Pattern Bench (${pl.payload.markers.markers.length} status marker${pl.payload.markers.markers.length === 1 ? "" : "s"})`);
+    toast(`Sent ${pl.rec.name} to Pattern Bench (${pl.payload.markers.markers.length} status marker${pl.payload.markers.markers.length === 1 ? "" : "s"})`);
   };
   addEventListener("message", onMsg);
   const ping = setInterval(() => { try { w.postMessage({ type: "pb-ping" }, target); } catch {} }, 400);   // a re-used window doesn't reload
@@ -2199,6 +2219,26 @@ document.addEventListener("keydown", (ev) => {     // Enter / Space on tiles and
   if ((ev.key === "Enter" || ev.key === " ") && ev.target.matches?.("[data-band],[data-rowopen],[data-verb],[data-back],[data-mstart]")) { ev.preventDefault(); ev.target.click(); }
 });
 $("#dirInput").addEventListener("change", (e) => e.target.files.length && loadFromInput(e.target.files));
+
+/* W-4 (0.9): measure the pinned layers so they stack without gaps or overlap */
+function measureSticky() {
+  const st = document.documentElement.style, app = document.querySelector("body > header"), head = document.querySelector(".world-head"), tool = document.querySelector(".world-body > .toolbar");
+  st.setProperty("--stk-app", (app ? app.offsetHeight : 0) + "px");
+  st.setProperty("--stk-head", (head ? head.offsetHeight : 0) + "px");
+  st.setProperty("--stk-tool", (tool ? tool.offsetHeight : 0) + "px");
+}
+function onScrollSticky() {
+  const w = document.querySelector(".world"); if (!w) return;
+  const c = window.scrollY > 40; if (c !== w.classList.contains("compact")) { w.classList.toggle("compact", c); measureSticky(); }
+}
+new MutationObserver(() => requestAnimationFrame(() => { onScrollSticky(); measureSticky(); })).observe($("#view"), { childList: true });
+addEventListener("resize", measureSticky); addEventListener("scroll", onScrollSticky, { passive: true });
+/* W-4: Escape or Alt+← goes back (not while typing) */
+document.addEventListener("keydown", (ev) => {
+  if (!((ev.key === "Escape" && !ev.altKey) || (ev.key === "ArrowLeft" && ev.altKey))) return;
+  if (ev.target.matches?.("input, textarea, select") || $(".pbdlg")) return;
+  const b = document.querySelector(".world-head .wback, .hbar .wback"); if (b) { ev.preventDefault(); b.click(); }
+});
 
 // test / automation hook: load from an array of {path, text, lastModified}
 window.__registryLoad = (items, name = "test") => {

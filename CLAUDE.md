@@ -15,7 +15,7 @@ entries (`*.registry.json`, schema 0.6) + canvas exports (`*.canvas.json`) from 
 ## Code map of registry-app.html (search for the markers / function names; line numbers drift)
 | Area | Find it by |
 |---|---|
-| CSS (all) | `<style>`; newest blocks at the end: `draft 0.6: relationship types`, `draft 0.7: one detail-page pattern` |
+| CSS (all) | `<style>`; newest blocks: `draft 0.9: pinned header…` (sticky vars `--stk-app/head/tool`), `draft 0.8.1: high-level design`, `draft 0.8: two concepts` |
 | Constants, identity helpers | `RECORD_FORMAT`, `isSystemKind`, `appNameOf`, `endpointNameOf`, `sysKey`, `slug` |
 | 1. Reading the folder | `1. Reading the folder`, `loadFromGitHub`, `openFolder`, `loadFromHandle`, `window.__registryLoad` (test hook) |
 | 2. Record per entry (index.json cache) | `function extract(` — bump `RECORD_FORMAT` when the record shape changes |
@@ -23,13 +23,15 @@ entries (`*.registry.json`, schema 0.6) + canvas exports (`*.canvas.json`) from 
 | Overlap tiers (R-12) | `TIERS`, `overlapBetween`, `overlapsOf`, `sameSourceOf` |
 | Router / navigation | `function go(` (views: home, band, scenario, component, system), `openDetail` (row → page morph), `pushNav`, `keyView`, `goKey`, act `back` |
 | Home bands, worlds | `BANDS`, `bandStats`, `homeView`, `worldView`, `openWorld`, `closeWorld` |
-| Lists | `LIST_COLS` + `listTable` (scenarios: Source → Platforms → Targets, PB column), `compTable` (one row per component, `partChips`), `sysTable`, `decisionsTable` |
+| Lists | `LIST_COLS` + `listTable` (scenarios: Source → Platforms → Targets, PB column), `compTable` (one row per component, `partChips`), `intPlats` / `platChips` (iPaaS teal, broker violet), `sysTable`, `decisionsTable` |
 | Relationship map = explorer start (V-1, 0.8) | `MTYPES`, `mapObjects`, `mapList`, `mapWorld`, `S.mx` (type, q, stack, via), events `data-mtype` / `data-mstart` / act `mreset` |
-| Explorer (verbs) | `scRel`, `coRel` (component), `plRel` (platform), `sysRel`, `compNeighbours`; `relSvg` (drawing; left column = previous node, V-3), `explorerHtml`, `toggleVerb`, `pivot(key, via)`, `crumbTo`, `X.via`, `dive`, `#pageRel` |
+| Explorer (verbs) | `scRel`, `coRel` (component), `plRel` (platform), `sysRel`, `compNeighbours`; `relSvg` (drawing; left column = previous node, V-3), `explorerHtml`, `toggleVerb`, `pivot(key, via)` (stores the inverse verb, `INVERSE` / `FLIP`, W-1), `crumbTo`, `X.via`, `dive`, `#pageRel` |
 | Detail pages | `factsHtml`, `sideLists`, `detailHead`, `componentView`, `platformView`, `systemView`, `scenarioView`, `madeOfRows` |
 | Flow diagram (named artifacts) | `chainSvg`, `flowPanel` |
 | High-level design (trial, 0.8.1) | `hldModel` (nodes, ordered links, steps), `hldDoc` (13 sections → blocks p / list / table / note / diagram), `hldHtml`, `hldMarkdown` + `hldMermaid`, `hldView`; route `hld`; acts `hld`, `hldcopy`, `hldmd`, `hldprint` |
 | Open in Pattern Bench (R-14) | `pbAddress`, `canvasEntry`, `pbButton`, `statusMarkers`, `pbPayload`, `openInPB`, `pbDialog`, `toast`, `saveBlob` |
+| Sticky layers (W-4, 0.9) | `measureSticky`, `onScrollSticky` (`.world.compact`), Escape / Alt+← = back; `.world` uses `overflow: clip` (hidden would break sticky) |
+| Scenario export ≠ version (W-2, 0.9) | no version shown; Exports panel "Export n · date"; `rec.version` kept internally (file names, PB payloads, `data-v`) |
 | 5. Events | `5. Events` — one delegated click handler (data-act, data-go, data-rowopen, data-node, data-verb …), input, dblclick / hold |
 
 ## Data model in memory (after derive)
