@@ -1,5 +1,7 @@
 # Integration Version Registry
 
+> Draft 0.10 (Nov 22 2026): landscape config + ⚙ Settings (shared with Pattern Bench 2.1), 📥 Inbox, entry schema 0.7, retire / remove wizard with staged dependency check, archived versions.
+
 A registry and traceability app for integration designs exported from
 [Pattern Bench](https://github.com/suddhasattaguha/pattern-bench). It reads a folder
 of registry entries and traces scenarios, components, versions and decisions across them.

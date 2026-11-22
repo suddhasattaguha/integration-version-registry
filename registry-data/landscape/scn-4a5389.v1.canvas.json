@@ -33,10 +33,16 @@
       "asset": "Ariba-Procurement"
     },
     {
-      "block": 1,
+      "block": 0,
       "at": "out",
+      "platform": "BTP IS",
+      "asset": "Ariba-Procurement"
+    },
+    {
+      "block": 2,
+      "at": "m0",
       "platform": "Solace",
-      "asset": "PO-Events"
+      "asset": "Q-Ariba-Po"
     },
     {
       "block": 2,
@@ -54,6 +60,59 @@
   "caller": true,
   "ripples": [],
   "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t1:out",
+      "name": "PO-Events"
+    },
+    {
+      "key": "@t2:out",
+      "name": "Ariba Purchase Order API"
+    },
+    {
+      "key": "@b0.1:out",
+      "name": "Data Lake landing folder"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    },
+    "branchContainers": [
+      {
+        "key": "@b0.0:m0",
+        "platform": "Solace",
+        "asset": "Q-Dwh-Po"
+      },
+      {
+        "key": "@b0.0:out",
+        "platform": "Azure Logic Apps",
+        "asset": "DataLake-Ingest"
+      },
+      {
+        "key": "@b0.1:out",
+        "name": "Azure Data Lake",
+        "process": "Analytics ingest"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "scn-4a5389",
+    "version": 1,
+    "name": "P2P-Purchase-Order-to-Ariba",
+    "description": "Released purchase orders are published and sent to suppliers via Ariba; a copy lands in the data lake.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "P2P",
+      "purchase order",
+      "Ariba"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-16T09:30:00.000Z",
   "mode": "composite",
   "branches": [
     {
@@ -71,8 +130,12 @@
       ],
       "blocks": [
         {
-          "pattern": "consume-to-file",
-          "label": "Consume-to-File"
+          "pattern": "consume-to-process",
+          "label": "Consume-to-Process"
+        },
+        {
+          "pattern": "process-to-file",
+          "label": "Process-to-File"
         }
       ]
     }
@@ -82,20 +145,5 @@
   "lineFlips": [],
   "callerVer": [],
   "laneChoice": [],
-  "compositeRipples": [],
-  "scenario": {
-    "id": "scn-4a5389",
-    "version": 1,
-    "name": "P2P-Purchase-Order-to-Ariba",
-    "description": "Released purchase orders are published and sent to suppliers via Ariba; a copy lands in the data lake.",
-    "author": "Suddhasatta Guha",
-    "tags": [
-      "P2P",
-      "purchase order",
-      "Ariba"
-    ],
-    "relations": [],
-    "why": []
-  },
-  "savedAt": "2026-11-16T09:30:00.000Z"
+  "compositeRipples": []
 }

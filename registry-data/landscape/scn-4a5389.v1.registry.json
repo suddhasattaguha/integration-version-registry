@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-4a5389",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-16T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "Ariba"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -60,8 +66,8 @@
       },
       {
         "id": "b4",
-        "templateId": "consume-to-file",
-        "label": "Consume-to-File",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
         "row": 1,
         "order": 0,
         "components": [
@@ -69,189 +75,254 @@
           "c6",
           "c7"
         ]
+      },
+      {
+        "id": "b5",
+        "templateId": "process-to-file",
+        "label": "Process-to-File",
+        "row": 1,
+        "order": 1,
+        "components": [
+          "c7",
+          "c8"
+        ]
       }
     ],
     "components": [
       {
         "id": "c1",
-        "ref": "btpis/ariba-procure#api",
-        "name": "Ariba-Procurement API",
-        "autoName": false,
+        "ref": "btp-is/ariba-procurement#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_ARIBAPROCURE_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/ariba-procure#process",
-        "name": "Ariba-Procurement Process",
-        "autoName": false,
+        "ref": "btp-is/ariba-procurement#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_ARIBAPROCURE_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/purchase-order#topic",
-        "name": "PO-Events Topic",
-        "autoName": false,
+        "ref": "solace/po-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_POEVENTS_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-ariba-po#queue",
-        "name": "Q-Ariba-Po Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QARIBAPO_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/ariba-po#api",
-        "name": "Ariba Purchase Order API",
-        "autoName": false,
+        "ref": "endapp/sap-ariba/ariba-purchase-order-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "Ariba Purchase Order API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
         "ref": "solace/q-dwh-po#queue",
-        "name": "Q-Dwh-Po Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k5"
+        "container": "k5",
+        "name": "SOL_QDWHPO_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c7",
-        "ref": "endapp/datalake#file",
-        "name": "Data Lake landing folder",
-        "autoName": false,
-        "type": "file",
+        "ref": "azure-logic-apps/datalake-ingest#process",
+        "type": "process",
         "version": "v1",
-        "owner": "endApp",
-        "container": "k6"
+        "owner": "integration",
+        "container": "k6",
+        "name": "ALA_DATALAKEINGE_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c8",
-        "ref": "caller/s4-p01#app",
-        "name": "SAP S/4HANA (P01)",
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder#file",
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k7",
+        "name": "Data Lake landing folder",
         "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      },
+      {
+        "id": "c9",
+        "ref": "caller/sap-s-4hana-p01#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k7"
+        "container": "k8",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "btpis/ariba-procure#api",
-        "toRef": "btpis/ariba-procure#process"
+        "fromRef": "btp-is/ariba-procurement#api",
+        "toRef": "btp-is/ariba-procurement#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/ariba-procure#process",
-        "toRef": "solace/purchase-order#topic"
+        "fromRef": "btp-is/ariba-procurement#process",
+        "toRef": "solace/po-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/purchase-order#topic",
+        "fromRef": "solace/po-events#topic",
         "toRef": "solace/q-ariba-po#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-ariba-po#queue",
-        "toRef": "endapp/ariba-po#api"
+        "toRef": "endapp/sap-ariba/ariba-purchase-order-api#api"
       },
       {
         "from": "c3",
         "to": "c6",
-        "fromRef": "solace/purchase-order#topic",
+        "fromRef": "solace/po-events#topic",
         "toRef": "solace/q-dwh-po#queue"
       },
       {
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-dwh-po#queue",
-        "toRef": "endapp/datalake#file"
+        "toRef": "azure-logic-apps/datalake-ingest#process"
       },
       {
-        "from": "c8",
+        "from": "c7",
+        "to": "c8",
+        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
+      },
+      {
+        "from": "c9",
         "to": "c1",
-        "fromRef": "caller/s4-p01#app",
-        "toRef": "btpis/ariba-procure#api"
+        "fromRef": "caller/sap-s-4hana-p01#app",
+        "toRef": "btp-is/ariba-procurement#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "btpis/ariba-procure",
+        "ref": "btp-is/ariba-procurement",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Ariba-Procurement"
+        "asset": "Ariba-Procurement",
+        "platformId": "btp-is",
+        "componentId": "btp-is/ariba-procurement"
       },
       {
         "id": "k2",
-        "ref": "solace/purchase-order",
+        "ref": "solace/po-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "PO-Events"
+        "asset": "PO-Events",
+        "platformId": "solace",
+        "componentId": "solace/po-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-ariba-po",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Ariba-Po"
+        "asset": "Q-Ariba-Po",
+        "platformId": "solace",
+        "componentId": "solace/q-ariba-po"
       },
       {
         "id": "k4",
-        "ref": "endapp/ariba-po",
+        "ref": "endapp/sap-ariba/ariba-purchase-order-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "Ariba Purchase Order API",
+        "asset": "SAP Ariba",
         "name": "SAP Ariba",
-        "process": "PO to supplier"
+        "process": "PO to supplier",
+        "appId": "sap-ariba"
       },
       {
         "id": "k5",
         "ref": "solace/q-dwh-po",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Dwh-Po"
+        "asset": "Q-Dwh-Po",
+        "platformId": "solace",
+        "componentId": "solace/q-dwh-po"
       },
       {
         "id": "k6",
-        "ref": "endapp/datalake",
-        "kind": "endApp",
-        "platform": "",
-        "asset": "Data Lake landing folder",
-        "name": "Azure Data Lake",
-        "process": "Analytics ingest"
+        "ref": "azure-logic-apps/datalake-ingest",
+        "kind": "iPaaS",
+        "platform": "Azure Logic Apps",
+        "asset": "DataLake-Ingest",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/datalake-ingest"
       },
       {
         "id": "k7",
-        "ref": "caller/s4-p01",
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Azure Data Lake",
+        "name": "Azure Data Lake",
+        "process": "Analytics ingest",
+        "appId": "azure-data-lake"
+      },
+      {
+        "id": "k8",
+        "ref": "caller/sap-s-4hana-p01",
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Business event"
+        "process": "Business event",
+        "appId": "sap-s-4hana-p01"
       }
     ]
   },

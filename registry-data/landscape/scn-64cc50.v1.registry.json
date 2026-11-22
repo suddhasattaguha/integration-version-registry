@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-64cc50",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-10T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "single"
     },
     "canvas": {
@@ -21,6 +21,12 @@
       "sales order"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -50,95 +56,110 @@
     "components": [
       {
         "id": "c1",
-        "ref": "solace/sales-order#topic",
-        "name": "Sales-Order-Events Topic",
-        "autoName": false,
+        "ref": "solace/sales-order-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "SOL_SALESORDEREV_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
         "ref": "solace/q-dwh-order#queue",
-        "name": "Q-Dwh-Order Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_QDWHORDER_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "ais/datalake-ingest#process",
-        "name": "DataLake-Ingest Process",
-        "autoName": false,
+        "ref": "azure-logic-apps/datalake-ingest#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "ALA_DATALAKEINGE_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
-        "ref": "endapp/datalake#file",
-        "name": "Data Lake landing folder",
-        "autoName": false,
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder#file",
         "type": "file",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "Data Lake landing folder",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "solace/sales-order#topic",
+        "fromRef": "solace/sales-order-events#topic",
         "toRef": "solace/q-dwh-order#queue"
       },
       {
         "from": "c2",
         "to": "c3",
         "fromRef": "solace/q-dwh-order#queue",
-        "toRef": "ais/datalake-ingest#process"
+        "toRef": "azure-logic-apps/datalake-ingest#process"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "ais/datalake-ingest#process",
-        "toRef": "endapp/datalake#file"
+        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "solace/sales-order",
+        "ref": "solace/sales-order-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Sales-Order-Events"
+        "asset": "Sales-Order-Events",
+        "platformId": "solace",
+        "componentId": "solace/sales-order-events"
       },
       {
         "id": "k2",
         "ref": "solace/q-dwh-order",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Dwh-Order"
+        "asset": "Q-Dwh-Order",
+        "platformId": "solace",
+        "componentId": "solace/q-dwh-order"
       },
       {
         "id": "k3",
-        "ref": "ais/datalake-ingest",
+        "ref": "azure-logic-apps/datalake-ingest",
         "kind": "iPaaS",
-        "platform": "AIS",
-        "asset": "DataLake-Ingest"
+        "platform": "Azure Logic Apps",
+        "asset": "DataLake-Ingest",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/datalake-ingest"
       },
       {
         "id": "k4",
-        "ref": "endapp/datalake",
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder",
         "kind": "endApp",
         "platform": "",
-        "asset": "Data Lake landing folder",
+        "asset": "Azure Data Lake",
         "name": "Azure Data Lake",
-        "process": "Analytics ingest"
+        "process": "Analytics ingest",
+        "appId": "azure-data-lake"
       }
     ]
   },

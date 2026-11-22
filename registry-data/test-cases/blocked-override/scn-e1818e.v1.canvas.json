@@ -1,0 +1,65 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "consume-to-api",
+      "label": "Consume-to-API"
+    }
+  ],
+  "buildOrder": [
+    0
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "m0",
+      "platform": "Solace",
+      "asset": "Q-Crm-Invoice"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "name": "Salesforce Sales Cloud",
+      "process": "Invoice visibility"
+    }
+  ],
+  "caller": false,
+  "ripples": [],
+  "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t0:in",
+      "name": "Invoice-Events"
+    },
+    {
+      "key": "@t0:out",
+      "name": "Salesforce Invoice API"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    }
+  },
+  "scenario": {
+    "id": "scn-e1818e",
+    "version": 1,
+    "name": "TC-Blocked-Override",
+    "description": "Test case: blocked-override",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "test"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-25T09:30:00.000Z"
+}

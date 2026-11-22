@@ -23,14 +23,14 @@
   "containers": [
     {
       "block": 0,
-      "at": "in",
+      "at": "m0",
       "platform": "Solace",
-      "asset": "Sales-Order-Events"
+      "asset": "Q-Dwh-Order"
     },
     {
       "block": 0,
       "at": "out",
-      "platform": "AIS",
+      "platform": "Azure Logic Apps",
       "asset": "DataLake-Ingest"
     },
     {
@@ -43,14 +43,23 @@
   "caller": false,
   "ripples": [],
   "marks": [],
-  "mode": "single",
-  "branches": [],
-  "callers": [],
-  "branchVersions": [],
-  "lineFlips": [],
-  "callerVer": [],
-  "laneChoice": [],
-  "compositeRipples": [],
+  "componentAssets": [
+    {
+      "key": "@t0:in",
+      "name": "Sales-Order-Events"
+    },
+    {
+      "key": "@t1:out",
+      "name": "Data Lake landing folder"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    }
+  },
   "scenario": {
     "id": "scn-64cc50",
     "version": 1,

@@ -43,14 +43,23 @@
   "caller": false,
   "ripples": [],
   "marks": [],
-  "mode": "single",
-  "branches": [],
-  "callers": [],
-  "branchVersions": [],
-  "lineFlips": [],
-  "callerVer": [],
-  "laneChoice": [],
-  "compositeRipples": [],
+  "componentAssets": [
+    {
+      "key": "@t0:in",
+      "name": "Nordea SFTP inbox (camt.053)"
+    },
+    {
+      "key": "@t1:out",
+      "name": "S/4 Bank Statement Import (CAMT.053)"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    }
+  },
   "scenario": {
     "id": "scn-7a6e2d",
     "version": 1,

@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-0c79ae",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-04T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -21,6 +21,12 @@
       "order status"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -73,184 +79,211 @@
     "components": [
       {
         "id": "c1",
-        "ref": "btpis/order-status#api",
-        "name": "Order-Status-Dist API",
-        "autoName": false,
+        "ref": "btp-is/order-status-dist#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_ORDERSTATUSD_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/order-status#process",
-        "name": "Order-Status-Dist Process",
-        "autoName": false,
+        "ref": "btp-is/order-status-dist#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_ORDERSTATUSD_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/order-status#topic",
-        "name": "Order-Status-Events Topic",
-        "autoName": false,
+        "ref": "solace/order-status-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_ORDERSTATUSE_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-webshop-status#queue",
-        "name": "Q-Webshop-Status Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QWEBSHOPSTAT_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/webshop-order#api",
-        "name": "commercetools Order API",
-        "autoName": false,
+        "ref": "endapp/webshop-commercetools/commercetools-order-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "commercetools Order API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
         "ref": "solace/q-crm-status#queue",
-        "name": "Q-Crm-Status Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k5"
+        "container": "k5",
+        "name": "SOL_QCRMSTATUS_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c7",
-        "ref": "endapp/sfdc-order#api",
-        "name": "Salesforce Order API",
-        "autoName": false,
+        "ref": "endapp/salesforce-sales-cloud/salesforce-order-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k6"
+        "container": "k6",
+        "name": "Salesforce Order API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c8",
-        "ref": "caller/s4-p01#app",
-        "name": "SAP S/4HANA (P01)",
-        "autoName": false,
+        "ref": "caller/sap-s-4hana-p01#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k7"
+        "container": "k7",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "btpis/order-status#api",
-        "toRef": "btpis/order-status#process"
+        "fromRef": "btp-is/order-status-dist#api",
+        "toRef": "btp-is/order-status-dist#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/order-status#process",
-        "toRef": "solace/order-status#topic"
+        "fromRef": "btp-is/order-status-dist#process",
+        "toRef": "solace/order-status-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/order-status#topic",
+        "fromRef": "solace/order-status-events#topic",
         "toRef": "solace/q-webshop-status#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-webshop-status#queue",
-        "toRef": "endapp/webshop-order#api"
+        "toRef": "endapp/webshop-commercetools/commercetools-order-api#api"
       },
       {
         "from": "c3",
         "to": "c6",
-        "fromRef": "solace/order-status#topic",
+        "fromRef": "solace/order-status-events#topic",
         "toRef": "solace/q-crm-status#queue"
       },
       {
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-crm-status#queue",
-        "toRef": "endapp/sfdc-order#api"
+        "toRef": "endapp/salesforce-sales-cloud/salesforce-order-api#api"
       },
       {
         "from": "c8",
         "to": "c1",
-        "fromRef": "caller/s4-p01#app",
-        "toRef": "btpis/order-status#api"
+        "fromRef": "caller/sap-s-4hana-p01#app",
+        "toRef": "btp-is/order-status-dist#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "btpis/order-status",
+        "ref": "btp-is/order-status-dist",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Order-Status-Dist"
+        "asset": "Order-Status-Dist",
+        "platformId": "btp-is",
+        "componentId": "btp-is/order-status-dist"
       },
       {
         "id": "k2",
-        "ref": "solace/order-status",
+        "ref": "solace/order-status-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Order-Status-Events"
+        "asset": "Order-Status-Events",
+        "platformId": "solace",
+        "componentId": "solace/order-status-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-webshop-status",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Webshop-Status"
+        "asset": "Q-Webshop-Status",
+        "platformId": "solace",
+        "componentId": "solace/q-webshop-status"
       },
       {
         "id": "k4",
-        "ref": "endapp/webshop-order",
+        "ref": "endapp/webshop-commercetools/commercetools-order-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "commercetools Order API",
+        "asset": "Webshop (commercetools)",
         "name": "Webshop (commercetools)",
-        "process": "Order status"
+        "process": "Order status",
+        "appId": "webshop-commercetools"
       },
       {
         "id": "k5",
         "ref": "solace/q-crm-status",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Crm-Status"
+        "asset": "Q-Crm-Status",
+        "platformId": "solace",
+        "componentId": "solace/q-crm-status"
       },
       {
         "id": "k6",
-        "ref": "endapp/sfdc-order",
+        "ref": "endapp/salesforce-sales-cloud/salesforce-order-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "Salesforce Order API",
+        "asset": "Salesforce Sales Cloud",
         "name": "Salesforce Sales Cloud",
-        "process": "Order sync"
+        "process": "Order sync",
+        "appId": "salesforce-sales-cloud"
       },
       {
         "id": "k7",
-        "ref": "caller/s4-p01",
+        "ref": "caller/sap-s-4hana-p01",
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Business event"
+        "process": "Business event",
+        "appId": "sap-s-4hana-p01"
       }
     ]
   },

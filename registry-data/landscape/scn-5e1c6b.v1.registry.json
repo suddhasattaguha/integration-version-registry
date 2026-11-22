@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-5e1c6b",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-15T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -21,6 +21,12 @@
       "pricing"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -73,184 +79,211 @@
     "components": [
       {
         "id": "c1",
-        "ref": "btpis/price-dist#api",
-        "name": "Price-Dist API",
-        "autoName": false,
+        "ref": "btp-is/price-dist#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_PRICEDIST_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/price-dist#process",
-        "name": "Price-Dist Process",
-        "autoName": false,
+        "ref": "btp-is/price-dist#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_PRICEDIST_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/price#topic",
-        "name": "Price-Events Topic",
-        "autoName": false,
+        "ref": "solace/price-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_PRICEEVENTS_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-webshop-price#queue",
-        "name": "Q-Webshop-Price Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QWEBSHOPPRIC_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/webshop-price#api",
-        "name": "commercetools Price API",
-        "autoName": false,
+        "ref": "endapp/webshop-commercetools/commercetools-price-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "commercetools Price API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
         "ref": "solace/q-crm-price#queue",
-        "name": "Q-Crm-Price Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k5"
+        "container": "k5",
+        "name": "SOL_QCRMPRICE_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c7",
-        "ref": "endapp/sfdc-pricebook#api",
-        "name": "Salesforce Pricebook API",
-        "autoName": false,
+        "ref": "endapp/salesforce-sales-cloud/salesforce-pricebook-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k6"
+        "container": "k6",
+        "name": "Salesforce Pricebook API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c8",
-        "ref": "caller/s4-p01#app",
-        "name": "SAP S/4HANA (P01)",
-        "autoName": false,
+        "ref": "caller/sap-s-4hana-p01#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k7"
+        "container": "k7",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "btpis/price-dist#api",
-        "toRef": "btpis/price-dist#process"
+        "fromRef": "btp-is/price-dist#api",
+        "toRef": "btp-is/price-dist#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/price-dist#process",
-        "toRef": "solace/price#topic"
+        "fromRef": "btp-is/price-dist#process",
+        "toRef": "solace/price-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/price#topic",
+        "fromRef": "solace/price-events#topic",
         "toRef": "solace/q-webshop-price#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-webshop-price#queue",
-        "toRef": "endapp/webshop-price#api"
+        "toRef": "endapp/webshop-commercetools/commercetools-price-api#api"
       },
       {
         "from": "c3",
         "to": "c6",
-        "fromRef": "solace/price#topic",
+        "fromRef": "solace/price-events#topic",
         "toRef": "solace/q-crm-price#queue"
       },
       {
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-crm-price#queue",
-        "toRef": "endapp/sfdc-pricebook#api"
+        "toRef": "endapp/salesforce-sales-cloud/salesforce-pricebook-api#api"
       },
       {
         "from": "c8",
         "to": "c1",
-        "fromRef": "caller/s4-p01#app",
-        "toRef": "btpis/price-dist#api"
+        "fromRef": "caller/sap-s-4hana-p01#app",
+        "toRef": "btp-is/price-dist#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "btpis/price-dist",
+        "ref": "btp-is/price-dist",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Price-Dist"
+        "asset": "Price-Dist",
+        "platformId": "btp-is",
+        "componentId": "btp-is/price-dist"
       },
       {
         "id": "k2",
-        "ref": "solace/price",
+        "ref": "solace/price-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Price-Events"
+        "asset": "Price-Events",
+        "platformId": "solace",
+        "componentId": "solace/price-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-webshop-price",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Webshop-Price"
+        "asset": "Q-Webshop-Price",
+        "platformId": "solace",
+        "componentId": "solace/q-webshop-price"
       },
       {
         "id": "k4",
-        "ref": "endapp/webshop-price",
+        "ref": "endapp/webshop-commercetools/commercetools-price-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "commercetools Price API",
+        "asset": "Webshop (commercetools)",
         "name": "Webshop (commercetools)",
-        "process": "Pricing"
+        "process": "Pricing",
+        "appId": "webshop-commercetools"
       },
       {
         "id": "k5",
         "ref": "solace/q-crm-price",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Crm-Price"
+        "asset": "Q-Crm-Price",
+        "platformId": "solace",
+        "componentId": "solace/q-crm-price"
       },
       {
         "id": "k6",
-        "ref": "endapp/sfdc-pricebook",
+        "ref": "endapp/salesforce-sales-cloud/salesforce-pricebook-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "Salesforce Pricebook API",
+        "asset": "Salesforce Sales Cloud",
         "name": "Salesforce Sales Cloud",
-        "process": "Price list sync"
+        "process": "Price list sync",
+        "appId": "salesforce-sales-cloud"
       },
       {
         "id": "k7",
-        "ref": "caller/s4-p01",
+        "ref": "caller/sap-s-4hana-p01",
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Business event"
+        "process": "Business event",
+        "appId": "sap-s-4hana-p01"
       }
     ]
   },

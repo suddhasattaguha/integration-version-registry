@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-ddab9a",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-13T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "product"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -97,255 +103,293 @@
     "components": [
       {
         "id": "c1",
-        "ref": "btpis/material-master#api",
-        "name": "Material-Master-Dist API",
-        "autoName": false,
+        "ref": "btp-is/material-master-dist#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_MATERIALMAST_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/material-master#process",
-        "name": "Material-Master-Dist Process",
-        "autoName": false,
+        "ref": "btp-is/material-master-dist#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_MATERIALMAST_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/material#topic",
-        "name": "Material-Events Topic",
-        "autoName": false,
+        "ref": "solace/material-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_MATERIALEVEN_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-pim-material#queue",
-        "name": "Q-Pim-Material Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QPIMMATERIAL_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/pim#api",
-        "name": "Akeneo Product API",
-        "autoName": false,
+        "ref": "endapp/pim-akeneo/akeneo-product-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "Akeneo Product API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
         "ref": "solace/q-ewm-product#queue",
-        "name": "Q-Ewm-Product Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k5"
+        "container": "k5",
+        "name": "SOL_QEWMPRODUCT_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c7",
-        "ref": "endapp/ewm-product#api",
-        "name": "EWM Product API",
-        "autoName": false,
+        "ref": "endapp/sap-ewm/ewm-product-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k6"
+        "container": "k6",
+        "name": "EWM Product API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c8",
         "ref": "solace/q-dwh-material#queue",
-        "name": "Q-Dwh-Material Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k7"
+        "container": "k7",
+        "name": "SOL_QDWHMATERIAL_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c9",
-        "ref": "ais/datalake-ingest#process",
-        "name": "DataLake-Ingest Process",
-        "autoName": false,
+        "ref": "azure-logic-apps/datalake-ingest#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k8"
+        "container": "k8",
+        "name": "ALA_DATALAKEINGE_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c10",
-        "ref": "endapp/datalake#file",
-        "name": "Data Lake landing folder",
-        "autoName": false,
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder#file",
         "type": "file",
         "version": "v1",
         "owner": "endApp",
-        "container": "k9"
+        "container": "k9",
+        "name": "Data Lake landing folder",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c11",
-        "ref": "caller/s4-p01#app",
-        "name": "SAP S/4HANA (P01)",
-        "autoName": false,
+        "ref": "caller/sap-s-4hana-p01#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k10"
+        "container": "k10",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "btpis/material-master#api",
-        "toRef": "btpis/material-master#process"
+        "fromRef": "btp-is/material-master-dist#api",
+        "toRef": "btp-is/material-master-dist#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/material-master#process",
-        "toRef": "solace/material#topic"
+        "fromRef": "btp-is/material-master-dist#process",
+        "toRef": "solace/material-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/material#topic",
+        "fromRef": "solace/material-events#topic",
         "toRef": "solace/q-pim-material#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-pim-material#queue",
-        "toRef": "endapp/pim#api"
+        "toRef": "endapp/pim-akeneo/akeneo-product-api#api"
       },
       {
         "from": "c3",
         "to": "c6",
-        "fromRef": "solace/material#topic",
+        "fromRef": "solace/material-events#topic",
         "toRef": "solace/q-ewm-product#queue"
       },
       {
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-ewm-product#queue",
-        "toRef": "endapp/ewm-product#api"
+        "toRef": "endapp/sap-ewm/ewm-product-api#api"
       },
       {
         "from": "c3",
         "to": "c8",
-        "fromRef": "solace/material#topic",
+        "fromRef": "solace/material-events#topic",
         "toRef": "solace/q-dwh-material#queue"
       },
       {
         "from": "c8",
         "to": "c9",
         "fromRef": "solace/q-dwh-material#queue",
-        "toRef": "ais/datalake-ingest#process"
+        "toRef": "azure-logic-apps/datalake-ingest#process"
       },
       {
         "from": "c9",
         "to": "c10",
-        "fromRef": "ais/datalake-ingest#process",
-        "toRef": "endapp/datalake#file"
+        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
       },
       {
         "from": "c11",
         "to": "c1",
-        "fromRef": "caller/s4-p01#app",
-        "toRef": "btpis/material-master#api"
+        "fromRef": "caller/sap-s-4hana-p01#app",
+        "toRef": "btp-is/material-master-dist#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "btpis/material-master",
+        "ref": "btp-is/material-master-dist",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Material-Master-Dist"
+        "asset": "Material-Master-Dist",
+        "platformId": "btp-is",
+        "componentId": "btp-is/material-master-dist"
       },
       {
         "id": "k2",
-        "ref": "solace/material",
+        "ref": "solace/material-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Material-Events"
+        "asset": "Material-Events",
+        "platformId": "solace",
+        "componentId": "solace/material-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-pim-material",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Pim-Material"
+        "asset": "Q-Pim-Material",
+        "platformId": "solace",
+        "componentId": "solace/q-pim-material"
       },
       {
         "id": "k4",
-        "ref": "endapp/pim",
+        "ref": "endapp/pim-akeneo/akeneo-product-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "Akeneo Product API",
+        "asset": "PIM (Akeneo)",
         "name": "PIM (Akeneo)",
-        "process": "Product enrichment"
+        "process": "Product enrichment",
+        "appId": "pim-akeneo"
       },
       {
         "id": "k5",
         "ref": "solace/q-ewm-product",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Ewm-Product"
+        "asset": "Q-Ewm-Product",
+        "platformId": "solace",
+        "componentId": "solace/q-ewm-product"
       },
       {
         "id": "k6",
-        "ref": "endapp/ewm-product",
+        "ref": "endapp/sap-ewm/ewm-product-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "EWM Product API",
+        "asset": "SAP EWM",
         "name": "SAP EWM",
-        "process": "Warehouse product master"
+        "process": "Warehouse product master",
+        "appId": "sap-ewm"
       },
       {
         "id": "k7",
         "ref": "solace/q-dwh-material",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Dwh-Material"
+        "asset": "Q-Dwh-Material",
+        "platformId": "solace",
+        "componentId": "solace/q-dwh-material"
       },
       {
         "id": "k8",
-        "ref": "ais/datalake-ingest",
+        "ref": "azure-logic-apps/datalake-ingest",
         "kind": "iPaaS",
-        "platform": "AIS",
-        "asset": "DataLake-Ingest"
+        "platform": "Azure Logic Apps",
+        "asset": "DataLake-Ingest",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/datalake-ingest"
       },
       {
         "id": "k9",
-        "ref": "endapp/datalake",
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder",
         "kind": "endApp",
         "platform": "",
-        "asset": "Data Lake landing folder",
+        "asset": "Azure Data Lake",
         "name": "Azure Data Lake",
-        "process": "Analytics ingest"
+        "process": "Analytics ingest",
+        "appId": "azure-data-lake"
       },
       {
         "id": "k10",
-        "ref": "caller/s4-p01",
+        "ref": "caller/sap-s-4hana-p01",
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Business event"
+        "process": "Business event",
+        "appId": "sap-s-4hana-p01"
       }
     ]
   },

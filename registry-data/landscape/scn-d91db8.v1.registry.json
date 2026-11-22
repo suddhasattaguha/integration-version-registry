@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-d91db8",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-05T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "delivery"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -85,207 +91,238 @@
     "components": [
       {
         "id": "c1",
-        "ref": "btpis/delivery-dist#api",
-        "name": "Delivery-Dist API",
-        "autoName": false,
+        "ref": "btp-is/delivery-dist#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_DELIVERYDIST_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/delivery-dist#process",
-        "name": "Delivery-Dist Process",
-        "autoName": false,
+        "ref": "btp-is/delivery-dist#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_DELIVERYDIST_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/delivery#topic",
-        "name": "Delivery-Events Topic",
-        "autoName": false,
+        "ref": "solace/delivery-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_DELIVERYEVEN_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-ewm-delivery#queue",
-        "name": "Q-Ewm-Delivery Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QEWMDELIVERY_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/ewm-delivery#api",
-        "name": "EWM Warehouse Request API",
-        "autoName": false,
+        "ref": "endapp/sap-ewm/ewm-warehouse-request-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "EWM Warehouse Request API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
         "ref": "solace/q-carrier-delivery#queue",
-        "name": "Q-Carrier-Delivery Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k5"
+        "container": "k5",
+        "name": "SOL_QCARRIERDELI_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c7",
-        "ref": "ais/carrier-hub#process",
-        "name": "Carrier-Hub Process",
-        "autoName": false,
+        "ref": "azure-logic-apps/carrier-hub#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k6"
+        "container": "k6",
+        "name": "ALA_CARRIERHUB_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c8",
-        "ref": "endapp/carrier-dhl#api",
-        "name": "DHL Shipment API",
-        "autoName": false,
+        "ref": "endapp/dhl-parcel/dhl-shipment-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k7"
+        "container": "k7",
+        "name": "DHL Shipment API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c9",
-        "ref": "caller/s4-p01#app",
-        "name": "SAP S/4HANA (P01)",
-        "autoName": false,
+        "ref": "caller/sap-s-4hana-p01#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k8"
+        "container": "k8",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "btpis/delivery-dist#api",
-        "toRef": "btpis/delivery-dist#process"
+        "fromRef": "btp-is/delivery-dist#api",
+        "toRef": "btp-is/delivery-dist#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/delivery-dist#process",
-        "toRef": "solace/delivery#topic"
+        "fromRef": "btp-is/delivery-dist#process",
+        "toRef": "solace/delivery-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/delivery#topic",
+        "fromRef": "solace/delivery-events#topic",
         "toRef": "solace/q-ewm-delivery#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-ewm-delivery#queue",
-        "toRef": "endapp/ewm-delivery#api"
+        "toRef": "endapp/sap-ewm/ewm-warehouse-request-api#api"
       },
       {
         "from": "c3",
         "to": "c6",
-        "fromRef": "solace/delivery#topic",
+        "fromRef": "solace/delivery-events#topic",
         "toRef": "solace/q-carrier-delivery#queue"
       },
       {
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-carrier-delivery#queue",
-        "toRef": "ais/carrier-hub#process"
+        "toRef": "azure-logic-apps/carrier-hub#process"
       },
       {
         "from": "c7",
         "to": "c8",
-        "fromRef": "ais/carrier-hub#process",
-        "toRef": "endapp/carrier-dhl#api"
+        "fromRef": "azure-logic-apps/carrier-hub#process",
+        "toRef": "endapp/dhl-parcel/dhl-shipment-api#api"
       },
       {
         "from": "c9",
         "to": "c1",
-        "fromRef": "caller/s4-p01#app",
-        "toRef": "btpis/delivery-dist#api"
+        "fromRef": "caller/sap-s-4hana-p01#app",
+        "toRef": "btp-is/delivery-dist#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "btpis/delivery-dist",
+        "ref": "btp-is/delivery-dist",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Delivery-Dist"
+        "asset": "Delivery-Dist",
+        "platformId": "btp-is",
+        "componentId": "btp-is/delivery-dist"
       },
       {
         "id": "k2",
-        "ref": "solace/delivery",
+        "ref": "solace/delivery-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Delivery-Events"
+        "asset": "Delivery-Events",
+        "platformId": "solace",
+        "componentId": "solace/delivery-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-ewm-delivery",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Ewm-Delivery"
+        "asset": "Q-Ewm-Delivery",
+        "platformId": "solace",
+        "componentId": "solace/q-ewm-delivery"
       },
       {
         "id": "k4",
-        "ref": "endapp/ewm-delivery",
+        "ref": "endapp/sap-ewm/ewm-warehouse-request-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "EWM Warehouse Request API",
+        "asset": "SAP EWM",
         "name": "SAP EWM",
-        "process": "Outbound picking"
+        "process": "Outbound picking",
+        "appId": "sap-ewm"
       },
       {
         "id": "k5",
         "ref": "solace/q-carrier-delivery",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Carrier-Delivery"
+        "asset": "Q-Carrier-Delivery",
+        "platformId": "solace",
+        "componentId": "solace/q-carrier-delivery"
       },
       {
         "id": "k6",
-        "ref": "ais/carrier-hub",
+        "ref": "azure-logic-apps/carrier-hub",
         "kind": "iPaaS",
-        "platform": "AIS",
-        "asset": "Carrier-Hub"
+        "platform": "Azure Logic Apps",
+        "asset": "Carrier-Hub",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/carrier-hub"
       },
       {
         "id": "k7",
-        "ref": "endapp/carrier-dhl",
+        "ref": "endapp/dhl-parcel/dhl-shipment-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "DHL Shipment API",
+        "asset": "DHL Parcel",
         "name": "DHL Parcel",
-        "process": "Shipment booking"
+        "process": "Shipment booking",
+        "appId": "dhl-parcel"
       },
       {
         "id": "k8",
-        "ref": "caller/s4-p01",
+        "ref": "caller/sap-s-4hana-p01",
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Business event"
+        "process": "Business event",
+        "appId": "sap-s-4hana-p01"
       }
     ]
   },

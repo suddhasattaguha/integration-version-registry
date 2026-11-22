@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-dcba7d",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-03T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "salesforce"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -85,207 +91,238 @@
     "components": [
       {
         "id": "c1",
-        "ref": "ais/crm-connector#api",
-        "name": "CRM-Connector API",
-        "autoName": false,
+        "ref": "azure-logic-apps/crm-connector#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "ALA_CRMCONNECTOR_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "ais/crm-connector#process",
-        "name": "CRM-Connector Process",
-        "autoName": false,
+        "ref": "azure-logic-apps/crm-connector#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "ALA_CRMCONNECTOR_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/sales-order#topic",
-        "name": "Sales-Order-Events Topic",
-        "autoName": false,
+        "ref": "solace/sales-order-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_SALESORDEREV_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-s4-order#queue",
-        "name": "Q-S4-Order Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QS4ORDER_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/s4-salesorder#api",
-        "name": "S/4 API_SALES_ORDER_SRV",
-        "autoName": false,
+        "ref": "endapp/sap-s-4hana-p01/s-4-api-sales-order-srv#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "S/4 API_SALES_ORDER_SRV",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
         "ref": "solace/q-dwh-order#queue",
-        "name": "Q-Dwh-Order Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k5"
+        "container": "k5",
+        "name": "SOL_QDWHORDER_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c7",
-        "ref": "ais/datalake-ingest#process",
-        "name": "DataLake-Ingest Process",
-        "autoName": false,
+        "ref": "azure-logic-apps/datalake-ingest#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k6"
+        "container": "k6",
+        "name": "ALA_DATALAKEINGE_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c8",
-        "ref": "endapp/datalake#file",
-        "name": "Data Lake landing folder",
-        "autoName": false,
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder#file",
         "type": "file",
         "version": "v1",
         "owner": "endApp",
-        "container": "k7"
+        "container": "k7",
+        "name": "Data Lake landing folder",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c9",
-        "ref": "caller/sfdc#app",
-        "name": "Salesforce Sales Cloud",
-        "autoName": false,
+        "ref": "caller/salesforce-sales-cloud#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k8"
+        "container": "k8",
+        "name": "Salesforce Sales Cloud",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "ais/crm-connector#api",
-        "toRef": "ais/crm-connector#process"
+        "fromRef": "azure-logic-apps/crm-connector#api",
+        "toRef": "azure-logic-apps/crm-connector#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "ais/crm-connector#process",
-        "toRef": "solace/sales-order#topic"
+        "fromRef": "azure-logic-apps/crm-connector#process",
+        "toRef": "solace/sales-order-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/sales-order#topic",
+        "fromRef": "solace/sales-order-events#topic",
         "toRef": "solace/q-s4-order#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-s4-order#queue",
-        "toRef": "endapp/s4-salesorder#api"
+        "toRef": "endapp/sap-s-4hana-p01/s-4-api-sales-order-srv#api"
       },
       {
         "from": "c3",
         "to": "c6",
-        "fromRef": "solace/sales-order#topic",
+        "fromRef": "solace/sales-order-events#topic",
         "toRef": "solace/q-dwh-order#queue"
       },
       {
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-dwh-order#queue",
-        "toRef": "ais/datalake-ingest#process"
+        "toRef": "azure-logic-apps/datalake-ingest#process"
       },
       {
         "from": "c7",
         "to": "c8",
-        "fromRef": "ais/datalake-ingest#process",
-        "toRef": "endapp/datalake#file"
+        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
       },
       {
         "from": "c9",
         "to": "c1",
-        "fromRef": "caller/sfdc#app",
-        "toRef": "ais/crm-connector#api"
+        "fromRef": "caller/salesforce-sales-cloud#app",
+        "toRef": "azure-logic-apps/crm-connector#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "ais/crm-connector",
+        "ref": "azure-logic-apps/crm-connector",
         "kind": "iPaaS",
-        "platform": "AIS",
-        "asset": "CRM-Connector"
+        "platform": "Azure Logic Apps",
+        "asset": "CRM-Connector",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/crm-connector"
       },
       {
         "id": "k2",
-        "ref": "solace/sales-order",
+        "ref": "solace/sales-order-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Sales-Order-Events"
+        "asset": "Sales-Order-Events",
+        "platformId": "solace",
+        "componentId": "solace/sales-order-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-s4-order",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-S4-Order"
+        "asset": "Q-S4-Order",
+        "platformId": "solace",
+        "componentId": "solace/q-s4-order"
       },
       {
         "id": "k4",
-        "ref": "endapp/s4-salesorder",
+        "ref": "endapp/sap-s-4hana-p01/s-4-api-sales-order-srv",
         "kind": "endApp",
         "platform": "",
-        "asset": "S/4 API_SALES_ORDER_SRV",
+        "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Sales order creation"
+        "process": "Sales order creation",
+        "appId": "sap-s-4hana-p01"
       },
       {
         "id": "k5",
         "ref": "solace/q-dwh-order",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Dwh-Order"
+        "asset": "Q-Dwh-Order",
+        "platformId": "solace",
+        "componentId": "solace/q-dwh-order"
       },
       {
         "id": "k6",
-        "ref": "ais/datalake-ingest",
+        "ref": "azure-logic-apps/datalake-ingest",
         "kind": "iPaaS",
-        "platform": "AIS",
-        "asset": "DataLake-Ingest"
+        "platform": "Azure Logic Apps",
+        "asset": "DataLake-Ingest",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/datalake-ingest"
       },
       {
         "id": "k7",
-        "ref": "endapp/datalake",
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder",
         "kind": "endApp",
         "platform": "",
-        "asset": "Data Lake landing folder",
+        "asset": "Azure Data Lake",
         "name": "Azure Data Lake",
-        "process": "Analytics ingest"
+        "process": "Analytics ingest",
+        "appId": "azure-data-lake"
       },
       {
         "id": "k8",
-        "ref": "caller/sfdc",
+        "ref": "caller/salesforce-sales-cloud",
         "kind": "caller",
         "platform": "",
         "asset": "Salesforce Sales Cloud",
         "name": "Salesforce Sales Cloud",
-        "process": "Order / account change"
+        "process": "Order / account change",
+        "appId": "salesforce-sales-cloud"
       }
     ]
   },

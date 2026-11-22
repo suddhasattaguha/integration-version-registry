@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-a4e8e4",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-09T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "single"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "salesforce"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -51,95 +57,110 @@
     "components": [
       {
         "id": "c1",
-        "ref": "solace/invoice#topic",
-        "name": "Invoice-Events Topic",
-        "autoName": false,
+        "ref": "solace/invoice-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "SOL_INVOICEEVENT_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
         "ref": "solace/q-crm-invoice#queue",
-        "name": "Q-Crm-Invoice Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_QCRMINVOICE_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "btpis/invoice-crm#process",
-        "name": "Invoice-to-CRM Process",
-        "autoName": false,
+        "ref": "btp-is/invoice-to-crm#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "BTP_INVOICETOCRM_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
-        "ref": "endapp/sfdc-invoice#api",
-        "name": "Salesforce Invoice API",
-        "autoName": false,
+        "ref": "endapp/salesforce-sales-cloud/salesforce-invoice-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "Salesforce Invoice API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "solace/invoice#topic",
+        "fromRef": "solace/invoice-events#topic",
         "toRef": "solace/q-crm-invoice#queue"
       },
       {
         "from": "c2",
         "to": "c3",
         "fromRef": "solace/q-crm-invoice#queue",
-        "toRef": "btpis/invoice-crm#process"
+        "toRef": "btp-is/invoice-to-crm#process"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "btpis/invoice-crm#process",
-        "toRef": "endapp/sfdc-invoice#api"
+        "fromRef": "btp-is/invoice-to-crm#process",
+        "toRef": "endapp/salesforce-sales-cloud/salesforce-invoice-api#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "solace/invoice",
+        "ref": "solace/invoice-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Invoice-Events"
+        "asset": "Invoice-Events",
+        "platformId": "solace",
+        "componentId": "solace/invoice-events"
       },
       {
         "id": "k2",
         "ref": "solace/q-crm-invoice",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Crm-Invoice"
+        "asset": "Q-Crm-Invoice",
+        "platformId": "solace",
+        "componentId": "solace/q-crm-invoice"
       },
       {
         "id": "k3",
-        "ref": "btpis/invoice-crm",
+        "ref": "btp-is/invoice-to-crm",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Invoice-to-CRM"
+        "asset": "Invoice-to-CRM",
+        "platformId": "btp-is",
+        "componentId": "btp-is/invoice-to-crm"
       },
       {
         "id": "k4",
-        "ref": "endapp/sfdc-invoice",
+        "ref": "endapp/salesforce-sales-cloud/salesforce-invoice-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "Salesforce Invoice API",
+        "asset": "Salesforce Sales Cloud",
         "name": "Salesforce Sales Cloud",
-        "process": "Invoice visibility"
+        "process": "Invoice visibility",
+        "appId": "salesforce-sales-cloud"
       }
     ]
   },

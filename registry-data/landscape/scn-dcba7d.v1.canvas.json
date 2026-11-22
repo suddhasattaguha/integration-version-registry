@@ -29,14 +29,20 @@
     {
       "block": 0,
       "at": "in",
-      "platform": "AIS",
+      "platform": "Azure Logic Apps",
       "asset": "CRM-Connector"
     },
     {
-      "block": 1,
+      "block": 0,
       "at": "out",
+      "platform": "Azure Logic Apps",
+      "asset": "CRM-Connector"
+    },
+    {
+      "block": 2,
+      "at": "m0",
       "platform": "Solace",
-      "asset": "Sales-Order-Events"
+      "asset": "Q-S4-Order"
     },
     {
       "block": 2,
@@ -54,6 +60,59 @@
   "caller": true,
   "ripples": [],
   "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t1:out",
+      "name": "Sales-Order-Events"
+    },
+    {
+      "key": "@t2:out",
+      "name": "S/4 API_SALES_ORDER_SRV"
+    },
+    {
+      "key": "@b0.1:out",
+      "name": "Data Lake landing folder"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    },
+    "branchContainers": [
+      {
+        "key": "@b0.0:m0",
+        "platform": "Solace",
+        "asset": "Q-Dwh-Order"
+      },
+      {
+        "key": "@b0.0:out",
+        "platform": "Azure Logic Apps",
+        "asset": "DataLake-Ingest"
+      },
+      {
+        "key": "@b0.1:out",
+        "name": "Azure Data Lake",
+        "process": "Analytics ingest"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "scn-dcba7d",
+    "version": 1,
+    "name": "O2C-Salesforce-Order-Intake",
+    "description": "Orders closed in Salesforce are routed by the CRM connector onto the shared sales-order topic; S/4HANA and the data lake subscribe.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "O2C",
+      "sales order",
+      "salesforce"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-03T09:30:00.000Z",
   "mode": "composite",
   "branches": [
     {
@@ -86,20 +145,5 @@
   "lineFlips": [],
   "callerVer": [],
   "laneChoice": [],
-  "compositeRipples": [],
-  "scenario": {
-    "id": "scn-dcba7d",
-    "version": 1,
-    "name": "O2C-Salesforce-Order-Intake",
-    "description": "Orders closed in Salesforce are routed by the CRM connector onto the shared sales-order topic; S/4HANA and the data lake subscribe.",
-    "author": "Suddhasatta Guha",
-    "tags": [
-      "O2C",
-      "sales order",
-      "salesforce"
-    ],
-    "relations": [],
-    "why": []
-  },
-  "savedAt": "2026-11-03T09:30:00.000Z"
+  "compositeRipples": []
 }

@@ -28,6 +28,12 @@
       "asset": "Ariba-Procurement"
     },
     {
+      "block": 0,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "Ariba-Procurement"
+    },
+    {
       "block": 1,
       "at": "out",
       "name": "SAP S/4HANA (P01)",
@@ -43,14 +49,19 @@
   "caller": true,
   "ripples": [],
   "marks": [],
-  "mode": "single",
-  "branches": [],
-  "callers": [],
-  "branchVersions": [],
-  "lineFlips": [],
-  "callerVer": [],
-  "laneChoice": [],
-  "compositeRipples": [],
+  "componentAssets": [
+    {
+      "key": "@t1:out",
+      "name": "S/4 API_PURCHASEORDER_PROCESS_SRV"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    }
+  },
   "scenario": {
     "id": "scn-885968",
     "version": 1,

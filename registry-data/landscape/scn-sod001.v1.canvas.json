@@ -1,0 +1,204 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 260,
+    "y": 420
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-publish",
+      "label": "Process-to-Publish"
+    },
+    {
+      "pattern": "consume-to-process",
+      "label": "Consume-to-Process"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "SOD-Intake"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "SOD-Intake"
+    },
+    {
+      "block": 2,
+      "at": "m0",
+      "platform": "Solace",
+      "asset": "Q-SOD-CRM"
+    },
+    {
+      "block": 2,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "SOD-CRM-Sync"
+    },
+    {
+      "block": 3,
+      "at": "out",
+      "name": "Salesforce Sales Cloud",
+      "process": "Order sync"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Sales order creation"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "mode": "composite",
+  "branches": [
+    {
+      "kind": "out",
+      "row": 1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-process",
+          "label": "Consume-to-Process"
+        },
+        {
+          "pattern": "process-to-file",
+          "label": "Process-to-File"
+        }
+      ]
+    },
+    {
+      "kind": "out",
+      "row": -1,
+      "anchor": [
+        {
+          "ref": "t1",
+          "side": "out"
+        },
+        {
+          "ref": "t2",
+          "side": "in"
+        }
+      ],
+      "blocks": [
+        {
+          "pattern": "consume-to-process",
+          "label": "Consume-to-Process"
+        },
+        {
+          "pattern": "process-to-api",
+          "label": "Process-to-API"
+        }
+      ]
+    }
+  ],
+  "callers": [],
+  "branchVersions": [
+    {
+      "ref": "b1.1",
+      "variant": "p2a-contract-parallel"
+    }
+  ],
+  "lineFlips": [],
+  "callerVer": [],
+  "laneChoice": [],
+  "compositeRipples": [],
+  "componentAssets": [
+    {
+      "key": "@t1:out",
+      "name": "SOD-Order-Events"
+    },
+    {
+      "key": "@t3:out",
+      "name": "Salesforce Order API"
+    },
+    {
+      "key": "@b0.1:out",
+      "name": "/inbound/orders"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "branchContainers": [
+      {
+        "key": "@b0.0:m0",
+        "platform": "Solace",
+        "asset": "Q-SOD-WMS"
+      },
+      {
+        "key": "@b0.0:out",
+        "platform": "BTP IS",
+        "asset": "SOD-WMS-Feed"
+      },
+      {
+        "key": "@b1.0:m0",
+        "platform": "Solace",
+        "asset": "Q-SOD-Carrier"
+      },
+      {
+        "key": "@b1.0:out",
+        "platform": "BTP IS",
+        "asset": "SOD-Carrier-Sync"
+      },
+      {
+        "key": "@b0.1:out",
+        "name": "Legacy WMS",
+        "process": "Warehouse inbound"
+      },
+      {
+        "key": "@b1.1:out",
+        "name": "DHL Parcel",
+        "process": "Shipment booking"
+      }
+    ],
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    }
+  },
+  "scenario": {
+    "id": "scn-sod001",
+    "version": 1,
+    "name": "Sales order distribution",
+    "description": "Sales orders from S/4HANA are published once and fan out to Salesforce, the legacy warehouse (file) and DHL (API v1 \u2551 v2).",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "O2C",
+      "sales order",
+      "C-5 example"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-22T13:00:00.000Z"
+}

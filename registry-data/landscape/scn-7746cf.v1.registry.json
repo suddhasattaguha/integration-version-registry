@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-7746cf",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-07T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "single"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "tracking"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -62,136 +68,156 @@
     "components": [
       {
         "id": "c1",
-        "ref": "ais/carrier-hub#api",
-        "name": "Carrier-Hub API",
-        "autoName": false,
+        "ref": "azure-logic-apps/carrier-hub#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "ALA_CARRIERHUB_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "ais/carrier-hub#process",
-        "name": "Carrier-Hub Process",
-        "autoName": false,
+        "ref": "azure-logic-apps/carrier-hub#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "ALA_CARRIERHUB_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/delivery#topic",
-        "name": "Delivery-Events Topic",
-        "autoName": false,
+        "ref": "solace/delivery-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_DELIVERYEVEN_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-webshop-tracking#queue",
-        "name": "Q-Webshop-Tracking Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QWEBSHOPTRAC_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/webshop-order#api",
-        "name": "commercetools Order API",
-        "autoName": false,
+        "ref": "endapp/webshop-commercetools/commercetools-order-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "commercetools Order API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
-        "ref": "caller/dhl#app",
-        "name": "DHL Parcel",
-        "autoName": false,
+        "ref": "caller/dhl-parcel#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k5"
+        "container": "k5",
+        "name": "DHL Parcel",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "ais/carrier-hub#api",
-        "toRef": "ais/carrier-hub#process"
+        "fromRef": "azure-logic-apps/carrier-hub#api",
+        "toRef": "azure-logic-apps/carrier-hub#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "ais/carrier-hub#process",
-        "toRef": "solace/delivery#topic"
+        "fromRef": "azure-logic-apps/carrier-hub#process",
+        "toRef": "solace/delivery-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/delivery#topic",
+        "fromRef": "solace/delivery-events#topic",
         "toRef": "solace/q-webshop-tracking#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-webshop-tracking#queue",
-        "toRef": "endapp/webshop-order#api"
+        "toRef": "endapp/webshop-commercetools/commercetools-order-api#api"
       },
       {
         "from": "c6",
         "to": "c1",
-        "fromRef": "caller/dhl#app",
-        "toRef": "ais/carrier-hub#api"
+        "fromRef": "caller/dhl-parcel#app",
+        "toRef": "azure-logic-apps/carrier-hub#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "ais/carrier-hub",
+        "ref": "azure-logic-apps/carrier-hub",
         "kind": "iPaaS",
-        "platform": "AIS",
-        "asset": "Carrier-Hub"
+        "platform": "Azure Logic Apps",
+        "asset": "Carrier-Hub",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/carrier-hub"
       },
       {
         "id": "k2",
-        "ref": "solace/delivery",
+        "ref": "solace/delivery-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Delivery-Events"
+        "asset": "Delivery-Events",
+        "platformId": "solace",
+        "componentId": "solace/delivery-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-webshop-tracking",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Webshop-Tracking"
+        "asset": "Q-Webshop-Tracking",
+        "platformId": "solace",
+        "componentId": "solace/q-webshop-tracking"
       },
       {
         "id": "k4",
-        "ref": "endapp/webshop-order",
+        "ref": "endapp/webshop-commercetools/commercetools-order-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "commercetools Order API",
+        "asset": "Webshop (commercetools)",
         "name": "Webshop (commercetools)",
-        "process": "Order status"
+        "process": "Order status",
+        "appId": "webshop-commercetools"
       },
       {
         "id": "k5",
-        "ref": "caller/dhl",
+        "ref": "caller/dhl-parcel",
         "kind": "caller",
         "platform": "",
         "asset": "DHL Parcel",
         "name": "DHL Parcel",
-        "process": "Tracking webhook"
+        "process": "Tracking webhook",
+        "appId": "dhl-parcel"
       }
     ]
   },

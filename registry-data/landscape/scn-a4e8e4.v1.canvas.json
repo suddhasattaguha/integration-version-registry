@@ -23,9 +23,9 @@
   "containers": [
     {
       "block": 0,
-      "at": "in",
+      "at": "m0",
       "platform": "Solace",
-      "asset": "Invoice-Events"
+      "asset": "Q-Crm-Invoice"
     },
     {
       "block": 0,
@@ -43,14 +43,23 @@
   "caller": false,
   "ripples": [],
   "marks": [],
-  "mode": "single",
-  "branches": [],
-  "callers": [],
-  "branchVersions": [],
-  "lineFlips": [],
-  "callerVer": [],
-  "laneChoice": [],
-  "compositeRipples": [],
+  "componentAssets": [
+    {
+      "key": "@t0:in",
+      "name": "Invoice-Events"
+    },
+    {
+      "key": "@t1:out",
+      "name": "Salesforce Invoice API"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    }
+  },
   "scenario": {
     "id": "scn-a4e8e4",
     "version": 1,

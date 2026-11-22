@@ -1,0 +1,78 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "Delivery-Dist"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "Delivery-Dist"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "name": "SAP EWM",
+      "process": "Outbound picking"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Business event"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t1:out",
+      "name": "EWM Warehouse Request API"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    }
+  },
+  "scenario": {
+    "id": "scn-2d87e3",
+    "version": 1,
+    "name": "TC-Proposed-App",
+    "description": "Test case: proposed-app",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "test"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-25T09:30:00.000Z"
+}

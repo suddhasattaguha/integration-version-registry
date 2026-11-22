@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-7a6e2d",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-20T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "single"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "bank"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -50,74 +56,84 @@
     "components": [
       {
         "id": "c1",
-        "ref": "endapp/bank-nordea-in#file",
-        "name": "Nordea SFTP inbox (camt.053)",
-        "autoName": false,
+        "ref": "endapp/nordea-bank/nordea-sftp-inbox-camt-053#file",
         "type": "file",
         "version": "v1",
         "owner": "endApp",
-        "container": "k1"
+        "container": "k1",
+        "name": "Nordea SFTP inbox (camt.053)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/bank-statement#process",
-        "name": "Bank-Statement-In Process",
-        "autoName": false,
+        "ref": "btp-is/bank-statement-in#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "BTP_BANKSTATEMEN_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "endapp/s4-bank-statement#api",
-        "name": "S/4 Bank Statement Import (CAMT.053)",
-        "autoName": false,
+        "ref": "endapp/sap-s-4hana-p01/s-4-bank-statement-import-camt-053#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k3"
+        "container": "k3",
+        "name": "S/4 Bank Statement Import (CAMT.053)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "endapp/bank-nordea-in#file",
-        "toRef": "btpis/bank-statement#process"
+        "fromRef": "endapp/nordea-bank/nordea-sftp-inbox-camt-053#file",
+        "toRef": "btp-is/bank-statement-in#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/bank-statement#process",
-        "toRef": "endapp/s4-bank-statement#api"
+        "fromRef": "btp-is/bank-statement-in#process",
+        "toRef": "endapp/sap-s-4hana-p01/s-4-bank-statement-import-camt-053#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "endapp/bank-nordea-in",
+        "ref": "endapp/nordea-bank/nordea-sftp-inbox-camt-053",
         "kind": "endApp",
         "platform": "",
-        "asset": "Nordea SFTP inbox (camt.053)",
+        "asset": "Nordea Bank",
         "name": "Nordea Bank",
-        "process": "Statements"
+        "process": "Statements",
+        "appId": "nordea-bank"
       },
       {
         "id": "k2",
-        "ref": "btpis/bank-statement",
+        "ref": "btp-is/bank-statement-in",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Bank-Statement-In"
+        "asset": "Bank-Statement-In",
+        "platformId": "btp-is",
+        "componentId": "btp-is/bank-statement-in"
       },
       {
         "id": "k3",
-        "ref": "endapp/s4-bank-statement",
+        "ref": "endapp/sap-s-4hana-p01/s-4-bank-statement-import-camt-053",
         "kind": "endApp",
         "platform": "",
-        "asset": "S/4 Bank Statement Import (CAMT.053)",
+        "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Electronic bank statement"
+        "process": "Electronic bank statement",
+        "appId": "sap-s-4hana-p01"
       }
     ]
   },

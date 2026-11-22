@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-1806ad",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-21T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "SuccessFactors"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -86,232 +92,266 @@
     "components": [
       {
         "id": "c1",
-        "ref": "btpis/sf-employee#api",
-        "name": "SF-Employee-Sync API",
-        "autoName": false,
+        "ref": "btp-is/sf-employee-sync#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_SFEMPLOYEESY_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/sf-employee#process",
-        "name": "SF-Employee-Sync Process",
-        "autoName": false,
+        "ref": "btp-is/sf-employee-sync#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_SFEMPLOYEESY_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/employee#topic",
-        "name": "Employee-Events Topic",
-        "autoName": false,
+        "ref": "solace/employee-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_EMPLOYEEEVEN_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-entra#queue",
-        "name": "Q-Entra Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QENTRA_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/entra-id#api",
-        "name": "Microsoft Graph Users API",
-        "autoName": false,
+        "ref": "endapp/microsoft-entra-id/microsoft-graph-users-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "Microsoft Graph Users API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
         "ref": "solace/q-servicenow#queue",
-        "name": "Q-Servicenow Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k5"
+        "container": "k5",
+        "name": "SOL_QSERVICENOW_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c7",
-        "ref": "endapp/servicenow-hr#api",
-        "name": "ServiceNow HR Case API",
-        "autoName": false,
+        "ref": "endapp/servicenow-hrsd/servicenow-hr-case-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k6"
+        "container": "k6",
+        "name": "ServiceNow HR Case API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c8",
         "ref": "solace/q-s4-employee#queue",
-        "name": "Q-S4-Employee Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k7"
+        "container": "k7",
+        "name": "SOL_QS4EMPLOYEE_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c9",
-        "ref": "endapp/s4-bp#api",
-        "name": "S/4 API_BUSINESS_PARTNER",
-        "autoName": false,
+        "ref": "endapp/sap-s-4hana-p01/s-4-api-business-partner#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k8"
+        "container": "k8",
+        "name": "S/4 API_BUSINESS_PARTNER",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c10",
-        "ref": "caller/sf-ec#app",
-        "name": "SuccessFactors Employee Central",
-        "autoName": false,
+        "ref": "caller/successfactors-employee-central#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k9"
+        "container": "k9",
+        "name": "SuccessFactors Employee Central",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "btpis/sf-employee#api",
-        "toRef": "btpis/sf-employee#process"
+        "fromRef": "btp-is/sf-employee-sync#api",
+        "toRef": "btp-is/sf-employee-sync#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/sf-employee#process",
-        "toRef": "solace/employee#topic"
+        "fromRef": "btp-is/sf-employee-sync#process",
+        "toRef": "solace/employee-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/employee#topic",
+        "fromRef": "solace/employee-events#topic",
         "toRef": "solace/q-entra#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-entra#queue",
-        "toRef": "endapp/entra-id#api"
+        "toRef": "endapp/microsoft-entra-id/microsoft-graph-users-api#api"
       },
       {
         "from": "c3",
         "to": "c6",
-        "fromRef": "solace/employee#topic",
+        "fromRef": "solace/employee-events#topic",
         "toRef": "solace/q-servicenow#queue"
       },
       {
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-servicenow#queue",
-        "toRef": "endapp/servicenow-hr#api"
+        "toRef": "endapp/servicenow-hrsd/servicenow-hr-case-api#api"
       },
       {
         "from": "c3",
         "to": "c8",
-        "fromRef": "solace/employee#topic",
+        "fromRef": "solace/employee-events#topic",
         "toRef": "solace/q-s4-employee#queue"
       },
       {
         "from": "c8",
         "to": "c9",
         "fromRef": "solace/q-s4-employee#queue",
-        "toRef": "endapp/s4-bp#api"
+        "toRef": "endapp/sap-s-4hana-p01/s-4-api-business-partner#api"
       },
       {
         "from": "c10",
         "to": "c1",
-        "fromRef": "caller/sf-ec#app",
-        "toRef": "btpis/sf-employee#api"
+        "fromRef": "caller/successfactors-employee-central#app",
+        "toRef": "btp-is/sf-employee-sync#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "btpis/sf-employee",
+        "ref": "btp-is/sf-employee-sync",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "SF-Employee-Sync"
+        "asset": "SF-Employee-Sync",
+        "platformId": "btp-is",
+        "componentId": "btp-is/sf-employee-sync"
       },
       {
         "id": "k2",
-        "ref": "solace/employee",
+        "ref": "solace/employee-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Employee-Events"
+        "asset": "Employee-Events",
+        "platformId": "solace",
+        "componentId": "solace/employee-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-entra",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Entra"
+        "asset": "Q-Entra",
+        "platformId": "solace",
+        "componentId": "solace/q-entra"
       },
       {
         "id": "k4",
-        "ref": "endapp/entra-id",
+        "ref": "endapp/microsoft-entra-id/microsoft-graph-users-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "Microsoft Graph Users API",
+        "asset": "Microsoft Entra ID",
         "name": "Microsoft Entra ID",
-        "process": "Identity lifecycle"
+        "process": "Identity lifecycle",
+        "appId": "microsoft-entra-id"
       },
       {
         "id": "k5",
         "ref": "solace/q-servicenow",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Servicenow"
+        "asset": "Q-Servicenow",
+        "platformId": "solace",
+        "componentId": "solace/q-servicenow"
       },
       {
         "id": "k6",
-        "ref": "endapp/servicenow-hr",
+        "ref": "endapp/servicenow-hrsd/servicenow-hr-case-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "ServiceNow HR Case API",
+        "asset": "ServiceNow HRSD",
         "name": "ServiceNow HRSD",
-        "process": "Onboarding tasks"
+        "process": "Onboarding tasks",
+        "appId": "servicenow-hrsd"
       },
       {
         "id": "k7",
         "ref": "solace/q-s4-employee",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-S4-Employee"
+        "asset": "Q-S4-Employee",
+        "platformId": "solace",
+        "componentId": "solace/q-s4-employee"
       },
       {
         "id": "k8",
-        "ref": "endapp/s4-bp",
+        "ref": "endapp/sap-s-4hana-p01/s-4-api-business-partner",
         "kind": "endApp",
         "platform": "",
-        "asset": "S/4 API_BUSINESS_PARTNER",
+        "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Business partner maintenance"
+        "process": "Business partner maintenance",
+        "appId": "sap-s-4hana-p01"
       },
       {
         "id": "k9",
-        "ref": "caller/sf-ec",
+        "ref": "caller/successfactors-employee-central",
         "kind": "caller",
         "platform": "",
         "asset": "SuccessFactors Employee Central",
         "name": "SuccessFactors Employee Central",
-        "process": "Employee change"
+        "process": "Employee change",
+        "appId": "successfactors-employee-central"
       }
     ]
   },

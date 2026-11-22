@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-885968",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-17T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "single"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "Ariba"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -50,90 +56,102 @@
     "components": [
       {
         "id": "c1",
-        "ref": "btpis/ariba-procure#api",
-        "name": "Ariba-Procurement API",
-        "autoName": false,
+        "ref": "btp-is/ariba-procurement#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_ARIBAPROCURE_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/ariba-procure#process",
-        "name": "Ariba-Procurement Process",
-        "autoName": false,
+        "ref": "btp-is/ariba-procurement#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_ARIBAPROCURE_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "endapp/s4-po#api",
-        "name": "S/4 API_PURCHASEORDER_PROCESS_SRV",
-        "autoName": false,
+        "ref": "endapp/sap-s-4hana-p01/s-4-api-purchaseorder-process-srv#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k2"
+        "container": "k2",
+        "name": "S/4 API_PURCHASEORDER_PROCESS_SRV",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c4",
-        "ref": "caller/ariba#app",
-        "name": "SAP Ariba",
-        "autoName": false,
+        "ref": "caller/sap-ariba#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k3"
+        "container": "k3",
+        "name": "SAP Ariba",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "btpis/ariba-procure#api",
-        "toRef": "btpis/ariba-procure#process"
+        "fromRef": "btp-is/ariba-procurement#api",
+        "toRef": "btp-is/ariba-procurement#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/ariba-procure#process",
-        "toRef": "endapp/s4-po#api"
+        "fromRef": "btp-is/ariba-procurement#process",
+        "toRef": "endapp/sap-s-4hana-p01/s-4-api-purchaseorder-process-srv#api"
       },
       {
         "from": "c4",
         "to": "c1",
-        "fromRef": "caller/ariba#app",
-        "toRef": "btpis/ariba-procure#api"
+        "fromRef": "caller/sap-ariba#app",
+        "toRef": "btp-is/ariba-procurement#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "btpis/ariba-procure",
+        "ref": "btp-is/ariba-procurement",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Ariba-Procurement"
+        "asset": "Ariba-Procurement",
+        "platformId": "btp-is",
+        "componentId": "btp-is/ariba-procurement"
       },
       {
         "id": "k2",
-        "ref": "endapp/s4-po",
+        "ref": "endapp/sap-s-4hana-p01/s-4-api-purchaseorder-process-srv",
         "kind": "endApp",
         "platform": "",
-        "asset": "S/4 API_PURCHASEORDER_PROCESS_SRV",
+        "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "PO confirmation"
+        "process": "PO confirmation",
+        "appId": "sap-s-4hana-p01"
       },
       {
         "id": "k3",
-        "ref": "caller/ariba",
+        "ref": "caller/sap-ariba",
         "kind": "caller",
         "platform": "",
         "asset": "SAP Ariba",
         "name": "SAP Ariba",
-        "process": "Supplier document"
+        "process": "Supplier document",
+        "appId": "sap-ariba"
       }
     ]
   },

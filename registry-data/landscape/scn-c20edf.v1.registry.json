@@ -1,0 +1,162 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.7",
+  "scenario": {
+    "id": "scn-c20edf",
+    "version": 1,
+    "name": "FIN-Bank-Statement-Poll",
+    "description": "A scheduler polls the Nordea SFTP inbox every night and imports the camt.053 statements into S/4HANA.",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-24T07:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.1",
+      "mode": "single"
+    },
+    "canvas": {
+      "file": "scn-c20edf.v1.canvas.json"
+    },
+    "tags": [
+      "FIN",
+      "bank statement",
+      "scheduled"
+    ]
+  },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "schedule-to-process-file",
+        "label": "Schedule-to-Process (poll folder)",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c4"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btp-is/bank-statement-poll#scheduler",
+        "type": "scheduler",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "name": "BTP_BANKSTATEMEN_SCH",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
+      },
+      {
+        "id": "c2",
+        "ref": "btp-is/bank-statement-poll#process",
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "name": "BTP_BANKSTATEMEN_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
+      },
+      {
+        "id": "c3",
+        "ref": "endapp/nordea-bank/nordea-sftp-inbox-camt-053#file",
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k2",
+        "name": "Nordea SFTP inbox (camt.053)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      },
+      {
+        "id": "c4",
+        "ref": "endapp/sap-s-4hana-p01/s-4-bank-statement-import-camt-053#api",
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k3",
+        "name": "S/4 Bank Statement Import (CAMT.053)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btp-is/bank-statement-poll#scheduler",
+        "toRef": "btp-is/bank-statement-poll#process"
+      },
+      {
+        "from": "c3",
+        "to": "c2",
+        "fromRef": "endapp/nordea-bank/nordea-sftp-inbox-camt-053#file",
+        "toRef": "btp-is/bank-statement-poll#process"
+      },
+      {
+        "from": "c2",
+        "to": "c4",
+        "fromRef": "btp-is/bank-statement-poll#process",
+        "toRef": "endapp/sap-s-4hana-p01/s-4-bank-statement-import-camt-053#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btp-is/bank-statement-poll",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Bank-Statement-Poll",
+        "platformId": "btp-is",
+        "componentId": "btp-is/bank-statement-poll"
+      },
+      {
+        "id": "k2",
+        "ref": "endapp/nordea-bank/nordea-sftp-inbox-camt-053",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Nordea Bank",
+        "name": "Nordea Bank",
+        "process": "Statements",
+        "appId": "nordea-bank"
+      },
+      {
+        "id": "k3",
+        "ref": "endapp/sap-s-4hana-p01/s-4-bank-statement-import-camt-053",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
+        "process": "Electronic bank statement",
+        "appId": "sap-s-4hana-p01"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

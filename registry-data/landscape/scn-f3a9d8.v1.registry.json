@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-f3a9d8",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-08T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -23,6 +23,12 @@
       "KSeF"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -73,8 +79,8 @@
       },
       {
         "id": "b5",
-        "templateId": "consume-to-file",
-        "label": "Consume-to-File",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
         "row": 2,
         "order": 0,
         "components": [
@@ -82,237 +88,309 @@
           "c8",
           "c9"
         ]
+      },
+      {
+        "id": "b6",
+        "templateId": "process-to-file",
+        "label": "Process-to-File",
+        "row": 2,
+        "order": 1,
+        "components": [
+          "c9",
+          "c10"
+        ]
       }
     ],
     "components": [
       {
         "id": "c1",
-        "ref": "btpis/invoice-out#api",
-        "name": "Invoice-Outbound-DRC API",
-        "autoName": false,
+        "ref": "btp-is/invoice-outbound-drc#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_INVOICEOUTBO_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/invoice-out#process",
-        "name": "Invoice-Outbound-DRC Process",
-        "autoName": false,
+        "ref": "btp-is/invoice-outbound-drc#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_INVOICEOUTBO_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/invoice#topic",
-        "name": "Invoice-Events Topic",
-        "autoName": false,
+        "ref": "solace/invoice-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_INVOICEEVENT_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-ksef#queue",
-        "name": "Q-Ksef Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QKSEF_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/ksef#api",
-        "name": "KSeF Invoice API",
-        "autoName": false,
+        "ref": "endapp/ksef-pl-e-invoicing/ksef-invoice-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "KSeF Invoice API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
         "ref": "solace/q-peppol#queue",
-        "name": "Q-Peppol Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k5"
+        "container": "k5",
+        "name": "SOL_QPEPPOL_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c7",
-        "ref": "endapp/peppol-ap#api",
-        "name": "Peppol AP API",
-        "autoName": false,
+        "ref": "endapp/peppol-access-point/peppol-ap-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k6"
+        "container": "k6",
+        "name": "Peppol AP API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c8",
         "ref": "solace/q-dwh-invoice#queue",
-        "name": "Q-Dwh-Invoice Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k7"
+        "container": "k7",
+        "name": "SOL_QDWHINVOICE_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c9",
-        "ref": "endapp/datalake#file",
-        "name": "Data Lake landing folder",
-        "autoName": false,
-        "type": "file",
+        "ref": "azure-logic-apps/datalake-ingest#process",
+        "type": "process",
         "version": "v1",
-        "owner": "endApp",
-        "container": "k8"
+        "owner": "integration",
+        "container": "k8",
+        "name": "ALA_DATALAKEINGE_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c10",
-        "ref": "caller/s4-p01#app",
-        "name": "SAP S/4HANA (P01)",
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder#file",
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k9",
+        "name": "Data Lake landing folder",
         "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      },
+      {
+        "id": "c11",
+        "ref": "caller/sap-s-4hana-p01#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k9"
+        "container": "k10",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "btpis/invoice-out#api",
-        "toRef": "btpis/invoice-out#process"
+        "fromRef": "btp-is/invoice-outbound-drc#api",
+        "toRef": "btp-is/invoice-outbound-drc#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/invoice-out#process",
-        "toRef": "solace/invoice#topic"
+        "fromRef": "btp-is/invoice-outbound-drc#process",
+        "toRef": "solace/invoice-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/invoice#topic",
+        "fromRef": "solace/invoice-events#topic",
         "toRef": "solace/q-ksef#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-ksef#queue",
-        "toRef": "endapp/ksef#api"
+        "toRef": "endapp/ksef-pl-e-invoicing/ksef-invoice-api#api"
       },
       {
         "from": "c3",
         "to": "c6",
-        "fromRef": "solace/invoice#topic",
+        "fromRef": "solace/invoice-events#topic",
         "toRef": "solace/q-peppol#queue"
       },
       {
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-peppol#queue",
-        "toRef": "endapp/peppol-ap#api"
+        "toRef": "endapp/peppol-access-point/peppol-ap-api#api"
       },
       {
         "from": "c3",
         "to": "c8",
-        "fromRef": "solace/invoice#topic",
+        "fromRef": "solace/invoice-events#topic",
         "toRef": "solace/q-dwh-invoice#queue"
       },
       {
         "from": "c8",
         "to": "c9",
         "fromRef": "solace/q-dwh-invoice#queue",
-        "toRef": "endapp/datalake#file"
+        "toRef": "azure-logic-apps/datalake-ingest#process"
       },
       {
-        "from": "c10",
+        "from": "c9",
+        "to": "c10",
+        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
+      },
+      {
+        "from": "c11",
         "to": "c1",
-        "fromRef": "caller/s4-p01#app",
-        "toRef": "btpis/invoice-out#api"
+        "fromRef": "caller/sap-s-4hana-p01#app",
+        "toRef": "btp-is/invoice-outbound-drc#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "btpis/invoice-out",
+        "ref": "btp-is/invoice-outbound-drc",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Invoice-Outbound-DRC"
+        "asset": "Invoice-Outbound-DRC",
+        "platformId": "btp-is",
+        "componentId": "btp-is/invoice-outbound-drc"
       },
       {
         "id": "k2",
-        "ref": "solace/invoice",
+        "ref": "solace/invoice-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Invoice-Events"
+        "asset": "Invoice-Events",
+        "platformId": "solace",
+        "componentId": "solace/invoice-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-ksef",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Ksef"
+        "asset": "Q-Ksef",
+        "platformId": "solace",
+        "componentId": "solace/q-ksef"
       },
       {
         "id": "k4",
-        "ref": "endapp/ksef",
+        "ref": "endapp/ksef-pl-e-invoicing/ksef-invoice-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "KSeF Invoice API",
+        "asset": "KSeF (PL e-invoicing)",
         "name": "KSeF (PL e-invoicing)",
-        "process": "Statutory e-invoice"
+        "process": "Statutory e-invoice",
+        "appId": "ksef-pl-e-invoicing"
       },
       {
         "id": "k5",
         "ref": "solace/q-peppol",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Peppol"
+        "asset": "Q-Peppol",
+        "platformId": "solace",
+        "componentId": "solace/q-peppol"
       },
       {
         "id": "k6",
-        "ref": "endapp/peppol-ap",
+        "ref": "endapp/peppol-access-point/peppol-ap-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "Peppol AP API",
+        "asset": "Peppol Access Point",
         "name": "Peppol Access Point",
-        "process": "Cross-border e-invoice"
+        "process": "Cross-border e-invoice",
+        "appId": "peppol-access-point"
       },
       {
         "id": "k7",
         "ref": "solace/q-dwh-invoice",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Dwh-Invoice"
+        "asset": "Q-Dwh-Invoice",
+        "platformId": "solace",
+        "componentId": "solace/q-dwh-invoice"
       },
       {
         "id": "k8",
-        "ref": "endapp/datalake",
-        "kind": "endApp",
-        "platform": "",
-        "asset": "Data Lake landing folder",
-        "name": "Azure Data Lake",
-        "process": "Analytics ingest"
+        "ref": "azure-logic-apps/datalake-ingest",
+        "kind": "iPaaS",
+        "platform": "Azure Logic Apps",
+        "asset": "DataLake-Ingest",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/datalake-ingest"
       },
       {
         "id": "k9",
-        "ref": "caller/s4-p01",
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Azure Data Lake",
+        "name": "Azure Data Lake",
+        "process": "Analytics ingest",
+        "appId": "azure-data-lake"
+      },
+      {
+        "id": "k10",
+        "ref": "caller/sap-s-4hana-p01",
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Business event"
+        "process": "Business event",
+        "appId": "sap-s-4hana-p01"
       }
     ]
   },

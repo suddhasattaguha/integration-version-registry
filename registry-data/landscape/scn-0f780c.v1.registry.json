@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-0f780c",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-14T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "webshop"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -62,136 +68,156 @@
     "components": [
       {
         "id": "c1",
-        "ref": "solace/material#topic",
-        "name": "Material-Events Topic",
-        "autoName": false,
+        "ref": "solace/material-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "SOL_MATERIALEVEN_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
         "ref": "solace/q-webshop-material#queue",
-        "name": "Q-Webshop-Material Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_QWEBSHOPMATE_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "ais/catalog-sync#process",
-        "name": "Catalog-Sync Process",
-        "autoName": false,
+        "ref": "azure-logic-apps/catalog-sync#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "ALA_CATALOGSYNC_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
-        "ref": "endapp/webshop-catalog#api",
-        "name": "commercetools Product API",
-        "autoName": false,
+        "ref": "endapp/webshop-commercetools/commercetools-product-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "commercetools Product API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "ais/catalog-sync#api",
-        "name": "Catalog-Sync API",
-        "autoName": false,
+        "ref": "azure-logic-apps/catalog-sync#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "ALA_CATALOGSYNC_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c6",
-        "ref": "caller/pim#app",
-        "name": "PIM (Akeneo)",
-        "autoName": false,
+        "ref": "caller/pim-akeneo#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k5"
+        "container": "k5",
+        "name": "PIM (Akeneo)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "solace/material#topic",
+        "fromRef": "solace/material-events#topic",
         "toRef": "solace/q-webshop-material#queue"
       },
       {
         "from": "c2",
         "to": "c3",
         "fromRef": "solace/q-webshop-material#queue",
-        "toRef": "ais/catalog-sync#process"
+        "toRef": "azure-logic-apps/catalog-sync#process"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "ais/catalog-sync#process",
-        "toRef": "endapp/webshop-catalog#api"
+        "fromRef": "azure-logic-apps/catalog-sync#process",
+        "toRef": "endapp/webshop-commercetools/commercetools-product-api#api"
       },
       {
         "from": "c5",
         "to": "c3",
-        "fromRef": "ais/catalog-sync#api",
-        "toRef": "ais/catalog-sync#process"
+        "fromRef": "azure-logic-apps/catalog-sync#api",
+        "toRef": "azure-logic-apps/catalog-sync#process"
       },
       {
         "from": "c6",
         "to": "c5",
-        "fromRef": "caller/pim#app",
-        "toRef": "ais/catalog-sync#api"
+        "fromRef": "caller/pim-akeneo#app",
+        "toRef": "azure-logic-apps/catalog-sync#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "solace/material",
+        "ref": "solace/material-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Material-Events"
+        "asset": "Material-Events",
+        "platformId": "solace",
+        "componentId": "solace/material-events"
       },
       {
         "id": "k2",
         "ref": "solace/q-webshop-material",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Webshop-Material"
+        "asset": "Q-Webshop-Material",
+        "platformId": "solace",
+        "componentId": "solace/q-webshop-material"
       },
       {
         "id": "k3",
-        "ref": "ais/catalog-sync",
+        "ref": "azure-logic-apps/catalog-sync",
         "kind": "iPaaS",
-        "platform": "AIS",
-        "asset": "Catalog-Sync"
+        "platform": "Azure Logic Apps",
+        "asset": "Catalog-Sync",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/catalog-sync"
       },
       {
         "id": "k4",
-        "ref": "endapp/webshop-catalog",
+        "ref": "endapp/webshop-commercetools/commercetools-product-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "commercetools Product API",
+        "asset": "Webshop (commercetools)",
         "name": "Webshop (commercetools)",
-        "process": "Catalogue"
+        "process": "Catalogue",
+        "appId": "webshop-commercetools"
       },
       {
         "id": "k5",
-        "ref": "caller/pim",
+        "ref": "caller/pim-akeneo",
         "kind": "caller",
         "platform": "",
         "asset": "PIM (Akeneo)",
         "name": "PIM (Akeneo)",
-        "process": "Product published"
+        "process": "Product published",
+        "appId": "pim-akeneo"
       }
     ]
   },

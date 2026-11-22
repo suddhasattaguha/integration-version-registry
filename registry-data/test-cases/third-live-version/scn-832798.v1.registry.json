@@ -1,0 +1,201 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.7",
+  "scenario": {
+    "id": "scn-832798",
+    "version": 1,
+    "name": "TC-Third-Live-Version",
+    "description": "Test case: third-live-version",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-25T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.1",
+      "mode": "single"
+    },
+    "canvas": {
+      "file": "scn-832798.v1.canvas.json"
+    },
+    "tags": [
+      "test"
+    ]
+  },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "solace/delivery-events#topic",
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "name": "SOL_DELIVERYEVEN_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
+      },
+      {
+        "id": "c2",
+        "ref": "solace/q-ewm-delivery#queue",
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2",
+        "name": "SOL_QEWMDELIVERY_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
+      },
+      {
+        "id": "c3",
+        "ref": "endapp/sap-ewm/ewm-warehouse-request-api#api",
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k3",
+        "name": "EWM Warehouse Request API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "solace/delivery-events#topic",
+        "toRef": "solace/q-ewm-delivery#queue"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "solace/q-ewm-delivery#queue",
+        "toRef": "endapp/sap-ewm/ewm-warehouse-request-api#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "solace/delivery-events",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Delivery-Events",
+        "platformId": "solace",
+        "componentId": "solace/delivery-events"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/q-ewm-delivery",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Ewm-Delivery",
+        "platformId": "solace",
+        "componentId": "solace/q-ewm-delivery"
+      },
+      {
+        "id": "k3",
+        "ref": "endapp/sap-ewm/ewm-warehouse-request-api",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "SAP EWM",
+        "name": "SAP EWM",
+        "process": "Outbound picking",
+        "appId": "sap-ewm"
+      }
+    ]
+  },
+  "versions": [
+    {
+      "id": "v-02",
+      "label": "Topic v2",
+      "status": "open",
+      "appliesTo": {
+        "component": "c1",
+        "connector": "topic",
+        "side": "both"
+      },
+      "decision": {
+        "option": "parallel"
+      },
+      "added": [
+        {
+          "id": "n2",
+          "ref": "solace/delivery-events#topic",
+          "name": "SOL_DELIVERYEVEN_TP_V2",
+          "type": "topic",
+          "version": "v2",
+          "container": "k1",
+          "stage": "planned"
+        }
+      ],
+      "addedLinks": [],
+      "changed": [
+        {
+          "component": "c1",
+          "from": "v1",
+          "to": "v2",
+          "change": "breaking"
+        }
+      ],
+      "impacts": [],
+      "retired": []
+    },
+    {
+      "id": "v-03",
+      "label": "Topic v3",
+      "status": "open",
+      "appliesTo": {
+        "component": "c1",
+        "connector": "topic",
+        "side": "both"
+      },
+      "decision": {
+        "option": "parallel"
+      },
+      "added": [
+        {
+          "id": "n3",
+          "ref": "solace/delivery-events#topic",
+          "name": "SOL_DELIVERYEVEN_TP_V3",
+          "type": "topic",
+          "version": "v3",
+          "container": "k1",
+          "stage": "planned"
+        }
+      ],
+      "addedLinks": [],
+      "changed": [
+        {
+          "component": "c1",
+          "from": "v1",
+          "to": "v3",
+          "change": "breaking"
+        }
+      ],
+      "impacts": [],
+      "retired": []
+    }
+  ],
+  "acknowledgements": [],
+  "relations": []
+}

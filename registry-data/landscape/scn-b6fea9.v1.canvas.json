@@ -33,10 +33,16 @@
       "asset": "Sales-Order-Exp"
     },
     {
-      "block": 1,
+      "block": 0,
       "at": "out",
+      "platform": "BTP IS",
+      "asset": "Sales-Order-Exp"
+    },
+    {
+      "block": 2,
+      "at": "m0",
       "platform": "Solace",
-      "asset": "Sales-Order-Events"
+      "asset": "Q-S4-Order"
     },
     {
       "block": 2,
@@ -54,6 +60,64 @@
   "caller": true,
   "ripples": [],
   "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t1:out",
+      "name": "Sales-Order-Events"
+    },
+    {
+      "key": "@t2:out",
+      "name": "S/4 API_SALES_ORDER_SRV"
+    },
+    {
+      "key": "@b0.0:out",
+      "name": "Salesforce Order API"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    },
+    "branchContainers": [
+      {
+        "key": "@b0.0:m0",
+        "platform": "Solace",
+        "asset": "Q-Crm-Order"
+      },
+      {
+        "key": "@b0.0:out",
+        "name": "Salesforce Sales Cloud",
+        "process": "Order sync"
+      },
+      {
+        "key": "@b1.0:in",
+        "platform": "Azure Logic Apps",
+        "asset": "Webshop-Gateway"
+      },
+      {
+        "key": "@b1.0:out",
+        "platform": "Azure Logic Apps",
+        "asset": "Webshop-Gateway"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "scn-b6fea9",
+    "version": 1,
+    "name": "O2C-Webshop-Order-Intake",
+    "description": "Webshop and sales-rep app orders enter through the Sales Order experience API, are published once and fan out to S/4HANA and Salesforce.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "O2C",
+      "sales order",
+      "webshop"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-02T09:30:00.000Z",
   "mode": "composite",
   "branches": [
     {
@@ -113,20 +177,5 @@
   "lineFlips": [],
   "callerVer": [],
   "laneChoice": [],
-  "compositeRipples": [],
-  "scenario": {
-    "id": "scn-b6fea9",
-    "version": 1,
-    "name": "O2C-Webshop-Order-Intake",
-    "description": "Webshop and sales-rep app orders enter through the Sales Order experience API, are published once and fan out to S/4HANA and Salesforce.",
-    "author": "Suddhasatta Guha",
-    "tags": [
-      "O2C",
-      "sales order",
-      "webshop"
-    ],
-    "relations": [],
-    "why": []
-  },
-  "savedAt": "2026-11-02T09:30:00.000Z"
+  "compositeRipples": []
 }

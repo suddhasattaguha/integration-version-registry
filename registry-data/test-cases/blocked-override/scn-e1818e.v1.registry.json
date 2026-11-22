@@ -1,0 +1,130 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.7",
+  "scenario": {
+    "id": "scn-e1818e",
+    "version": 1,
+    "name": "TC-Blocked-Override",
+    "description": "Test case: blocked-override",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-25T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.1",
+      "mode": "single"
+    },
+    "canvas": {
+      "file": "scn-e1818e.v1.canvas.json"
+    },
+    "tags": [
+      "test"
+    ]
+  },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "consume-to-api",
+        "label": "Consume-to-API",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2",
+          "c3"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "solace/invoice-events#topic",
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "name": "SOL_INVOICEEVENT_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
+      },
+      {
+        "id": "c2",
+        "ref": "solace/q-crm-invoice#queue",
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2",
+        "name": "SOL_MYQUEUE_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": true
+      },
+      {
+        "id": "c3",
+        "ref": "endapp/salesforce-sales-cloud/salesforce-invoice-api#api",
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k3",
+        "name": "Salesforce Invoice API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "solace/invoice-events#topic",
+        "toRef": "solace/q-crm-invoice#queue"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "solace/q-crm-invoice#queue",
+        "toRef": "endapp/salesforce-sales-cloud/salesforce-invoice-api#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "solace/invoice-events",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Invoice-Events",
+        "platformId": "solace",
+        "componentId": "solace/invoice-events"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/q-crm-invoice",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-Crm-Invoice",
+        "platformId": "solace",
+        "componentId": "solace/q-crm-invoice"
+      },
+      {
+        "id": "k3",
+        "ref": "endapp/salesforce-sales-cloud/salesforce-invoice-api",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Salesforce Sales Cloud",
+        "name": "Salesforce Sales Cloud",
+        "process": "Invoice visibility",
+        "appId": "salesforce-sales-cloud"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

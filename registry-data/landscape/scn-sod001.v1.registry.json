@@ -1,0 +1,564 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.7",
+  "scenario": {
+    "id": "scn-sod001",
+    "version": 1,
+    "name": "Sales order distribution",
+    "description": "Sales orders from S/4HANA are published once and fan out to Salesforce, the legacy warehouse (file) and DHL (API v1 \u2551 v2).",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-22T13:00:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.1",
+      "mode": "composite"
+    },
+    "canvas": {
+      "file": "scn-sod001.v1.canvas.json"
+    },
+    "tags": [
+      "O2C",
+      "sales order",
+      "C-5 example"
+    ]
+  },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [
+    {
+      "kind": "application",
+      "name": "Legacy WMS",
+      "suggestedId": "legacy-wms"
+    }
+  ],
+  "retired": [],
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-publish",
+        "label": "Process-to-Publish",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      },
+      {
+        "id": "b3",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 0,
+        "order": 2,
+        "components": [
+          "c3",
+          "c4",
+          "c5"
+        ]
+      },
+      {
+        "id": "b4",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 3,
+        "components": [
+          "c5",
+          "c6"
+        ]
+      },
+      {
+        "id": "b5",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 1,
+        "order": 0,
+        "components": [
+          "c3",
+          "c7",
+          "c8"
+        ]
+      },
+      {
+        "id": "b6",
+        "templateId": "process-to-file",
+        "label": "Process-to-File",
+        "row": 1,
+        "order": 1,
+        "components": [
+          "c8",
+          "c9"
+        ]
+      },
+      {
+        "id": "b7",
+        "templateId": "consume-to-process",
+        "label": "Consume-to-Process",
+        "row": 2,
+        "order": 0,
+        "components": [
+          "c3",
+          "c10",
+          "c11"
+        ]
+      },
+      {
+        "id": "b8",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 2,
+        "order": 1,
+        "components": [
+          "c11",
+          "c12"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btp-is/sod-intake#api",
+        "name": "BTP_SODINTAKE_API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "nameRule": "N-1",
+        "nameOverridden": false
+      },
+      {
+        "id": "c2",
+        "ref": "btp-is/sod-intake#process",
+        "name": "BTP_SODINTAKE_IF",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "nameRule": "N-2",
+        "nameOverridden": false
+      },
+      {
+        "id": "c3",
+        "ref": "solace/sod-order-events#topic",
+        "name": "SOL_SODORDEREVEN_TP",
+        "autoName": false,
+        "type": "topic",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k12",
+        "nameRule": "N-3",
+        "nameOverridden": false
+      },
+      {
+        "id": "c4",
+        "ref": "solace/q-sod-crm#queue",
+        "name": "SOL_QSODCRM_Q",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k2",
+        "nameRule": "N-3",
+        "nameOverridden": false
+      },
+      {
+        "id": "c5",
+        "ref": "btp-is/sod-crm-sync#process",
+        "name": "BTP_SODCRMSYNC_IF",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k3",
+        "nameRule": "N-2",
+        "nameOverridden": false
+      },
+      {
+        "id": "c6",
+        "ref": "endapp/salesforce-sales-cloud/salesforce-order-api#api",
+        "name": "Salesforce Order API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k4",
+        "nameRule": null,
+        "nameOverridden": false
+      },
+      {
+        "id": "c7",
+        "ref": "solace/q-sod-wms#queue",
+        "name": "SOL_QSODWMS_Q",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k5",
+        "nameRule": "N-3",
+        "nameOverridden": false
+      },
+      {
+        "id": "c8",
+        "ref": "btp-is/sod-wms-feed#process",
+        "name": "BTP_SODWMSFEED_IF",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k6",
+        "nameRule": "N-2",
+        "nameOverridden": false
+      },
+      {
+        "id": "c9",
+        "ref": "endapp/legacy-wms/inbound-orders#file",
+        "name": "/inbound/orders",
+        "autoName": false,
+        "type": "file",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k7",
+        "nameRule": null,
+        "nameOverridden": false
+      },
+      {
+        "id": "c10",
+        "ref": "solace/q-sod-carrier#queue",
+        "name": "SOL_QSODCARRIER_Q",
+        "autoName": false,
+        "type": "queue",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k8",
+        "nameRule": "N-3",
+        "nameOverridden": false
+      },
+      {
+        "id": "c11",
+        "ref": "btp-is/sod-carrier-sync#process",
+        "name": "BTP_SODCARRIERSY_IF",
+        "autoName": false,
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k9",
+        "nameRule": "N-2",
+        "nameOverridden": false
+      },
+      {
+        "id": "c12",
+        "ref": "endapp/dhl-parcel#api",
+        "name": "DHL Parcel API",
+        "autoName": false,
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k10",
+        "nameRule": null,
+        "nameOverridden": false
+      },
+      {
+        "id": "c13",
+        "ref": "caller/sap-s-4hana-p01#app",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k11",
+        "nameRule": null,
+        "nameOverridden": false
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btp-is/sod-intake#api",
+        "toRef": "btp-is/sod-intake#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btp-is/sod-intake#process",
+        "toRef": "solace/sod-order-events#topic"
+      },
+      {
+        "from": "c3",
+        "to": "c4",
+        "fromRef": "solace/sod-order-events#topic",
+        "toRef": "solace/q-sod-crm#queue"
+      },
+      {
+        "from": "c4",
+        "to": "c5",
+        "fromRef": "solace/q-sod-crm#queue",
+        "toRef": "btp-is/sod-crm-sync#process"
+      },
+      {
+        "from": "c5",
+        "to": "c6",
+        "fromRef": "btp-is/sod-crm-sync#process",
+        "toRef": "endapp/salesforce-sales-cloud/salesforce-order-api#api"
+      },
+      {
+        "from": "c3",
+        "to": "c7",
+        "fromRef": "solace/sod-order-events#topic",
+        "toRef": "solace/q-sod-wms#queue"
+      },
+      {
+        "from": "c7",
+        "to": "c8",
+        "fromRef": "solace/q-sod-wms#queue",
+        "toRef": "btp-is/sod-wms-feed#process"
+      },
+      {
+        "from": "c8",
+        "to": "c9",
+        "fromRef": "btp-is/sod-wms-feed#process",
+        "toRef": "endapp/legacy-wms/inbound-orders#file"
+      },
+      {
+        "from": "c3",
+        "to": "c10",
+        "fromRef": "solace/sod-order-events#topic",
+        "toRef": "solace/q-sod-carrier#queue"
+      },
+      {
+        "from": "c10",
+        "to": "c11",
+        "fromRef": "solace/q-sod-carrier#queue",
+        "toRef": "btp-is/sod-carrier-sync#process"
+      },
+      {
+        "from": "c11",
+        "to": "c12",
+        "fromRef": "btp-is/sod-carrier-sync#process",
+        "toRef": "endapp/dhl-parcel#api"
+      },
+      {
+        "from": "c13",
+        "to": "c1",
+        "fromRef": "caller/sap-s-4hana-p01#app",
+        "toRef": "btp-is/sod-intake#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btp-is/sod-intake",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "SOD-Intake",
+        "platformId": "btp-is",
+        "componentId": "btp-is/sod-intake"
+      },
+      {
+        "id": "k2",
+        "ref": "solace/q-sod-crm",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-SOD-CRM",
+        "platformId": "solace",
+        "componentId": "solace/q-sod-crm"
+      },
+      {
+        "id": "k3",
+        "ref": "btp-is/sod-crm-sync",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "SOD-CRM-Sync",
+        "platformId": "btp-is",
+        "componentId": "btp-is/sod-crm-sync"
+      },
+      {
+        "id": "k4",
+        "ref": "endapp/salesforce-sales-cloud",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Salesforce Sales Cloud",
+        "process": "Order sync",
+        "appId": "salesforce-sales-cloud",
+        "name": "Salesforce Sales Cloud"
+      },
+      {
+        "id": "k5",
+        "ref": "solace/q-sod-wms",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-SOD-WMS",
+        "platformId": "solace",
+        "componentId": "solace/q-sod-wms"
+      },
+      {
+        "id": "k6",
+        "ref": "btp-is/sod-wms-feed",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "SOD-WMS-Feed",
+        "platformId": "btp-is",
+        "componentId": "btp-is/sod-wms-feed"
+      },
+      {
+        "id": "k7",
+        "ref": "endapp/legacy-wms",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Legacy WMS",
+        "process": "Warehouse inbound",
+        "name": "Legacy WMS"
+      },
+      {
+        "id": "k8",
+        "ref": "solace/q-sod-carrier",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "Q-SOD-Carrier",
+        "platformId": "solace",
+        "componentId": "solace/q-sod-carrier"
+      },
+      {
+        "id": "k9",
+        "ref": "btp-is/sod-carrier-sync",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "SOD-Carrier-Sync",
+        "platformId": "btp-is",
+        "componentId": "btp-is/sod-carrier-sync"
+      },
+      {
+        "id": "k10",
+        "ref": "endapp/dhl-parcel",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "DHL Parcel",
+        "process": "Shipment booking",
+        "appId": "dhl-parcel",
+        "name": "DHL Parcel"
+      },
+      {
+        "id": "k11",
+        "ref": "caller/sap-s-4hana-p01",
+        "kind": "caller",
+        "platform": "",
+        "asset": "SAP S/4HANA (P01)",
+        "process": "Sales order creation",
+        "appId": "sap-s-4hana-p01",
+        "name": "SAP S/4HANA (P01)"
+      },
+      {
+        "id": "k12",
+        "ref": "solace/sod-order-events",
+        "kind": "broker",
+        "platform": "Solace",
+        "asset": "SOD-Order-Events",
+        "platformId": "solace",
+        "componentId": "solace/sod-order-events"
+      }
+    ]
+  },
+  "versions": [
+    {
+      "id": "v-01",
+      "label": "Target API v2 \u00b7 own Process v2",
+      "status": "open",
+      "block": "b8",
+      "appliesTo": {
+        "component": "c12",
+        "connector": "api",
+        "side": "upstream"
+      },
+      "decision": {
+        "what": "Breaking target API change: API v2 is added next to API v1. Process v1 keeps calling API v1; a new Process v2 calls API v2.",
+        "why": "",
+        "who": "Suddhasatta Guha",
+        "when": "2026-11-22T13:00:00.000Z",
+        "option": "parallel",
+        "variant": "p2a-contract-parallel",
+        "keepBoth": false
+      },
+      "added": [
+        {
+          "id": "n1",
+          "ref": "btp-is/sod-carrier-sync#process",
+          "name": "BTP_SODCARRIERSY_IF_V2",
+          "type": "process",
+          "version": "v2",
+          "container": "k9",
+          "stage": "planned",
+          "nameRule": "N-2",
+          "nameOverridden": false
+        },
+        {
+          "id": "n2",
+          "ref": "endapp/dhl-parcel#api",
+          "name": "DHL Parcel API v2",
+          "type": "api",
+          "version": "v2",
+          "container": "k10",
+          "stage": "planned",
+          "nameRule": null,
+          "nameOverridden": false
+        }
+      ],
+      "addedLinks": [
+        {
+          "from": "n1",
+          "to": "n2",
+          "fromRef": "btp-is/sod-carrier-sync#process@v2",
+          "toRef": "endapp/dhl-parcel#api@v2",
+          "line": "solid"
+        }
+      ],
+      "changed": [
+        {
+          "component": "c11",
+          "from": "v1",
+          "to": "v2",
+          "change": "breaking"
+        },
+        {
+          "component": "c12",
+          "from": "v1",
+          "to": "v2",
+          "change": "breaking"
+        }
+      ],
+      "impacts": [
+        {
+          "affected": "c11",
+          "affectedBlock": "b7",
+          "path": [
+            "c12",
+            "c11"
+          ],
+          "decision": "pending",
+          "codeChange": false,
+          "warning": false,
+          "acknowledged": false,
+          "note": ""
+        }
+      ],
+      "retired": []
+    }
+  ],
+  "acknowledgements": [],
+  "relations": []
+}

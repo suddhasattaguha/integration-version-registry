@@ -38,21 +38,21 @@
       "asset": "SF-Employee-Sync"
     },
     {
-      "block": 1,
+      "block": 0,
       "at": "out",
-      "platform": "Solace",
-      "asset": "Employee-Events"
+      "platform": "BTP IS",
+      "asset": "SF-Employee-Sync"
     },
     {
       "block": 2,
-      "at": "in",
+      "at": "m0",
       "platform": "Solace",
-      "asset": "Employee-Events"
+      "asset": "Q-Entra-Leaver"
     },
     {
       "block": 2,
       "at": "out",
-      "platform": "AIS",
+      "platform": "Azure Logic Apps",
       "asset": "HR-Identity"
     },
     {
@@ -71,6 +71,54 @@
   "caller": true,
   "ripples": [],
   "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t1:out",
+      "name": "Employee-Events"
+    },
+    {
+      "key": "@t3:out",
+      "name": "Microsoft Graph Users API"
+    },
+    {
+      "key": "@b0.0:out",
+      "name": "ServiceNow HR Case API"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    },
+    "branchContainers": [
+      {
+        "key": "@b0.0:m0",
+        "platform": "Solace",
+        "asset": "Q-Servicenow"
+      },
+      {
+        "key": "@b0.0:out",
+        "name": "ServiceNow HRSD",
+        "process": "Onboarding tasks"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "scn-b29a4e",
+    "version": 1,
+    "name": "HR-Leaver-Offboarding",
+    "description": "Terminations in SuccessFactors flow over the employee topic to the identity process that disables the Entra ID account; ServiceNow gets the offboarding case.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "HR",
+      "offboarding",
+      "SuccessFactors"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-23T09:30:00.000Z",
   "mode": "composite",
   "branches": [
     {
@@ -99,20 +147,5 @@
   "lineFlips": [],
   "callerVer": [],
   "laneChoice": [],
-  "compositeRipples": [],
-  "scenario": {
-    "id": "scn-b29a4e",
-    "version": 1,
-    "name": "HR-Leaver-Offboarding",
-    "description": "Terminations in SuccessFactors flow over the employee topic to the identity process that disables the Entra ID account; ServiceNow gets the offboarding case.",
-    "author": "Suddhasatta Guha",
-    "tags": [
-      "HR",
-      "offboarding",
-      "SuccessFactors"
-    ],
-    "relations": [],
-    "why": []
-  },
-  "savedAt": "2026-11-23T09:30:00.000Z"
+  "compositeRipples": []
 }

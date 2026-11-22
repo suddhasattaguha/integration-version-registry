@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-b6fea9",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-02T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -22,6 +22,12 @@
       "webshop"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -96,248 +102,284 @@
     "components": [
       {
         "id": "c1",
-        "ref": "btpis/sales-order-exp#api",
-        "name": "Sales-Order-Exp API",
-        "autoName": false,
+        "ref": "btp-is/sales-order-exp#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_SALESORDEREX_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/sales-order-exp#process",
-        "name": "Sales-Order-Exp Process",
-        "autoName": false,
+        "ref": "btp-is/sales-order-exp#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_SALESORDEREX_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/sales-order#topic",
-        "name": "Sales-Order-Events Topic",
-        "autoName": false,
+        "ref": "solace/sales-order-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_SALESORDEREV_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-s4-order#queue",
-        "name": "Q-S4-Order Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QS4ORDER_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/s4-salesorder#api",
-        "name": "S/4 API_SALES_ORDER_SRV",
-        "autoName": false,
+        "ref": "endapp/sap-s-4hana-p01/s-4-api-sales-order-srv#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "S/4 API_SALES_ORDER_SRV",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
         "ref": "solace/q-crm-order#queue",
-        "name": "Q-Crm-Order Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k5"
+        "container": "k5",
+        "name": "SOL_QCRMORDER_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c7",
-        "ref": "endapp/sfdc-order#api",
-        "name": "Salesforce Order API",
-        "autoName": false,
+        "ref": "endapp/salesforce-sales-cloud/salesforce-order-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k6"
+        "container": "k6",
+        "name": "Salesforce Order API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c8",
-        "ref": "ais/webshop-gateway#api",
-        "name": "Webshop-Gateway API",
-        "autoName": false,
+        "ref": "azure-logic-apps/webshop-gateway#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k7"
+        "container": "k7",
+        "name": "ALA_WEBSHOPGATEW_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c9",
-        "ref": "ais/webshop-gateway#process",
-        "name": "Webshop-Gateway Process",
-        "autoName": false,
+        "ref": "azure-logic-apps/webshop-gateway#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k7"
+        "container": "k7",
+        "name": "ALA_WEBSHOPGATEW_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c10",
-        "ref": "caller/mobile-sales#app",
-        "name": "Sales Rep Mobile App",
-        "autoName": false,
+        "ref": "caller/sales-rep-mobile-app#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k8"
+        "container": "k8",
+        "name": "Sales Rep Mobile App",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c11",
-        "ref": "caller/webshop#app",
-        "name": "Webshop (commercetools)",
-        "autoName": false,
+        "ref": "caller/webshop-commercetools#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k9"
+        "container": "k9",
+        "name": "Webshop (commercetools)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "btpis/sales-order-exp#api",
-        "toRef": "btpis/sales-order-exp#process"
+        "fromRef": "btp-is/sales-order-exp#api",
+        "toRef": "btp-is/sales-order-exp#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/sales-order-exp#process",
-        "toRef": "solace/sales-order#topic"
+        "fromRef": "btp-is/sales-order-exp#process",
+        "toRef": "solace/sales-order-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/sales-order#topic",
+        "fromRef": "solace/sales-order-events#topic",
         "toRef": "solace/q-s4-order#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-s4-order#queue",
-        "toRef": "endapp/s4-salesorder#api"
+        "toRef": "endapp/sap-s-4hana-p01/s-4-api-sales-order-srv#api"
       },
       {
         "from": "c3",
         "to": "c6",
-        "fromRef": "solace/sales-order#topic",
+        "fromRef": "solace/sales-order-events#topic",
         "toRef": "solace/q-crm-order#queue"
       },
       {
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-crm-order#queue",
-        "toRef": "endapp/sfdc-order#api"
+        "toRef": "endapp/salesforce-sales-cloud/salesforce-order-api#api"
       },
       {
         "from": "c8",
         "to": "c9",
-        "fromRef": "ais/webshop-gateway#api",
-        "toRef": "ais/webshop-gateway#process"
+        "fromRef": "azure-logic-apps/webshop-gateway#api",
+        "toRef": "azure-logic-apps/webshop-gateway#process"
       },
       {
         "from": "c9",
         "to": "c1",
-        "fromRef": "ais/webshop-gateway#process",
-        "toRef": "btpis/sales-order-exp#api"
+        "fromRef": "azure-logic-apps/webshop-gateway#process",
+        "toRef": "btp-is/sales-order-exp#api"
       },
       {
         "from": "c10",
         "to": "c1",
-        "fromRef": "caller/mobile-sales#app",
-        "toRef": "btpis/sales-order-exp#api"
+        "fromRef": "caller/sales-rep-mobile-app#app",
+        "toRef": "btp-is/sales-order-exp#api"
       },
       {
         "from": "c11",
         "to": "c8",
-        "fromRef": "caller/webshop#app",
-        "toRef": "ais/webshop-gateway#api"
+        "fromRef": "caller/webshop-commercetools#app",
+        "toRef": "azure-logic-apps/webshop-gateway#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "btpis/sales-order-exp",
+        "ref": "btp-is/sales-order-exp",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Sales-Order-Exp"
+        "asset": "Sales-Order-Exp",
+        "platformId": "btp-is",
+        "componentId": "btp-is/sales-order-exp"
       },
       {
         "id": "k2",
-        "ref": "solace/sales-order",
+        "ref": "solace/sales-order-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Sales-Order-Events"
+        "asset": "Sales-Order-Events",
+        "platformId": "solace",
+        "componentId": "solace/sales-order-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-s4-order",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-S4-Order"
+        "asset": "Q-S4-Order",
+        "platformId": "solace",
+        "componentId": "solace/q-s4-order"
       },
       {
         "id": "k4",
-        "ref": "endapp/s4-salesorder",
+        "ref": "endapp/sap-s-4hana-p01/s-4-api-sales-order-srv",
         "kind": "endApp",
         "platform": "",
-        "asset": "S/4 API_SALES_ORDER_SRV",
+        "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Sales order creation"
+        "process": "Sales order creation",
+        "appId": "sap-s-4hana-p01"
       },
       {
         "id": "k5",
         "ref": "solace/q-crm-order",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Crm-Order"
+        "asset": "Q-Crm-Order",
+        "platformId": "solace",
+        "componentId": "solace/q-crm-order"
       },
       {
         "id": "k6",
-        "ref": "endapp/sfdc-order",
+        "ref": "endapp/salesforce-sales-cloud/salesforce-order-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "Salesforce Order API",
+        "asset": "Salesforce Sales Cloud",
         "name": "Salesforce Sales Cloud",
-        "process": "Order sync"
+        "process": "Order sync",
+        "appId": "salesforce-sales-cloud"
       },
       {
         "id": "k7",
-        "ref": "ais/webshop-gateway",
+        "ref": "azure-logic-apps/webshop-gateway",
         "kind": "iPaaS",
-        "platform": "AIS",
-        "asset": "Webshop-Gateway"
+        "platform": "Azure Logic Apps",
+        "asset": "Webshop-Gateway",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/webshop-gateway"
       },
       {
         "id": "k8",
-        "ref": "caller/mobile-sales",
+        "ref": "caller/sales-rep-mobile-app",
         "kind": "caller",
         "platform": "",
         "asset": "Sales Rep Mobile App",
         "name": "Sales Rep Mobile App",
-        "process": "Create order"
+        "process": "Create order",
+        "appId": "sales-rep-mobile-app"
       },
       {
         "id": "k9",
-        "ref": "caller/webshop",
+        "ref": "caller/webshop-commercetools",
         "kind": "caller",
         "platform": "",
         "asset": "Webshop (commercetools)",
         "name": "Webshop (commercetools)",
-        "process": "Place order"
+        "process": "Place order",
+        "appId": "webshop-commercetools"
       }
     ]
   },

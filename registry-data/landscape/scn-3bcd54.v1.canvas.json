@@ -24,7 +24,13 @@
     {
       "block": 0,
       "at": "in",
-      "platform": "AIS",
+      "platform": "Azure Logic Apps",
+      "asset": "CRM-Connector"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "platform": "Azure Logic Apps",
       "asset": "CRM-Connector"
     },
     {
@@ -43,6 +49,46 @@
   "caller": true,
   "ripples": [],
   "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t1:out",
+      "name": "S/4 API_BUSINESS_PARTNER"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    },
+    "branchContainers": [
+      {
+        "key": "@b0.0:in",
+        "platform": "Azure Logic Apps",
+        "asset": "Webshop-Gateway"
+      },
+      {
+        "key": "@b0.0:out",
+        "platform": "Azure Logic Apps",
+        "asset": "Webshop-Gateway"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "scn-3bcd54",
+    "version": 1,
+    "name": "MDM-Salesforce-Account-to-S4",
+    "description": "New prospects converted in Salesforce, and webshop self-registrations, create business partners in S/4HANA through the CRM connector.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "MDM",
+      "business partner",
+      "salesforce"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-12T09:30:00.000Z",
   "mode": "composite",
   "branches": [
     {
@@ -82,20 +128,5 @@
   "lineFlips": [],
   "callerVer": [],
   "laneChoice": [],
-  "compositeRipples": [],
-  "scenario": {
-    "id": "scn-3bcd54",
-    "version": 1,
-    "name": "MDM-Salesforce-Account-to-S4",
-    "description": "New prospects converted in Salesforce, and webshop self-registrations, create business partners in S/4HANA through the CRM connector.",
-    "author": "Suddhasatta Guha",
-    "tags": [
-      "MDM",
-      "business partner",
-      "salesforce"
-    ],
-    "relations": [],
-    "why": []
-  },
-  "savedAt": "2026-11-12T09:30:00.000Z"
+  "compositeRipples": []
 }

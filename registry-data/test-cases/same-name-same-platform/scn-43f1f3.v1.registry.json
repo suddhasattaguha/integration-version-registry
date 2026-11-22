@@ -1,0 +1,159 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.7",
+  "scenario": {
+    "id": "scn-43f1f3",
+    "version": 1,
+    "name": "TC-Same-Name-Same-Platform",
+    "description": "Test case: same-name-same-platform",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-25T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.1",
+      "mode": "single"
+    },
+    "canvas": {
+      "file": "scn-43f1f3.v1.canvas.json"
+    },
+    "tags": [
+      "test"
+    ]
+  },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btp-is/sales-order-exp#api",
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "name": "BTP_SALESORDEREX_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
+      },
+      {
+        "id": "c2",
+        "ref": "btp-is/sales-order-exp#process",
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "name": "BTP_SALESORDEREX_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
+      },
+      {
+        "id": "c3",
+        "ref": "endapp/sap-s-4hana-p01/s-4-api-sales-order-srv#api",
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k2",
+        "name": "S/4 API_SALES_ORDER_SRV",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      },
+      {
+        "id": "c4",
+        "ref": "caller/sales-rep-mobile-app#app",
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k3",
+        "name": "Sales Rep Mobile App",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btp-is/sales-order-exp#api",
+        "toRef": "btp-is/sales-order-exp#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btp-is/sales-order-exp#process",
+        "toRef": "endapp/sap-s-4hana-p01/s-4-api-sales-order-srv#api"
+      },
+      {
+        "from": "c4",
+        "to": "c1",
+        "fromRef": "caller/sales-rep-mobile-app#app",
+        "toRef": "btp-is/sales-order-exp#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btp-is/sales-order-exp",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Sales-Order-Exp",
+        "platformId": "btp-is",
+        "componentId": "btp-is/sales-order-exp"
+      },
+      {
+        "id": "k2",
+        "ref": "endapp/sap-s-4hana-p01/s-4-api-sales-order-srv",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
+        "process": "Sales order creation",
+        "appId": "sap-s-4hana-p01"
+      },
+      {
+        "id": "k3",
+        "ref": "caller/sales-rep-mobile-app",
+        "kind": "caller",
+        "platform": "",
+        "asset": "Sales Rep Mobile App",
+        "name": "Sales Rep Mobile App",
+        "process": "Create order",
+        "appId": "sales-rep-mobile-app"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

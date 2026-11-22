@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-3ce28e",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-22T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "single"
     },
     "canvas": {
@@ -21,6 +21,12 @@
       "payroll"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -50,95 +56,110 @@
     "components": [
       {
         "id": "c1",
-        "ref": "solace/employee#topic",
-        "name": "Employee-Events Topic",
-        "autoName": false,
+        "ref": "solace/employee-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "SOL_EMPLOYEEEVEN_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
         "ref": "solace/q-payroll#queue",
-        "name": "Q-Payroll Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_QPAYROLL_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "btpis/payroll-export#process",
-        "name": "Payroll-Export Process",
-        "autoName": false,
+        "ref": "btp-is/payroll-export#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "BTP_PAYROLLEXPOR_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
-        "ref": "endapp/adp-sftp#file",
-        "name": "ADP SFTP inbox",
-        "autoName": false,
+        "ref": "endapp/adp-payroll/adp-sftp-inbox#file",
         "type": "file",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "ADP SFTP inbox",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "solace/employee#topic",
+        "fromRef": "solace/employee-events#topic",
         "toRef": "solace/q-payroll#queue"
       },
       {
         "from": "c2",
         "to": "c3",
         "fromRef": "solace/q-payroll#queue",
-        "toRef": "btpis/payroll-export#process"
+        "toRef": "btp-is/payroll-export#process"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "btpis/payroll-export#process",
-        "toRef": "endapp/adp-sftp#file"
+        "fromRef": "btp-is/payroll-export#process",
+        "toRef": "endapp/adp-payroll/adp-sftp-inbox#file"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "solace/employee",
+        "ref": "solace/employee-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Employee-Events"
+        "asset": "Employee-Events",
+        "platformId": "solace",
+        "componentId": "solace/employee-events"
       },
       {
         "id": "k2",
         "ref": "solace/q-payroll",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Payroll"
+        "asset": "Q-Payroll",
+        "platformId": "solace",
+        "componentId": "solace/q-payroll"
       },
       {
         "id": "k3",
-        "ref": "btpis/payroll-export",
+        "ref": "btp-is/payroll-export",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "Payroll-Export"
+        "asset": "Payroll-Export",
+        "platformId": "btp-is",
+        "componentId": "btp-is/payroll-export"
       },
       {
         "id": "k4",
-        "ref": "endapp/adp-sftp",
+        "ref": "endapp/adp-payroll/adp-sftp-inbox",
         "kind": "endApp",
         "platform": "",
-        "asset": "ADP SFTP inbox",
+        "asset": "ADP Payroll",
         "name": "ADP Payroll",
-        "process": "Payroll input"
+        "process": "Payroll input",
+        "appId": "adp-payroll"
       }
     ]
   },

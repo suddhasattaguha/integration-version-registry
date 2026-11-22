@@ -28,6 +28,12 @@
       "asset": "Ariba-Procurement"
     },
     {
+      "block": 0,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "Ariba-Procurement"
+    },
+    {
       "block": 1,
       "at": "out",
       "name": "SAP S/4HANA (P01)",
@@ -43,6 +49,50 @@
   "caller": true,
   "ripples": [],
   "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t1:out",
+      "name": "S/4 API_SUPPLIERINVOICE_PROCESS_SRV"
+    },
+    {
+      "key": "@b0.0:in",
+      "name": "OCR outbox SFTP"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    },
+    "branchContainers": [
+      {
+        "key": "@b0.0:in",
+        "name": "Invoice OCR service",
+        "process": "Scanned invoices"
+      },
+      {
+        "key": "@b0.0:out",
+        "platform": "BTP IS",
+        "asset": "Invoice-Scan-OCR"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "scn-c958bd",
+    "version": 1,
+    "name": "P2P-Supplier-Invoice-Processing",
+    "description": "Supplier invoices from Ariba, plus scanned paper invoices from the OCR service, are posted in S/4HANA.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "P2P",
+      "supplier invoice",
+      "Ariba"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-18T09:30:00.000Z",
   "mode": "composite",
   "branches": [
     {
@@ -71,20 +121,5 @@
   "lineFlips": [],
   "callerVer": [],
   "laneChoice": [],
-  "compositeRipples": [],
-  "scenario": {
-    "id": "scn-c958bd",
-    "version": 1,
-    "name": "P2P-Supplier-Invoice-Processing",
-    "description": "Supplier invoices from Ariba, plus scanned paper invoices from the OCR service, are posted in S/4HANA.",
-    "author": "Suddhasatta Guha",
-    "tags": [
-      "P2P",
-      "supplier invoice",
-      "Ariba"
-    ],
-    "relations": [],
-    "why": []
-  },
-  "savedAt": "2026-11-18T09:30:00.000Z"
+  "compositeRipples": []
 }

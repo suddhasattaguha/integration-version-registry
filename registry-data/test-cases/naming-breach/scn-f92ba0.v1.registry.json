@@ -1,0 +1,159 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "0.7",
+  "scenario": {
+    "id": "scn-f92ba0",
+    "version": 1,
+    "name": "TC-Naming-Breach",
+    "description": "Test case: naming-breach",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-25T09:30:00.000Z",
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.1",
+      "mode": "single"
+    },
+    "canvas": {
+      "file": "scn-f92ba0.v1.canvas.json"
+    },
+    "tags": [
+      "test"
+    ]
+  },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btp-is/delivery-dist#api",
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "name": "my order api",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": true
+      },
+      {
+        "id": "c2",
+        "ref": "btp-is/delivery-dist#process",
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "name": "BTP_DELIVERYDIST_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
+      },
+      {
+        "id": "c3",
+        "ref": "endapp/sap-ewm/ewm-warehouse-request-api#api",
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k2",
+        "name": "EWM Warehouse Request API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      },
+      {
+        "id": "c4",
+        "ref": "caller/sap-s-4hana-p01#app",
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k3",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btp-is/delivery-dist#api",
+        "toRef": "btp-is/delivery-dist#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btp-is/delivery-dist#process",
+        "toRef": "endapp/sap-ewm/ewm-warehouse-request-api#api"
+      },
+      {
+        "from": "c4",
+        "to": "c1",
+        "fromRef": "caller/sap-s-4hana-p01#app",
+        "toRef": "btp-is/delivery-dist#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btp-is/delivery-dist",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Delivery-Dist",
+        "platformId": "btp-is",
+        "componentId": "btp-is/delivery-dist"
+      },
+      {
+        "id": "k2",
+        "ref": "endapp/sap-ewm/ewm-warehouse-request-api",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "SAP EWM",
+        "name": "SAP EWM",
+        "process": "Outbound picking",
+        "appId": "sap-ewm"
+      },
+      {
+        "id": "k3",
+        "ref": "caller/sap-s-4hana-p01",
+        "kind": "caller",
+        "platform": "",
+        "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
+        "process": "Business event",
+        "appId": "sap-s-4hana-p01"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

@@ -1,0 +1,1129 @@
+{
+  "schema": "landscape-config",
+  "schemaVersion": "0.1",
+  "landscapeVersion": 1,
+  "name": "Default landscape",
+  "updated": "2026-11-22T12:00:00Z",
+  "origin": "registry",
+  "entityTypes": [
+    {
+      "id": "scenario",
+      "label": "Scenario",
+      "plural": "Scenarios"
+    },
+    {
+      "id": "platform",
+      "label": "Platform",
+      "plural": "Platforms"
+    },
+    {
+      "id": "component",
+      "label": "Component",
+      "plural": "Components"
+    },
+    {
+      "id": "part",
+      "label": "Part",
+      "plural": "Parts"
+    },
+    {
+      "id": "application",
+      "label": "Application",
+      "plural": "Applications"
+    },
+    {
+      "id": "endpoint",
+      "label": "Endpoint",
+      "plural": "Endpoints"
+    },
+    {
+      "id": "caller",
+      "label": "Caller",
+      "plural": "Callers"
+    },
+    {
+      "id": "version",
+      "label": "Version",
+      "plural": "Versions"
+    },
+    {
+      "id": "export",
+      "label": "Export",
+      "plural": "Exports"
+    }
+  ],
+  "glossary": [
+    {
+      "id": "scenario",
+      "term": "scenario",
+      "definition": "An end-to-end integration flow between connected applications.",
+      "aliases": []
+    },
+    {
+      "id": "integration-platform-ipaas",
+      "term": "integration platform (iPaaS)",
+      "definition": "A platform that runs integration processes and exposes APIs (e.g. SAP BTP Integration Suite).",
+      "aliases": []
+    },
+    {
+      "id": "message-broker",
+      "term": "message broker",
+      "definition": "A platform that carries events on topics and queues (e.g. Solace).",
+      "aliases": []
+    },
+    {
+      "id": "integration-component",
+      "term": "integration component",
+      "definition": "A named artifact on a platform or broker (an iFlow, a topic asset \u2026).",
+      "aliases": [
+        "asset"
+      ]
+    },
+    {
+      "id": "part",
+      "term": "part",
+      "definition": "A piece of a component: API, process, topic, queue, file or scheduler.",
+      "aliases": []
+    },
+    {
+      "id": "connected-system-application",
+      "term": "connected system / application",
+      "definition": "An application that calls a flow or receives from it.",
+      "aliases": [
+        "connected system"
+      ]
+    },
+    {
+      "id": "endpoint",
+      "term": "endpoint",
+      "definition": "The API or folder of an application a flow uses.",
+      "aliases": []
+    },
+    {
+      "id": "caller",
+      "term": "caller",
+      "definition": "The application that calls an exposed API (= an application).",
+      "aliases": []
+    },
+    {
+      "id": "export",
+      "term": "export",
+      "definition": "One hand-over from Pattern Bench to the registry \u2014 counted, not a version.",
+      "aliases": []
+    },
+    {
+      "id": "version",
+      "term": "version",
+      "definition": "A version of a component part (v1, v2 \u2026); at most two live at a time.",
+      "aliases": []
+    }
+  ],
+  "namingRules": [
+    {
+      "id": "N-1",
+      "target": "part",
+      "when": {
+        "partType": "api"
+      },
+      "mode": "derive",
+      "segments": [
+        {
+          "source": "platform.code"
+        },
+        {
+          "delimiter": "_"
+        },
+        {
+          "source": "component.code"
+        },
+        {
+          "delimiter": "_"
+        },
+        {
+          "source": "partType",
+          "map": {
+            "api": "API",
+            "process": "IF",
+            "topic": "TP",
+            "queue": "Q",
+            "file": "FL",
+            "scheduler": "SCH"
+          }
+        },
+        {
+          "delimiter": "_"
+        },
+        {
+          "source": "free",
+          "label": "Purpose",
+          "optional": true,
+          "maxLength": 20
+        },
+        {
+          "delimiter": "_"
+        },
+        {
+          "source": "version",
+          "format": "v{n}",
+          "optional": true
+        }
+      ],
+      "transforms": [
+        "upper",
+        "noSpaces"
+      ],
+      "maxLength": 60,
+      "override": "warn",
+      "level": "block"
+    },
+    {
+      "id": "N-2",
+      "target": "part",
+      "when": {
+        "partType": "process"
+      },
+      "mode": "derive",
+      "segments": [
+        {
+          "source": "platform.code"
+        },
+        {
+          "delimiter": "_"
+        },
+        {
+          "source": "component.code"
+        },
+        {
+          "delimiter": "_"
+        },
+        {
+          "source": "literal",
+          "text": "IF"
+        },
+        {
+          "delimiter": "_"
+        },
+        {
+          "source": "version",
+          "format": "v{n}",
+          "optional": true
+        }
+      ],
+      "transforms": [
+        "upper",
+        "noSpaces"
+      ],
+      "maxLength": 60,
+      "override": "allow",
+      "level": "warn"
+    },
+    {
+      "id": "N-3",
+      "target": "part",
+      "when": {},
+      "mode": "derive",
+      "segments": [
+        {
+          "source": "platform.code"
+        },
+        {
+          "delimiter": "_"
+        },
+        {
+          "source": "component.code"
+        },
+        {
+          "delimiter": "_"
+        },
+        {
+          "source": "partType",
+          "map": {
+            "api": "API",
+            "process": "IF",
+            "topic": "TP",
+            "queue": "Q",
+            "file": "FL",
+            "scheduler": "SCH"
+          }
+        },
+        {
+          "delimiter": "_"
+        },
+        {
+          "source": "version",
+          "format": "v{n}",
+          "optional": true
+        }
+      ],
+      "transforms": [
+        "upper",
+        "noSpaces"
+      ],
+      "maxLength": 60,
+      "override": "block",
+      "level": "warn"
+    }
+  ],
+  "platforms": [
+    {
+      "name": "BTP IS",
+      "id": "btp-is",
+      "code": "BTP",
+      "kind": "ipaas",
+      "capabilities": [
+        "api",
+        "process",
+        "file",
+        "scheduler"
+      ],
+      "aliases": [
+        "SAP BTP Integration Suite",
+        "BTP-IS",
+        "btpis"
+      ]
+    },
+    {
+      "name": "Azure Logic Apps",
+      "id": "azure-logic-apps",
+      "code": "ALA",
+      "kind": "ipaas",
+      "capabilities": [
+        "api",
+        "process",
+        "file",
+        "scheduler"
+      ],
+      "aliases": [
+        "AIS",
+        "Azure Integration Services"
+      ]
+    },
+    {
+      "name": "Azure Functions",
+      "id": "azure-functions",
+      "code": "AFN",
+      "kind": "ipaas",
+      "capabilities": [
+        "api",
+        "process",
+        "scheduler"
+      ],
+      "aliases": []
+    },
+    {
+      "name": "SAP API Management",
+      "id": "sap-apim",
+      "code": "APIM",
+      "kind": "ipaas",
+      "capabilities": [
+        "api"
+      ],
+      "aliases": [
+        "APIM"
+      ]
+    },
+    {
+      "name": "Solace",
+      "id": "solace",
+      "code": "SOL",
+      "kind": "broker",
+      "capabilities": [
+        "topic",
+        "queue"
+      ],
+      "aliases": [
+        "Solace PubSub+"
+      ]
+    }
+  ],
+  "components": [
+    {
+      "id": "btp-is/sales-order-exp",
+      "platform": "btp-is",
+      "name": "Sales-Order-Exp",
+      "code": "SALESORDEREX",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/order-status-dist",
+      "platform": "btp-is",
+      "name": "Order-Status-Dist",
+      "code": "ORDERSTATUSD",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/delivery-dist",
+      "platform": "btp-is",
+      "name": "Delivery-Dist",
+      "code": "DELIVERYDIST",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/ewm-warehouse-sync",
+      "platform": "btp-is",
+      "name": "EWM-Warehouse-Sync",
+      "code": "EWMWAREHOUSE",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/invoice-outbound-drc",
+      "platform": "btp-is",
+      "name": "Invoice-Outbound-DRC",
+      "code": "INVOICEOUTBO",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/invoice-to-crm",
+      "platform": "btp-is",
+      "name": "Invoice-to-CRM",
+      "code": "INVOICETOCRM",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/bp-replication",
+      "platform": "btp-is",
+      "name": "BP-Replication",
+      "code": "BPREPLICATIO",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/material-master-dist",
+      "platform": "btp-is",
+      "name": "Material-Master-Dist",
+      "code": "MATERIALMAST",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/price-dist",
+      "platform": "btp-is",
+      "name": "Price-Dist",
+      "code": "PRICEDIST",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/ariba-procurement",
+      "platform": "btp-is",
+      "name": "Ariba-Procurement",
+      "code": "ARIBAPROCURE",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/invoice-scan-ocr",
+      "platform": "btp-is",
+      "name": "Invoice-Scan-OCR",
+      "code": "INVOICESCANO",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/payment-files",
+      "platform": "btp-is",
+      "name": "Payment-Files",
+      "code": "PAYMENTFILES",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/bank-statement-in",
+      "platform": "btp-is",
+      "name": "Bank-Statement-In",
+      "code": "BANKSTATEMEN",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/sf-employee-sync",
+      "platform": "btp-is",
+      "name": "SF-Employee-Sync",
+      "code": "SFEMPLOYEESY",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/payroll-export",
+      "platform": "btp-is",
+      "name": "Payroll-Export",
+      "code": "PAYROLLEXPOR",
+      "aliases": []
+    },
+    {
+      "id": "azure-logic-apps/webshop-gateway",
+      "platform": "azure-logic-apps",
+      "name": "Webshop-Gateway",
+      "code": "WEBSHOPGATEW",
+      "aliases": []
+    },
+    {
+      "id": "azure-logic-apps/crm-connector",
+      "platform": "azure-logic-apps",
+      "name": "CRM-Connector",
+      "code": "CRMCONNECTOR",
+      "aliases": []
+    },
+    {
+      "id": "azure-logic-apps/carrier-hub",
+      "platform": "azure-logic-apps",
+      "name": "Carrier-Hub",
+      "code": "CARRIERHUB",
+      "aliases": []
+    },
+    {
+      "id": "azure-logic-apps/catalog-sync",
+      "platform": "azure-logic-apps",
+      "name": "Catalog-Sync",
+      "code": "CATALOGSYNC",
+      "aliases": []
+    },
+    {
+      "id": "azure-logic-apps/datalake-ingest",
+      "platform": "azure-logic-apps",
+      "name": "DataLake-Ingest",
+      "code": "DATALAKEINGE",
+      "aliases": []
+    },
+    {
+      "id": "azure-logic-apps/hr-identity",
+      "platform": "azure-logic-apps",
+      "name": "HR-Identity",
+      "code": "HRIDENTITY",
+      "aliases": []
+    },
+    {
+      "id": "solace/sales-order-events",
+      "platform": "solace",
+      "name": "Sales-Order-Events",
+      "code": "SALESORDEREV",
+      "aliases": []
+    },
+    {
+      "id": "solace/order-status-events",
+      "platform": "solace",
+      "name": "Order-Status-Events",
+      "code": "ORDERSTATUSE",
+      "aliases": []
+    },
+    {
+      "id": "solace/delivery-events",
+      "platform": "solace",
+      "name": "Delivery-Events",
+      "code": "DELIVERYEVEN",
+      "aliases": []
+    },
+    {
+      "id": "solace/invoice-events",
+      "platform": "solace",
+      "name": "Invoice-Events",
+      "code": "INVOICEEVENT",
+      "aliases": []
+    },
+    {
+      "id": "solace/bp-events",
+      "platform": "solace",
+      "name": "BP-Events",
+      "code": "BPEVENTS",
+      "aliases": []
+    },
+    {
+      "id": "solace/material-events",
+      "platform": "solace",
+      "name": "Material-Events",
+      "code": "MATERIALEVEN",
+      "aliases": []
+    },
+    {
+      "id": "solace/price-events",
+      "platform": "solace",
+      "name": "Price-Events",
+      "code": "PRICEEVENTS",
+      "aliases": []
+    },
+    {
+      "id": "solace/po-events",
+      "platform": "solace",
+      "name": "PO-Events",
+      "code": "POEVENTS",
+      "aliases": []
+    },
+    {
+      "id": "solace/payment-events",
+      "platform": "solace",
+      "name": "Payment-Events",
+      "code": "PAYMENTEVENT",
+      "aliases": []
+    },
+    {
+      "id": "solace/employee-events",
+      "platform": "solace",
+      "name": "Employee-Events",
+      "code": "EMPLOYEEEVEN",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-s4-order",
+      "platform": "solace",
+      "name": "Q-S4-Order",
+      "code": "QS4ORDER",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-crm-order",
+      "platform": "solace",
+      "name": "Q-Crm-Order",
+      "code": "QCRMORDER",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-dwh-order",
+      "platform": "solace",
+      "name": "Q-Dwh-Order",
+      "code": "QDWHORDER",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-webshop-status",
+      "platform": "solace",
+      "name": "Q-Webshop-Status",
+      "code": "QWEBSHOPSTAT",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-crm-status",
+      "platform": "solace",
+      "name": "Q-Crm-Status",
+      "code": "QCRMSTATUS",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-ewm-delivery",
+      "platform": "solace",
+      "name": "Q-Ewm-Delivery",
+      "code": "QEWMDELIVERY",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-carrier-delivery",
+      "platform": "solace",
+      "name": "Q-Carrier-Delivery",
+      "code": "QCARRIERDELI",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-s4-goods-issue",
+      "platform": "solace",
+      "name": "Q-S4-Goods-Issue",
+      "code": "QS4GOODSISSU",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-webshop-tracking",
+      "platform": "solace",
+      "name": "Q-Webshop-Tracking",
+      "code": "QWEBSHOPTRAC",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-ksef",
+      "platform": "solace",
+      "name": "Q-Ksef",
+      "code": "QKSEF",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-peppol",
+      "platform": "solace",
+      "name": "Q-Peppol",
+      "code": "QPEPPOL",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-dwh-invoice",
+      "platform": "solace",
+      "name": "Q-Dwh-Invoice",
+      "code": "QDWHINVOICE",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-crm-invoice",
+      "platform": "solace",
+      "name": "Q-Crm-Invoice",
+      "code": "QCRMINVOICE",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-crm-bp",
+      "platform": "solace",
+      "name": "Q-Crm-Bp",
+      "code": "QCRMBP",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-ariba-supplier",
+      "platform": "solace",
+      "name": "Q-Ariba-Supplier",
+      "code": "QARIBASUPPLI",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-dwh-bp",
+      "platform": "solace",
+      "name": "Q-Dwh-Bp",
+      "code": "QDWHBP",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-pim-material",
+      "platform": "solace",
+      "name": "Q-Pim-Material",
+      "code": "QPIMMATERIAL",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-ewm-product",
+      "platform": "solace",
+      "name": "Q-Ewm-Product",
+      "code": "QEWMPRODUCT",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-dwh-material",
+      "platform": "solace",
+      "name": "Q-Dwh-Material",
+      "code": "QDWHMATERIAL",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-webshop-material",
+      "platform": "solace",
+      "name": "Q-Webshop-Material",
+      "code": "QWEBSHOPMATE",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-webshop-price",
+      "platform": "solace",
+      "name": "Q-Webshop-Price",
+      "code": "QWEBSHOPPRIC",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-crm-price",
+      "platform": "solace",
+      "name": "Q-Crm-Price",
+      "code": "QCRMPRICE",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-ariba-po",
+      "platform": "solace",
+      "name": "Q-Ariba-Po",
+      "code": "QARIBAPO",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-dwh-po",
+      "platform": "solace",
+      "name": "Q-Dwh-Po",
+      "code": "QDWHPO",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-bank-payment",
+      "platform": "solace",
+      "name": "Q-Bank-Payment",
+      "code": "QBANKPAYMENT",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-treasury",
+      "platform": "solace",
+      "name": "Q-Treasury",
+      "code": "QTREASURY",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-entra",
+      "platform": "solace",
+      "name": "Q-Entra",
+      "code": "QENTRA",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-servicenow",
+      "platform": "solace",
+      "name": "Q-Servicenow",
+      "code": "QSERVICENOW",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-s4-employee",
+      "platform": "solace",
+      "name": "Q-S4-Employee",
+      "code": "QS4EMPLOYEE",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-payroll",
+      "platform": "solace",
+      "name": "Q-Payroll",
+      "code": "QPAYROLL",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-entra-leaver",
+      "platform": "solace",
+      "name": "Q-Entra-Leaver",
+      "code": "QENTRALEAVER",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/bank-statement-poll",
+      "platform": "btp-is",
+      "name": "Bank-Statement-Poll",
+      "code": "BANKSTATEMEN",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/price-pull",
+      "platform": "btp-is",
+      "name": "Price-Pull",
+      "code": "PRICEPULL",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/payment-delivery",
+      "platform": "btp-is",
+      "name": "Payment-Delivery",
+      "code": "PAYMENTDELIV",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/sod-intake",
+      "platform": "btp-is",
+      "name": "SOD-Intake",
+      "code": "SODINTAKE",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/sod-crm-sync",
+      "platform": "btp-is",
+      "name": "SOD-CRM-Sync",
+      "code": "SODCRMSYNC",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/sod-wms-feed",
+      "platform": "btp-is",
+      "name": "SOD-WMS-Feed",
+      "code": "SODWMSFEED",
+      "aliases": []
+    },
+    {
+      "id": "btp-is/sod-carrier-sync",
+      "platform": "btp-is",
+      "name": "SOD-Carrier-Sync",
+      "code": "SODCARRIERSY",
+      "aliases": []
+    },
+    {
+      "id": "solace/sod-order-events",
+      "platform": "solace",
+      "name": "SOD-Order-Events",
+      "code": "SODORDEREVEN",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-sod-crm",
+      "platform": "solace",
+      "name": "Q-SOD-CRM",
+      "code": "QSODCRM",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-sod-wms",
+      "platform": "solace",
+      "name": "Q-SOD-WMS",
+      "code": "QSODWMS",
+      "aliases": []
+    },
+    {
+      "id": "solace/q-sod-carrier",
+      "platform": "solace",
+      "name": "Q-SOD-Carrier",
+      "code": "QSODCARRIER",
+      "aliases": []
+    }
+  ],
+  "applications": [
+    {
+      "id": "sap-s-4hana-p01",
+      "name": "SAP S/4HANA (P01)",
+      "code": "S4P01",
+      "endpoints": [
+        {
+          "id": "S/4 API_SALES_ORDER_SRV",
+          "type": "api"
+        },
+        {
+          "id": "S/4 API_OUTBOUND_DELIVERY_SRV",
+          "type": "api"
+        },
+        {
+          "id": "S/4 API_BUSINESS_PARTNER",
+          "type": "api"
+        },
+        {
+          "id": "S/4 API_PURCHASEORDER_PROCESS_SRV",
+          "type": "api"
+        },
+        {
+          "id": "S/4 API_SUPPLIERINVOICE_PROCESS_SRV",
+          "type": "api"
+        },
+        {
+          "id": "S/4 Bank Statement Import (CAMT.053)",
+          "type": "api"
+        },
+        {
+          "id": "S/4 Payment Medium folder",
+          "type": "file"
+        },
+        {
+          "id": "S/4 API_SLSPRICINGCONDITIONRECORD_SRV",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "salesforce-sales-cloud",
+      "name": "Salesforce Sales Cloud",
+      "code": "SFDC",
+      "endpoints": [
+        {
+          "id": "Salesforce Order API",
+          "type": "api"
+        },
+        {
+          "id": "Salesforce Account API",
+          "type": "api"
+        },
+        {
+          "id": "Salesforce Invoice API",
+          "type": "api"
+        },
+        {
+          "id": "Salesforce Pricebook API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "webshop-commercetools",
+      "name": "Webshop (commercetools)",
+      "code": "CTOOLS",
+      "endpoints": [
+        {
+          "id": "commercetools Order API",
+          "type": "api"
+        },
+        {
+          "id": "commercetools Product API",
+          "type": "api"
+        },
+        {
+          "id": "commercetools Price API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "sap-ewm",
+      "name": "SAP EWM",
+      "code": "EWM",
+      "endpoints": [
+        {
+          "id": "EWM Warehouse Request API",
+          "type": "api"
+        },
+        {
+          "id": "EWM Product API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "dhl-parcel",
+      "name": "DHL Parcel",
+      "code": "DHL",
+      "endpoints": [
+        {
+          "id": "DHL Shipment API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "ksef-pl-e-invoicing",
+      "name": "KSeF (PL e-invoicing)",
+      "code": "KSEF",
+      "endpoints": [
+        {
+          "id": "KSeF Invoice API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "peppol-access-point",
+      "name": "Peppol Access Point",
+      "code": "PEPPOL",
+      "endpoints": [
+        {
+          "id": "Peppol AP API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "azure-data-lake",
+      "name": "Azure Data Lake",
+      "code": "ADL",
+      "endpoints": [
+        {
+          "id": "Data Lake landing folder",
+          "type": "file"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "sap-ariba",
+      "name": "SAP Ariba",
+      "code": "ARIBA",
+      "endpoints": [
+        {
+          "id": "Ariba Supplier API",
+          "type": "api"
+        },
+        {
+          "id": "Ariba Purchase Order API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "invoice-ocr-service",
+      "name": "Invoice OCR service",
+      "code": "OCR",
+      "endpoints": [
+        {
+          "id": "OCR outbox SFTP",
+          "type": "file"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "pim-akeneo",
+      "name": "PIM (Akeneo)",
+      "code": "PIM",
+      "endpoints": [
+        {
+          "id": "Akeneo Product API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "nordea-bank",
+      "name": "Nordea Bank",
+      "code": "NORDEA",
+      "endpoints": [
+        {
+          "id": "Nordea SFTP outbox (pain.001)",
+          "type": "file"
+        },
+        {
+          "id": "Nordea SFTP inbox (camt.053)",
+          "type": "file"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "kyriba-treasury",
+      "name": "Kyriba Treasury",
+      "code": "KYRIBA",
+      "endpoints": [
+        {
+          "id": "Kyriba Payments API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "microsoft-entra-id",
+      "name": "Microsoft Entra ID",
+      "code": "ENTRA",
+      "endpoints": [
+        {
+          "id": "Microsoft Graph Users API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "servicenow-hrsd",
+      "name": "ServiceNow HRSD",
+      "code": "SNOW",
+      "endpoints": [
+        {
+          "id": "ServiceNow HR Case API",
+          "type": "api"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "adp-payroll",
+      "name": "ADP Payroll",
+      "code": "ADP",
+      "endpoints": [
+        {
+          "id": "ADP SFTP inbox",
+          "type": "file"
+        }
+      ],
+      "aliases": []
+    },
+    {
+      "id": "sales-rep-mobile-app",
+      "name": "Sales Rep Mobile App",
+      "code": "MOBSALES",
+      "endpoints": [],
+      "aliases": []
+    },
+    {
+      "id": "successfactors-employee-central",
+      "name": "SuccessFactors Employee Central",
+      "code": "SFEC",
+      "endpoints": [],
+      "aliases": []
+    }
+  ],
+  "changeLog": [
+    {
+      "at": "2026-11-22T12:00:00Z",
+      "action": "import",
+      "item": "settings",
+      "note": "generated by tools/gen_landscape.py (X-1)",
+      "landscapeVersion": 1
+    }
+  ]
+}

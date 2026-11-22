@@ -1,0 +1,90 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "schedule-to-process-file",
+      "label": "Schedule-to-Process (poll folder)"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "Bank-Statement-Poll"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "Bank-Statement-Poll"
+    },
+    {
+      "block": 0,
+      "at": "pull",
+      "name": "Nordea Bank",
+      "process": "Statements"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Electronic bank statement"
+    }
+  ],
+  "caller": false,
+  "ripples": [],
+  "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t0:pull",
+      "name": "Nordea SFTP inbox (camt.053)"
+    },
+    {
+      "key": "@t1:out",
+      "name": "S/4 Bank Statement Import (CAMT.053)"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    },
+    "schedule": [
+      {
+        "key": "@t0:in",
+        "text": "02:00 daily"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "scn-c20edf",
+    "version": 1,
+    "name": "FIN-Bank-Statement-Poll",
+    "description": "A scheduler polls the Nordea SFTP inbox every night and imports the camt.053 statements into S/4HANA.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "FIN",
+      "bank statement",
+      "scheduled"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-24T07:30:00.000Z"
+}

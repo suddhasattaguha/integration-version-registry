@@ -15,14 +15,19 @@
       "label": "Process-to-Publish"
     },
     {
-      "pattern": "consume-to-file",
-      "label": "Consume-to-File"
+      "pattern": "consume-to-process",
+      "label": "Consume-to-Process"
+    },
+    {
+      "pattern": "process-to-file",
+      "label": "Process-to-File"
     }
   ],
   "buildOrder": [
     0,
     1,
-    2
+    2,
+    3
   ],
   "versions": [],
   "containers": [
@@ -39,13 +44,19 @@
       "asset": "Payment-Files"
     },
     {
-      "block": 1,
-      "at": "out",
+      "block": 2,
+      "at": "m0",
       "platform": "Solace",
-      "asset": "Payment-Events"
+      "asset": "Q-Bank-Payment"
     },
     {
       "block": 2,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "Payment-Delivery"
+    },
+    {
+      "block": 3,
       "at": "out",
       "name": "Nordea Bank",
       "process": "Payments"
@@ -54,6 +65,58 @@
   "caller": false,
   "ripples": [],
   "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t0:in",
+      "name": "S/4 Payment Medium folder"
+    },
+    {
+      "key": "@t1:out",
+      "name": "Payment-Events"
+    },
+    {
+      "key": "@t3:out",
+      "name": "Nordea SFTP outbox (pain.001)"
+    },
+    {
+      "key": "@b0.0:out",
+      "name": "Kyriba Payments API"
+    }
+  ],
+  "std": {
+    "pb": "2.1",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    },
+    "branchContainers": [
+      {
+        "key": "@b0.0:m0",
+        "platform": "Solace",
+        "asset": "Q-Treasury"
+      },
+      {
+        "key": "@b0.0:out",
+        "name": "Kyriba Treasury",
+        "process": "Cash positioning"
+      }
+    ]
+  },
+  "scenario": {
+    "id": "scn-35433e",
+    "version": 1,
+    "name": "FIN-Payment-Run-to-Bank",
+    "description": "Payment files from the S/4HANA payment run are published and delivered to Nordea; Kyriba gets the payment details for cash positioning.",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "FIN",
+      "payments",
+      "bank"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-19T09:30:00.000Z",
   "mode": "composite",
   "branches": [
     {
@@ -82,20 +145,5 @@
   "lineFlips": [],
   "callerVer": [],
   "laneChoice": [],
-  "compositeRipples": [],
-  "scenario": {
-    "id": "scn-35433e",
-    "version": 1,
-    "name": "FIN-Payment-Run-to-Bank",
-    "description": "Payment files from the S/4HANA payment run are published and delivered to Nordea; Kyriba gets the payment details for cash positioning.",
-    "author": "Suddhasatta Guha",
-    "tags": [
-      "FIN",
-      "payments",
-      "bank"
-    ],
-    "relations": [],
-    "why": []
-  },
-  "savedAt": "2026-11-19T09:30:00.000Z"
+  "compositeRipples": []
 }

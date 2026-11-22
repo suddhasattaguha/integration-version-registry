@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.6",
+  "schemaVersion": "0.7",
   "scenario": {
     "id": "scn-153574",
     "version": 1,
@@ -10,7 +10,7 @@
     "exportedAt": "2026-11-11T09:30:00.000Z",
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.0",
+      "toolVersion": "2.1",
       "mode": "composite"
     },
     "canvas": {
@@ -21,6 +21,12 @@
       "business partner"
     ]
   },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
   "base": {
     "blocks": [
       {
@@ -96,255 +102,293 @@
     "components": [
       {
         "id": "c1",
-        "ref": "btpis/bp-replication#api",
-        "name": "BP-Replication API",
-        "autoName": false,
+        "ref": "btp-is/bp-replication#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_BPREPLICATIO_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c2",
-        "ref": "btpis/bp-replication#process",
-        "name": "BP-Replication Process",
-        "autoName": false,
+        "ref": "btp-is/bp-replication#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k1"
+        "container": "k1",
+        "name": "BTP_BPREPLICATIO_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c3",
-        "ref": "solace/business-partner#topic",
-        "name": "BP-Events Topic",
-        "autoName": false,
+        "ref": "solace/bp-events#topic",
         "type": "topic",
         "version": "v1",
         "owner": "integration",
-        "container": "k2"
+        "container": "k2",
+        "name": "SOL_BPEVENTS_TP",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c4",
         "ref": "solace/q-crm-bp#queue",
-        "name": "Q-Crm-Bp Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k3"
+        "container": "k3",
+        "name": "SOL_QCRMBP_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c5",
-        "ref": "endapp/sfdc-account#api",
-        "name": "Salesforce Account API",
-        "autoName": false,
+        "ref": "endapp/salesforce-sales-cloud/salesforce-account-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k4"
+        "container": "k4",
+        "name": "Salesforce Account API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c6",
         "ref": "solace/q-ariba-supplier#queue",
-        "name": "Q-Ariba-Supplier Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k5"
+        "container": "k5",
+        "name": "SOL_QARIBASUPPLI_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c7",
-        "ref": "endapp/ariba-supplier#api",
-        "name": "Ariba Supplier API",
-        "autoName": false,
+        "ref": "endapp/sap-ariba/ariba-supplier-api#api",
         "type": "api",
         "version": "v1",
         "owner": "endApp",
-        "container": "k6"
+        "container": "k6",
+        "name": "Ariba Supplier API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c8",
         "ref": "solace/q-dwh-bp#queue",
-        "name": "Q-Dwh-Bp Queue",
-        "autoName": false,
         "type": "queue",
         "version": "v1",
         "owner": "integration",
-        "container": "k7"
+        "container": "k7",
+        "name": "SOL_QDWHBP_Q",
+        "nameRule": "N-3",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c9",
-        "ref": "ais/datalake-ingest#process",
-        "name": "DataLake-Ingest Process",
-        "autoName": false,
+        "ref": "azure-logic-apps/datalake-ingest#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
-        "container": "k8"
+        "container": "k8",
+        "name": "ALA_DATALAKEINGE_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false
       },
       {
         "id": "c10",
-        "ref": "endapp/datalake#file",
-        "name": "Data Lake landing folder",
-        "autoName": false,
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder#file",
         "type": "file",
         "version": "v1",
         "owner": "endApp",
-        "container": "k9"
+        "container": "k9",
+        "name": "Data Lake landing folder",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       },
       {
         "id": "c11",
-        "ref": "caller/s4-p01#app",
-        "name": "SAP S/4HANA (P01)",
-        "autoName": false,
+        "ref": "caller/sap-s-4hana-p01#app",
         "type": "app",
         "version": "v1",
         "owner": "caller",
-        "container": "k10"
+        "container": "k10",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
       }
     ],
     "links": [
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "btpis/bp-replication#api",
-        "toRef": "btpis/bp-replication#process"
+        "fromRef": "btp-is/bp-replication#api",
+        "toRef": "btp-is/bp-replication#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "btpis/bp-replication#process",
-        "toRef": "solace/business-partner#topic"
+        "fromRef": "btp-is/bp-replication#process",
+        "toRef": "solace/bp-events#topic"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "solace/business-partner#topic",
+        "fromRef": "solace/bp-events#topic",
         "toRef": "solace/q-crm-bp#queue"
       },
       {
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-crm-bp#queue",
-        "toRef": "endapp/sfdc-account#api"
+        "toRef": "endapp/salesforce-sales-cloud/salesforce-account-api#api"
       },
       {
         "from": "c3",
         "to": "c6",
-        "fromRef": "solace/business-partner#topic",
+        "fromRef": "solace/bp-events#topic",
         "toRef": "solace/q-ariba-supplier#queue"
       },
       {
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-ariba-supplier#queue",
-        "toRef": "endapp/ariba-supplier#api"
+        "toRef": "endapp/sap-ariba/ariba-supplier-api#api"
       },
       {
         "from": "c3",
         "to": "c8",
-        "fromRef": "solace/business-partner#topic",
+        "fromRef": "solace/bp-events#topic",
         "toRef": "solace/q-dwh-bp#queue"
       },
       {
         "from": "c8",
         "to": "c9",
         "fromRef": "solace/q-dwh-bp#queue",
-        "toRef": "ais/datalake-ingest#process"
+        "toRef": "azure-logic-apps/datalake-ingest#process"
       },
       {
         "from": "c9",
         "to": "c10",
-        "fromRef": "ais/datalake-ingest#process",
-        "toRef": "endapp/datalake#file"
+        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
       },
       {
         "from": "c11",
         "to": "c1",
-        "fromRef": "caller/s4-p01#app",
-        "toRef": "btpis/bp-replication#api"
+        "fromRef": "caller/sap-s-4hana-p01#app",
+        "toRef": "btp-is/bp-replication#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "btpis/bp-replication",
+        "ref": "btp-is/bp-replication",
         "kind": "iPaaS",
         "platform": "BTP IS",
-        "asset": "BP-Replication"
+        "asset": "BP-Replication",
+        "platformId": "btp-is",
+        "componentId": "btp-is/bp-replication"
       },
       {
         "id": "k2",
-        "ref": "solace/business-partner",
+        "ref": "solace/bp-events",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "BP-Events"
+        "asset": "BP-Events",
+        "platformId": "solace",
+        "componentId": "solace/bp-events"
       },
       {
         "id": "k3",
         "ref": "solace/q-crm-bp",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Crm-Bp"
+        "asset": "Q-Crm-Bp",
+        "platformId": "solace",
+        "componentId": "solace/q-crm-bp"
       },
       {
         "id": "k4",
-        "ref": "endapp/sfdc-account",
+        "ref": "endapp/salesforce-sales-cloud/salesforce-account-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "Salesforce Account API",
+        "asset": "Salesforce Sales Cloud",
         "name": "Salesforce Sales Cloud",
-        "process": "Account sync"
+        "process": "Account sync",
+        "appId": "salesforce-sales-cloud"
       },
       {
         "id": "k5",
         "ref": "solace/q-ariba-supplier",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Ariba-Supplier"
+        "asset": "Q-Ariba-Supplier",
+        "platformId": "solace",
+        "componentId": "solace/q-ariba-supplier"
       },
       {
         "id": "k6",
-        "ref": "endapp/ariba-supplier",
+        "ref": "endapp/sap-ariba/ariba-supplier-api",
         "kind": "endApp",
         "platform": "",
-        "asset": "Ariba Supplier API",
+        "asset": "SAP Ariba",
         "name": "SAP Ariba",
-        "process": "Supplier master"
+        "process": "Supplier master",
+        "appId": "sap-ariba"
       },
       {
         "id": "k7",
         "ref": "solace/q-dwh-bp",
         "kind": "broker",
         "platform": "Solace",
-        "asset": "Q-Dwh-Bp"
+        "asset": "Q-Dwh-Bp",
+        "platformId": "solace",
+        "componentId": "solace/q-dwh-bp"
       },
       {
         "id": "k8",
-        "ref": "ais/datalake-ingest",
+        "ref": "azure-logic-apps/datalake-ingest",
         "kind": "iPaaS",
-        "platform": "AIS",
-        "asset": "DataLake-Ingest"
+        "platform": "Azure Logic Apps",
+        "asset": "DataLake-Ingest",
+        "platformId": "azure-logic-apps",
+        "componentId": "azure-logic-apps/datalake-ingest"
       },
       {
         "id": "k9",
-        "ref": "endapp/datalake",
+        "ref": "endapp/azure-data-lake/data-lake-landing-folder",
         "kind": "endApp",
         "platform": "",
-        "asset": "Data Lake landing folder",
+        "asset": "Azure Data Lake",
         "name": "Azure Data Lake",
-        "process": "Analytics ingest"
+        "process": "Analytics ingest",
+        "appId": "azure-data-lake"
       },
       {
         "id": "k10",
-        "ref": "caller/s4-p01",
+        "ref": "caller/sap-s-4hana-p01",
         "kind": "caller",
         "platform": "",
         "asset": "SAP S/4HANA (P01)",
         "name": "SAP S/4HANA (P01)",
-        "process": "Business event"
+        "process": "Business event",
+        "appId": "sap-s-4hana-p01"
       }
     ]
   },
