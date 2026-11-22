@@ -95,6 +95,26 @@
           "pattern": "process-to-file",
           "label": "Process-to-File"
         }
+      ],
+      "containers": [
+        {
+          "block": 0,
+          "at": "m0",
+          "platform": "Solace",
+          "asset": "Q-SOD-WMS"
+        },
+        {
+          "block": 0,
+          "at": "out",
+          "platform": "BTP IS",
+          "asset": "SOD-WMS-Feed"
+        },
+        {
+          "block": 1,
+          "at": "out",
+          "name": "Legacy WMS",
+          "process": "Warehouse inbound"
+        }
       ]
     },
     {
@@ -118,6 +138,26 @@
         {
           "pattern": "process-to-api",
           "label": "Process-to-API"
+        }
+      ],
+      "containers": [
+        {
+          "block": 0,
+          "at": "m0",
+          "platform": "Solace",
+          "asset": "Q-SOD-Carrier"
+        },
+        {
+          "block": 0,
+          "at": "out",
+          "platform": "BTP IS",
+          "asset": "SOD-Carrier-Sync"
+        },
+        {
+          "block": 1,
+          "at": "out",
+          "name": "DHL Parcel",
+          "process": "Shipment booking"
         }
       ]
     }
@@ -148,7 +188,7 @@
     }
   ],
   "std": {
-    "pb": "2.1",
+    "pb": "2.2",
     "branchContainers": [
       {
         "key": "@b0.0:m0",
@@ -184,6 +224,14 @@
     "landscape": {
       "source": "Registry",
       "landscapeVersion": 1
+    },
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "attrs": {
+      "region": "EU",
+      "domain": "O2C"
     }
   },
   "scenario": {

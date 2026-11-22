@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-5e1c6b",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Condition records from S/4HANA pricing are published to the webshop price API and the Salesforce price book.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-15T09:30:00.000Z",
+    "dataObject": {
+      "name": "Price Condition",
+      "code": "PRC"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "MDM"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -87,7 +96,9 @@
         "name": "BTP_PRICEDIST_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -99,7 +110,10 @@
         "name": "BTP_PRICEDIST_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -111,7 +125,9 @@
         "name": "SOL_PRICEEVENTS_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c4",
@@ -123,7 +139,9 @@
         "name": "SOL_QWEBSHOPPRIC_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c5",
@@ -147,7 +165,9 @@
         "name": "SOL_QCRMPRICE_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c7",
@@ -226,7 +246,10 @@
         "platform": "BTP IS",
         "asset": "Price-Dist",
         "platformId": "btp-is",
-        "componentId": "btp-is/price-dist"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -235,7 +258,10 @@
         "platform": "Solace",
         "asset": "Price-Events",
         "platformId": "solace",
-        "componentId": "solace/price-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
@@ -244,7 +270,10 @@
         "platform": "Solace",
         "asset": "Q-Webshop-Price",
         "platformId": "solace",
-        "componentId": "solace/q-webshop-price"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
@@ -263,7 +292,10 @@
         "platform": "Solace",
         "asset": "Q-Crm-Price",
         "platformId": "solace",
-        "componentId": "solace/q-crm-price"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k6",

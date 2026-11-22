@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-dcba7d",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Orders closed in Salesforce are routed by the CRM connector onto the shared sales-order topic; S/4HANA and the data lake subscribe.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-03T09:30:00.000Z",
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "O2C"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -91,27 +100,32 @@
     "components": [
       {
         "id": "c1",
-        "ref": "azure-logic-apps/crm-connector#api",
+        "ref": "ais/crm-connector#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
         "container": "k1",
-        "name": "ALA_CRMCONNECTOR_API",
+        "name": "AIS_CRMCONNECTOR_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
-        "ref": "azure-logic-apps/crm-connector#process",
+        "ref": "ais/crm-connector#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k1",
-        "name": "ALA_CRMCONNECTOR_IF",
-        "nameRule": "N-2",
+        "name": "AIS_CRMCONNECTOR_LA",
+        "nameRule": "N-LA",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "logic-app"
       },
       {
         "id": "c3",
@@ -123,7 +137,9 @@
         "name": "SOL_SALESORDEREV_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c4",
@@ -135,7 +151,9 @@
         "name": "SOL_QS4ORDER_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c5",
@@ -159,19 +177,24 @@
         "name": "SOL_QDWHORDER_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c7",
-        "ref": "azure-logic-apps/datalake-ingest#process",
+        "ref": "ais/datalake-ingest#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k6",
-        "name": "ALA_DATALAKEINGE_IF",
+        "name": "AIS_DATALAKEINGE_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "function-app"
       },
       {
         "id": "c8",
@@ -202,13 +225,13 @@
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "azure-logic-apps/crm-connector#api",
-        "toRef": "azure-logic-apps/crm-connector#process"
+        "fromRef": "ais/crm-connector#api",
+        "toRef": "ais/crm-connector#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "azure-logic-apps/crm-connector#process",
+        "fromRef": "ais/crm-connector#process",
         "toRef": "solace/sales-order-events#topic"
       },
       {
@@ -233,30 +256,33 @@
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-dwh-order#queue",
-        "toRef": "azure-logic-apps/datalake-ingest#process"
+        "toRef": "ais/datalake-ingest#process"
       },
       {
         "from": "c7",
         "to": "c8",
-        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "fromRef": "ais/datalake-ingest#process",
         "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
       },
       {
         "from": "c9",
         "to": "c1",
         "fromRef": "caller/salesforce-sales-cloud#app",
-        "toRef": "azure-logic-apps/crm-connector#api"
+        "toRef": "ais/crm-connector#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "azure-logic-apps/crm-connector",
+        "ref": "ais/crm-connector",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "CRM-Connector",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/crm-connector"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -265,7 +291,10 @@
         "platform": "Solace",
         "asset": "Sales-Order-Events",
         "platformId": "solace",
-        "componentId": "solace/sales-order-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
@@ -274,7 +303,10 @@
         "platform": "Solace",
         "asset": "Q-S4-Order",
         "platformId": "solace",
-        "componentId": "solace/q-s4-order"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
@@ -293,16 +325,22 @@
         "platform": "Solace",
         "asset": "Q-Dwh-Order",
         "platformId": "solace",
-        "componentId": "solace/q-dwh-order"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k6",
-        "ref": "azure-logic-apps/datalake-ingest",
+        "ref": "ais/datalake-ingest",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "DataLake-Ingest",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/datalake-ingest"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k7",

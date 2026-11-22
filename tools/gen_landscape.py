@@ -1,8 +1,9 @@
-"""Generate the test landscape for the Registry app and Pattern Bench (X-1, Nov 22 2026):
-  registry-data/landscape.json           landscape config schema 0.1 (platforms + capabilities, components, applications with codes,
-                                         entity types, glossary seed, naming rules N-1..N-3)
-  registry-data/landscape/*.json         24 scenarios as registry entry 0.7 + Pattern Bench canvas files (names derived from the rules,
-                                         an application on every edge end, two scheduled starts)
+"""Generate the test landscape for the Registry app and Pattern Bench (X-1, Nov 22 2026; contract 1.0 in draft 0.11 / PB 2.2):
+  registry-data/landscape.json           landscape config schema 1.0 (Terms: 10 entity types · attribute types Region (required on
+                                         scenarios) + Business domain · platforms BTP IS / AIS / SAP API Management / Solace with kinds and
+                                         subtypes · applications with codes · scoped naming rules: scenario name + id, component, artifact)
+  registry-data/landscape/*.json         24 scenarios as registry entry 1.0 (data object, attributes, subtypes, contains) + canvas files
+  registry-data/scenario-ids.json        readable scenario ids SCN-0001 … (assigned by the registry at approval)
   registry-data/test-cases/<case>/       negative set for the Playwright suites (not loaded by default)
 Refs are built the way Pattern Bench builds them (slug(platform)/slug(component)#type, endapp/<app>/<endpoint>#type, caller/<app>#app),
 so a scenario opened in Pattern Bench and exported again keeps its refs.
@@ -41,12 +42,17 @@ ipaas("btpis/payment-files", "BTP IS", "Payment-Files")
 ipaas("btpis/bank-statement", "BTP IS", "Bank-Statement-In")
 ipaas("btpis/sf-employee", "BTP IS", "SF-Employee-Sync")
 ipaas("btpis/payroll-export", "BTP IS", "Payroll-Export")
-ipaas("ais/webshop-gateway", "Azure Logic Apps", "Webshop-Gateway")
-ipaas("ais/crm-connector", "Azure Logic Apps", "CRM-Connector")
-ipaas("ais/carrier-hub", "Azure Logic Apps", "Carrier-Hub")
-ipaas("ais/catalog-sync", "Azure Logic Apps", "Catalog-Sync")
-ipaas("ais/datalake-ingest", "Azure Logic Apps", "DataLake-Ingest")
-ipaas("ais/hr-identity", "Azure Logic Apps", "HR-Identity")
+ipaas("ais/webshop-gateway", "AIS", "Webshop-Gateway")       # W-9: the platform is AIS; Logic App / Function App are subtypes (info)
+ipaas("ais/crm-connector", "AIS", "CRM-Connector")
+ipaas("ais/carrier-hub", "AIS", "Carrier-Hub")
+ipaas("ais/catalog-sync", "AIS", "Catalog-Sync")
+ipaas("ais/datalake-ingest", "AIS", "DataLake-Ingest")
+ipaas("ais/hr-identity", "AIS", "HR-Identity")
+SUBTYPE = {"BTP IS": {"process": "iflow"}, "AIS": {"process": "logic-app"}}
+FUNCTION_APPS = {"ais/datalake-ingest"}                        # these AIS processes run as Function Apps
+CONTAINS = {"btpis/payment-files": [{"capability": "process", "subtype": "iflow", "label": "iFlow", "count": 2}, {"capability": "queue", "subtype": "jms", "label": "JMS queue"}],
+            "ais/carrier-hub": [{"capability": "process", "subtype": "logic-app", "label": "Logic App", "count": 3}, {"capability": "queue", "subtype": "service-bus", "label": "Service Bus"}],
+            "btpis/sales-order-exp": [{"capability": "process", "subtype": "iflow", "label": "iFlow", "count": 3}]}
 # brokers: topic assets and one queue asset per subscriber
 for r, a in [("solace/sales-order", "Sales-Order-Events"), ("solace/order-status", "Order-Status-Events"), ("solace/delivery", "Delivery-Events"),
              ("solace/invoice", "Invoice-Events"), ("solace/business-partner", "BP-Events"), ("solace/material", "Material-Events"),
@@ -117,13 +123,15 @@ KEYS = {"api-to-process": ["in", "out"], "process-to-publish": ["in", "out"], "c
         "consume-to-file": ["in", "m0", "out"], "process-to-api": ["in", "out"], "process-to-file": ["in", "out"], "file-to-process": ["in", "out"],
         "schedule-to-process-api": ["in", "out", "pull"], "schedule-to-process-file": ["in", "out", "pull"]}
 
-# ---------- landscape config (schema 0.1) ----------
+# ---------- landscape config (schema 1.0) ----------
+ST = lambda i, n, c: {"id": i, "name": n, "code": c}
 PLATFORMS = {
-  "BTP IS":           dict(id="btp-is", code="BTP", kind="ipaas", capabilities=["api", "process", "file", "scheduler"], aliases=["SAP BTP Integration Suite", "BTP-IS", "btpis"]),
-  "Azure Logic Apps": dict(id="azure-logic-apps", code="ALA", kind="ipaas", capabilities=["api", "process", "file", "scheduler"], aliases=["AIS", "Azure Integration Services"]),
-  "Azure Functions":  dict(id="azure-functions", code="AFN", kind="ipaas", capabilities=["api", "process", "scheduler"], aliases=[]),
-  "SAP API Management": dict(id="sap-apim", code="APIM", kind="ipaas", capabilities=["api"], aliases=["APIM"]),
-  "Solace":           dict(id="solace", code="SOL", kind="broker", capabilities=["topic", "queue"], aliases=["Solace PubSub+"]),
+  "BTP IS":           dict(id="btp-is", code="BTP", kind="ipaas", capabilities=["api", "process", "queue", "file", "scheduler"], aliases=["SAP BTP Integration Suite", "BTP-IS", "btpis"],
+                           subtypes={"process": [ST("iflow", "iFlow", "IFL")], "queue": [ST("jms", "JMS queue", "JMS")]}),
+  "AIS":              dict(id="ais", code="AIS", kind="ipaas", capabilities=["api", "process", "queue", "file", "scheduler"], aliases=["Azure Integration Services", "Azure Logic Apps", "Azure Functions"],
+                           subtypes={"process": [ST("logic-app", "Logic App", "LA"), ST("function-app", "Function App", "FA")], "queue": [ST("service-bus", "Service Bus", "SB")]}),
+  "SAP API Management": dict(id="sap-apim", code="APIM", kind="apim", capabilities=["api"], aliases=["APIM"], subtypes={}),
+  "Solace":           dict(id="solace", code="SOL", kind="broker", capabilities=["topic", "queue"], aliases=["Solace PubSub+"], subtypes={}),
 }
 def plat(name): return PLATFORMS[name]
 def cont_ref(cref):
@@ -145,16 +153,27 @@ APP_CODES = {"SAP S/4HANA (P01)": "S4P01", "Salesforce Sales Cloud": "SFDC", "We
 for k, x in APPS.items(): x["code"] = APP_CODES.get(k, code_of(k, 8))
 TMAP = {"api": "API", "process": "IF", "topic": "TP", "queue": "Q", "file": "FL", "scheduler": "SCH"}
 RULES = [
-  {"id": "N-1", "target": "part", "when": {"partType": "api"}, "mode": "derive",
-   "segments": [{"source": "platform.code"}, {"delimiter": "_"}, {"source": "component.code"}, {"delimiter": "_"}, {"source": "partType", "map": TMAP},
+  {"id": "SCN-NAME", "scope": {"entityType": "scenario"}, "mode": "check", "segments": [{"source": "dataObject.code"}, {"delimiter": "_"}, {"source": "sourceApp.code"}, {"delimiter": "-"}, {"source": "targetApp.code"}],
+   "transforms": ["upper", "noSpaces"], "maxLength": 80, "override": "allow", "level": "warn"},
+  {"id": "SCN-ID", "scope": {"entityType": "scenario-id"}, "mode": "derive", "segments": [{"source": "literal", "text": "SCN"}, {"delimiter": "-"}, {"source": "seq", "format": "{n:0000}"}],
+   "transforms": ["upper"], "override": "block", "level": "block"},
+  {"id": "CMP-IPAAS", "scope": {"entityType": "component", "componentType": "ipaas"}, "mode": "derive", "segments": [{"source": "platform.code"}, {"delimiter": "_"}, {"source": "dataObject.code"}, {"delimiter": "_"}, {"source": "literal", "text": "INT"}],
+   "transforms": ["upper", "noSpaces"], "maxLength": 40, "override": "allow", "level": "warn"},
+  {"id": "CMP-BROKER", "scope": {"entityType": "component", "componentType": "broker"}, "mode": "derive", "segments": [{"source": "platform.code"}, {"delimiter": "_"}, {"source": "dataObject.code"}, {"delimiter": "_"}, {"source": "literal", "text": "EVT"}],
+   "transforms": ["upper", "noSpaces"], "maxLength": 40, "override": "allow", "level": "warn"},
+  {"id": "N-LA", "scope": {"entityType": "artifact", "artifactType": "process", "platform": "ais", "subtype": "logic-app"}, "mode": "derive",
+   "segments": [{"source": "platform.code"}, {"delimiter": "_"}, {"source": "component.code"}, {"delimiter": "_"}, {"source": "subtype.code"}, {"delimiter": "_"}, {"source": "version", "format": "v{n}", "optional": True}],
+   "transforms": ["upper", "noSpaces"], "maxLength": 60, "override": "allow", "level": "warn"},
+  {"id": "N-1", "scope": {"entityType": "artifact", "artifactType": "api"}, "mode": "derive",
+   "segments": [{"source": "platform.code"}, {"delimiter": "_"}, {"source": "component.code"}, {"delimiter": "_"}, {"source": "artifactType", "map": TMAP},
                 {"delimiter": "_"}, {"source": "free", "label": "Purpose", "optional": True, "maxLength": 20}, {"delimiter": "_"}, {"source": "version", "format": "v{n}", "optional": True}],
    "transforms": ["upper", "noSpaces"], "maxLength": 60, "override": "warn", "level": "block"},
-  {"id": "N-2", "target": "part", "when": {"partType": "process"}, "mode": "derive",
+  {"id": "N-2", "scope": {"entityType": "artifact", "artifactType": "process"}, "mode": "derive",
    "segments": [{"source": "platform.code"}, {"delimiter": "_"}, {"source": "component.code"}, {"delimiter": "_"}, {"source": "literal", "text": "IF"},
                 {"delimiter": "_"}, {"source": "version", "format": "v{n}", "optional": True}],
    "transforms": ["upper", "noSpaces"], "maxLength": 60, "override": "allow", "level": "warn"},
-  {"id": "N-3", "target": "part", "when": {}, "mode": "derive",
-   "segments": [{"source": "platform.code"}, {"delimiter": "_"}, {"source": "component.code"}, {"delimiter": "_"}, {"source": "partType", "map": TMAP},
+  {"id": "N-3", "scope": {"entityType": "artifact"}, "mode": "derive",
+   "segments": [{"source": "platform.code"}, {"delimiter": "_"}, {"source": "component.code"}, {"delimiter": "_"}, {"source": "artifactType", "map": TMAP},
                 {"delimiter": "_"}, {"source": "version", "format": "v{n}", "optional": True}],
    "transforms": ["upper", "noSpaces"], "maxLength": 60, "override": "block", "level": "warn"},
 ]
@@ -162,10 +181,27 @@ def derive_name(cref, typ, version=1):
     a = A[cref]; p = plat(a["platform"]); c = code_of(a["asset"])
     v = ("_V%d" % version) if version > 1 else ""
     if typ == "api": return f'{p["code"]}_{c}_API{v}'.upper(), "N-1"
+    if typ == "process" and a["platform"] == "AIS" and cref not in FUNCTION_APPS: return f'{p["code"]}_{c}_LA{v}'.upper(), "N-LA"
     if typ == "process": return f'{p["code"]}_{c}_IF{v}'.upper(), "N-2"
     return f'{p["code"]}_{c}_{TMAP[typ]}{v}'.upper(), "N-3"
-ENTITY = [("scenario", "Scenario", "Scenarios"), ("platform", "Platform", "Platforms"), ("component", "Component", "Components"), ("part", "Part", "Parts"),
-          ("application", "Application", "Applications"), ("endpoint", "Endpoint", "Endpoints"), ("caller", "Caller", "Callers"), ("version", "Version", "Versions"), ("export", "Export", "Exports")]
+ENTITY = [("scenario", "Scenario", "Scenarios"), ("platform", "Platform", "Platforms"), ("component", "Component", "Components"), ("artifact", "Artifact", "Artifacts"),
+          ("application", "Application", "Applications"), ("dataObject", "Data object", "Data objects"), ("endpoint", "Endpoint", "Endpoints"), ("caller", "Caller", "Callers"), ("version", "Version", "Versions"), ("export", "Export", "Exports")]
+ATTRS = [{"id": "region", "name": "Region", "definition": "Where the flow runs", "appliesTo": ["scenario"], "valueKind": "list",
+          "values": [{"name": "EU", "code": "EU"}, {"name": "US", "code": "US"}, {"name": "APAC", "code": "APAC"}], "required": True, "status": "active", "aliases": []},
+         {"id": "domain", "name": "Business domain", "definition": "End-to-end process area", "appliesTo": ["scenario"], "valueKind": "list",
+          "values": [{"name": "Order-to-Cash", "code": "O2C"}, {"name": "Procure-to-Pay", "code": "P2P"}, {"name": "Finance", "code": "FIN"}, {"name": "Hire-to-Retire", "code": "HR"}, {"name": "Master data", "code": "MDM"}, {"name": "Analytics", "code": "ANA"}],
+          "required": False, "status": "active", "aliases": []}]
+DOMAIN = {"O2C": "O2C", "P2P": "P2P", "FIN": "FIN", "HR": "HR", "MDM": "MDM", "ANA": "ANA"}
+DATA_OBJECT = [("Sales-Order", "Sales Order", "SO"), ("Salesforce-Order", "Sales Order", "SO"), ("Order-Status", "Sales Order Status", "SOS"), ("Outbound-Delivery", "Outbound Delivery", "DLV"),
+               ("Goods-Issue", "Goods Issue", "GI"), ("Carrier-Tracking", "Shipment Tracking", "TRK"), ("E-Invoicing", "Customer Invoice", "INV"), ("Invoice-Copy", "Customer Invoice", "INV"),
+               ("Business-Partner", "Business Partner", "BP"), ("Account-to-S4", "Business Partner", "BP"), ("Material-Master", "Material", "MAT"), ("Product-Catalogue", "Material", "MAT"),
+               ("Price", "Price Condition", "PRC"), ("Purchase-Order", "Purchase Order", "PO"), ("PO-Confirmation", "Purchase Order", "PO"), ("Supplier-Invoice", "Supplier Invoice", "SINV"),
+               ("Payment-Run", "Payment", "PAY"), ("Bank-Statement", "Bank Statement", "BST"), ("New-Hire", "Employee", "EMP"), ("Payroll", "Employee", "EMP"), ("Leaver", "Employee", "EMP"),
+               ("TC-", "Sales Order", "SO")]
+def data_object(name):
+    for k, n, c in DATA_OBJECT:
+        if k in name: return {"name": n, "code": c}
+    return {"name": "Sales Order", "code": "SO"}
 GLOSSARY = [("scenario", "An end-to-end integration flow between connected applications.", []),
   ("integration platform (iPaaS)", "A platform that runs integration processes and exposes APIs (e.g. SAP BTP Integration Suite).", []),
   ("message broker", "A platform that carries events on topics and queues (e.g. Solace).", []),
@@ -180,13 +216,13 @@ def write_config():
     for r, a in A.items():
         if a["kind"] in ("iPaaS", "broker") and not any(c["id"] == comp_id(r) for c in comps):
             comps.append({"id": comp_id(r), "platform": plat(a["platform"])["id"], "name": a["asset"], "code": code_of(a["asset"]), "aliases": []})
-    cfg = {"schema": "landscape-config", "schemaVersion": "0.1", "landscapeVersion": LANDSCAPE_VERSION, "name": "Default landscape",
+    cfg = {"schema": "landscape-config", "schemaVersion": "1.0", "landscapeVersion": LANDSCAPE_VERSION, "name": "Default landscape",
            "updated": "2026-11-22T12:00:00Z", "origin": "registry",
            "entityTypes": [{"id": i, "label": l, "plural": p} for i, l, p in ENTITY],
-           "glossary": [{"id": slug(t), "term": t, "definition": d, "aliases": al} for t, d, al in GLOSSARY],
+           "attributeTypes": ATTRS,
            "namingRules": RULES,
            "platforms": [dict(name=n, **{k: v for k, v in p.items()}) for n, p in PLATFORMS.items()],
-           "components": comps, "applications": list(APPS.values()),
+           "components": [], "applications": list(APPS.values()),
            "changeLog": [{"at": "2026-11-22T12:00:00Z", "action": "import", "item": "settings", "note": "generated by tools/gen_landscape.py (X-1)", "landscapeVersion": LANDSCAPE_VERSION}]}
     for p in cfg["platforms"]: p["id"] = PLATFORMS[p["name"]]["id"]
     with open(os.path.join(ROOT_OUT, "landscape.json"), "w") as f: json.dump(cfg, f, indent=2)
@@ -200,7 +236,9 @@ def scenario(name, desc, tags, date, main, branches=(), callers=(), schedule=Non
     def cont_id(cref):
         if cref not in conts:
             a = A[cref]; d = {"id": f"k{len(conts)+1}", "ref": cont_ref(cref), "kind": a["kind"], "platform": a["platform"], "asset": a["asset"]}
-            if a["kind"] in ("iPaaS", "broker"): d["platformId"] = plat(a["platform"])["id"]; d["componentId"] = comp_id(cref)
+            if a["kind"] in ("iPaaS", "broker"):
+                d["platformId"] = plat(a["platform"])["id"]; d["componentType"] = plat(a["platform"])["kind"]; d["attributes"] = {"region": "EU"}
+                if cref in CONTAINS: d["contains"] = CONTAINS[cref]
             else: d["asset"] = a["app"]; d["name"] = a["app"]; d["process"] = a["process"]; d["appId"] = slug(a["app"]); d["platform"] = ""
             conts[cref] = d
         return conts[cref]["id"]
@@ -210,7 +248,9 @@ def scenario(name, desc, tags, date, main, branches=(), callers=(), schedule=Non
             c = {"id": f"c{len(comps)+1}", "ref": cont_ref(cref) + "#" + typ, "type": typ, "version": "v1",
                  "owner": "integration" if k in ("iPaaS", "broker") else k, "container": cont_id(cref)}
             if k in ("iPaaS", "broker"):
-                c["name"], c["nameRule"] = derive_name(cref, typ); c["autoName"] = False; c["nameOverridden"] = False
+                c["name"], c["nameRule"] = derive_name(cref, typ); c["autoName"] = False; c["nameOverridden"] = False; c["artifactType"] = typ; c["nameIsId"] = True
+                st = SUBTYPE.get(a["platform"], {}).get(typ)
+                if st: c["subtype"] = "function-app" if cref in FUNCTION_APPS else st
             else:
                 c["name"] = a["asset"] if k == "endApp" else a["app"]; c["autoName"] = False; c["nameRule"] = None; c["nameOverridden"] = False
             comps.append(c); idx[ref] = c["id"]
@@ -261,9 +301,11 @@ def scenario(name, desc, tags, date, main, branches=(), callers=(), schedule=Non
                 if typ == "topic" and at == "in": continue
                 put(rowref, i, at, ref); name_asset(rowref, i, at, ref) if typ != "topic" else None
     i_d = sid(name)
-    entry = {"schema": "pattern-bench.registry-entry", "schemaVersion": "0.7",
+    dobj = data_object(name)
+    entry = {"schema": "pattern-bench.registry-entry", "schemaVersion": "1.0",
         "scenario": {"id": i_d, "version": 1, "name": name, "description": desc, "author": AUTHOR, "exportedAt": date,
-                     "source": {"tool": "Pattern Bench", "toolVersion": "2.1", "mode": "composite" if branches else "single"},
+                     "dataObject": dobj, "displayId": None, "attributes": {"region": "EU", **({"domain": DOMAIN[name.split("-")[0]]} if name.split("-")[0] in DOMAIN else {})},
+                     "source": {"tool": "Pattern Bench", "toolVersion": "2.2", "mode": "composite" if branches else "single"},
                      "canvas": {"file": f"{i_d}.v1.canvas.json"}, "tags": list(tags)},
         "landscape": {"source": "registry", "landscapeVersion": LANDSCAPE_VERSION}, "proposed": [], "retired": [],
         "base": {"blocks": blocks, "components": comps, "links": links, "containers": list(conts.values())},
@@ -271,7 +313,7 @@ def scenario(name, desc, tags, date, main, branches=(), callers=(), schedule=Non
     main_callers = [(c, at) for c, at in callers if at == "t0"]
     if main_callers: cv_cont.append(dict(block=0, at="caller", **{"name": A[main_callers[0][0]]["app"], "process": A[main_callers[0][0]]["process"]}))
     extra_callers = [(c, at) for c, at in callers if (c, at) not in main_callers[:1]]
-    std = {"pb": "2.1", "landscape": {"source": "Registry", "landscapeVersion": LANDSCAPE_VERSION}}
+    std = {"pb": "2.2", "landscape": {"source": "Registry", "landscapeVersion": LANDSCAPE_VERSION}, "dataObject": dobj, "attrs": dict(entry["scenario"]["attributes"])}
     if branch_cont: std["branchContainers"] = branch_cont
     if schedule: std["schedule"] = [{"key": "@t0:in", "text": schedule}]
     canvas = {"format": "pattern-bench-flow", "version": 1, "origin": {"x": 80, "y": 300},
@@ -419,6 +461,13 @@ mk("MDM-Price-Pull", "Every 15 minutes the price process pulls changed condition
    [s2pa("btpis/price-pull", "endapp/s4-price"), p2t("btpis/price-pull", PRC), c2a(PRC, S + "q-webshop-price", "endapp/webshop-price")],
    [out_after(1, 1, c2a(PRC, S + "q-crm-price", "endapp/sfdc-pricebook"))], schedule="every 15 min")
 print("wrote", n, "scenarios to", OUT)
+# readable scenario ids (the registry assigns them at approval; here: in export order)
+IDS = {}
+for f in sorted(os.listdir(OUT)):
+    if f.endswith(".registry.json"):
+        e = json.load(open(os.path.join(OUT, f))); IDS[e["scenario"]["id"]] = e["scenario"]["exportedAt"]
+ids = {k: "SCN-%04d" % (i + 1) for i, (k, _) in enumerate(sorted(IDS.items(), key=lambda kv: (kv[1], kv[0])))}
+json.dump({"schema": "registry-scenario-ids", "schemaVersion": "1.0", "ids": ids}, open(os.path.join(ROOT_OUT, "scenario-ids.json"), "w"), indent=2)
 
 # ---------- negative test set (not loaded by default; used by the Playwright suites) ----------
 TC = os.path.join(ROOT_OUT, "test-cases")
@@ -450,4 +499,16 @@ def proposed(e, c):
 case("proposed-app", "TC-Proposed-App", [a2p("btpis/delivery-dist"), p2a("btpis/delivery-dist", "endapp/ewm-delivery")], proposed, callers=[("caller/s4-p01", "t0")])
 def older(e, c): e["landscape"]["landscapeVersion"] = 0; e["landscape"]["source"] = "file"
 case("older-landscape", "TC-Older-Landscape", [a2p("btpis/order-status"), p2a("btpis/order-status", "endapp/webshop-order")], older, callers=[("caller/s4-p01", "t0")])
+# contract 1.0 cases (draft 0.11 / PB 2.2)
+def no_do(e, c): e["scenario"].pop("dataObject", None); c["std"].pop("dataObject", None)
+case("missing-data-object", "TC-Missing-Data-Object", [a2p("btpis/order-status"), p2a("btpis/order-status", "endapp/webshop-order")], no_do, callers=[("caller/s4-p01", "t0")])
+def no_region(e, c): e["scenario"]["attributes"].pop("region", None)
+case("required-attribute-missing", "TC-Required-Attribute-Missing", [a2p("btpis/order-status"), p2a("btpis/order-status", "endapp/webshop-order")], no_region, callers=[("caller/s4-p01", "t0")])
+def near_do(e, c): e["scenario"]["dataObject"] = {"name": "SalesOrders", "code": "SOS"}
+case("data-object-near-duplicate", "TC-Data-Object-Near-Duplicate", [a2p("btpis/order-status"), p2a("btpis/order-status", "endapp/webshop-order")], near_do, callers=[("caller/s4-p01", "t0")])
+def legacy07(e, c):                       # an entry 0.7 file (Pattern Bench 2.1): read through the aliases, checks only flag
+    e["schemaVersion"] = "0.7"; e["scenario"].pop("dataObject", None); e["scenario"].pop("attributes", None); e["scenario"].pop("displayId", None)
+    for x in e["base"]["components"]: x.pop("artifactType", None); x.pop("nameIsId", None); x.pop("subtype", None)
+    for k in e["base"]["containers"]: k.pop("componentType", None); k.pop("attributes", None); k.pop("contains", None)
+case("legacy-0.7-file", "TC-Legacy-07-File", [a2p("btpis/order-status"), p2a("btpis/order-status", "endapp/webshop-order")], legacy07, callers=[("caller/s4-p01", "t0")])
 print("wrote the negative set to", TC)

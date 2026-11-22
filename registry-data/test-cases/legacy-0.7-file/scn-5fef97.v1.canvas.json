@@ -1,0 +1,85 @@
+{
+  "format": "pattern-bench-flow",
+  "version": 1,
+  "origin": {
+    "x": 80,
+    "y": 300
+  },
+  "blocks": [
+    {
+      "pattern": "api-to-process",
+      "label": "API-to-Process"
+    },
+    {
+      "pattern": "process-to-api",
+      "label": "Process-to-API"
+    }
+  ],
+  "buildOrder": [
+    0,
+    1
+  ],
+  "versions": [],
+  "containers": [
+    {
+      "block": 0,
+      "at": "in",
+      "platform": "BTP IS",
+      "asset": "Order-Status-Dist"
+    },
+    {
+      "block": 0,
+      "at": "out",
+      "platform": "BTP IS",
+      "asset": "Order-Status-Dist"
+    },
+    {
+      "block": 1,
+      "at": "out",
+      "name": "Webshop (commercetools)",
+      "process": "Order status"
+    },
+    {
+      "block": 0,
+      "at": "caller",
+      "name": "SAP S/4HANA (P01)",
+      "process": "Business event"
+    }
+  ],
+  "caller": true,
+  "ripples": [],
+  "marks": [],
+  "componentAssets": [
+    {
+      "key": "@t1:out",
+      "name": "commercetools Order API"
+    }
+  ],
+  "std": {
+    "pb": "2.2",
+    "landscape": {
+      "source": "Registry",
+      "landscapeVersion": 1
+    },
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "attrs": {
+      "region": "EU"
+    }
+  },
+  "scenario": {
+    "id": "scn-5fef97",
+    "version": 1,
+    "name": "TC-Legacy-07-File",
+    "description": "Test case: legacy-0.7-file",
+    "author": "Suddhasatta Guha",
+    "tags": [
+      "test"
+    ],
+    "relations": [],
+    "why": []
+  },
+  "savedAt": "2026-11-25T09:30:00.000Z"
+}

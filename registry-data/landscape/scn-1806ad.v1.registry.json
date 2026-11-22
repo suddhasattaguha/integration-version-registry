@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-1806ad",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "New hires in SuccessFactors are published once: Entra ID creates the account, ServiceNow opens onboarding tasks, S/4HANA gets the employee as business partner.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-21T09:30:00.000Z",
+    "dataObject": {
+      "name": "Employee",
+      "code": "EMP"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "HR"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -100,7 +109,9 @@
         "name": "BTP_SFEMPLOYEESY_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -112,7 +123,10 @@
         "name": "BTP_SFEMPLOYEESY_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -124,7 +138,9 @@
         "name": "SOL_EMPLOYEEEVEN_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c4",
@@ -136,7 +152,9 @@
         "name": "SOL_QENTRA_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c5",
@@ -160,7 +178,9 @@
         "name": "SOL_QSERVICENOW_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c7",
@@ -184,7 +204,9 @@
         "name": "SOL_QS4EMPLOYEE_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c9",
@@ -275,7 +297,10 @@
         "platform": "BTP IS",
         "asset": "SF-Employee-Sync",
         "platformId": "btp-is",
-        "componentId": "btp-is/sf-employee-sync"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -284,7 +309,10 @@
         "platform": "Solace",
         "asset": "Employee-Events",
         "platformId": "solace",
-        "componentId": "solace/employee-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
@@ -293,7 +321,10 @@
         "platform": "Solace",
         "asset": "Q-Entra",
         "platformId": "solace",
-        "componentId": "solace/q-entra"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
@@ -312,7 +343,10 @@
         "platform": "Solace",
         "asset": "Q-Servicenow",
         "platformId": "solace",
-        "componentId": "solace/q-servicenow"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k6",
@@ -331,7 +365,10 @@
         "platform": "Solace",
         "asset": "Q-S4-Employee",
         "platformId": "solace",
-        "componentId": "solace/q-s4-employee"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k8",

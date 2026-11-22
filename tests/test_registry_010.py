@@ -31,14 +31,14 @@ with sync_playwright() as p:
 
     # ---- R-1 config load / missing config
     load(items(config=False))
-    check('R-1: no landscape.json → banner "No landscape config" and the built-in seed', 'No landscape config' in pg.inner_text('#view') and 'built-in seed' in pg.inner_text('#cfgBadge'))
+    check('R-1: no landscape.json → banner "No landscape config" and the built-in seed', 'No landscape config' in pg.inner_text('#view') and 'built-in defaults' in pg.inner_text('#cfgBadge'))
     load(items())
     check('R-1: landscape.json read — badge shows the config version', 'v1' in pg.inner_text('#cfgBadge') and 'No landscape config' not in pg.inner_text('#view'))
     check('R-1: test-cases/ is not loaded by default', not any(s.startswith('TC-') for s in ev(f"[...{R}.S.scenarios.values()].map(s => s.latest.name)")))
     n_sc = ev(f"{R}.S.scenarios.size")
     check('X-1: 24 generated scenarios + Sales order distribution waiting (25 known, 24 released)', n_sc == 24 and ev(f"{R}.S.inbox.list.length") == 1)
     check('landing shows Inbox (1) and Settings tiles', pg.locator('.tile010.inbox .cnt').inner_text() == '1' and pg.locator('.tile010.settings').count() == 1)
-    check('R-5: entry 0.7 records keep landscape / names / edge ends', ev(f"[...{R}.S.scenarios.values()].every(s => s.latest.schemaVersion === '0.7' && s.latest.landscape && Array.isArray(s.latest.names))"))
+    check('R-5: entry 1.0 records keep landscape / names / edge ends / data object', ev(f"[...{R}.S.scenarios.values()].every(s => s.latest.schemaVersion === '1.0' && s.latest.landscape && Array.isArray(s.latest.names) && s.latest.dataObject)"))
     check('C-5: every generated scenario has an application on every edge end', ev(f"[...{R}.S.scenarios.values()].every(s => !s.latest.edgeMissing.length)"))
     check('C-4: no naming flags on the generated landscape', ev(f"[...{R}.S.scenarios.values()].every(s => !s.flags.some(f => f.kind === 'naming' || f.kind === 'duplicate'))"))
     check('C-6: the pulled source API of a scheduled start is a source (triggers), not a target',
@@ -97,8 +97,8 @@ with sync_playwright() as p:
     # ---- R-2 / C-3 Settings
     load(items())
     pg.click('.tile010.settings'); pg.wait_for_timeout(200)
-    check('R-2: Settings opens with the 7 sections', pg.locator('.ls-nav button').count() == 7)
-    pg.click('.ls-nav [data-sec=entityTypes]')
+    check('R-2 / W-5: Settings opens with 5 sections (Terms · Naming rules · Platforms · Applications · Change log)', pg.locator('.ls-nav button[data-sec]').count() == 5)
+    pg.click('.ls-nav [data-sec=terms]')
     pg.fill('.ls-tbl tr[data-id=scenario] [data-f=label]', 'Interface'); pg.fill('.ls-tbl tr[data-id=scenario] [data-f=plural]', 'Interfaces')
     pg.click('[data-ls-act=save]'); pg.wait_for_timeout(300)
     pg.click('[data-ls-act=close]'); pg.wait_for_timeout(100)
@@ -117,9 +117,9 @@ with sync_playwright() as p:
     pg.click('.ls-nav [data-sec=platforms]'); pg.click('[data-ls-act=add-platform]')
     row = pg.locator('.ls-tbl[data-ls=platforms] tr').last
     row.locator('[data-f=name]').fill('MuleSoft EU'); row.locator('[data-f=code]').fill('MULE'); row.locator('[data-cap=scheduler]').check()
-    pg.click('.ls-nav [data-sec=namingRules]'); pg.click('[data-ls-act=add-rule]'); pg.wait_for_timeout(100)
+    pg.click('.ls-nav [data-sec=namingRules]'); pg.click('[data-ls-act=add-rule][data-card=artifact]'); pg.wait_for_timeout(100)
     prev = pg.locator('[data-ls=preview]').get_attribute('data-name')
-    check('C-4: a new rule (component code _ part type) previews a derived name', prev and '_' in prev and prev == prev.upper())
+    check('C-4: a new rule (component code _ artifact type) previews a derived name', prev and '_' in prev and prev == prev.upper())
     pg.select_option('[data-f=add-source]', 'version'); pg.click('[data-ls-act=add-seg]')
     prev2 = pg.locator('[data-ls=preview]').get_attribute('data-name')
     check('C-4: adding an optional version segment (+ delimiter) shows _V2 in the preview', prev2.endswith('V2'))
@@ -208,7 +208,7 @@ with sync_playwright() as p:
     sflags = ev(f"{R}.S.scenarios.get('scn-sod001').flags.map(f => f.text)")
     check('R-7: the scenario still drawn with v1 is flagged "design out of date"', any('Design out of date' in t for t in sflags))
     pl = ev("async () => (await window.__registry.pbPayload('scn-sod001', 1)).payload")
-    check('R-4: open payload 0.2 carries landscape, retired marks, names in use, export n', pl['schemaVersion'] == '0.2' and pl['landscape']['schema'] == 'landscape-config'
+    check('R-4: open payload 1.0 carries landscape, retired marks, names in use, export n, SCN id', pl['schemaVersion'] == '1.0' and pl['scenario']['displayId'] and pl['landscape']['schema'] == 'landscape-config'
           and any(r['ref'] == ref and r['version'] == 'v1' and r['by'] == 'Suddha' for r in pl['retiredMarks']) and isinstance(pl['namesInUse'], dict) and pl['scenario']['export'] == 1)
     # component page: version history with the retirement record
     ev("k => window.__registry && null", None)

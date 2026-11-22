@@ -1,90 +1,243 @@
-/* === SHARED landscape helpers 0.1 — same code in registry-app.html and pattern-bench.html (source: tools/landscape-shared.js) ===
-   Contract: landscape.json schema 0.1 (claude/landscape-config-schema-0.1.md).
-   Config defaults · entity labels (C-3) · naming derive / check (C-4) · settings diff / import (C-3) ·
-   staged retire wizard (R-7 / C-2) · Settings editor UI (R-2 / A-2). Exposed as window.__shared. */
+/* === SHARED landscape helpers 1.0 — same code in registry-app.html and pattern-bench.html (source: tools/landscape-shared.js) ===
+   Contract: landscape.json schema 1.0 (claude/landscape-config-schema-1.0.md). Reads 0.1 (migrated on load).
+   Built-in defaults (W-17) · Terms = 10 fixed entity types + attribute types (W-4 / W-5) · scoped naming rules
+   for scenario (name + id), component (per component type) and artifact (temporary id, per artifact type ×
+   platform × subtype) (W-6 / W-8) · platform subtypes · settings diff / import (C-3) · staged retire wizard
+   (R-7 / C-2) · Settings editor UI · application colours (W-11). Exposed as window.__shared. */
 (function () {
   "use strict";
-  var SCHEMA = "landscape-config", SCHEMA_VERSION = "0.1";
-  var ENTITY_IDS = ["scenario", "platform", "component", "part", "application", "endpoint", "caller", "version", "export"];
+  var SCHEMA = "landscape-config", SCHEMA_VERSION = "1.0";
+  var ENTITY_IDS = ["scenario", "platform", "component", "artifact", "application", "dataObject", "endpoint", "caller", "version", "export"];
+  /* id → [label, plural, definition, aliases, takes effect in] */
   var ENTITY_DEFAULTS = {
-    scenario: ["Scenario", "Scenarios"], platform: ["Platform", "Platforms"], component: ["Component", "Components"],
-    part: ["Part", "Parts"], application: ["Application", "Applications"], endpoint: ["Endpoint", "Endpoints"],
-    caller: ["Caller", "Callers"], version: ["Version", "Versions"], export: ["Export", "Exports"]
+    scenario: ["Scenario", "Scenarios", "An end-to-end integration flow between a source and a target application, managing one data object. Named by the scenario naming rule; gets a readable id (SCN-0042) from the registry.", ["interface", "flow"],
+      "Both apps: menus, dialogs, banners, print, registry lists, scenario naming rule"],
+    platform: ["Platform", "Platforms", "A predefined integration platform or broker (BTP IS, AIS, Solace …). Its kind (iPaaS / message broker / API management) is the component type.", ["broker", "iPaaS"],
+      "Both apps: platform pick-list, container labels, capability filter, naming segment {platform.code}"],
+    component: ["Component", "Components", "A named unit on one platform holding several artifacts (one block on the canvas). Identified and named in design by the component naming rule. Not versioned.", ["asset", "integration component", "package"],
+      "Both apps: container labels, library, component naming rule, registry Components list"],
+    artifact: ["Artifact", "Artifacts", "A typed step inside a component: API, process, topic, queue, file or scheduler. Versioned (platform/component#type@vN). Its name is a temporary identifier from the artifact naming rule.", ["part", "symbol", "step"],
+      "Both apps: symbols, versions, artifact naming rule (id tag), registry Artifacts list"],
+    application: ["Application", "Applications", "A predefined application at the ends of a flow — source (caller / sender) or target (receiver). Shown as \"Connected applications\" in the registry.", ["connected system", "connected application", "end application", "system"],
+      "Both apps: end-application boxes, caller boxes, source / target cards, naming segments {sourceApp.code} {targetApp.code}"],
+    dataObject: ["Data object", "Data objects", "The business object / message type the scenario exchanges end to end (e.g. Sales Order). Exactly one per scenario, mandatory, not versioned (yet).", ["business object", "message type", "BO", "data object type"],
+      "Both apps: scenario dialog, banner, print, registry scenario page + list + filter, naming segment {dataObject.code}"],
+    endpoint: ["Endpoint", "Endpoints", "The API or folder of an application that a flow uses. A reference, not named by a rule.", ["API", "folder"],
+      "Both apps: end-application API / folder, ref of an end-application artifact"],
+    caller: ["Caller", "Callers", "The application that calls an exposed API (= an application at the source side).", ["consumer"],
+      "Both apps: caller boxes, decisions of callers"],
+    version: ["Version", "Versions", "A version of an artifact (v1, v2 …); at most two live at a time; retire n−1 before n+1.", ["release"],
+      "Both apps: version labels, lifecycle, retire wizard"],
+    export: ["Export", "Exports", "One hand-over from Pattern Bench to the registry — counted, not a version.", ["hand-over"],
+      "Both apps: export dialog, registry exports panel"]
   };
-  var PART_TYPES = ["api", "process", "topic", "queue", "file", "scheduler"];
+  var PART_TYPES = ["api", "process", "topic", "queue", "file", "scheduler"], ARTIFACT_TYPES = PART_TYPES;
   var CAPABILITIES = ["api", "process", "topic", "queue", "file", "scheduler"];
+  var KINDS = [["ipaas", "iPaaS"], ["broker", "Message broker"], ["apim", "API management"], ["file", "File transfer"]];
+  var TYPE_CODE = { api: "API", process: "PROC", topic: "TOP", queue: "Q", file: "FILE", scheduler: "SCH" };
+  var KIND_CODE = { ipaas: "INT", broker: "EVT", apim: "API", file: "FT" };
   var SEGMENT_SOURCES = [
     ["platform.code", "Platform code"], ["platform.name", "Platform name"], ["component.code", "Component code"], ["component.name", "Component name"],
+    ["componentType", "Component type (platform kind)"], ["dataObject.code", "Data object code"], ["dataObject.name", "Data object name"],
     ["sourceApp.code", "Source application code"], ["targetApp.code", "Target application code"], ["endpoint.id", "Endpoint"],
-    ["partType", "Part type"], ["direction", "Direction (in / out)"], ["pattern", "Base pattern"], ["version", "Version"],
-    ["seq", "Running number"], ["free", "Free text"], ["literal", "Fixed text"]
+    ["artifactType", "Artifact type"], ["subtype.code", "Subtype code"], ["subtype.name", "Subtype name"], ["direction", "Direction (in / out)"],
+    ["pattern", "Base pattern"], ["version", "Version"], ["seq", "Running number"], ["attr", "Attribute value"], ["free", "Free text"], ["literal", "Fixed text"]
   ];
   var SECTIONS = [
-    ["entityTypes", "Entity types"], ["glossary", "Glossary"], ["namingRules", "Naming rules"], ["platforms", "Platforms & capabilities"],
-    ["components", "Components"], ["applications", "Applications"], ["changeLog", "Change log"]
+    ["terms", "Terms"], ["namingRules", "Naming rules"], ["platforms", "Platforms & capabilities"],
+    ["applications", "Applications"], ["changeLog", "Change log"]
   ];
-  var GLOSSARY_SEED = [
-    ["scenario", "An end-to-end integration flow between connected applications."],
-    ["integration platform (iPaaS)", "A platform that runs integration processes and exposes APIs (e.g. SAP BTP Integration Suite)."],
-    ["message broker", "A platform that carries events on topics and queues (e.g. Solace)."],
-    ["integration component", "A named artifact on a platform or broker (an iFlow, a topic asset …).", ["asset"]],
-    ["part", "A piece of a component: API, process, topic, queue, file or scheduler."],
-    ["connected system / application", "An application that calls a flow or receives from it."],
-    ["endpoint", "The API or folder of an application a flow uses."],
-    ["caller", "The application that calls an exposed API (= an application)."],
-    ["export", "One hand-over from Pattern Bench to the registry — counted, not a version."],
-    ["version", "A version of a component part (v1, v2 …); at most two live at a time."]
-  ];
+  /* naming cards (W-6 / W-8): only these get rules */
+  var RULE_SCOPES = [["scenario", "Scenario — name"], ["scenario-id", "Scenario — id"], ["component", "Component"], ["artifact", "Artifact (temporary identifier)"]];
 
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
   function slug(t) { return String(t == null ? "" : t).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
   function nowIso() { return new Date().toISOString(); }
-
-  function seed() {
-    return normalize({
-      schema: SCHEMA, schemaVersion: SCHEMA_VERSION, landscapeVersion: 0, name: "Default landscape", updated: "", origin: "builtin",
-      entityTypes: ENTITY_IDS.map(function (id) { return { id: id, label: ENTITY_DEFAULTS[id][0], plural: ENTITY_DEFAULTS[id][1] }; }),
-      glossary: GLOSSARY_SEED.map(function (g) { return { id: slug(g[0]), term: g[0], definition: g[1], aliases: g[2] || [] }; }),
-      namingRules: [], platforms: [], components: [], applications: [], changeLog: []
-    });
+  /* a short code from a name: "Sales Order" → SO, "Delivery" → DELI, "S/4HANA P01" → S4HANAP0 */
+  function codeOf(name, max) {
+    var s = String(name || "").normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
+    if (!s) return "";
+    var words = s.split(/[\s\-_/().]+/).filter(Boolean);
+    if (words.length > 1 && words.every(function (w) { return /^[A-Za-z]/.test(w); })) return words.map(function (w) { return w[0]; }).join("").toUpperCase().slice(0, max || 8);
+    return s.replace(/[^A-Za-z0-9]/g, "").toUpperCase().slice(0, max || 8);
   }
+  function dataObjectOf(x) {
+    if (!x) return null;
+    if (typeof x === "string") { var n = x.trim(); return n ? { name: n, code: codeOf(n) } : null; }
+    var name = String(x.name || "").trim(); if (!name) return null;
+    return { name: name, code: String(x.code || "").trim() || codeOf(name) };
+  }
+  /* identity of a learned data object: "Sales Order" = "salesorder" = "SALES_ORDER" */
+  function dataObjectKey(name) { return String(name || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
 
-  /* fill gaps so every list / field exists; unknown fields are kept */
+  /* ---------- W-17 built-in defaults (used whenever no landscape.json is loaded) ---------- */
+  var seg = function (source, extra) { return Object.assign({ source: source }, extra || {}); };
+  var D_ = function (d) { return { delimiter: d }; };
+  var TYPE_MAP = { api: "API", process: "PROC", topic: "TOP", queue: "Q", file: "FILE", scheduler: "SCH" };
+  function defaultRules() {
+    return [
+      { id: "SCN-NAME", scope: { entityType: "scenario" }, mode: "derive", segments: [seg("dataObject.code"), D_("_"), seg("sourceApp.code"), D_("-"), seg("targetApp.code")],
+        transforms: ["upper", "noSpaces"], maxLength: 80, override: "allow", level: "warn", origin: "default" },
+      { id: "SCN-ID", scope: { entityType: "scenario-id" }, mode: "derive", segments: [seg("literal", { text: "SCN" }), D_("-"), seg("seq", { format: "{n:0000}" })],
+        transforms: ["upper"], override: "block", level: "block", origin: "default" },
+      { id: "CMP-IPAAS", scope: { entityType: "component", componentType: "ipaas" }, mode: "derive", segments: [seg("platform.code"), D_("_"), seg("dataObject.code"), D_("_"), seg("literal", { text: "INT" })],
+        transforms: ["upper", "noSpaces"], maxLength: 40, override: "allow", level: "warn", origin: "default" },
+      { id: "CMP-BROKER", scope: { entityType: "component", componentType: "broker" }, mode: "derive", segments: [seg("platform.code"), D_("_"), seg("dataObject.code"), D_("_"), seg("literal", { text: "EVT" })],
+        transforms: ["upper", "noSpaces"], maxLength: 40, override: "allow", level: "warn", origin: "default" },
+      { id: "CMP-APIM", scope: { entityType: "component", componentType: "apim" }, mode: "derive", segments: [seg("platform.code"), D_("_"), seg("dataObject.code"), D_("_"), seg("literal", { text: "API" })],
+        transforms: ["upper", "noSpaces"], maxLength: 40, override: "allow", level: "warn", origin: "default" },
+      { id: "CMP-DEFAULT", scope: { entityType: "component" }, mode: "derive", segments: [seg("platform.code"), D_("_"), seg("dataObject.code"), D_("_"), seg("componentType", { map: { ipaas: "INT", broker: "EVT", apim: "API", file: "FT" } })],
+        transforms: ["upper", "noSpaces"], maxLength: 40, override: "allow", level: "warn", origin: "default" },
+      { id: "ART-DEFAULT", scope: { entityType: "artifact" }, mode: "derive", segments: [seg("component.code"), D_("_"), seg("artifactType", { map: clone(TYPE_MAP) }), D_("_"), seg("subtype.code", { optional: true }), D_("_"), seg("version", { format: "v{n}", optional: true })],
+        transforms: ["upper", "noSpaces"], maxLength: 60, override: "allow", level: "warn", origin: "default" }
+    ];
+  }
+  function defaultPlatforms() {
+    var st = function (id, name, code) { return { id: id, name: name, code: code }; };
+    return [
+      { id: "btp-is", name: "BTP IS", code: "BTPIS", kind: "ipaas", capabilities: ["api", "process", "queue", "file", "scheduler"], aliases: ["SAP BTP Integration Suite", "BTP-IS", "btpis", "Cloud Integration"],
+        subtypes: { process: [st("iflow", "iFlow", "IFL")], queue: [st("jms", "JMS queue", "JMS")] } },
+      { id: "ais", name: "AIS", code: "AIS", kind: "ipaas", capabilities: ["api", "process", "queue", "file", "scheduler"], aliases: ["Azure Integration Services", "Azure Logic Apps", "Azure Functions", "Azure"],
+        subtypes: { process: [st("logic-app", "Logic App", "LA"), st("function-app", "Function App", "FA")], queue: [st("service-bus", "Service Bus", "SB")], api: [st("apim", "API Management", "APIM")] } },
+      { id: "solace", name: "Solace", code: "SOL", kind: "broker", capabilities: ["topic", "queue"], aliases: ["Solace PubSub+", "Event Broker"], subtypes: {} },
+      { id: "sap-apim", name: "SAP APIM", code: "APIM", kind: "apim", capabilities: ["api"], aliases: ["SAP API Management", "API Management"], subtypes: {} },
+      { id: "sftp", name: "SFTP", code: "SFTP", kind: "file", capabilities: ["file"], aliases: ["File server"], subtypes: {} }
+    ];
+  }
+  function defaults() {
+    return {
+      schema: SCHEMA, schemaVersion: SCHEMA_VERSION, landscapeVersion: 0, name: "Built-in defaults", updated: "", origin: "builtin",
+      entityTypes: ENTITY_IDS.map(function (id) { var d = ENTITY_DEFAULTS[id]; return { id: id, label: d[0], plural: d[1], definition: d[2], aliases: d[3].slice() }; }),
+      attributeTypes: [], namingRules: defaultRules(), platforms: defaultPlatforms(), applications: [], changeLog: []
+    };
+  }
+  function seed() { return normalize(defaults()); }
+
+  /* ---------- 0.1 → 1.0 migration + fill gaps (unknown fields are kept) ----------
+     part → artifact (entity id, rule target, segment source partType → artifactType), glossary → entity definitions,
+     rules target/when → scope, components[] = learned only (kept but no longer a pick-list) */
+  var MISSING_FROM_DEFAULTS = ["namingRules", "platforms", "attributeTypes"];
   function normalize(c) {
     c = c && typeof c === "object" ? c : {};
-    c.schema = SCHEMA; c.schemaVersion = c.schemaVersion || SCHEMA_VERSION;
+    var old = String(c.schemaVersion || "").split(".")[0] === "0";
+    c.schema = SCHEMA;
+    var notes = [];
+    // a section that is missing altogether takes the built-in default (W-17); present (even empty) = as given
+    MISSING_FROM_DEFAULTS.forEach(function (k) { if (!Array.isArray(c[k])) { c[k] = k === "attributeTypes" ? [] : clone(k === "platforms" ? defaultPlatforms() : defaultRules()); if (k !== "attributeTypes") c.defaultsUsed = (c.defaultsUsed || []).concat([k]); } });
+    ["applications", "changeLog", "components"].forEach(function (k) { if (!Array.isArray(c[k])) c[k] = []; });
     c.landscapeVersion = Number(c.landscapeVersion) || 0;
     c.name = c.name || "Default landscape";
-    ["glossary", "namingRules", "platforms", "components", "applications", "changeLog"].forEach(function (k) { if (!Array.isArray(c[k])) c[k] = []; });
     var et = Array.isArray(c.entityTypes) ? c.entityTypes : [];
+    var gl = Array.isArray(c.glossary) ? c.glossary : [];
+    var glFor = function (id) {
+      var words = { scenario: ["scenario"], component: ["integration component", "component"], artifact: ["part", "artifact"], application: ["connected system / application", "application"],
+        endpoint: ["endpoint"], caller: ["caller"], "export": ["export"], version: ["version"], platform: ["platform"] }[id] || [id];
+      return gl.find(function (g) { return g && words.indexOf(String(g.term || "").toLowerCase()) >= 0; });
+    };
     c.entityTypes = ENTITY_IDS.map(function (id) {
-      var e = et.find(function (x) { return x && x.id === id; }) || {};
-      return { id: id, label: e.label || ENTITY_DEFAULTS[id][0], plural: e.plural || ENTITY_DEFAULTS[id][1] };
+      var e = et.find(function (x) { return x && (x.id === id || (id === "artifact" && x.id === "part")); }) || {};
+      var d = ENTITY_DEFAULTS[id], g = glFor(id);
+      var lab = e.label, plu = e.plural;
+      if (id === "artifact" && e.id === "part" && lab === "Part") { lab = d[0]; plu = d[1]; }       // the old default label moves to the new default
+      var aliases = Array.isArray(e.aliases) ? e.aliases.slice() : d[3].slice();
+      if (id === "artifact" && aliases.indexOf("part") < 0) aliases.push("part");
+      return { id: id, label: lab || d[0], plural: plu || d[1], definition: e.definition || d[2], aliases: aliases };
     });
-    c.glossary.forEach(function (g) { g.id = g.id || slug(g.term); g.aliases = g.aliases || []; });
-    c.platforms.forEach(function (p) { p.id = p.id || slug(p.name); p.aliases = p.aliases || []; p.capabilities = p.capabilities || []; p.kind = p.kind || "ipaas"; });
-    c.components.forEach(function (x) { x.id = x.id || (x.platform + "/" + slug(x.name)); x.aliases = x.aliases || []; });
-    c.applications.forEach(function (a) { a.id = a.id || slug(a.name); a.aliases = a.aliases || []; a.endpoints = a.endpoints || []; });
-    c.namingRules.forEach(function (r, i) { r.id = r.id || "N-" + (i + 1); r.segments = r.segments || []; r.transforms = r.transforms || []; r.when = r.when || {};
-      r.mode = r.mode || "derive"; r.override = r.override || "warn"; r.level = r.level || "warn"; });
+    if (gl.length) {
+      var used = gl.filter(function (g) { return ENTITY_IDS.some(function (id) { return glFor(id) === g; }); });
+      var dropped = gl.filter(function (g) { return used.indexOf(g) < 0; }).map(function (g) { return g.term; });
+      notes.push("glossary removed (W-5): definitions now on the Terms rows" + (dropped.length ? "; dropped terms: " + dropped.join(", ") : ""));
+      delete c.glossary;
+    }
+    c.attributeTypes.forEach(function (a) { a.id = a.id || slug(a.name); a.appliesTo = a.appliesTo || []; a.valueKind = a.valueKind || "text"; a.values = a.values || []; a.required = !!a.required; a.status = a.status || "active"; a.aliases = a.aliases || []; });
+    c.platforms.forEach(function (p) {
+      p.id = p.id || slug(p.name); p.aliases = p.aliases || []; p.capabilities = (p.capabilities || []).map(function (x) { return typeof x === "string" ? x : x.type; }).filter(Boolean);
+      p.kind = p.kind || "ipaas"; p.subtypes = p.subtypes && typeof p.subtypes === "object" ? p.subtypes : {};
+      Object.keys(p.subtypes).forEach(function (t) { p.subtypes[t] = (p.subtypes[t] || []).map(function (s) { return { id: s.id || slug(s.name), name: s.name || s.id, code: s.code || codeOf(s.name || s.id) }; }); });
+    });
+    c.components.forEach(function (x) { x.id = x.id || (x.platform + "/" + slug(x.name)); x.aliases = x.aliases || []; x.learned = true; });
+    c.applications.forEach(function (a) { a.id = a.id || slug(a.name); a.aliases = a.aliases || []; a.endpoints = a.endpoints || []; a.code = a.code || codeOf(a.name); });
+    c.namingRules.forEach(function (r, i) {
+      r.id = r.id || "N-" + (i + 1); r.segments = r.segments || []; r.transforms = r.transforms || [];
+      if (!r.scope) {     // 0.1 rule → scoped rule
+        var w = r.when || {}, t = r.target === "part" ? "artifact" : (r.target || "artifact");
+        r.scope = { entityType: t };
+        if (w.partType) r.scope.artifactType = w.partType;
+        if (w.platformKind) r.scope.componentType = w.platformKind;
+        if (w.platform) r.scope.platform = w.platform;
+        if (w.direction) r.scope.direction = w.direction;
+        if (w.pattern) r.scope.pattern = w.pattern;
+      }
+      if (r.scope.entityType === "part") r.scope.entityType = "artifact";
+      delete r.target; delete r.when;
+      r.segments.forEach(function (s) { if (s.source === "partType") s.source = "artifactType"; });
+      r.mode = r.mode || "derive"; r.override = r.override || "warn"; r.level = r.level || "warn";
+    });
+    if (old) { notes.unshift("migrated from landscape schema " + c.schemaVersion + " to " + SCHEMA_VERSION + " (part → artifact, scoped naming rules)"); c.migratedFrom = c.schemaVersion; }
+    c.schemaVersion = SCHEMA_VERSION;
+    if (notes.length) c.changeLog.push({ at: nowIso(), action: "migrate", item: "settings", note: notes.join(" · "), landscapeVersion: c.landscapeVersion });
     return c;
   }
   function validate(c) {
     if (!c || typeof c !== "object") return "Not a JSON object.";
     if (c.schema !== SCHEMA) return "Not a landscape config (schema must be \"" + SCHEMA + "\").";
-    if (String(c.schemaVersion || "").split(".")[0] !== "0") return "Unsupported landscape schema version " + c.schemaVersion + ".";
+    var major = String(c.schemaVersion || "").split(".")[0];
+    if (major !== "0" && major !== "1") return "Unsupported landscape schema version " + c.schemaVersion + ".";
     return null;
   }
 
   /* ---------- C-3 entity labels ---------- */
+  function entityId(id) { return id === "part" ? "artifact" : id === "dataobject" ? "dataObject" : id; }
   function label(cfg, id, plural) {
+    id = entityId(id);
     var e = cfg && cfg.entityTypes && cfg.entityTypes.find(function (x) { return x.id === id; });
     var d = ENTITY_DEFAULTS[id] || [id, id + "s"];
     return plural ? ((e && e.plural) || d[1]) : ((e && e.label) || d[0]);
   }
+  function definition(cfg, id) {
+    id = entityId(id);
+    var e = cfg && cfg.entityTypes && cfg.entityTypes.find(function (x) { return x.id === id; });
+    return (e && e.definition) || (ENTITY_DEFAULTS[id] || [])[2] || "";
+  }
+  function takesEffect(id) { return (ENTITY_DEFAULTS[entityId(id)] || [])[4] || ""; }
+  /* W-16: the registry band / list heading — "Connected applications" follows the Application plural */
+  function connectedLabel(cfg) { return "Connected " + label(cfg, "application", true).toLowerCase(); }
+  function subtypesOf(cfg, platformId, type) {
+    var p = find(cfg, "platform", platformId);
+    return p && p.subtypes && p.subtypes[type] ? p.subtypes[type] : [];
+  }
+  function subtypeFind(cfg, platformId, type, key) {
+    if (!key) return null;
+    var k = String(key).toLowerCase();
+    return subtypesOf(cfg, platformId, type).find(function (s) { return s.id === key || String(s.name).toLowerCase() === k || String(s.code).toLowerCase() === k; }) || null;
+  }
+  /* attribute types that apply to an entity type */
+  function attributesFor(cfg, entity) { return active((cfg && cfg.attributeTypes) || []).filter(function (a) { return (a.appliesTo || []).indexOf(entityId(entity)) >= 0; }); }
+  /* missing required attribute values: [{ attr, label }] */
+  function missingAttributes(cfg, entity, values) {
+    values = values || {};
+    return attributesFor(cfg, entity).filter(function (a) { return a.required && !String(values[a.id] == null ? "" : values[a.id]).trim(); });
+  }
+
+  /* ---------- W-11 colours: calm application hues; red / amber only for states ---------- */
+  var COLORS = {
+    source: { light: { fg: "#334e68", bg: "#eef4fb", border: "#9fb3c8" }, dark: { fg: "#bcccdc", bg: "#1f2b3a", border: "#486581" } },
+    target: { light: { fg: "#4c3a8a", bg: "#f3f0fc", border: "#b4a7e3" }, dark: { fg: "#d6ccf5", bg: "#2a2342", border: "#6c5ab8" } },
+    dataObject: { light: { fg: "#0b5f5c", bg: "#e7f6f5", border: "#7cc4c0" }, dark: { fg: "#a6e3df", bg: "#163634", border: "#2f8f8a" } }
+  };
+  function colorCss(prefix) {
+    prefix = prefix || "";
+    var out = "";
+    ["source", "target", "dataObject"].forEach(function (k) {
+      var l = COLORS[k].light, d = COLORS[k].dark, n = k === "dataObject" ? "do" : k.slice(0, 3);
+      out += ":root{--app-" + n + "-fg:" + l.fg + ";--app-" + n + "-bg:" + l.bg + ";--app-" + n + "-bd:" + l.border + "}";
+      out += "body.dark,html.dark body,.dark{--app-" + n + "-fg:" + d.fg + ";--app-" + n + "-bg:" + d.bg + ";--app-" + n + "-bd:" + d.border + "}";
+    });
+    return out;
+  }
 
   /* ---------- lookups with aliases ---------- */
-  var LISTS = { platform: "platforms", component: "components", application: "applications", glossary: "glossary" };
+  var LISTS = { platform: "platforms", component: "components", application: "applications", attribute: "attributeTypes" };
   function find(cfg, kind, key) {
     if (!cfg || key == null || key === "") return null;
     var list = cfg[LISTS[kind] || kind] || [], k = String(key).toLowerCase(), s = slug(key);
@@ -99,22 +252,53 @@
     return !p || !p.capabilities || !p.capabilities.length || p.capabilities.indexOf(type) >= 0;
   }
 
-  /* ---------- C-4 naming rules ---------- */
+  /* ---------- C-4 / W-6 scoped naming rules ----------
+     resolution order: platform + subtype → platform + artifact type → subtype → artifact type default → entity-type default
+     (score = how specific the scope is; ties: list order). target: scenario | scenario-id | component | artifact (part = artifact) */
+  var SCOPE_WEIGHT = { platform: 8, subtype: 4, artifactType: 2, componentType: 2, direction: 1, pattern: 1 };
+  var LEVEL_TEXT = function (s) {
+    if (s.platform && s.subtype) return "platform + subtype";
+    if (s.platform && (s.artifactType || s.componentType)) return "platform + " + (s.artifactType ? "artifact type" : "component type");
+    if (s.platform) return "platform";
+    if (s.subtype) return "subtype";
+    if (s.artifactType) return "artifact type default";
+    if (s.componentType) return "component type";
+    return "entity-type default";
+  };
+  function scopeOk(s, ctx) {
+    var pid = ctx.platform && (ctx.platform.id || slug(ctx.platform.name));
+    var at = ctx.artifactType || ctx.partType;
+    var st = ctx.subtype && (ctx.subtype.id || ctx.subtype);
+    var kind = ctx.componentType || (ctx.platform && ctx.platform.kind);
+    if (s.platform && s.platform !== pid) return false;
+    if (s.artifactType && s.artifactType !== at) return false;
+    if (s.subtype && s.subtype !== st) return false;
+    if (s.componentType && s.componentType !== kind) return false;
+    if (s.direction && s.direction !== ctx.direction) return false;
+    if (s.pattern && s.pattern !== ctx.pattern) return false;
+    return true;
+  }
   function matchRule(cfg, target, ctx) {
     ctx = ctx || {};
-    var rules = (cfg && cfg.namingRules) || [];
+    target = target === "part" ? "artifact" : target;
+    var rules = (cfg && cfg.namingRules) || [], best = null, bestScore = -1;
     for (var i = 0; i < rules.length; i++) {
       var r = rules[i];
-      if (r.status === "retired" || r.target !== target) continue;
-      var w = r.when || {}, ok = true;
-      if (w.partType && w.partType !== ctx.partType) ok = false;
-      if (w.platformKind && w.platformKind !== (ctx.platform && ctx.platform.kind)) ok = false;
-      if (w.direction && w.direction !== ctx.direction) ok = false;
-      if (w.pattern && w.pattern !== ctx.pattern) ok = false;
-      if (w.platform && w.platform !== (ctx.platform && ctx.platform.id)) ok = false;
-      if (ok) return r;
+      if (r.status === "retired") continue;
+      var s = r.scope || { entityType: r.target === "part" ? "artifact" : r.target };
+      if (s.entityType !== target || !scopeOk(s, ctx)) continue;
+      var score = 0; Object.keys(SCOPE_WEIGHT).forEach(function (k) { if (s[k]) score += SCOPE_WEIGHT[k]; });
+      if (score > bestScore) { best = r; bestScore = score; }
     }
-    return null;
+    return best;
+  }
+  function ruleLevel(rule) { return rule ? LEVEL_TEXT(rule.scope || {}) : "built-in fallback"; }
+  /* scenario id from the scenario-id rule: SCN-0042 (seq = next free number) */
+  function scenarioId(cfg, usedIds) {
+    var r = matchRule(cfg, "scenario-id", {}) || defaultRules()[1];
+    var used = new Set((usedIds || []).map(function (x) { return String(x).toUpperCase(); })), n = 1, id;
+    do { id = derive(r, { seq: n++ }).name; } while (used.has(id.toUpperCase()) && n < 100000);
+    return id;
   }
   function fmtNum(fmt, n) {
     return String(fmt || "{n}").replace(/\{n(?::(0+))?\}/g, function (m, pad) { var s = String(n); return pad ? s.padStart(pad.length, "0") : s; });
@@ -125,12 +309,18 @@
     switch (src) {
       case "platform.code": v = pick(ctx.platform, "code"); break;
       case "platform.name": v = pick(ctx.platform, "name"); break;
-      case "component.code": v = pick(ctx.component, "code"); break;
+      case "component.code": v = pick(ctx.component, "code") || String(pick(ctx.component, "name")).replace(/[^A-Za-z0-9_]/g, ""); break;
       case "component.name": v = pick(ctx.component, "name"); break;
-      case "sourceApp.code": v = pick(ctx.sourceApp, "code") || pick(ctx.sourceApp, "name"); break;
-      case "targetApp.code": v = pick(ctx.targetApp, "code") || pick(ctx.targetApp, "name"); break;
+      case "sourceApp.code": v = pick(ctx.sourceApp, "code") || codeOf(pick(ctx.sourceApp, "name")); break;
+      case "targetApp.code": v = pick(ctx.targetApp, "code") || codeOf(pick(ctx.targetApp, "name")); break;
       case "endpoint.id": v = pick(ctx.endpoint, "id") || pick(ctx.endpoint, "name"); break;
-      case "partType": v = ctx.partType || ""; break;
+      case "componentType": v = ctx.componentType || pick(ctx.platform, "kind"); break;
+      case "dataObject.code": v = pick(ctx.dataObject, "code") || codeOf(pick(ctx.dataObject, "name")); break;
+      case "dataObject.name": v = pick(ctx.dataObject, "name"); break;
+      case "subtype.code": v = pick(ctx.subtype, "code"); break;
+      case "subtype.name": v = pick(ctx.subtype, "name"); break;
+      case "attr": { var av = ctx.attrs && seg.attr ? ctx.attrs[seg.attr] : ""; v = av == null ? "" : String(av); break; }
+      case "artifactType": case "partType": v = ctx.artifactType || ctx.partType || ""; break;
       case "direction": v = ctx.direction || ""; break;
       case "pattern": v = ctx.pattern || ""; break;
       case "version":
@@ -237,7 +427,8 @@
   }
 
   /* ---------- C-3 settings diff / import ---------- */
-  var DIFF_SECTIONS = ["entityTypes", "glossary", "namingRules", "platforms", "components", "applications"];
+  var DIFF_SECTIONS = ["entityTypes", "attributeTypes", "namingRules", "platforms", "applications"];
+  var DIFF_TITLES = { entityTypes: "Terms — entities", attributeTypes: "Terms — attributes", namingRules: "Naming rules", platforms: "Platforms & capabilities", applications: "Applications" };
   function keyOf(sec, x) { return sec === "entityTypes" ? x.id : (x.id || slug(x.name || x.term)); }
   function strip(x) { var o = clone(x); delete o.updated; return JSON.stringify(o); }
   function diff(cur, inc) {
@@ -284,7 +475,7 @@
   /* what changed between two saved configs that affects derived names (codes / names) */
   function renames(before, after) {
     var out = [];
-    ["platforms", "components", "applications"].forEach(function (sec) {
+    ["platforms", "applications"].forEach(function (sec) {
       (after[sec] || []).forEach(function (x) {
         var y = (before[sec] || []).find(function (z) { return z.id === x.id; });
         if (y && (y.code !== x.code || y.name !== x.name || (y.status !== "retired" && x.status === "retired")))
@@ -350,6 +541,9 @@
     ".ls-step.on{background:#0f7c7a;color:#fff}.ls-step.done{background:#d1fadf;color:#05603a}.ls-wbody{padding:14px 18px;overflow:auto;flex:1}.ls-item{border:1px solid #e4e7ec;border-radius:10px;padding:7px 10px;margin-bottom:6px}" +
     ".ls-item.block{border-color:#fda29b;background:#fef3f2}.ls-item .fix{color:#475467;font-size:12px}.ls-ok{color:#05603a;background:#ecfdf3;border-radius:8px;padding:8px 10px}" +
     ".ls-dark .ls-box{background:#1b2230;color:#e4e7ec}.ls-dark .ls-nav{background:#151b26}.ls-dark .ls-tbl input,.ls-dark .ls-tbl select,.ls-dark .ls-f input,.ls-dark .ls-f select{background:#101828;color:#e4e7ec;border-color:#344054}" +
+    ".ls-card-h{display:flex;align-items:center;justify-content:space-between;margin:10px 0 4px;font-size:12px;color:#344054}.ls-card-h:first-child{margin-top:0}" +
+    ".ls-terms th small{display:block;font-weight:400;color:#98a2b3;font-size:10.5px}.ls-terms td.k{white-space:nowrap;color:#475467}.ls-terms td.eff{font-size:11.5px;color:#475467;min-width:180px}" +
+    ".ls-nolive{display:inline-block;margin-top:2px;font-size:10.5px;color:#667085;background:#f2f4f7;border-radius:999px;padding:0 6px}" +
     ".ls-dark .ls-btn{background:#101828;color:#e4e7ec;border-color:#344054}.ls-dark .ls-rule,.ls-dark .ls-segs,.ls-dark .ls-segedit{background:#151b26;border-color:#344054}";
   function ensureCss() {
     if (document.getElementById("ls-css")) return;
@@ -362,7 +556,7 @@
   function openSettings(opts) {
     ensureCss();
     var orig = normalize(clone(opts.config || seed()));
-    var cfg = clone(orig), dirty = false, sec = opts.section || "entityTypes", ro = !!opts.readOnly, ruleSel = 0, segSel = -1;
+    var cfg = clone(orig), dirty = false, sec = opts.section === "entityTypes" || opts.section === "glossary" ? "terms" : (opts.section || "terms"), ro = !!opts.readOnly, ruleSel = 0, segSel = -1, ruleCard = "artifact";
     var L = function (id, p) { return label(cfg, id, p); };
     var root = h("div", { class: "ls-modal" + (opts.dark ? " ls-dark" : ""), "data-ls": "settings" });
     var box = h("div", { class: "ls-box", role: "dialog", "aria-label": "Settings" });
@@ -411,7 +605,7 @@
       var total = 0;
       d.forEach(function (s) {
         if (!s.items.length) return;
-        list.appendChild(h("h4", { text: (SECTIONS.find(function (x) { return x[0] === s.section; }) || [0, s.section])[1] }));
+        list.appendChild(h("h4", { text: DIFF_TITLES[s.section] || s.section }));
         s.items.forEach(function (it) {
           total++;
           var key = it.section + "|" + it.key;
@@ -440,12 +634,19 @@
       badge.textContent = (opts.sourceLabel ? opts.sourceLabel + " · " : "") + "v" + cfg.landscapeVersion + (dirty ? " · unsaved changes" : "");
       nav.innerHTML = "";
       SECTIONS.forEach(function (s) {
-        var t = s[0] === "platforms" ? L("platform", true) + " & capabilities" : s[0] === "components" ? L("component", true) : s[0] === "applications" ? L("application", true) : s[1];
+        var t = s[0] === "platforms" ? L("platform", true) + " & capabilities" : s[0] === "applications" ? L("application", true) : s[1];
         nav.appendChild(h("button", { class: sec === s[0] ? "on" : "", "data-sec": s[0], text: t, onclick: function () { sec = s[0]; segSel = -1; render(); } }));
       });
+      nav.appendChild(h("div", { class: "ls-note", style: "margin:12px 6px 4px", "data-ls": "origin", text: cfg.origin === "builtin" ? "Using the built-in defaults (W-17) — no landscape.json loaded." : "Configured landscape" + (cfg.defaultsUsed && cfg.defaultsUsed.length ? " · defaults for: " + cfg.defaultsUsed.join(", ") : "") + "." }));
+      if (!ro) nav.appendChild(h("button", { class: "ls-btn sm", style: "margin:4px 6px", "data-ls-act": "reset-section", text: "Reset this section to default", onclick: function () {
+        var d = defaults();
+        if (sec === "terms") { cfg.entityTypes = d.entityTypes; }
+        else if (sec === "namingRules") { cfg.namingRules = d.namingRules; ruleSel = 0; }
+        else if (sec === "platforms") cfg.platforms = d.platforms;
+        else return;
+        setDirty(); render(); } }));
       body.innerHTML = "";
-      ({ entityTypes: renderEntities, glossary: renderGlossary, namingRules: renderRules, platforms: renderPlatforms, components: renderComponents,
-         applications: renderApps, changeLog: renderLog })[sec]();
+      ({ terms: renderTerms, namingRules: renderRules, platforms: renderPlatforms, applications: renderApps, changeLog: renderLog })[sec]();
     }
     function inp(val, on, extra) { var i = h("input", Object.assign({ type: "text", value: val == null ? "" : val, disabled: ro }, extra || {})); i.addEventListener("input", function () { on(i.value); setDirty(); }); return i; }
     function sel(val, options, on, extra) {
@@ -461,29 +662,67 @@
         h("button", { class: "ls-btn sm", "data-ls-act": "retire", text: x.status === "retired" ? "Re-activate" : "Retire", onclick: function () { x.status = x.status === "retired" ? "active" : "retired"; setDirty(); render(); } }),
         used ? null : h("button", { class: "ls-btn sm", title: "Delete (not used anywhere)", text: "×", onclick: function () { list.splice(list.indexOf(x), 1); setDirty(); render(); } })]);
     }
-    function renderEntities() {
-      body.appendChild(h("h3", { text: "Entity types" }));
-      body.appendChild(h("p", { class: "ls-note", text: "Display names only — ids stay fixed (used in code, JSON fields and naming-rule targets). Every screen text reads these labels." }));
-      var t = h("table", { class: "ls-tbl" }, [h("tr", {}, [h("th", { text: "Id" }), h("th", { text: "Label" }), h("th", { text: "Plural" })])]);
+    /* W-5 Terms: 10 fixed entity rows + attribute rows; every column says where it takes effect */
+    function renderTerms() {
+      body.appendChild(h("h3", { text: "Terms" }));
+      body.appendChild(h("p", { class: "ls-note", text: "One place for every word. Entity rows are fixed (ids used in code / JSON); only their names change. Attribute rows are your own extra fields (W-4)." }));
+      var t = h("table", { class: "ls-tbl ls-terms", "data-ls": "terms" }, [
+        h("tr", {}, [h("th", { text: "Kind" }), h("th", {}, ["Name", h("small", { text: "↳ all labels" })]), h("th", {}, ["Plural", h("small", { text: "↳ lists, counts" })]),
+          h("th", {}, ["Definition", h("small", { text: "↳ hover tooltips, print legend" })]), h("th", {}, ["Aliases", h("small", { text: "↳ search, old files" })]),
+          h("th", { text: "Takes effect in" }), h("th", { text: "Action" })])]);
       cfg.entityTypes.forEach(function (e) {
-        t.appendChild(h("tr", { "data-id": e.id }, [h("td", { text: e.id }), h("td", {}, [inp(e.label, function (v) { e.label = v; }, { "data-f": "label" })]), h("td", {}, [inp(e.plural, function (v) { e.plural = v; }, { "data-f": "plural" })])]));
+        t.appendChild(h("tr", { "data-id": e.id, "data-kind": "entity" }, [h("td", { class: "k", text: "🔒 Entity" }),
+          h("td", {}, [inp(e.label, function (v) { e.label = v; prev(); }, { "data-f": "label" })]), h("td", {}, [inp(e.plural, function (v) { e.plural = v; }, { "data-f": "plural" })]),
+          h("td", {}, [inp(e.definition, function (v) { e.definition = v; }, { "data-f": "definition" })]), h("td", {}, [inp((e.aliases || []).join(", "), function (v) { e.aliases = listOf(v); }, { "data-f": "aliases" })]),
+          h("td", { class: "eff", text: takesEffect(e.id) }), h("td", { text: "—" })]));
+      });
+      (cfg.attributeTypes || []).forEach(function (a) {
+        var eff = "Fields on: " + ((a.appliesTo || []).map(function (x) { return label(cfg, x).toLowerCase(); }).join(", ") || "—") + " · naming {attr." + a.id + "} · registry filters" + (a.required ? " · required (blocks Export for registry)" : "");
+        t.appendChild(h("tr", { "data-id": a.id, "data-kind": "attribute", class: a.status === "retired" ? "retired" : "" }, [h("td", { class: "k", text: "Attribute" }),
+          h("td", {}, [inp(a.name, function (v) { a.name = v; }, { "data-f": "attr-name" })]), h("td", { text: "—" }),
+          h("td", {}, [inp(a.definition, function (v) { a.definition = v; })]), h("td", {}, [inp((a.aliases || []).join(", "), function (v) { a.aliases = listOf(v); })]),
+          h("td", { class: "eff" }, [eff, ro ? null : h("button", { class: "ls-btn sm", style: "margin-left:6px", "data-ls-act": "edit-attr", text: "Edit…", onclick: function () { attrDrawer(a); } })]),
+          h("td", {}, [retireBtn("attribute", a, cfg.attributeTypes)])]));
       });
       body.appendChild(t);
+      var pv = h("div", { class: "ls-note", "data-ls": "terms-preview" }); body.appendChild(pv);
+      function prev() { pv.textContent = "Preview: “Open in Pattern Bench → Opened from Registry · " + label(cfg, "scenario") + " SCN-0042 · " + label(cfg, "dataObject") + " Sales Order · 3 " + label(cfg, "artifact", true).toLowerCase() + "”"; }
+      prev();
+      if (!ro) body.appendChild(h("button", { class: "ls-btn", style: "margin-top:8px", "data-ls-act": "add-attr", text: "＋ Add attribute", onclick: function () {
+        var a = { id: "attr-" + Date.now().toString(36), name: "", definition: "", appliesTo: ["scenario"], valueKind: "text", values: [], required: false, status: "active", aliases: [] };
+        cfg.attributeTypes.push(a); setDirty(); render(); attrDrawer(a); } }));
     }
-    function renderGlossary() {
-      body.appendChild(h("h3", { text: "Glossary" }));
-      var t = h("table", { class: "ls-tbl" }, [h("tr", {}, [h("th", { text: "Term" }), h("th", { text: "Definition" }), h("th", { text: "Aliases" }), h("th", {})])]);
-      cfg.glossary.forEach(function (g) {
-        t.appendChild(h("tr", { class: g.status === "retired" ? "retired" : "" }, [h("td", {}, [inp(g.term, function (v) { g.term = v; })]), h("td", {}, [inp(g.definition, function (v) { g.definition = v; })]),
-          h("td", {}, [inp((g.aliases || []).join(", "), function (v) { g.aliases = listOf(v); })]), h("td", {}, [retireBtn("glossary", g, cfg.glossary)])]));
-      });
-      body.appendChild(t);
-      if (!ro) body.appendChild(h("button", { class: "ls-btn", style: "margin-top:8px", text: "＋ Add term", onclick: function () { cfg.glossary.push({ id: "term-" + Date.now().toString(36), term: "", definition: "", aliases: [] }); setDirty(); render(); } }));
+    function attrDrawer(a) {
+      var ov = h("div", { class: "ls-modal", "data-ls": "attr-drawer" }), b = h("div", { class: "ls-box ls-wiz" }); ov.appendChild(b);
+      var bodyD = h("div", { class: "ls-wbody" });
+      var fld = function (lab, el) { return h("div", { class: "ls-f", style: "margin-bottom:8px" }, [h("label", { text: lab }), el]); };
+      var nm = h("input", { type: "text", value: a.name || "", "data-f": "a-name" }), code = h("input", { type: "text", value: a.id || "", "data-f": "a-id" });
+      bodyD.appendChild(fld("Name", nm)); bodyD.appendChild(fld("Id (naming segment {attr.id})", code));
+      var ap = h("div", { class: "ls-chk" });
+      ENTITY_IDS.filter(function (x) { return ["scenario", "component", "artifact", "application"].indexOf(x) >= 0; }).forEach(function (x) {
+        var cb = h("input", { type: "checkbox", checked: (a.appliesTo || []).indexOf(x) >= 0, "data-applies": x }); ap.appendChild(h("label", {}, [cb, label(cfg, x)])); });
+      bodyD.appendChild(fld("Applies to", ap));
+      var vk = h("select", { "data-f": "a-kind" }); [["text", "free text"], ["list", "pick-list"]].forEach(function (o) { var op = h("option", { value: o[0], text: o[1] }); if (a.valueKind === o[0]) op.selected = true; vk.appendChild(op); });
+      bodyD.appendChild(fld("Value kind", vk));
+      var vals = h("input", { type: "text", value: (a.values || []).map(function (v) { return typeof v === "string" ? v : v.name + (v.code ? "=" + v.code : ""); }).join(", "), "data-f": "a-values", placeholder: "EU=EU, US=US, APAC" });
+      bodyD.appendChild(fld("Allowed values (pick-list; value=code, …)", vals));
+      var req = h("input", { type: "checkbox", checked: !!a.required, "data-f": "a-required" });
+      bodyD.appendChild(h("div", { class: "ls-chk" }, [h("label", {}, [req, "required — blocks Export for registry and the Inbox when empty"])]));
+      b.appendChild(h("div", { class: "ls-head" }, [h("h2", { text: "Attribute" }), h("span", { class: "ls-sp" })]));
+      b.appendChild(bodyD);
+      b.appendChild(h("div", { class: "ls-foot" }, [h("button", { class: "ls-btn", text: "Cancel", onclick: function () { ov.remove(); } }), h("span", { class: "ls-sp" }),
+        h("button", { class: "ls-btn pri", "data-ls-act": "attr-ok", text: "OK", onclick: function () {
+          a.name = nm.value.trim(); a.id = slug(code.value || a.name) || a.id;
+          a.appliesTo = [].slice.call(ap.querySelectorAll("input")).filter(function (i) { return i.checked; }).map(function (i) { return i.dataset.applies; });
+          a.valueKind = vk.value; a.required = req.checked;
+          a.values = listOf(vals.value).map(function (p) { var i = p.indexOf("="); return i > 0 ? { name: p.slice(0, i).trim(), code: p.slice(i + 1).trim() } : { name: p, code: codeOf(p) }; });
+          ov.remove(); setDirty(); render(); } })]));
+      root.appendChild(ov);
     }
     function renderPlatforms() {
       body.appendChild(h("h3", { text: L("platform", true) + " & capabilities" }));
-      body.appendChild(h("p", { class: "ls-note", text: "Capabilities = block types the " + L("platform").toLowerCase() + " may host; Pattern Bench greys out the rest. Code = short form used by naming rules." }));
-      var t = h("table", { class: "ls-tbl", "data-ls": "platforms" }, [h("tr", {}, [h("th", { text: "Name" }), h("th", { text: "Code" }), h("th", { text: "Kind" }), h("th", { text: "Capabilities" }), h("th", { text: "Aliases" }), h("th", {})])]);
+      body.appendChild(h("p", { class: "ls-note", text: "Capabilities = artifact types the " + L("platform").toLowerCase() + " may host; Pattern Bench greys out the rest. Kind = component type. Subtypes refine a capability per platform (information only, e.g. process: iFlow=IFL; Logic App=LA). Code = short form used by naming rules." }));
+      var t = h("table", { class: "ls-tbl", "data-ls": "platforms" }, [h("tr", {}, [h("th", { text: "Name" }), h("th", { text: "Code" }), h("th", { text: "Kind" }), h("th", { text: "Capabilities" }), h("th", { text: "Subtypes" }), h("th", { text: "Aliases" }), h("th", {})])]);
       cfg.platforms.forEach(function (p) {
         var caps = h("td", { class: "ls-caps" });
         CAPABILITIES.forEach(function (c) {
@@ -491,27 +730,21 @@
           cb.addEventListener("change", function () { p.capabilities = CAPABILITIES.filter(function (x) { return x === c ? cb.checked : p.capabilities.indexOf(x) >= 0; }); setDirty(); });
           caps.appendChild(h("label", {}, [cb, c]));
         });
-        t.appendChild(h("tr", { class: p.status === "retired" ? "retired" : "", "data-id": p.id }, [h("td", {}, [inp(p.name, function (v) { p.name = v; }, { "data-f": "name" })]),
-          h("td", { style: "width:80px" }, [inp(p.code, function (v) { p.code = v; }, { "data-f": "code" })]),
-          h("td", { style: "width:100px" }, [sel(p.kind, [["ipaas", "iPaaS"], ["broker", "Broker"]], function (v) { p.kind = v; })]), caps,
+        var stText = Object.keys(p.subtypes || {}).filter(function (k) { return (p.subtypes[k] || []).length; }).map(function (k) { return k + ": " + p.subtypes[k].map(function (s) { return s.name + "=" + s.code; }).join("; "); }).join(" | ");
+        var noLive = opts.liveComponents ? !opts.liveComponents(p.id) : false;
+        t.appendChild(h("tr", { class: p.status === "retired" ? "retired" : "", "data-id": p.id }, [h("td", {}, [inp(p.name, function (v) { p.name = v; }, { "data-f": "name" }), noLive ? h("small", { class: "ls-nolive", "data-ls": "no-live", text: "no live " + L("component", true).toLowerCase() }) : null]),
+          h("td", { style: "width:70px" }, [inp(p.code, function (v) { p.code = v; }, { "data-f": "code" })]),
+          h("td", { style: "width:120px" }, [sel(p.kind, KINDS, function (v) { p.kind = v; }, { "data-f": "kind" })]), caps,
+          h("td", { style: "min-width:170px" }, [inp(stText, function (v) {
+            var o = {}; String(v || "").split("|").forEach(function (grp) { var i = grp.indexOf(":"); if (i < 0) return; var ty = grp.slice(0, i).trim(); if (CAPABILITIES.indexOf(ty) < 0) return;
+              o[ty] = grp.slice(i + 1).split(";").map(function (x) { x = x.trim(); if (!x) return null; var j = x.indexOf("="); var n = j > 0 ? x.slice(0, j).trim() : x; return { id: slug(n), name: n, code: j > 0 ? x.slice(j + 1).trim() : codeOf(n) }; }).filter(Boolean); });
+            p.subtypes = o; }, { "data-f": "subtypes", placeholder: "process: iFlow=IFL" })]),
           h("td", {}, [inp((p.aliases || []).join(", "), function (v) { p.aliases = listOf(v); })]), h("td", {}, [retireBtn("platform", p, cfg.platforms)])]));
       });
       body.appendChild(t);
       if (!ro) body.appendChild(h("button", { class: "ls-btn", style: "margin-top:8px", "data-ls-act": "add-platform", text: "＋ Add " + L("platform").toLowerCase(), onclick: function () {
-        cfg.platforms.push({ id: "platform-" + Date.now().toString(36), name: "", code: "", kind: "ipaas", capabilities: ["api", "process"], aliases: [] }); setDirty(); render(); } }));
-    }
-    function renderComponents() {
-      body.appendChild(h("h3", { text: L("component", true) }));
-      var plats = [["", "—"]].concat(cfg.platforms.map(function (p) { return [p.id, p.name || p.id]; }));
-      var t = h("table", { class: "ls-tbl", "data-ls": "components" }, [h("tr", {}, [h("th", { text: "Name" }), h("th", { text: "Code" }), h("th", { text: L("platform") }), h("th", { text: "Aliases" }), h("th", {})])]);
-      cfg.components.forEach(function (x) {
-        t.appendChild(h("tr", { class: x.status === "retired" ? "retired" : "", "data-id": x.id }, [h("td", {}, [inp(x.name, function (v) { x.name = v; }, { "data-f": "name" })]),
-          h("td", { style: "width:80px" }, [inp(x.code, function (v) { x.code = v; }, { "data-f": "code" })]), h("td", {}, [sel(x.platform, plats, function (v) { x.platform = v; })]),
-          h("td", {}, [inp((x.aliases || []).join(", "), function (v) { x.aliases = listOf(v); })]), h("td", {}, [retireBtn("component", x, cfg.components)])]));
-      });
-      body.appendChild(t);
-      if (!ro) body.appendChild(h("button", { class: "ls-btn", style: "margin-top:8px", text: "＋ Add " + L("component").toLowerCase(), onclick: function () {
-        cfg.components.push({ id: "component-" + Date.now().toString(36), platform: (cfg.platforms[0] || {}).id || "", name: "", code: "", aliases: [] }); setDirty(); render(); } }));
+        cfg.platforms.push({ id: "platform-" + Date.now().toString(36), name: "", code: "", kind: "ipaas", capabilities: ["api", "process"], aliases: [], subtypes: {} }); setDirty(); render(); } }));
+      body.appendChild(h("p", { class: "ls-note", style: "margin-top:12px", text: L("component", true) + " are not listed here any more (W-8): they are identified and named in design by the " + L("component").toLowerCase() + " naming rule; the registry learns them from exports." }));
     }
     function renderApps() {
       body.appendChild(h("h3", { text: L("application", true) }));
@@ -538,38 +771,54 @@
     /* naming rules = segment builder */
     function renderRules() {
       body.appendChild(h("h3", { text: "Naming rules" }));
-      body.appendChild(h("p", { class: "ls-note", text: "One global rule set. First matching rule wins (top = highest priority; drag to reorder). Names are derived from the segments; delimiters next to an empty optional segment are dropped." }));
+      body.appendChild(h("p", { class: "ls-note", text: "Only " + L("scenario").toLowerCase() + " (name + id), " + L("component").toLowerCase() + " (per component type) and " + L("artifact").toLowerCase() + " (temporary identifier) are named (W-8). Resolution: platform + subtype → platform + artifact type → subtype → artifact type default → entity-type default → built-in fallback. Takes effect in: export dialog, derived names in Pattern Bench, registry naming check, Inbox." }));
       var wrap = h("div", { class: "ls-rules" }), lst = h("div", { class: "ls-rlist", "data-ls": "rules" }), bld = h("div", { class: "ls-build" });
       wrap.appendChild(lst); wrap.appendChild(bld); body.appendChild(wrap);
-      var dragI = -1;
-      cfg.namingRules.forEach(function (r, i) {
-        var card = h("div", { class: "ls-rule" + (i === ruleSel ? " on" : ""), draggable: !ro, "data-rule": r.id, onclick: function () { ruleSel = i; segSel = -1; render(); } },
-          [h("span", { text: "☰", style: "color:#98a2b3" }), h("span", { class: "t" }, [h("b", { text: r.id }), h("small", { text: r.target + (r.when && r.when.partType ? " · " + r.when.partType : "") + " · " + r.mode + (r.status === "retired" ? " · retired" : "") })])]);
-        card.addEventListener("dragstart", function () { dragI = i; });
-        card.addEventListener("dragover", function (e) { e.preventDefault(); card.classList.add("dragover"); });
-        card.addEventListener("dragleave", function () { card.classList.remove("dragover"); });
-        card.addEventListener("drop", function (e) { e.preventDefault(); if (dragI < 0 || dragI === i) return; var m = cfg.namingRules.splice(dragI, 1)[0]; cfg.namingRules.splice(i, 0, m); ruleSel = i; setDirty(); render(); });
-        lst.appendChild(card);
+      if (!cfg.namingRules[ruleSel]) ruleSel = 0;
+      RULE_SCOPES.forEach(function (sc) {
+        var mine = cfg.namingRules.map(function (r, i) { return [r, i]; }).filter(function (x) { return (x[0].scope || {}).entityType === sc[0]; });
+        var head = sc[0] === "scenario" ? label(cfg, "scenario") + " — name" : sc[0] === "scenario-id" ? label(cfg, "scenario") + " — id" : sc[0] === "component" ? label(cfg, "component") : label(cfg, "artifact") + " (temporary identifier)";
+        lst.appendChild(h("div", { class: "ls-card-h", "data-card": sc[0] }, [h("b", { text: head }), ro ? null : h("button", { class: "ls-btn sm", "data-ls-act": "add-rule", "data-card": sc[0], text: "＋", title: "Add a rule to this card", onclick: function () { addRule(sc[0]); } })]));
+        if (!mine.length) lst.appendChild(h("div", { class: "ls-note", style: "margin:0 0 6px 6px", text: "no rule — built-in fallback" }));
+        mine.forEach(function (x) {
+          var r = x[0], i = x[1], s = r.scope || {};
+          var sub = [s.componentType && (KINDS.find(function (k) { return k[0] === s.componentType; }) || [0, s.componentType])[1], s.artifactType, s.platform && ((find(cfg, "platform", s.platform) || {}).name || s.platform), s.subtype].filter(Boolean).join(" · ") || "default";
+          lst.appendChild(h("div", { class: "ls-rule" + (i === ruleSel ? " on" : ""), "data-rule": r.id, onclick: function () { ruleSel = i; segSel = -1; render(); } },
+            [h("span", { class: "t" }, [h("b", { text: r.id }), h("small", { text: sub + " · " + r.mode + (r.status === "retired" ? " · retired" : "") })])]));
+        });
       });
-      if (!ro) lst.appendChild(h("button", { class: "ls-btn", "data-ls-act": "add-rule", text: "＋ Add rule", onclick: function () {
+      function addRule(card) {
         var n = 1; while (cfg.namingRules.some(function (x) { return x.id === "N-" + n; })) n++;
-        cfg.namingRules.push({ id: "N-" + n, target: "part", when: {}, mode: "derive", segments: [{ source: "component.code" }, { delimiter: "_" }, { source: "partType", map: { api: "API", process: "IF", topic: "TP", queue: "Q", file: "FL", scheduler: "SCH" } }],
-          transforms: ["upper", "noSpaces"], maxLength: 60, override: "warn", level: "warn" });
-        ruleSel = cfg.namingRules.length - 1; segSel = -1; setDirty(); render(); } }));
+        var segs = card === "scenario" ? [{ source: "dataObject.code" }, { delimiter: "_" }, { source: "sourceApp.code" }, { delimiter: "-" }, { source: "targetApp.code" }]
+          : card === "scenario-id" ? [{ source: "literal", text: "SCN" }, { delimiter: "-" }, { source: "seq", format: "{n:0000}" }]
+          : card === "component" ? [{ source: "platform.code" }, { delimiter: "_" }, { source: "dataObject.code" }]
+          : [{ source: "component.code" }, { delimiter: "_" }, { source: "artifactType", map: clone(TYPE_MAP) }];
+        cfg.namingRules.push({ id: "N-" + n, scope: { entityType: card }, mode: "derive", segments: segs, transforms: ["upper", "noSpaces"], maxLength: 60, override: "warn", level: "warn" });
+        ruleSel = cfg.namingRules.length - 1; segSel = -1; setDirty(); render();
+      }
       var r = cfg.namingRules[ruleSel];
       if (!r) { bld.appendChild(h("p", { class: "ls-note", text: "No rule yet. Without a rule, names fall back to “<" + L("component").toLowerCase() + "> <type>”." })); return; }
-      var targets = ENTITY_IDS.map(function (id) { return [id, label(cfg, id)]; });
+      r.scope = r.scope || { entityType: "artifact" };
       var g = h("div", { class: "ls-grid" });
       var fld = function (lab, el) { return h("div", { class: "ls-f" }, [h("label", { text: lab }), el]); };
+      var et = r.scope.entityType;
+      var platOpts = [["", "any"]].concat(cfg.platforms.map(function (p) { return [p.id, p.name || p.id]; }));
       g.appendChild(fld("Rule id", inp(r.id, function (v) { r.id = v; }, { "data-f": "rule-id" })));
-      g.appendChild(fld("Target", sel(r.target, targets, function (v) { r.target = v; }, { "data-f": "target" })));
-      g.appendChild(fld("When part type", sel(r.when.partType || "", [["", "any"]].concat(PART_TYPES.map(function (t) { return [t, t]; })), function (v) { if (v) r.when.partType = v; else delete r.when.partType; }, { "data-f": "when-part" })));
-      g.appendChild(fld("When platform kind", sel(r.when.platformKind || "", [["", "any"], ["ipaas", "iPaaS"], ["broker", "Broker"]], function (v) { if (v) r.when.platformKind = v; else delete r.when.platformKind; })));
-      g.appendChild(fld("When direction", sel(r.when.direction || "", [["", "any"], ["in", "in"], ["out", "out"]], function (v) { if (v) r.when.direction = v; else delete r.when.direction; })));
+      g.appendChild(fld("Card", sel(et, RULE_SCOPES, function (v) { r.scope = { entityType: v }; }, { "data-f": "scope-entity", rerender: true })));
+      if (et === "component") g.appendChild(fld("Component type", sel(r.scope.componentType || "", [["", "any"]].concat(KINDS), function (v) { if (v) r.scope.componentType = v; else delete r.scope.componentType; }, { "data-f": "scope-ctype", rerender: true })));
+      if (et === "artifact") {
+        g.appendChild(fld(L("artifact") + " type", sel(r.scope.artifactType || "", [["", "any (default)"]].concat(PART_TYPES.map(function (t) { return [t, t]; })), function (v) { if (v) r.scope.artifactType = v; else delete r.scope.artifactType; delete r.scope.subtype; }, { "data-f": "scope-atype", rerender: true })));
+      }
+      if (et === "artifact" || et === "component") g.appendChild(fld(L("platform"), sel(r.scope.platform || "", platOpts, function (v) { if (v) r.scope.platform = v; else delete r.scope.platform; delete r.scope.subtype; }, { "data-f": "scope-platform", rerender: true })));
+      if (et === "artifact" && r.scope.artifactType) {
+        var subs = r.scope.platform ? subtypesOf(cfg, r.scope.platform, r.scope.artifactType) : [].concat.apply([], cfg.platforms.map(function (p) { return (p.subtypes && p.subtypes[r.scope.artifactType]) || []; }));
+        if (subs.length) g.appendChild(fld("Subtype", sel(r.scope.subtype || "", [["", "any"]].concat(subs.map(function (s) { return [s.id, s.name]; })), function (v) { if (v) r.scope.subtype = v; else delete r.scope.subtype; }, { "data-f": "scope-subtype", rerender: true })));
+      }
       g.appendChild(fld("Mode", sel(r.mode, [["derive", "derive (build the name)"], ["check", "check only"]], function (v) { r.mode = v; })));
       g.appendChild(fld("Override", sel(r.override, [["allow", "allow"], ["warn", "warn"], ["block", "block (locked)"]], function (v) { r.override = v; }, { "data-f": "override" })));
       g.appendChild(fld("Breach level", sel(r.level, [["warn", "warn"], ["block", "block"]], function (v) { r.level = v; }, { "data-f": "level" })));
       bld.appendChild(g);
+      bld.appendChild(h("div", { class: "ls-note", "data-ls": "rule-level", text: "Matches at level: " + ruleLevel(r) }));
       // segments row
       var segs = h("div", { class: "ls-segs", "data-ls": "segments" }), dragS = -1;
       r.segments.forEach(function (s, i) {
@@ -589,13 +838,13 @@
         var dIn = h("input", { type: "text", value: "_", style: "width:50px", "data-f": "add-delim" });
         bld.appendChild(h("div", { class: "ls-chk" }, [srcSel, h("button", { class: "ls-btn sm", "data-ls-act": "add-seg", text: "＋ placeholder", onclick: function () {
           var s = { source: srcSel.value }; if (s.source === "free") { s.label = "Purpose"; s.required = true; s.maxLength = 20; }
-          if (s.source === "partType") s.map = { api: "API", process: "IF", topic: "TP", queue: "Q", file: "FL", scheduler: "SCH" };
+          if (s.source === "artifactType") s.map = clone(TYPE_MAP);
+          if (s.source === "attr") s.attr = ((cfg.attributeTypes || [])[0] || {}).id || "";
           if (s.source === "version") { s.format = "v{n}"; s.optional = true; } if (s.source === "literal") s.text = "X";
           var last = r.segments[r.segments.length - 1];
           if (last && last.delimiter === undefined && dIn.value) r.segments.push({ delimiter: dIn.value });   // keep placeholders apart
           r.segments.push(s); segSel = r.segments.length - 1; setDirty(); render(); } }),
           dIn, h("button", { class: "ls-btn sm", "data-ls-act": "add-delim", text: "＋ delimiter", onclick: function () { r.segments.push({ delimiter: dIn.value }); setDirty(); render(); } }),
-          h("button", { class: "ls-btn sm", text: "▲ rule up", disabled: ruleSel === 0, onclick: function () { var m = cfg.namingRules.splice(ruleSel, 1)[0]; ruleSel--; cfg.namingRules.splice(ruleSel, 0, m); setDirty(); render(); } }),
           h("button", { class: "ls-btn sm", text: r.status === "retired" ? "Re-activate rule" : "Retire rule", onclick: function () { r.status = r.status === "retired" ? "active" : "retired"; setDirty(); render(); } })]));
       }
       // per-segment editor
@@ -607,6 +856,7 @@
           gg.appendChild(fld("Source", sel(s.source, SEGMENT_SOURCES, function (v) { s.source = v; }, { rerender: true })));
           if (s.source === "free") { gg.appendChild(fld("Label", inp(s.label, function (v) { s.label = v; }))); gg.appendChild(fld("Allowed values (comma)", inp((s.values || []).join(", "), function (v) { s.values = listOf(v); if (!s.values.length) delete s.values; }))); }
           if (s.source === "literal") gg.appendChild(fld("Text", inp(s.text, function (v) { s.text = v; })));
+          if (s.source === "attr") gg.appendChild(fld("Attribute", sel(s.attr || "", [["", "—"]].concat((cfg.attributeTypes || []).map(function (a) { return [a.id, a.name || a.id]; })), function (v) { s.attr = v; })));
           gg.appendChild(fld("Map (value=abbr, …)", inp(s.map ? Object.keys(s.map).map(function (k) { return k + "=" + s.map[k]; }).join(", ") : "", function (v) {
             var m = {}; listOf(v).forEach(function (p) { var i = p.indexOf("="); if (i > 0) m[p.slice(0, i).trim()] = p.slice(i + 1).trim(); }); if (Object.keys(m).length) s.map = m; else delete s.map; }, { "data-f": "seg-map" })));
           gg.appendChild(fld("Format", inp(s.format, function (v) { if (v) s.format = v; else delete s.format; }, { placeholder: s.source === "version" ? "v{n}" : s.source === "seq" ? "{n:000}" : "{v}" })));
@@ -643,15 +893,21 @@
     return { root: root, close: close, get config() { return cfg; } };
   }
   function sample(cfg, rule) {
-    var p = active(cfg.platforms)[0] || { id: "btp-is", name: "SAP BTP Integration Suite", code: "BTP", kind: "ipaas" };
-    var c = active(cfg.components).find(function (x) { return x.platform === p.id; }) || { name: "Order iFlow", code: "ORD" };
+    var sc = (rule && rule.scope) || {};
+    var p = (sc.platform && find(cfg, "platform", sc.platform)) || active(cfg.platforms).find(function (x) { return !sc.componentType || x.kind === sc.componentType; }) || { id: "btp-is", name: "BTP IS", code: "BTPIS", kind: "ipaas" };
     var apps = active(cfg.applications);
-    var s = apps[0] || { name: "S/4HANA EU", code: "S4EU" }, t = apps[1] || { name: "Salesforce", code: "SFDC" };
+    var s = apps[0] || { name: "S/4HANA P01", code: "S4P01" }, t = apps[1] || { name: "Webshop", code: "WEBSHOP" };
     var free = {}; (rule.segments || []).forEach(function (sg) { if (sg.source === "free") free[sg.label || "Purpose"] = (sg.values && sg.values[0]) || "Orders"; });
-    return { platform: p, component: c, sourceApp: s, targetApp: t, endpoint: { id: (s.endpoints && s.endpoints[0] && s.endpoints[0].id) || "API_SALES_ORDER" },
-      partType: (rule.when && rule.when.partType) || "api", direction: "in", pattern: "api-to-process", version: 2, seq: 1, free: free };
+    var attrs = {}; (cfg.attributeTypes || []).forEach(function (a) { var v = (a.values || [])[0]; attrs[a.id] = v ? (v.code || v.name || v) : "EU"; });
+    var at = sc.artifactType || "process";
+    var st = sc.subtype ? subtypeFind(cfg, p.id, at, sc.subtype) : (subtypesOf(cfg, p.id, at)[0] || null);
+    var dobj = { name: "Sales Order", code: "SO" };
+    var comp = { name: (p.code || "BTPIS") + "_SO_" + (KIND_CODE[p.kind] || "INT") };
+    return { platform: p, component: comp, componentType: p.kind, sourceApp: s, targetApp: t, dataObject: dobj, subtype: st, attrs: attrs,
+      endpoint: { id: (s.endpoints && s.endpoints[0] && s.endpoints[0].id) || "API_SALES_ORDER" },
+      artifactType: at, partType: at, direction: "in", pattern: "api-to-process", version: 2, seq: 42, free: free };
   }
-  function describeSample(s) { return [s.platform.code || s.platform.name, s.component.code || s.component.name, (s.sourceApp.code || "") + "→" + (s.targetApp.code || ""), s.partType, "v" + s.version].join(" · "); }
+  function describeSample(s) { return [s.platform.code || s.platform.name, s.component.name, s.dataObject.name, (s.sourceApp.code || "") + "→" + (s.targetApp.code || ""), s.artifactType + (s.subtype ? " (" + s.subtype.name + ")" : ""), "v" + s.version].join(" · "); }
 
   /* ---------- staged retire / remove wizard (R-7, Pattern Bench C-2 standalone) ----------
      opts: { title, target:{ text }, deps: () => [{ text, kind }], blocked: () => [{ text, fix, act:{label, run} }],
@@ -715,7 +971,10 @@
   }
 
   window.__shared = {
-    SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, ENTITY_IDS: ENTITY_IDS, PART_TYPES: PART_TYPES, CAPABILITIES: CAPABILITIES,
+    SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, ENTITY_IDS: ENTITY_IDS, PART_TYPES: PART_TYPES, ARTIFACT_TYPES: ARTIFACT_TYPES, CAPABILITIES: CAPABILITIES, KINDS: KINDS, TYPE_CODE: TYPE_CODE,
+    defaults: defaults, codeOf: codeOf, dataObjectOf: dataObjectOf, dataObjectKey: dataObjectKey, definition: definition, takesEffect: takesEffect, connectedLabel: connectedLabel,
+    subtypesOf: subtypesOf, subtypeFind: subtypeFind, attributesFor: attributesFor, missingAttributes: missingAttributes, ruleLevel: ruleLevel, scenarioId: scenarioId,
+    COLORS: COLORS, colorCss: colorCss, entityId: entityId,
     seed: seed, normalize: normalize, validate: validate, clone: clone, slug: slug, label: label, find: find, active: active, capable: capable,
     matchRule: matchRule, derive: derive, ruleRegex: ruleRegex, checkName: checkName, duplicates: duplicates,
     diff: diff, applyImport: applyImport, bump: bump, renames: renames, download: download, saveFile: saveFile,

@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-ddab9a",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Product master changes from S/4HANA are published to PIM, EWM and the data lake.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-13T09:30:00.000Z",
+    "dataObject": {
+      "name": "Material",
+      "code": "MAT"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "MDM"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -111,7 +120,9 @@
         "name": "BTP_MATERIALMAST_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -123,7 +134,10 @@
         "name": "BTP_MATERIALMAST_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -135,7 +149,9 @@
         "name": "SOL_MATERIALEVEN_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c4",
@@ -147,7 +163,9 @@
         "name": "SOL_QPIMMATERIAL_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c5",
@@ -171,7 +189,9 @@
         "name": "SOL_QEWMPRODUCT_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c7",
@@ -195,19 +215,24 @@
         "name": "SOL_QDWHMATERIAL_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c9",
-        "ref": "azure-logic-apps/datalake-ingest#process",
+        "ref": "ais/datalake-ingest#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k8",
-        "name": "ALA_DATALAKEINGE_IF",
+        "name": "AIS_DATALAKEINGE_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "function-app"
       },
       {
         "id": "c10",
@@ -281,12 +306,12 @@
         "from": "c8",
         "to": "c9",
         "fromRef": "solace/q-dwh-material#queue",
-        "toRef": "azure-logic-apps/datalake-ingest#process"
+        "toRef": "ais/datalake-ingest#process"
       },
       {
         "from": "c9",
         "to": "c10",
-        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "fromRef": "ais/datalake-ingest#process",
         "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
       },
       {
@@ -304,7 +329,10 @@
         "platform": "BTP IS",
         "asset": "Material-Master-Dist",
         "platformId": "btp-is",
-        "componentId": "btp-is/material-master-dist"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -313,7 +341,10 @@
         "platform": "Solace",
         "asset": "Material-Events",
         "platformId": "solace",
-        "componentId": "solace/material-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
@@ -322,7 +353,10 @@
         "platform": "Solace",
         "asset": "Q-Pim-Material",
         "platformId": "solace",
-        "componentId": "solace/q-pim-material"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
@@ -341,7 +375,10 @@
         "platform": "Solace",
         "asset": "Q-Ewm-Product",
         "platformId": "solace",
-        "componentId": "solace/q-ewm-product"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k6",
@@ -360,16 +397,22 @@
         "platform": "Solace",
         "asset": "Q-Dwh-Material",
         "platformId": "solace",
-        "componentId": "solace/q-dwh-material"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k8",
-        "ref": "azure-logic-apps/datalake-ingest",
+        "ref": "ais/datalake-ingest",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "DataLake-Ingest",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/datalake-ingest"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k9",

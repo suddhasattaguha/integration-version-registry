@@ -79,10 +79,18 @@
     }
   ],
   "std": {
-    "pb": "2.1",
+    "pb": "2.2",
     "landscape": {
       "source": "Registry",
       "landscapeVersion": 1
+    },
+    "dataObject": {
+      "name": "Business Partner",
+      "code": "BP"
+    },
+    "attrs": {
+      "region": "EU",
+      "domain": "MDM"
     },
     "branchContainers": [
       {
@@ -102,7 +110,7 @@
       },
       {
         "key": "@b1.0:out",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "DataLake-Ingest"
       },
       {

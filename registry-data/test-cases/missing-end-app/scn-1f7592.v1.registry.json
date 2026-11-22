@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-1f7592",
     "version": 1,
@@ -8,9 +8,17 @@
     "description": "Test case: missing-end-app",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-25T09:30:00.000Z",
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "single"
     },
     "canvas": {
@@ -62,7 +70,9 @@
         "name": "BTP_ORDERSTATUSD_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -74,7 +84,10 @@
         "name": "BTP_ORDERSTATUSD_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -129,7 +142,10 @@
         "platform": "BTP IS",
         "asset": "Order-Status-Dist",
         "platformId": "btp-is",
-        "componentId": "btp-is/order-status-dist"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",

@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-c958bd",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Supplier invoices from Ariba, plus scanned paper invoices from the OCR service, are posted in S/4HANA.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-18T09:30:00.000Z",
+    "dataObject": {
+      "name": "Supplier Invoice",
+      "code": "SINV"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "P2P"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -86,7 +95,9 @@
         "name": "BTP_ARIBAPROCURE_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -98,7 +109,10 @@
         "name": "BTP_ARIBAPROCURE_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -134,7 +148,10 @@
         "name": "BTP_INVOICESCANO_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c6",
@@ -189,7 +206,10 @@
         "platform": "BTP IS",
         "asset": "Ariba-Procurement",
         "platformId": "btp-is",
-        "componentId": "btp-is/ariba-procurement"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -218,7 +238,10 @@
         "platform": "BTP IS",
         "asset": "Invoice-Scan-OCR",
         "platformId": "btp-is",
-        "componentId": "btp-is/invoice-scan-ocr"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k5",

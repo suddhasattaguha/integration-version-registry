@@ -1,0 +1,173 @@
+{
+  "schema": "pattern-bench.registry-entry",
+  "schemaVersion": "1.0",
+  "scenario": {
+    "id": "scn-99386b",
+    "version": 1,
+    "name": "TC-Required-Attribute-Missing",
+    "description": "Test case: required-attribute-missing",
+    "author": "Suddhasatta Guha",
+    "exportedAt": "2026-11-25T09:30:00.000Z",
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "displayId": null,
+    "attributes": {},
+    "source": {
+      "tool": "Pattern Bench",
+      "toolVersion": "2.2",
+      "mode": "single"
+    },
+    "canvas": {
+      "file": "scn-99386b.v1.canvas.json"
+    },
+    "tags": [
+      "test"
+    ]
+  },
+  "landscape": {
+    "source": "registry",
+    "landscapeVersion": 1
+  },
+  "proposed": [],
+  "retired": [],
+  "base": {
+    "blocks": [
+      {
+        "id": "b1",
+        "templateId": "api-to-process",
+        "label": "API-to-Process",
+        "row": 0,
+        "order": 0,
+        "components": [
+          "c1",
+          "c2"
+        ]
+      },
+      {
+        "id": "b2",
+        "templateId": "process-to-api",
+        "label": "Process-to-API",
+        "row": 0,
+        "order": 1,
+        "components": [
+          "c2",
+          "c3"
+        ]
+      }
+    ],
+    "components": [
+      {
+        "id": "c1",
+        "ref": "btp-is/order-status-dist#api",
+        "type": "api",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "name": "BTP_ORDERSTATUSD_API",
+        "nameRule": "N-1",
+        "autoName": false,
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
+      },
+      {
+        "id": "c2",
+        "ref": "btp-is/order-status-dist#process",
+        "type": "process",
+        "version": "v1",
+        "owner": "integration",
+        "container": "k1",
+        "name": "BTP_ORDERSTATUSD_IF",
+        "nameRule": "N-2",
+        "autoName": false,
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
+      },
+      {
+        "id": "c3",
+        "ref": "endapp/webshop-commercetools/commercetools-order-api#api",
+        "type": "api",
+        "version": "v1",
+        "owner": "endApp",
+        "container": "k2",
+        "name": "commercetools Order API",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      },
+      {
+        "id": "c4",
+        "ref": "caller/sap-s-4hana-p01#app",
+        "type": "app",
+        "version": "v1",
+        "owner": "caller",
+        "container": "k3",
+        "name": "SAP S/4HANA (P01)",
+        "autoName": false,
+        "nameRule": null,
+        "nameOverridden": false
+      }
+    ],
+    "links": [
+      {
+        "from": "c1",
+        "to": "c2",
+        "fromRef": "btp-is/order-status-dist#api",
+        "toRef": "btp-is/order-status-dist#process"
+      },
+      {
+        "from": "c2",
+        "to": "c3",
+        "fromRef": "btp-is/order-status-dist#process",
+        "toRef": "endapp/webshop-commercetools/commercetools-order-api#api"
+      },
+      {
+        "from": "c4",
+        "to": "c1",
+        "fromRef": "caller/sap-s-4hana-p01#app",
+        "toRef": "btp-is/order-status-dist#api"
+      }
+    ],
+    "containers": [
+      {
+        "id": "k1",
+        "ref": "btp-is/order-status-dist",
+        "kind": "iPaaS",
+        "platform": "BTP IS",
+        "asset": "Order-Status-Dist",
+        "platformId": "btp-is",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
+      },
+      {
+        "id": "k2",
+        "ref": "endapp/webshop-commercetools/commercetools-order-api",
+        "kind": "endApp",
+        "platform": "",
+        "asset": "Webshop (commercetools)",
+        "name": "Webshop (commercetools)",
+        "process": "Order status",
+        "appId": "webshop-commercetools"
+      },
+      {
+        "id": "k3",
+        "ref": "caller/sap-s-4hana-p01",
+        "kind": "caller",
+        "platform": "",
+        "asset": "SAP S/4HANA (P01)",
+        "name": "SAP S/4HANA (P01)",
+        "process": "Business event",
+        "appId": "sap-s-4hana-p01"
+      }
+    ]
+  },
+  "versions": [],
+  "acknowledgements": [],
+  "relations": []
+}

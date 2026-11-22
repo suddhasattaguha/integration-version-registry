@@ -1,0 +1,30 @@
+{
+  "schema": "registry-scenario-ids",
+  "schemaVersion": "1.0",
+  "ids": {
+    "scn-b6fea9": "SCN-0001",
+    "scn-dcba7d": "SCN-0002",
+    "scn-0c79ae": "SCN-0003",
+    "scn-d91db8": "SCN-0004",
+    "scn-a8dcfe": "SCN-0005",
+    "scn-7746cf": "SCN-0006",
+    "scn-f3a9d8": "SCN-0007",
+    "scn-a4e8e4": "SCN-0008",
+    "scn-64cc50": "SCN-0009",
+    "scn-153574": "SCN-0010",
+    "scn-3bcd54": "SCN-0011",
+    "scn-ddab9a": "SCN-0012",
+    "scn-0f780c": "SCN-0013",
+    "scn-5e1c6b": "SCN-0014",
+    "scn-4a5389": "SCN-0015",
+    "scn-885968": "SCN-0016",
+    "scn-c958bd": "SCN-0017",
+    "scn-35433e": "SCN-0018",
+    "scn-7a6e2d": "SCN-0019",
+    "scn-1806ad": "SCN-0020",
+    "scn-3ce28e": "SCN-0021",
+    "scn-b29a4e": "SCN-0022",
+    "scn-c20edf": "SCN-0023",
+    "scn-31f0e3": "SCN-0024"
+  }
+}

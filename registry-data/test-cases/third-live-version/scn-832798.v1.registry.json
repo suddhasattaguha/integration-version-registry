@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-832798",
     "version": 1,
@@ -8,9 +8,17 @@
     "description": "Test case: third-live-version",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-25T09:30:00.000Z",
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "single"
     },
     "canvas": {
@@ -52,7 +60,9 @@
         "name": "SOL_DELIVERYEVEN_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -64,7 +74,9 @@
         "name": "SOL_QEWMDELIVERY_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c3",
@@ -101,7 +113,10 @@
         "platform": "Solace",
         "asset": "Delivery-Events",
         "platformId": "solace",
-        "componentId": "solace/delivery-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -110,7 +125,10 @@
         "platform": "Solace",
         "asset": "Q-Ewm-Delivery",
         "platformId": "solace",
-        "componentId": "solace/q-ewm-delivery"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",

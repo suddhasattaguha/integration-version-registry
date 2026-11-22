@@ -306,11 +306,11 @@
   .explorer .xv .vn { font-size: 10.5px; font-weight: 700; fill: #475467; } .explorer .xv.on .vn { fill: #fff; }
   .explorer .xv .vch { font-size: 11px; fill: #667085; } .explorer .xv.on .vch { fill: #c9d1de; }
   .explorer .xv:focus-visible > rect:first-of-type { stroke: #0f7c7a; stroke-width: 2.4; }
-  .explorer .xn.k-a rect:first-of-type { fill: #fff6f2; stroke: #e2b4a3; }
+  .explorer .xn.k-a rect:first-of-type { fill: #f3f6fa; stroke: #9fb3c8; }
   .explorer .xn.k-v rect:first-of-type { fill: #f7f8fa; }
   .explorer .xc.k-c rect { fill: #3346c8; filter: drop-shadow(0 6px 10px rgba(51,70,200,.35)); }
-  .explorer .xc.k-a rect { fill: #b4472a; filter: drop-shadow(0 6px 10px rgba(180,71,42,.35)); }
-  .xkind.a { background: #b4472a; } .xkind.s { background: #0f7c7a; }
+  .explorer .xc.k-a rect { fill: #486581; filter: drop-shadow(0 6px 10px rgba(72,101,129,.35)); }
+  .xkind.a { background: #486581; } .xkind.s { background: #0f7c7a; }
   .vchip { display: inline-block; cursor: pointer; padding: 2px 10px; border-radius: 12px; border: 1px solid #98a2b3; background: #fff; color: #344054; font-weight: 600; font-size: 12px; margin: 2px 2px; }
   .vchip:hover { border-color: #0f7c7a; color: #0f7c7a; }
   #pageRel .xin { opacity: 1; transform: none; padding-left: 0; }
@@ -323,8 +323,8 @@
   .chain .art.ver > rect:first-child { fill: #f5f2fe; stroke: #6b4fd8; stroke-width: 1.8; }
   .chain .art .an { font-size: 12.5px; font-weight: 650; fill: #1d2433; } .chain .art .ap { font-size: 10.5px; fill: #667085; }
   .chain .cc { font-size: 10.5px; fill: #475467; } .chain .ccb { fill: #f2f4f7; stroke: #e3e6ec; }
-  .chain .sys > rect:first-child { fill: #fff6f2; stroke: #b4472a; stroke-width: 1.4; }
-  .chain .sys .an { font-size: 12.5px; font-weight: 650; fill: #7a2e18; } .chain .sys .ap { font-size: 10.5px; fill: #9a5a45; }
+  .chain .sys > rect:first-child { fill: #f3f6fa; stroke: #627d98; stroke-width: 1.4; }
+  .chain .sys .an { font-size: 12.5px; font-weight: 650; fill: #243b53; } .chain .sys .ap { font-size: 10.5px; fill: #627d98; }
   .chain .ce { fill: none; stroke: #8a94a6; stroke-width: 1.6; } .chain .ce.v { stroke: #6b4fd8; }
   .chain [data-node], .chain [data-copen] { cursor: pointer; } .chain .art[data-copen]:hover > rect:first-child, .chain .sys[data-node]:hover > rect:first-child { stroke: #0f7c7a; stroke-width: 2; }
 
@@ -340,7 +340,7 @@
   .mtypes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
   @media (max-width: 900px) { .mtypes { grid-template-columns: 1fr 1fr; } }
   .mtype { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: #fff; cursor: pointer; font: inherit; text-align: left; transition: transform .2s, box-shadow .2s; --kc: #0f7c7a; }
-  .mtype.k-c { --kc: #3346c8; } .mtype.k-p { --kc: #5f6f88; } .mtype.k-a { --kc: #b4472a; }
+  .mtype.k-c { --kc: #3346c8; } .mtype.k-p { --kc: #5f6f88; } .mtype.k-a { --kc: #486581; }
   .mtype:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(16,24,40,.10); }
   .mtype.on { border-color: var(--kc); box-shadow: 0 0 0 2px var(--kc) inset; }
   .mtype .mi { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: var(--kc); color: #fff; flex: none; } .mtype .mi svg { width: 20px; height: 20px; }
@@ -400,10 +400,10 @@
   .sec.vsec { display: flex; align-items: center; gap: 6px; text-transform: none; letter-spacing: 0; font-size: 12.5px; color: #344054; font-weight: 700; }
   .sec.vsec .count { font-weight: 600; color: #98a2b3; }
   .list-item .kdot { display: inline-block; width: 8px; height: 8px; border-radius: 3px; margin-right: 7px; vertical-align: 1px; background: #98a2b3; }
-  .kdot.k-s { background: #0f7c7a; } .kdot.k-c { background: #3346c8; } .kdot.k-a { background: #b4472a; border-radius: 8px; }
+  .kdot.k-s { background: #0f7c7a; } .kdot.k-c { background: #3346c8; } .kdot.k-a { background: #486581; border-radius: 8px; }
   .list-item.attn .t { color: #9a5b00; }
   tr.row[data-go] { cursor: pointer; } tr.row[data-go]:hover td { background: #f6f8fb; }
-  .chip.sysc { background: #fff1ea; color: #8a3a22; border: 1px solid #f2cdbd; }
+  .chip.sysc { background: #eef4fb; color: #334e68; border: 1px solid #9fb3c8; }
   td.flowcell { white-space: nowrap; } .farr { color: #98a2b3; margin: 0 6px; font-weight: 700; }
   .pbbtn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #c9bdf6; background: #f5f2fe; color: #4b32b8; border-radius: 10px; padding: 6px 12px; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 0 #ddd3fb; transition: transform .2s, box-shadow .2s; }
   .pbbtn:hover:not([disabled]) { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(75,50,184,.18); }
@@ -433,12 +433,47 @@
   .inbox-row .ih{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
   .iitem{display:flex;gap:8px;align-items:center;padding:6px 0;border-top:1px solid #f2f4f7;flex-wrap:wrap}.iitem .itxt{flex:1;min-width:240px}.iitem .iact{display:flex;gap:6px;align-items:center}
   tr.archived td{color:#98a2b3}
+
+  /* ===== draft 0.11: W-9 … W-16 ===== */
+  .chip.app-src { background: #eef4fb; color: #334e68; border: 1px solid #9fb3c8; }
+  .chip.app-tgt { background: #f3f0fc; color: #4c3a8a; border: 1px solid #b4a7e3; }
+  .chip.app-src.proposed, .chip.app-tgt.proposed { border-style: dashed; }
+  .chip.do { background: #e7f6f5; color: #0b5f5c; border: 1px solid #7cc4c0; }
+  .chip.more { background: #fff; border: 1px solid #d0d5dd; color: #475467; cursor: help; }
+  .chip.st-retired { background: #f2f4f7; color: #667085; border: 1px solid #d0d5dd; }
+  .chip.st-orphan { background: #fffaeb; color: #93370d; border: 1px dashed #fedf89; }
+  .chip.st-miss { background: #fef3f2; color: #b42318; border: 1px solid #fda29b; }
+  .chip.dim { opacity: .55; }
+  th.th-src { color: #334e68; } th.th-tgt { color: #4c3a8a; }
+  .legend { display: inline-flex; gap: 4px; align-items: center; margin-left: 8px; font-size: 11px; }
+  .dsel { border: 1px solid #d0d5dd; border-radius: 8px; padding: 6px 8px; font: inherit; background: #fff; }
+  .wscroll { overflow-x: auto; }
+  .wtable.scl td:nth-child(3) { min-width: 190px; }
+  .sid { font-size: 12px; color: #344054; background: #f2f4f7; border-radius: 6px; padding: 2px 6px; cursor: copy; white-space: nowrap; }
+  .id-tag { display: inline-block; font: 600 9.5px/1.4 ui-monospace, monospace; border: 1px solid #d0d5dd; color: #667085; border-radius: 4px; padding: 0 4px; margin-right: 5px; vertical-align: 1px; }
+  .world-head .hacts { display: inline-flex; gap: 4px; margin-left: 10px; }
+  .hact { border: 0; background: none; color: #667085; font: inherit; font-size: 12px; padding: 3px 7px; border-radius: 6px; cursor: pointer; text-decoration: underline dotted; }
+  .hact:hover { background: #f2f4f7; color: #344054; }
+  .hact[disabled] { color: #c0c6d0; cursor: not-allowed; text-decoration: none; }
+  .panel.apps .appcard { border-radius: 12px; padding: 10px 12px; margin-bottom: 4px; }
+  .panel.apps .appcard.src { background: #eef4fb; border: 1.5px solid #9fb3c8; }
+  .panel.apps .appcard.tgt { background: #f3f0fc; border: 1.5px solid #b4a7e3; }
+  .panel.apps .ach { font: 600 10.5px/1 ui-monospace, monospace; letter-spacing: .08em; text-transform: uppercase; color: #475467; margin-bottom: 6px; }
+  .panel.apps .aci { display: flex; flex-direction: column; padding: 3px 0; cursor: pointer; }
+  .panel.apps .aci b { font-size: 15px; } .panel.apps .appcard.src .aci b { color: #243b53; } .panel.apps .appcard.tgt .aci b { color: #3c2a7a; }
+  .panel.apps .aci span { font-size: 12px; color: #667085; }
+  .panel.apps .acarr { text-align: center; color: #98a2b3; line-height: 1; margin: 2px 0 6px; }
+  .panel.apps .acdo { margin-top: 8px; font-size: 12px; color: #475467; }
+  .contains-line { margin: 6px 0 10px; font-size: 13px; color: #344054; }
+  table.matrix td, table.matrix th { text-align: center; } table.matrix td:first-child { text-align: left; }
+  tr.st-retired td { color: #98a2b3; }
+  .tile010.orph .ti { color: #b54708; }
 </style>
 </head>
 <body>
 <header>
   <h1 data-act="home" style="cursor:pointer" title="Home">Integration Registry</h1>
-  <span class="draft">draft 0.10 · schema 0.7</span>
+  <span class="draft">draft 0.11 · schema 1.0</span>
   <span class="cfg-badge" id="cfgBadge" data-act="settings" title="Landscape config — open Settings"></span>
   <span class="spacer"></span>
   <span class="folder" id="folderName"></span>
@@ -453,93 +488,246 @@
 </main>
 
 <script id="landscape-shared">
-/* === SHARED landscape helpers 0.1 — same code in registry-app.html and pattern-bench.html (source: tools/landscape-shared.js) ===
-   Contract: landscape.json schema 0.1 (claude/landscape-config-schema-0.1.md).
-   Config defaults · entity labels (C-3) · naming derive / check (C-4) · settings diff / import (C-3) ·
-   staged retire wizard (R-7 / C-2) · Settings editor UI (R-2 / A-2). Exposed as window.__shared. */
+/* === SHARED landscape helpers 1.0 — same code in registry-app.html and pattern-bench.html (source: tools/landscape-shared.js) ===
+   Contract: landscape.json schema 1.0 (claude/landscape-config-schema-1.0.md). Reads 0.1 (migrated on load).
+   Built-in defaults (W-17) · Terms = 10 fixed entity types + attribute types (W-4 / W-5) · scoped naming rules
+   for scenario (name + id), component (per component type) and artifact (temporary id, per artifact type ×
+   platform × subtype) (W-6 / W-8) · platform subtypes · settings diff / import (C-3) · staged retire wizard
+   (R-7 / C-2) · Settings editor UI · application colours (W-11). Exposed as window.__shared. */
 (function () {
   "use strict";
-  var SCHEMA = "landscape-config", SCHEMA_VERSION = "0.1";
-  var ENTITY_IDS = ["scenario", "platform", "component", "part", "application", "endpoint", "caller", "version", "export"];
+  var SCHEMA = "landscape-config", SCHEMA_VERSION = "1.0";
+  var ENTITY_IDS = ["scenario", "platform", "component", "artifact", "application", "dataObject", "endpoint", "caller", "version", "export"];
+  /* id → [label, plural, definition, aliases, takes effect in] */
   var ENTITY_DEFAULTS = {
-    scenario: ["Scenario", "Scenarios"], platform: ["Platform", "Platforms"], component: ["Component", "Components"],
-    part: ["Part", "Parts"], application: ["Application", "Applications"], endpoint: ["Endpoint", "Endpoints"],
-    caller: ["Caller", "Callers"], version: ["Version", "Versions"], export: ["Export", "Exports"]
+    scenario: ["Scenario", "Scenarios", "An end-to-end integration flow between a source and a target application, managing one data object. Named by the scenario naming rule; gets a readable id (SCN-0042) from the registry.", ["interface", "flow"],
+      "Both apps: menus, dialogs, banners, print, registry lists, scenario naming rule"],
+    platform: ["Platform", "Platforms", "A predefined integration platform or broker (BTP IS, AIS, Solace …). Its kind (iPaaS / message broker / API management) is the component type.", ["broker", "iPaaS"],
+      "Both apps: platform pick-list, container labels, capability filter, naming segment {platform.code}"],
+    component: ["Component", "Components", "A named unit on one platform holding several artifacts (one block on the canvas). Identified and named in design by the component naming rule. Not versioned.", ["asset", "integration component", "package"],
+      "Both apps: container labels, library, component naming rule, registry Components list"],
+    artifact: ["Artifact", "Artifacts", "A typed step inside a component: API, process, topic, queue, file or scheduler. Versioned (platform/component#type@vN). Its name is a temporary identifier from the artifact naming rule.", ["part", "symbol", "step"],
+      "Both apps: symbols, versions, artifact naming rule (id tag), registry Artifacts list"],
+    application: ["Application", "Applications", "A predefined application at the ends of a flow — source (caller / sender) or target (receiver). Shown as \"Connected applications\" in the registry.", ["connected system", "connected application", "end application", "system"],
+      "Both apps: end-application boxes, caller boxes, source / target cards, naming segments {sourceApp.code} {targetApp.code}"],
+    dataObject: ["Data object", "Data objects", "The business object / message type the scenario exchanges end to end (e.g. Sales Order). Exactly one per scenario, mandatory, not versioned (yet).", ["business object", "message type", "BO", "data object type"],
+      "Both apps: scenario dialog, banner, print, registry scenario page + list + filter, naming segment {dataObject.code}"],
+    endpoint: ["Endpoint", "Endpoints", "The API or folder of an application that a flow uses. A reference, not named by a rule.", ["API", "folder"],
+      "Both apps: end-application API / folder, ref of an end-application artifact"],
+    caller: ["Caller", "Callers", "The application that calls an exposed API (= an application at the source side).", ["consumer"],
+      "Both apps: caller boxes, decisions of callers"],
+    version: ["Version", "Versions", "A version of an artifact (v1, v2 …); at most two live at a time; retire n−1 before n+1.", ["release"],
+      "Both apps: version labels, lifecycle, retire wizard"],
+    export: ["Export", "Exports", "One hand-over from Pattern Bench to the registry — counted, not a version.", ["hand-over"],
+      "Both apps: export dialog, registry exports panel"]
   };
-  var PART_TYPES = ["api", "process", "topic", "queue", "file", "scheduler"];
+  var PART_TYPES = ["api", "process", "topic", "queue", "file", "scheduler"], ARTIFACT_TYPES = PART_TYPES;
   var CAPABILITIES = ["api", "process", "topic", "queue", "file", "scheduler"];
+  var KINDS = [["ipaas", "iPaaS"], ["broker", "Message broker"], ["apim", "API management"], ["file", "File transfer"]];
+  var TYPE_CODE = { api: "API", process: "PROC", topic: "TOP", queue: "Q", file: "FILE", scheduler: "SCH" };
+  var KIND_CODE = { ipaas: "INT", broker: "EVT", apim: "API", file: "FT" };
   var SEGMENT_SOURCES = [
     ["platform.code", "Platform code"], ["platform.name", "Platform name"], ["component.code", "Component code"], ["component.name", "Component name"],
+    ["componentType", "Component type (platform kind)"], ["dataObject.code", "Data object code"], ["dataObject.name", "Data object name"],
     ["sourceApp.code", "Source application code"], ["targetApp.code", "Target application code"], ["endpoint.id", "Endpoint"],
-    ["partType", "Part type"], ["direction", "Direction (in / out)"], ["pattern", "Base pattern"], ["version", "Version"],
-    ["seq", "Running number"], ["free", "Free text"], ["literal", "Fixed text"]
+    ["artifactType", "Artifact type"], ["subtype.code", "Subtype code"], ["subtype.name", "Subtype name"], ["direction", "Direction (in / out)"],
+    ["pattern", "Base pattern"], ["version", "Version"], ["seq", "Running number"], ["attr", "Attribute value"], ["free", "Free text"], ["literal", "Fixed text"]
   ];
   var SECTIONS = [
-    ["entityTypes", "Entity types"], ["glossary", "Glossary"], ["namingRules", "Naming rules"], ["platforms", "Platforms & capabilities"],
-    ["components", "Components"], ["applications", "Applications"], ["changeLog", "Change log"]
+    ["terms", "Terms"], ["namingRules", "Naming rules"], ["platforms", "Platforms & capabilities"],
+    ["applications", "Applications"], ["changeLog", "Change log"]
   ];
-  var GLOSSARY_SEED = [
-    ["scenario", "An end-to-end integration flow between connected applications."],
-    ["integration platform (iPaaS)", "A platform that runs integration processes and exposes APIs (e.g. SAP BTP Integration Suite)."],
-    ["message broker", "A platform that carries events on topics and queues (e.g. Solace)."],
-    ["integration component", "A named artifact on a platform or broker (an iFlow, a topic asset …).", ["asset"]],
-    ["part", "A piece of a component: API, process, topic, queue, file or scheduler."],
-    ["connected system / application", "An application that calls a flow or receives from it."],
-    ["endpoint", "The API or folder of an application a flow uses."],
-    ["caller", "The application that calls an exposed API (= an application)."],
-    ["export", "One hand-over from Pattern Bench to the registry — counted, not a version."],
-    ["version", "A version of a component part (v1, v2 …); at most two live at a time."]
-  ];
+  /* naming cards (W-6 / W-8): only these get rules */
+  var RULE_SCOPES = [["scenario", "Scenario — name"], ["scenario-id", "Scenario — id"], ["component", "Component"], ["artifact", "Artifact (temporary identifier)"]];
 
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
   function slug(t) { return String(t == null ? "" : t).toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
   function nowIso() { return new Date().toISOString(); }
-
-  function seed() {
-    return normalize({
-      schema: SCHEMA, schemaVersion: SCHEMA_VERSION, landscapeVersion: 0, name: "Default landscape", updated: "", origin: "builtin",
-      entityTypes: ENTITY_IDS.map(function (id) { return { id: id, label: ENTITY_DEFAULTS[id][0], plural: ENTITY_DEFAULTS[id][1] }; }),
-      glossary: GLOSSARY_SEED.map(function (g) { return { id: slug(g[0]), term: g[0], definition: g[1], aliases: g[2] || [] }; }),
-      namingRules: [], platforms: [], components: [], applications: [], changeLog: []
-    });
+  /* a short code from a name: "Sales Order" → SO, "Delivery" → DELI, "S/4HANA P01" → S4HANAP0 */
+  function codeOf(name, max) {
+    var s = String(name || "").normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
+    if (!s) return "";
+    var words = s.split(/[\s\-_/().]+/).filter(Boolean);
+    if (words.length > 1 && words.every(function (w) { return /^[A-Za-z]/.test(w); })) return words.map(function (w) { return w[0]; }).join("").toUpperCase().slice(0, max || 8);
+    return s.replace(/[^A-Za-z0-9]/g, "").toUpperCase().slice(0, max || 8);
   }
+  function dataObjectOf(x) {
+    if (!x) return null;
+    if (typeof x === "string") { var n = x.trim(); return n ? { name: n, code: codeOf(n) } : null; }
+    var name = String(x.name || "").trim(); if (!name) return null;
+    return { name: name, code: String(x.code || "").trim() || codeOf(name) };
+  }
+  /* identity of a learned data object: "Sales Order" = "salesorder" = "SALES_ORDER" */
+  function dataObjectKey(name) { return String(name || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
 
-  /* fill gaps so every list / field exists; unknown fields are kept */
+  /* ---------- W-17 built-in defaults (used whenever no landscape.json is loaded) ---------- */
+  var seg = function (source, extra) { return Object.assign({ source: source }, extra || {}); };
+  var D_ = function (d) { return { delimiter: d }; };
+  var TYPE_MAP = { api: "API", process: "PROC", topic: "TOP", queue: "Q", file: "FILE", scheduler: "SCH" };
+  function defaultRules() {
+    return [
+      { id: "SCN-NAME", scope: { entityType: "scenario" }, mode: "derive", segments: [seg("dataObject.code"), D_("_"), seg("sourceApp.code"), D_("-"), seg("targetApp.code")],
+        transforms: ["upper", "noSpaces"], maxLength: 80, override: "allow", level: "warn", origin: "default" },
+      { id: "SCN-ID", scope: { entityType: "scenario-id" }, mode: "derive", segments: [seg("literal", { text: "SCN" }), D_("-"), seg("seq", { format: "{n:0000}" })],
+        transforms: ["upper"], override: "block", level: "block", origin: "default" },
+      { id: "CMP-IPAAS", scope: { entityType: "component", componentType: "ipaas" }, mode: "derive", segments: [seg("platform.code"), D_("_"), seg("dataObject.code"), D_("_"), seg("literal", { text: "INT" })],
+        transforms: ["upper", "noSpaces"], maxLength: 40, override: "allow", level: "warn", origin: "default" },
+      { id: "CMP-BROKER", scope: { entityType: "component", componentType: "broker" }, mode: "derive", segments: [seg("platform.code"), D_("_"), seg("dataObject.code"), D_("_"), seg("literal", { text: "EVT" })],
+        transforms: ["upper", "noSpaces"], maxLength: 40, override: "allow", level: "warn", origin: "default" },
+      { id: "CMP-APIM", scope: { entityType: "component", componentType: "apim" }, mode: "derive", segments: [seg("platform.code"), D_("_"), seg("dataObject.code"), D_("_"), seg("literal", { text: "API" })],
+        transforms: ["upper", "noSpaces"], maxLength: 40, override: "allow", level: "warn", origin: "default" },
+      { id: "CMP-DEFAULT", scope: { entityType: "component" }, mode: "derive", segments: [seg("platform.code"), D_("_"), seg("dataObject.code"), D_("_"), seg("componentType", { map: { ipaas: "INT", broker: "EVT", apim: "API", file: "FT" } })],
+        transforms: ["upper", "noSpaces"], maxLength: 40, override: "allow", level: "warn", origin: "default" },
+      { id: "ART-DEFAULT", scope: { entityType: "artifact" }, mode: "derive", segments: [seg("component.code"), D_("_"), seg("artifactType", { map: clone(TYPE_MAP) }), D_("_"), seg("subtype.code", { optional: true }), D_("_"), seg("version", { format: "v{n}", optional: true })],
+        transforms: ["upper", "noSpaces"], maxLength: 60, override: "allow", level: "warn", origin: "default" }
+    ];
+  }
+  function defaultPlatforms() {
+    var st = function (id, name, code) { return { id: id, name: name, code: code }; };
+    return [
+      { id: "btp-is", name: "BTP IS", code: "BTPIS", kind: "ipaas", capabilities: ["api", "process", "queue", "file", "scheduler"], aliases: ["SAP BTP Integration Suite", "BTP-IS", "btpis", "Cloud Integration"],
+        subtypes: { process: [st("iflow", "iFlow", "IFL")], queue: [st("jms", "JMS queue", "JMS")] } },
+      { id: "ais", name: "AIS", code: "AIS", kind: "ipaas", capabilities: ["api", "process", "queue", "file", "scheduler"], aliases: ["Azure Integration Services", "Azure Logic Apps", "Azure Functions", "Azure"],
+        subtypes: { process: [st("logic-app", "Logic App", "LA"), st("function-app", "Function App", "FA")], queue: [st("service-bus", "Service Bus", "SB")], api: [st("apim", "API Management", "APIM")] } },
+      { id: "solace", name: "Solace", code: "SOL", kind: "broker", capabilities: ["topic", "queue"], aliases: ["Solace PubSub+", "Event Broker"], subtypes: {} },
+      { id: "sap-apim", name: "SAP APIM", code: "APIM", kind: "apim", capabilities: ["api"], aliases: ["SAP API Management", "API Management"], subtypes: {} },
+      { id: "sftp", name: "SFTP", code: "SFTP", kind: "file", capabilities: ["file"], aliases: ["File server"], subtypes: {} }
+    ];
+  }
+  function defaults() {
+    return {
+      schema: SCHEMA, schemaVersion: SCHEMA_VERSION, landscapeVersion: 0, name: "Built-in defaults", updated: "", origin: "builtin",
+      entityTypes: ENTITY_IDS.map(function (id) { var d = ENTITY_DEFAULTS[id]; return { id: id, label: d[0], plural: d[1], definition: d[2], aliases: d[3].slice() }; }),
+      attributeTypes: [], namingRules: defaultRules(), platforms: defaultPlatforms(), applications: [], changeLog: []
+    };
+  }
+  function seed() { return normalize(defaults()); }
+
+  /* ---------- 0.1 → 1.0 migration + fill gaps (unknown fields are kept) ----------
+     part → artifact (entity id, rule target, segment source partType → artifactType), glossary → entity definitions,
+     rules target/when → scope, components[] = learned only (kept but no longer a pick-list) */
+  var MISSING_FROM_DEFAULTS = ["namingRules", "platforms", "attributeTypes"];
   function normalize(c) {
     c = c && typeof c === "object" ? c : {};
-    c.schema = SCHEMA; c.schemaVersion = c.schemaVersion || SCHEMA_VERSION;
+    var old = String(c.schemaVersion || "").split(".")[0] === "0";
+    c.schema = SCHEMA;
+    var notes = [];
+    // a section that is missing altogether takes the built-in default (W-17); present (even empty) = as given
+    MISSING_FROM_DEFAULTS.forEach(function (k) { if (!Array.isArray(c[k])) { c[k] = k === "attributeTypes" ? [] : clone(k === "platforms" ? defaultPlatforms() : defaultRules()); if (k !== "attributeTypes") c.defaultsUsed = (c.defaultsUsed || []).concat([k]); } });
+    ["applications", "changeLog", "components"].forEach(function (k) { if (!Array.isArray(c[k])) c[k] = []; });
     c.landscapeVersion = Number(c.landscapeVersion) || 0;
     c.name = c.name || "Default landscape";
-    ["glossary", "namingRules", "platforms", "components", "applications", "changeLog"].forEach(function (k) { if (!Array.isArray(c[k])) c[k] = []; });
     var et = Array.isArray(c.entityTypes) ? c.entityTypes : [];
+    var gl = Array.isArray(c.glossary) ? c.glossary : [];
+    var glFor = function (id) {
+      var words = { scenario: ["scenario"], component: ["integration component", "component"], artifact: ["part", "artifact"], application: ["connected system / application", "application"],
+        endpoint: ["endpoint"], caller: ["caller"], "export": ["export"], version: ["version"], platform: ["platform"] }[id] || [id];
+      return gl.find(function (g) { return g && words.indexOf(String(g.term || "").toLowerCase()) >= 0; });
+    };
     c.entityTypes = ENTITY_IDS.map(function (id) {
-      var e = et.find(function (x) { return x && x.id === id; }) || {};
-      return { id: id, label: e.label || ENTITY_DEFAULTS[id][0], plural: e.plural || ENTITY_DEFAULTS[id][1] };
+      var e = et.find(function (x) { return x && (x.id === id || (id === "artifact" && x.id === "part")); }) || {};
+      var d = ENTITY_DEFAULTS[id], g = glFor(id);
+      var lab = e.label, plu = e.plural;
+      if (id === "artifact" && e.id === "part" && lab === "Part") { lab = d[0]; plu = d[1]; }       // the old default label moves to the new default
+      var aliases = Array.isArray(e.aliases) ? e.aliases.slice() : d[3].slice();
+      if (id === "artifact" && aliases.indexOf("part") < 0) aliases.push("part");
+      return { id: id, label: lab || d[0], plural: plu || d[1], definition: e.definition || d[2], aliases: aliases };
     });
-    c.glossary.forEach(function (g) { g.id = g.id || slug(g.term); g.aliases = g.aliases || []; });
-    c.platforms.forEach(function (p) { p.id = p.id || slug(p.name); p.aliases = p.aliases || []; p.capabilities = p.capabilities || []; p.kind = p.kind || "ipaas"; });
-    c.components.forEach(function (x) { x.id = x.id || (x.platform + "/" + slug(x.name)); x.aliases = x.aliases || []; });
-    c.applications.forEach(function (a) { a.id = a.id || slug(a.name); a.aliases = a.aliases || []; a.endpoints = a.endpoints || []; });
-    c.namingRules.forEach(function (r, i) { r.id = r.id || "N-" + (i + 1); r.segments = r.segments || []; r.transforms = r.transforms || []; r.when = r.when || {};
-      r.mode = r.mode || "derive"; r.override = r.override || "warn"; r.level = r.level || "warn"; });
+    if (gl.length) {
+      var used = gl.filter(function (g) { return ENTITY_IDS.some(function (id) { return glFor(id) === g; }); });
+      var dropped = gl.filter(function (g) { return used.indexOf(g) < 0; }).map(function (g) { return g.term; });
+      notes.push("glossary removed (W-5): definitions now on the Terms rows" + (dropped.length ? "; dropped terms: " + dropped.join(", ") : ""));
+      delete c.glossary;
+    }
+    c.attributeTypes.forEach(function (a) { a.id = a.id || slug(a.name); a.appliesTo = a.appliesTo || []; a.valueKind = a.valueKind || "text"; a.values = a.values || []; a.required = !!a.required; a.status = a.status || "active"; a.aliases = a.aliases || []; });
+    c.platforms.forEach(function (p) {
+      p.id = p.id || slug(p.name); p.aliases = p.aliases || []; p.capabilities = (p.capabilities || []).map(function (x) { return typeof x === "string" ? x : x.type; }).filter(Boolean);
+      p.kind = p.kind || "ipaas"; p.subtypes = p.subtypes && typeof p.subtypes === "object" ? p.subtypes : {};
+      Object.keys(p.subtypes).forEach(function (t) { p.subtypes[t] = (p.subtypes[t] || []).map(function (s) { return { id: s.id || slug(s.name), name: s.name || s.id, code: s.code || codeOf(s.name || s.id) }; }); });
+    });
+    c.components.forEach(function (x) { x.id = x.id || (x.platform + "/" + slug(x.name)); x.aliases = x.aliases || []; x.learned = true; });
+    c.applications.forEach(function (a) { a.id = a.id || slug(a.name); a.aliases = a.aliases || []; a.endpoints = a.endpoints || []; a.code = a.code || codeOf(a.name); });
+    c.namingRules.forEach(function (r, i) {
+      r.id = r.id || "N-" + (i + 1); r.segments = r.segments || []; r.transforms = r.transforms || [];
+      if (!r.scope) {     // 0.1 rule → scoped rule
+        var w = r.when || {}, t = r.target === "part" ? "artifact" : (r.target || "artifact");
+        r.scope = { entityType: t };
+        if (w.partType) r.scope.artifactType = w.partType;
+        if (w.platformKind) r.scope.componentType = w.platformKind;
+        if (w.platform) r.scope.platform = w.platform;
+        if (w.direction) r.scope.direction = w.direction;
+        if (w.pattern) r.scope.pattern = w.pattern;
+      }
+      if (r.scope.entityType === "part") r.scope.entityType = "artifact";
+      delete r.target; delete r.when;
+      r.segments.forEach(function (s) { if (s.source === "partType") s.source = "artifactType"; });
+      r.mode = r.mode || "derive"; r.override = r.override || "warn"; r.level = r.level || "warn";
+    });
+    if (old) { notes.unshift("migrated from landscape schema " + c.schemaVersion + " to " + SCHEMA_VERSION + " (part → artifact, scoped naming rules)"); c.migratedFrom = c.schemaVersion; }
+    c.schemaVersion = SCHEMA_VERSION;
+    if (notes.length) c.changeLog.push({ at: nowIso(), action: "migrate", item: "settings", note: notes.join(" · "), landscapeVersion: c.landscapeVersion });
     return c;
   }
   function validate(c) {
     if (!c || typeof c !== "object") return "Not a JSON object.";
     if (c.schema !== SCHEMA) return "Not a landscape config (schema must be \"" + SCHEMA + "\").";
-    if (String(c.schemaVersion || "").split(".")[0] !== "0") return "Unsupported landscape schema version " + c.schemaVersion + ".";
+    var major = String(c.schemaVersion || "").split(".")[0];
+    if (major !== "0" && major !== "1") return "Unsupported landscape schema version " + c.schemaVersion + ".";
     return null;
   }
 
   /* ---------- C-3 entity labels ---------- */
+  function entityId(id) { return id === "part" ? "artifact" : id === "dataobject" ? "dataObject" : id; }
   function label(cfg, id, plural) {
+    id = entityId(id);
     var e = cfg && cfg.entityTypes && cfg.entityTypes.find(function (x) { return x.id === id; });
     var d = ENTITY_DEFAULTS[id] || [id, id + "s"];
     return plural ? ((e && e.plural) || d[1]) : ((e && e.label) || d[0]);
   }
+  function definition(cfg, id) {
+    id = entityId(id);
+    var e = cfg && cfg.entityTypes && cfg.entityTypes.find(function (x) { return x.id === id; });
+    return (e && e.definition) || (ENTITY_DEFAULTS[id] || [])[2] || "";
+  }
+  function takesEffect(id) { return (ENTITY_DEFAULTS[entityId(id)] || [])[4] || ""; }
+  /* W-16: the registry band / list heading — "Connected applications" follows the Application plural */
+  function connectedLabel(cfg) { return "Connected " + label(cfg, "application", true).toLowerCase(); }
+  function subtypesOf(cfg, platformId, type) {
+    var p = find(cfg, "platform", platformId);
+    return p && p.subtypes && p.subtypes[type] ? p.subtypes[type] : [];
+  }
+  function subtypeFind(cfg, platformId, type, key) {
+    if (!key) return null;
+    var k = String(key).toLowerCase();
+    return subtypesOf(cfg, platformId, type).find(function (s) { return s.id === key || String(s.name).toLowerCase() === k || String(s.code).toLowerCase() === k; }) || null;
+  }
+  /* attribute types that apply to an entity type */
+  function attributesFor(cfg, entity) { return active((cfg && cfg.attributeTypes) || []).filter(function (a) { return (a.appliesTo || []).indexOf(entityId(entity)) >= 0; }); }
+  /* missing required attribute values: [{ attr, label }] */
+  function missingAttributes(cfg, entity, values) {
+    values = values || {};
+    return attributesFor(cfg, entity).filter(function (a) { return a.required && !String(values[a.id] == null ? "" : values[a.id]).trim(); });
+  }
+
+  /* ---------- W-11 colours: calm application hues; red / amber only for states ---------- */
+  var COLORS = {
+    source: { light: { fg: "#334e68", bg: "#eef4fb", border: "#9fb3c8" }, dark: { fg: "#bcccdc", bg: "#1f2b3a", border: "#486581" } },
+    target: { light: { fg: "#4c3a8a", bg: "#f3f0fc", border: "#b4a7e3" }, dark: { fg: "#d6ccf5", bg: "#2a2342", border: "#6c5ab8" } },
+    dataObject: { light: { fg: "#0b5f5c", bg: "#e7f6f5", border: "#7cc4c0" }, dark: { fg: "#a6e3df", bg: "#163634", border: "#2f8f8a" } }
+  };
+  function colorCss(prefix) {
+    prefix = prefix || "";
+    var out = "";
+    ["source", "target", "dataObject"].forEach(function (k) {
+      var l = COLORS[k].light, d = COLORS[k].dark, n = k === "dataObject" ? "do" : k.slice(0, 3);
+      out += ":root{--app-" + n + "-fg:" + l.fg + ";--app-" + n + "-bg:" + l.bg + ";--app-" + n + "-bd:" + l.border + "}";
+      out += "body.dark,html.dark body,.dark{--app-" + n + "-fg:" + d.fg + ";--app-" + n + "-bg:" + d.bg + ";--app-" + n + "-bd:" + d.border + "}";
+    });
+    return out;
+  }
 
   /* ---------- lookups with aliases ---------- */
-  var LISTS = { platform: "platforms", component: "components", application: "applications", glossary: "glossary" };
+  var LISTS = { platform: "platforms", component: "components", application: "applications", attribute: "attributeTypes" };
   function find(cfg, kind, key) {
     if (!cfg || key == null || key === "") return null;
     var list = cfg[LISTS[kind] || kind] || [], k = String(key).toLowerCase(), s = slug(key);
@@ -554,22 +742,53 @@
     return !p || !p.capabilities || !p.capabilities.length || p.capabilities.indexOf(type) >= 0;
   }
 
-  /* ---------- C-4 naming rules ---------- */
+  /* ---------- C-4 / W-6 scoped naming rules ----------
+     resolution order: platform + subtype → platform + artifact type → subtype → artifact type default → entity-type default
+     (score = how specific the scope is; ties: list order). target: scenario | scenario-id | component | artifact (part = artifact) */
+  var SCOPE_WEIGHT = { platform: 8, subtype: 4, artifactType: 2, componentType: 2, direction: 1, pattern: 1 };
+  var LEVEL_TEXT = function (s) {
+    if (s.platform && s.subtype) return "platform + subtype";
+    if (s.platform && (s.artifactType || s.componentType)) return "platform + " + (s.artifactType ? "artifact type" : "component type");
+    if (s.platform) return "platform";
+    if (s.subtype) return "subtype";
+    if (s.artifactType) return "artifact type default";
+    if (s.componentType) return "component type";
+    return "entity-type default";
+  };
+  function scopeOk(s, ctx) {
+    var pid = ctx.platform && (ctx.platform.id || slug(ctx.platform.name));
+    var at = ctx.artifactType || ctx.partType;
+    var st = ctx.subtype && (ctx.subtype.id || ctx.subtype);
+    var kind = ctx.componentType || (ctx.platform && ctx.platform.kind);
+    if (s.platform && s.platform !== pid) return false;
+    if (s.artifactType && s.artifactType !== at) return false;
+    if (s.subtype && s.subtype !== st) return false;
+    if (s.componentType && s.componentType !== kind) return false;
+    if (s.direction && s.direction !== ctx.direction) return false;
+    if (s.pattern && s.pattern !== ctx.pattern) return false;
+    return true;
+  }
   function matchRule(cfg, target, ctx) {
     ctx = ctx || {};
-    var rules = (cfg && cfg.namingRules) || [];
+    target = target === "part" ? "artifact" : target;
+    var rules = (cfg && cfg.namingRules) || [], best = null, bestScore = -1;
     for (var i = 0; i < rules.length; i++) {
       var r = rules[i];
-      if (r.status === "retired" || r.target !== target) continue;
-      var w = r.when || {}, ok = true;
-      if (w.partType && w.partType !== ctx.partType) ok = false;
-      if (w.platformKind && w.platformKind !== (ctx.platform && ctx.platform.kind)) ok = false;
-      if (w.direction && w.direction !== ctx.direction) ok = false;
-      if (w.pattern && w.pattern !== ctx.pattern) ok = false;
-      if (w.platform && w.platform !== (ctx.platform && ctx.platform.id)) ok = false;
-      if (ok) return r;
+      if (r.status === "retired") continue;
+      var s = r.scope || { entityType: r.target === "part" ? "artifact" : r.target };
+      if (s.entityType !== target || !scopeOk(s, ctx)) continue;
+      var score = 0; Object.keys(SCOPE_WEIGHT).forEach(function (k) { if (s[k]) score += SCOPE_WEIGHT[k]; });
+      if (score > bestScore) { best = r; bestScore = score; }
     }
-    return null;
+    return best;
+  }
+  function ruleLevel(rule) { return rule ? LEVEL_TEXT(rule.scope || {}) : "built-in fallback"; }
+  /* scenario id from the scenario-id rule: SCN-0042 (seq = next free number) */
+  function scenarioId(cfg, usedIds) {
+    var r = matchRule(cfg, "scenario-id", {}) || defaultRules()[1];
+    var used = new Set((usedIds || []).map(function (x) { return String(x).toUpperCase(); })), n = 1, id;
+    do { id = derive(r, { seq: n++ }).name; } while (used.has(id.toUpperCase()) && n < 100000);
+    return id;
   }
   function fmtNum(fmt, n) {
     return String(fmt || "{n}").replace(/\{n(?::(0+))?\}/g, function (m, pad) { var s = String(n); return pad ? s.padStart(pad.length, "0") : s; });
@@ -580,12 +799,18 @@
     switch (src) {
       case "platform.code": v = pick(ctx.platform, "code"); break;
       case "platform.name": v = pick(ctx.platform, "name"); break;
-      case "component.code": v = pick(ctx.component, "code"); break;
+      case "component.code": v = pick(ctx.component, "code") || String(pick(ctx.component, "name")).replace(/[^A-Za-z0-9_]/g, ""); break;
       case "component.name": v = pick(ctx.component, "name"); break;
-      case "sourceApp.code": v = pick(ctx.sourceApp, "code") || pick(ctx.sourceApp, "name"); break;
-      case "targetApp.code": v = pick(ctx.targetApp, "code") || pick(ctx.targetApp, "name"); break;
+      case "sourceApp.code": v = pick(ctx.sourceApp, "code") || codeOf(pick(ctx.sourceApp, "name")); break;
+      case "targetApp.code": v = pick(ctx.targetApp, "code") || codeOf(pick(ctx.targetApp, "name")); break;
       case "endpoint.id": v = pick(ctx.endpoint, "id") || pick(ctx.endpoint, "name"); break;
-      case "partType": v = ctx.partType || ""; break;
+      case "componentType": v = ctx.componentType || pick(ctx.platform, "kind"); break;
+      case "dataObject.code": v = pick(ctx.dataObject, "code") || codeOf(pick(ctx.dataObject, "name")); break;
+      case "dataObject.name": v = pick(ctx.dataObject, "name"); break;
+      case "subtype.code": v = pick(ctx.subtype, "code"); break;
+      case "subtype.name": v = pick(ctx.subtype, "name"); break;
+      case "attr": { var av = ctx.attrs && seg.attr ? ctx.attrs[seg.attr] : ""; v = av == null ? "" : String(av); break; }
+      case "artifactType": case "partType": v = ctx.artifactType || ctx.partType || ""; break;
       case "direction": v = ctx.direction || ""; break;
       case "pattern": v = ctx.pattern || ""; break;
       case "version":
@@ -692,7 +917,8 @@
   }
 
   /* ---------- C-3 settings diff / import ---------- */
-  var DIFF_SECTIONS = ["entityTypes", "glossary", "namingRules", "platforms", "components", "applications"];
+  var DIFF_SECTIONS = ["entityTypes", "attributeTypes", "namingRules", "platforms", "applications"];
+  var DIFF_TITLES = { entityTypes: "Terms — entities", attributeTypes: "Terms — attributes", namingRules: "Naming rules", platforms: "Platforms & capabilities", applications: "Applications" };
   function keyOf(sec, x) { return sec === "entityTypes" ? x.id : (x.id || slug(x.name || x.term)); }
   function strip(x) { var o = clone(x); delete o.updated; return JSON.stringify(o); }
   function diff(cur, inc) {
@@ -739,7 +965,7 @@
   /* what changed between two saved configs that affects derived names (codes / names) */
   function renames(before, after) {
     var out = [];
-    ["platforms", "components", "applications"].forEach(function (sec) {
+    ["platforms", "applications"].forEach(function (sec) {
       (after[sec] || []).forEach(function (x) {
         var y = (before[sec] || []).find(function (z) { return z.id === x.id; });
         if (y && (y.code !== x.code || y.name !== x.name || (y.status !== "retired" && x.status === "retired")))
@@ -805,6 +1031,9 @@
     ".ls-step.on{background:#0f7c7a;color:#fff}.ls-step.done{background:#d1fadf;color:#05603a}.ls-wbody{padding:14px 18px;overflow:auto;flex:1}.ls-item{border:1px solid #e4e7ec;border-radius:10px;padding:7px 10px;margin-bottom:6px}" +
     ".ls-item.block{border-color:#fda29b;background:#fef3f2}.ls-item .fix{color:#475467;font-size:12px}.ls-ok{color:#05603a;background:#ecfdf3;border-radius:8px;padding:8px 10px}" +
     ".ls-dark .ls-box{background:#1b2230;color:#e4e7ec}.ls-dark .ls-nav{background:#151b26}.ls-dark .ls-tbl input,.ls-dark .ls-tbl select,.ls-dark .ls-f input,.ls-dark .ls-f select{background:#101828;color:#e4e7ec;border-color:#344054}" +
+    ".ls-card-h{display:flex;align-items:center;justify-content:space-between;margin:10px 0 4px;font-size:12px;color:#344054}.ls-card-h:first-child{margin-top:0}" +
+    ".ls-terms th small{display:block;font-weight:400;color:#98a2b3;font-size:10.5px}.ls-terms td.k{white-space:nowrap;color:#475467}.ls-terms td.eff{font-size:11.5px;color:#475467;min-width:180px}" +
+    ".ls-nolive{display:inline-block;margin-top:2px;font-size:10.5px;color:#667085;background:#f2f4f7;border-radius:999px;padding:0 6px}" +
     ".ls-dark .ls-btn{background:#101828;color:#e4e7ec;border-color:#344054}.ls-dark .ls-rule,.ls-dark .ls-segs,.ls-dark .ls-segedit{background:#151b26;border-color:#344054}";
   function ensureCss() {
     if (document.getElementById("ls-css")) return;
@@ -817,7 +1046,7 @@
   function openSettings(opts) {
     ensureCss();
     var orig = normalize(clone(opts.config || seed()));
-    var cfg = clone(orig), dirty = false, sec = opts.section || "entityTypes", ro = !!opts.readOnly, ruleSel = 0, segSel = -1;
+    var cfg = clone(orig), dirty = false, sec = opts.section === "entityTypes" || opts.section === "glossary" ? "terms" : (opts.section || "terms"), ro = !!opts.readOnly, ruleSel = 0, segSel = -1, ruleCard = "artifact";
     var L = function (id, p) { return label(cfg, id, p); };
     var root = h("div", { class: "ls-modal" + (opts.dark ? " ls-dark" : ""), "data-ls": "settings" });
     var box = h("div", { class: "ls-box", role: "dialog", "aria-label": "Settings" });
@@ -866,7 +1095,7 @@
       var total = 0;
       d.forEach(function (s) {
         if (!s.items.length) return;
-        list.appendChild(h("h4", { text: (SECTIONS.find(function (x) { return x[0] === s.section; }) || [0, s.section])[1] }));
+        list.appendChild(h("h4", { text: DIFF_TITLES[s.section] || s.section }));
         s.items.forEach(function (it) {
           total++;
           var key = it.section + "|" + it.key;
@@ -895,12 +1124,19 @@
       badge.textContent = (opts.sourceLabel ? opts.sourceLabel + " · " : "") + "v" + cfg.landscapeVersion + (dirty ? " · unsaved changes" : "");
       nav.innerHTML = "";
       SECTIONS.forEach(function (s) {
-        var t = s[0] === "platforms" ? L("platform", true) + " & capabilities" : s[0] === "components" ? L("component", true) : s[0] === "applications" ? L("application", true) : s[1];
+        var t = s[0] === "platforms" ? L("platform", true) + " & capabilities" : s[0] === "applications" ? L("application", true) : s[1];
         nav.appendChild(h("button", { class: sec === s[0] ? "on" : "", "data-sec": s[0], text: t, onclick: function () { sec = s[0]; segSel = -1; render(); } }));
       });
+      nav.appendChild(h("div", { class: "ls-note", style: "margin:12px 6px 4px", "data-ls": "origin", text: cfg.origin === "builtin" ? "Using the built-in defaults (W-17) — no landscape.json loaded." : "Configured landscape" + (cfg.defaultsUsed && cfg.defaultsUsed.length ? " · defaults for: " + cfg.defaultsUsed.join(", ") : "") + "." }));
+      if (!ro) nav.appendChild(h("button", { class: "ls-btn sm", style: "margin:4px 6px", "data-ls-act": "reset-section", text: "Reset this section to default", onclick: function () {
+        var d = defaults();
+        if (sec === "terms") { cfg.entityTypes = d.entityTypes; }
+        else if (sec === "namingRules") { cfg.namingRules = d.namingRules; ruleSel = 0; }
+        else if (sec === "platforms") cfg.platforms = d.platforms;
+        else return;
+        setDirty(); render(); } }));
       body.innerHTML = "";
-      ({ entityTypes: renderEntities, glossary: renderGlossary, namingRules: renderRules, platforms: renderPlatforms, components: renderComponents,
-         applications: renderApps, changeLog: renderLog })[sec]();
+      ({ terms: renderTerms, namingRules: renderRules, platforms: renderPlatforms, applications: renderApps, changeLog: renderLog })[sec]();
     }
     function inp(val, on, extra) { var i = h("input", Object.assign({ type: "text", value: val == null ? "" : val, disabled: ro }, extra || {})); i.addEventListener("input", function () { on(i.value); setDirty(); }); return i; }
     function sel(val, options, on, extra) {
@@ -916,29 +1152,67 @@
         h("button", { class: "ls-btn sm", "data-ls-act": "retire", text: x.status === "retired" ? "Re-activate" : "Retire", onclick: function () { x.status = x.status === "retired" ? "active" : "retired"; setDirty(); render(); } }),
         used ? null : h("button", { class: "ls-btn sm", title: "Delete (not used anywhere)", text: "×", onclick: function () { list.splice(list.indexOf(x), 1); setDirty(); render(); } })]);
     }
-    function renderEntities() {
-      body.appendChild(h("h3", { text: "Entity types" }));
-      body.appendChild(h("p", { class: "ls-note", text: "Display names only — ids stay fixed (used in code, JSON fields and naming-rule targets). Every screen text reads these labels." }));
-      var t = h("table", { class: "ls-tbl" }, [h("tr", {}, [h("th", { text: "Id" }), h("th", { text: "Label" }), h("th", { text: "Plural" })])]);
+    /* W-5 Terms: 10 fixed entity rows + attribute rows; every column says where it takes effect */
+    function renderTerms() {
+      body.appendChild(h("h3", { text: "Terms" }));
+      body.appendChild(h("p", { class: "ls-note", text: "One place for every word. Entity rows are fixed (ids used in code / JSON); only their names change. Attribute rows are your own extra fields (W-4)." }));
+      var t = h("table", { class: "ls-tbl ls-terms", "data-ls": "terms" }, [
+        h("tr", {}, [h("th", { text: "Kind" }), h("th", {}, ["Name", h("small", { text: "↳ all labels" })]), h("th", {}, ["Plural", h("small", { text: "↳ lists, counts" })]),
+          h("th", {}, ["Definition", h("small", { text: "↳ hover tooltips, print legend" })]), h("th", {}, ["Aliases", h("small", { text: "↳ search, old files" })]),
+          h("th", { text: "Takes effect in" }), h("th", { text: "Action" })])]);
       cfg.entityTypes.forEach(function (e) {
-        t.appendChild(h("tr", { "data-id": e.id }, [h("td", { text: e.id }), h("td", {}, [inp(e.label, function (v) { e.label = v; }, { "data-f": "label" })]), h("td", {}, [inp(e.plural, function (v) { e.plural = v; }, { "data-f": "plural" })])]));
+        t.appendChild(h("tr", { "data-id": e.id, "data-kind": "entity" }, [h("td", { class: "k", text: "🔒 Entity" }),
+          h("td", {}, [inp(e.label, function (v) { e.label = v; prev(); }, { "data-f": "label" })]), h("td", {}, [inp(e.plural, function (v) { e.plural = v; }, { "data-f": "plural" })]),
+          h("td", {}, [inp(e.definition, function (v) { e.definition = v; }, { "data-f": "definition" })]), h("td", {}, [inp((e.aliases || []).join(", "), function (v) { e.aliases = listOf(v); }, { "data-f": "aliases" })]),
+          h("td", { class: "eff", text: takesEffect(e.id) }), h("td", { text: "—" })]));
+      });
+      (cfg.attributeTypes || []).forEach(function (a) {
+        var eff = "Fields on: " + ((a.appliesTo || []).map(function (x) { return label(cfg, x).toLowerCase(); }).join(", ") || "—") + " · naming {attr." + a.id + "} · registry filters" + (a.required ? " · required (blocks Export for registry)" : "");
+        t.appendChild(h("tr", { "data-id": a.id, "data-kind": "attribute", class: a.status === "retired" ? "retired" : "" }, [h("td", { class: "k", text: "Attribute" }),
+          h("td", {}, [inp(a.name, function (v) { a.name = v; }, { "data-f": "attr-name" })]), h("td", { text: "—" }),
+          h("td", {}, [inp(a.definition, function (v) { a.definition = v; })]), h("td", {}, [inp((a.aliases || []).join(", "), function (v) { a.aliases = listOf(v); })]),
+          h("td", { class: "eff" }, [eff, ro ? null : h("button", { class: "ls-btn sm", style: "margin-left:6px", "data-ls-act": "edit-attr", text: "Edit…", onclick: function () { attrDrawer(a); } })]),
+          h("td", {}, [retireBtn("attribute", a, cfg.attributeTypes)])]));
       });
       body.appendChild(t);
+      var pv = h("div", { class: "ls-note", "data-ls": "terms-preview" }); body.appendChild(pv);
+      function prev() { pv.textContent = "Preview: “Open in Pattern Bench → Opened from Registry · " + label(cfg, "scenario") + " SCN-0042 · " + label(cfg, "dataObject") + " Sales Order · 3 " + label(cfg, "artifact", true).toLowerCase() + "”"; }
+      prev();
+      if (!ro) body.appendChild(h("button", { class: "ls-btn", style: "margin-top:8px", "data-ls-act": "add-attr", text: "＋ Add attribute", onclick: function () {
+        var a = { id: "attr-" + Date.now().toString(36), name: "", definition: "", appliesTo: ["scenario"], valueKind: "text", values: [], required: false, status: "active", aliases: [] };
+        cfg.attributeTypes.push(a); setDirty(); render(); attrDrawer(a); } }));
     }
-    function renderGlossary() {
-      body.appendChild(h("h3", { text: "Glossary" }));
-      var t = h("table", { class: "ls-tbl" }, [h("tr", {}, [h("th", { text: "Term" }), h("th", { text: "Definition" }), h("th", { text: "Aliases" }), h("th", {})])]);
-      cfg.glossary.forEach(function (g) {
-        t.appendChild(h("tr", { class: g.status === "retired" ? "retired" : "" }, [h("td", {}, [inp(g.term, function (v) { g.term = v; })]), h("td", {}, [inp(g.definition, function (v) { g.definition = v; })]),
-          h("td", {}, [inp((g.aliases || []).join(", "), function (v) { g.aliases = listOf(v); })]), h("td", {}, [retireBtn("glossary", g, cfg.glossary)])]));
-      });
-      body.appendChild(t);
-      if (!ro) body.appendChild(h("button", { class: "ls-btn", style: "margin-top:8px", text: "＋ Add term", onclick: function () { cfg.glossary.push({ id: "term-" + Date.now().toString(36), term: "", definition: "", aliases: [] }); setDirty(); render(); } }));
+    function attrDrawer(a) {
+      var ov = h("div", { class: "ls-modal", "data-ls": "attr-drawer" }), b = h("div", { class: "ls-box ls-wiz" }); ov.appendChild(b);
+      var bodyD = h("div", { class: "ls-wbody" });
+      var fld = function (lab, el) { return h("div", { class: "ls-f", style: "margin-bottom:8px" }, [h("label", { text: lab }), el]); };
+      var nm = h("input", { type: "text", value: a.name || "", "data-f": "a-name" }), code = h("input", { type: "text", value: a.id || "", "data-f": "a-id" });
+      bodyD.appendChild(fld("Name", nm)); bodyD.appendChild(fld("Id (naming segment {attr.id})", code));
+      var ap = h("div", { class: "ls-chk" });
+      ENTITY_IDS.filter(function (x) { return ["scenario", "component", "artifact", "application"].indexOf(x) >= 0; }).forEach(function (x) {
+        var cb = h("input", { type: "checkbox", checked: (a.appliesTo || []).indexOf(x) >= 0, "data-applies": x }); ap.appendChild(h("label", {}, [cb, label(cfg, x)])); });
+      bodyD.appendChild(fld("Applies to", ap));
+      var vk = h("select", { "data-f": "a-kind" }); [["text", "free text"], ["list", "pick-list"]].forEach(function (o) { var op = h("option", { value: o[0], text: o[1] }); if (a.valueKind === o[0]) op.selected = true; vk.appendChild(op); });
+      bodyD.appendChild(fld("Value kind", vk));
+      var vals = h("input", { type: "text", value: (a.values || []).map(function (v) { return typeof v === "string" ? v : v.name + (v.code ? "=" + v.code : ""); }).join(", "), "data-f": "a-values", placeholder: "EU=EU, US=US, APAC" });
+      bodyD.appendChild(fld("Allowed values (pick-list; value=code, …)", vals));
+      var req = h("input", { type: "checkbox", checked: !!a.required, "data-f": "a-required" });
+      bodyD.appendChild(h("div", { class: "ls-chk" }, [h("label", {}, [req, "required — blocks Export for registry and the Inbox when empty"])]));
+      b.appendChild(h("div", { class: "ls-head" }, [h("h2", { text: "Attribute" }), h("span", { class: "ls-sp" })]));
+      b.appendChild(bodyD);
+      b.appendChild(h("div", { class: "ls-foot" }, [h("button", { class: "ls-btn", text: "Cancel", onclick: function () { ov.remove(); } }), h("span", { class: "ls-sp" }),
+        h("button", { class: "ls-btn pri", "data-ls-act": "attr-ok", text: "OK", onclick: function () {
+          a.name = nm.value.trim(); a.id = slug(code.value || a.name) || a.id;
+          a.appliesTo = [].slice.call(ap.querySelectorAll("input")).filter(function (i) { return i.checked; }).map(function (i) { return i.dataset.applies; });
+          a.valueKind = vk.value; a.required = req.checked;
+          a.values = listOf(vals.value).map(function (p) { var i = p.indexOf("="); return i > 0 ? { name: p.slice(0, i).trim(), code: p.slice(i + 1).trim() } : { name: p, code: codeOf(p) }; });
+          ov.remove(); setDirty(); render(); } })]));
+      root.appendChild(ov);
     }
     function renderPlatforms() {
       body.appendChild(h("h3", { text: L("platform", true) + " & capabilities" }));
-      body.appendChild(h("p", { class: "ls-note", text: "Capabilities = block types the " + L("platform").toLowerCase() + " may host; Pattern Bench greys out the rest. Code = short form used by naming rules." }));
-      var t = h("table", { class: "ls-tbl", "data-ls": "platforms" }, [h("tr", {}, [h("th", { text: "Name" }), h("th", { text: "Code" }), h("th", { text: "Kind" }), h("th", { text: "Capabilities" }), h("th", { text: "Aliases" }), h("th", {})])]);
+      body.appendChild(h("p", { class: "ls-note", text: "Capabilities = artifact types the " + L("platform").toLowerCase() + " may host; Pattern Bench greys out the rest. Kind = component type. Subtypes refine a capability per platform (information only, e.g. process: iFlow=IFL; Logic App=LA). Code = short form used by naming rules." }));
+      var t = h("table", { class: "ls-tbl", "data-ls": "platforms" }, [h("tr", {}, [h("th", { text: "Name" }), h("th", { text: "Code" }), h("th", { text: "Kind" }), h("th", { text: "Capabilities" }), h("th", { text: "Subtypes" }), h("th", { text: "Aliases" }), h("th", {})])]);
       cfg.platforms.forEach(function (p) {
         var caps = h("td", { class: "ls-caps" });
         CAPABILITIES.forEach(function (c) {
@@ -946,27 +1220,21 @@
           cb.addEventListener("change", function () { p.capabilities = CAPABILITIES.filter(function (x) { return x === c ? cb.checked : p.capabilities.indexOf(x) >= 0; }); setDirty(); });
           caps.appendChild(h("label", {}, [cb, c]));
         });
-        t.appendChild(h("tr", { class: p.status === "retired" ? "retired" : "", "data-id": p.id }, [h("td", {}, [inp(p.name, function (v) { p.name = v; }, { "data-f": "name" })]),
-          h("td", { style: "width:80px" }, [inp(p.code, function (v) { p.code = v; }, { "data-f": "code" })]),
-          h("td", { style: "width:100px" }, [sel(p.kind, [["ipaas", "iPaaS"], ["broker", "Broker"]], function (v) { p.kind = v; })]), caps,
+        var stText = Object.keys(p.subtypes || {}).filter(function (k) { return (p.subtypes[k] || []).length; }).map(function (k) { return k + ": " + p.subtypes[k].map(function (s) { return s.name + "=" + s.code; }).join("; "); }).join(" | ");
+        var noLive = opts.liveComponents ? !opts.liveComponents(p.id) : false;
+        t.appendChild(h("tr", { class: p.status === "retired" ? "retired" : "", "data-id": p.id }, [h("td", {}, [inp(p.name, function (v) { p.name = v; }, { "data-f": "name" }), noLive ? h("small", { class: "ls-nolive", "data-ls": "no-live", text: "no live " + L("component", true).toLowerCase() }) : null]),
+          h("td", { style: "width:70px" }, [inp(p.code, function (v) { p.code = v; }, { "data-f": "code" })]),
+          h("td", { style: "width:120px" }, [sel(p.kind, KINDS, function (v) { p.kind = v; }, { "data-f": "kind" })]), caps,
+          h("td", { style: "min-width:170px" }, [inp(stText, function (v) {
+            var o = {}; String(v || "").split("|").forEach(function (grp) { var i = grp.indexOf(":"); if (i < 0) return; var ty = grp.slice(0, i).trim(); if (CAPABILITIES.indexOf(ty) < 0) return;
+              o[ty] = grp.slice(i + 1).split(";").map(function (x) { x = x.trim(); if (!x) return null; var j = x.indexOf("="); var n = j > 0 ? x.slice(0, j).trim() : x; return { id: slug(n), name: n, code: j > 0 ? x.slice(j + 1).trim() : codeOf(n) }; }).filter(Boolean); });
+            p.subtypes = o; }, { "data-f": "subtypes", placeholder: "process: iFlow=IFL" })]),
           h("td", {}, [inp((p.aliases || []).join(", "), function (v) { p.aliases = listOf(v); })]), h("td", {}, [retireBtn("platform", p, cfg.platforms)])]));
       });
       body.appendChild(t);
       if (!ro) body.appendChild(h("button", { class: "ls-btn", style: "margin-top:8px", "data-ls-act": "add-platform", text: "＋ Add " + L("platform").toLowerCase(), onclick: function () {
-        cfg.platforms.push({ id: "platform-" + Date.now().toString(36), name: "", code: "", kind: "ipaas", capabilities: ["api", "process"], aliases: [] }); setDirty(); render(); } }));
-    }
-    function renderComponents() {
-      body.appendChild(h("h3", { text: L("component", true) }));
-      var plats = [["", "—"]].concat(cfg.platforms.map(function (p) { return [p.id, p.name || p.id]; }));
-      var t = h("table", { class: "ls-tbl", "data-ls": "components" }, [h("tr", {}, [h("th", { text: "Name" }), h("th", { text: "Code" }), h("th", { text: L("platform") }), h("th", { text: "Aliases" }), h("th", {})])]);
-      cfg.components.forEach(function (x) {
-        t.appendChild(h("tr", { class: x.status === "retired" ? "retired" : "", "data-id": x.id }, [h("td", {}, [inp(x.name, function (v) { x.name = v; }, { "data-f": "name" })]),
-          h("td", { style: "width:80px" }, [inp(x.code, function (v) { x.code = v; }, { "data-f": "code" })]), h("td", {}, [sel(x.platform, plats, function (v) { x.platform = v; })]),
-          h("td", {}, [inp((x.aliases || []).join(", "), function (v) { x.aliases = listOf(v); })]), h("td", {}, [retireBtn("component", x, cfg.components)])]));
-      });
-      body.appendChild(t);
-      if (!ro) body.appendChild(h("button", { class: "ls-btn", style: "margin-top:8px", text: "＋ Add " + L("component").toLowerCase(), onclick: function () {
-        cfg.components.push({ id: "component-" + Date.now().toString(36), platform: (cfg.platforms[0] || {}).id || "", name: "", code: "", aliases: [] }); setDirty(); render(); } }));
+        cfg.platforms.push({ id: "platform-" + Date.now().toString(36), name: "", code: "", kind: "ipaas", capabilities: ["api", "process"], aliases: [], subtypes: {} }); setDirty(); render(); } }));
+      body.appendChild(h("p", { class: "ls-note", style: "margin-top:12px", text: L("component", true) + " are not listed here any more (W-8): they are identified and named in design by the " + L("component").toLowerCase() + " naming rule; the registry learns them from exports." }));
     }
     function renderApps() {
       body.appendChild(h("h3", { text: L("application", true) }));
@@ -993,38 +1261,54 @@
     /* naming rules = segment builder */
     function renderRules() {
       body.appendChild(h("h3", { text: "Naming rules" }));
-      body.appendChild(h("p", { class: "ls-note", text: "One global rule set. First matching rule wins (top = highest priority; drag to reorder). Names are derived from the segments; delimiters next to an empty optional segment are dropped." }));
+      body.appendChild(h("p", { class: "ls-note", text: "Only " + L("scenario").toLowerCase() + " (name + id), " + L("component").toLowerCase() + " (per component type) and " + L("artifact").toLowerCase() + " (temporary identifier) are named (W-8). Resolution: platform + subtype → platform + artifact type → subtype → artifact type default → entity-type default → built-in fallback. Takes effect in: export dialog, derived names in Pattern Bench, registry naming check, Inbox." }));
       var wrap = h("div", { class: "ls-rules" }), lst = h("div", { class: "ls-rlist", "data-ls": "rules" }), bld = h("div", { class: "ls-build" });
       wrap.appendChild(lst); wrap.appendChild(bld); body.appendChild(wrap);
-      var dragI = -1;
-      cfg.namingRules.forEach(function (r, i) {
-        var card = h("div", { class: "ls-rule" + (i === ruleSel ? " on" : ""), draggable: !ro, "data-rule": r.id, onclick: function () { ruleSel = i; segSel = -1; render(); } },
-          [h("span", { text: "☰", style: "color:#98a2b3" }), h("span", { class: "t" }, [h("b", { text: r.id }), h("small", { text: r.target + (r.when && r.when.partType ? " · " + r.when.partType : "") + " · " + r.mode + (r.status === "retired" ? " · retired" : "") })])]);
-        card.addEventListener("dragstart", function () { dragI = i; });
-        card.addEventListener("dragover", function (e) { e.preventDefault(); card.classList.add("dragover"); });
-        card.addEventListener("dragleave", function () { card.classList.remove("dragover"); });
-        card.addEventListener("drop", function (e) { e.preventDefault(); if (dragI < 0 || dragI === i) return; var m = cfg.namingRules.splice(dragI, 1)[0]; cfg.namingRules.splice(i, 0, m); ruleSel = i; setDirty(); render(); });
-        lst.appendChild(card);
+      if (!cfg.namingRules[ruleSel]) ruleSel = 0;
+      RULE_SCOPES.forEach(function (sc) {
+        var mine = cfg.namingRules.map(function (r, i) { return [r, i]; }).filter(function (x) { return (x[0].scope || {}).entityType === sc[0]; });
+        var head = sc[0] === "scenario" ? label(cfg, "scenario") + " — name" : sc[0] === "scenario-id" ? label(cfg, "scenario") + " — id" : sc[0] === "component" ? label(cfg, "component") : label(cfg, "artifact") + " (temporary identifier)";
+        lst.appendChild(h("div", { class: "ls-card-h", "data-card": sc[0] }, [h("b", { text: head }), ro ? null : h("button", { class: "ls-btn sm", "data-ls-act": "add-rule", "data-card": sc[0], text: "＋", title: "Add a rule to this card", onclick: function () { addRule(sc[0]); } })]));
+        if (!mine.length) lst.appendChild(h("div", { class: "ls-note", style: "margin:0 0 6px 6px", text: "no rule — built-in fallback" }));
+        mine.forEach(function (x) {
+          var r = x[0], i = x[1], s = r.scope || {};
+          var sub = [s.componentType && (KINDS.find(function (k) { return k[0] === s.componentType; }) || [0, s.componentType])[1], s.artifactType, s.platform && ((find(cfg, "platform", s.platform) || {}).name || s.platform), s.subtype].filter(Boolean).join(" · ") || "default";
+          lst.appendChild(h("div", { class: "ls-rule" + (i === ruleSel ? " on" : ""), "data-rule": r.id, onclick: function () { ruleSel = i; segSel = -1; render(); } },
+            [h("span", { class: "t" }, [h("b", { text: r.id }), h("small", { text: sub + " · " + r.mode + (r.status === "retired" ? " · retired" : "") })])]));
+        });
       });
-      if (!ro) lst.appendChild(h("button", { class: "ls-btn", "data-ls-act": "add-rule", text: "＋ Add rule", onclick: function () {
+      function addRule(card) {
         var n = 1; while (cfg.namingRules.some(function (x) { return x.id === "N-" + n; })) n++;
-        cfg.namingRules.push({ id: "N-" + n, target: "part", when: {}, mode: "derive", segments: [{ source: "component.code" }, { delimiter: "_" }, { source: "partType", map: { api: "API", process: "IF", topic: "TP", queue: "Q", file: "FL", scheduler: "SCH" } }],
-          transforms: ["upper", "noSpaces"], maxLength: 60, override: "warn", level: "warn" });
-        ruleSel = cfg.namingRules.length - 1; segSel = -1; setDirty(); render(); } }));
+        var segs = card === "scenario" ? [{ source: "dataObject.code" }, { delimiter: "_" }, { source: "sourceApp.code" }, { delimiter: "-" }, { source: "targetApp.code" }]
+          : card === "scenario-id" ? [{ source: "literal", text: "SCN" }, { delimiter: "-" }, { source: "seq", format: "{n:0000}" }]
+          : card === "component" ? [{ source: "platform.code" }, { delimiter: "_" }, { source: "dataObject.code" }]
+          : [{ source: "component.code" }, { delimiter: "_" }, { source: "artifactType", map: clone(TYPE_MAP) }];
+        cfg.namingRules.push({ id: "N-" + n, scope: { entityType: card }, mode: "derive", segments: segs, transforms: ["upper", "noSpaces"], maxLength: 60, override: "warn", level: "warn" });
+        ruleSel = cfg.namingRules.length - 1; segSel = -1; setDirty(); render();
+      }
       var r = cfg.namingRules[ruleSel];
       if (!r) { bld.appendChild(h("p", { class: "ls-note", text: "No rule yet. Without a rule, names fall back to “<" + L("component").toLowerCase() + "> <type>”." })); return; }
-      var targets = ENTITY_IDS.map(function (id) { return [id, label(cfg, id)]; });
+      r.scope = r.scope || { entityType: "artifact" };
       var g = h("div", { class: "ls-grid" });
       var fld = function (lab, el) { return h("div", { class: "ls-f" }, [h("label", { text: lab }), el]); };
+      var et = r.scope.entityType;
+      var platOpts = [["", "any"]].concat(cfg.platforms.map(function (p) { return [p.id, p.name || p.id]; }));
       g.appendChild(fld("Rule id", inp(r.id, function (v) { r.id = v; }, { "data-f": "rule-id" })));
-      g.appendChild(fld("Target", sel(r.target, targets, function (v) { r.target = v; }, { "data-f": "target" })));
-      g.appendChild(fld("When part type", sel(r.when.partType || "", [["", "any"]].concat(PART_TYPES.map(function (t) { return [t, t]; })), function (v) { if (v) r.when.partType = v; else delete r.when.partType; }, { "data-f": "when-part" })));
-      g.appendChild(fld("When platform kind", sel(r.when.platformKind || "", [["", "any"], ["ipaas", "iPaaS"], ["broker", "Broker"]], function (v) { if (v) r.when.platformKind = v; else delete r.when.platformKind; })));
-      g.appendChild(fld("When direction", sel(r.when.direction || "", [["", "any"], ["in", "in"], ["out", "out"]], function (v) { if (v) r.when.direction = v; else delete r.when.direction; })));
+      g.appendChild(fld("Card", sel(et, RULE_SCOPES, function (v) { r.scope = { entityType: v }; }, { "data-f": "scope-entity", rerender: true })));
+      if (et === "component") g.appendChild(fld("Component type", sel(r.scope.componentType || "", [["", "any"]].concat(KINDS), function (v) { if (v) r.scope.componentType = v; else delete r.scope.componentType; }, { "data-f": "scope-ctype", rerender: true })));
+      if (et === "artifact") {
+        g.appendChild(fld(L("artifact") + " type", sel(r.scope.artifactType || "", [["", "any (default)"]].concat(PART_TYPES.map(function (t) { return [t, t]; })), function (v) { if (v) r.scope.artifactType = v; else delete r.scope.artifactType; delete r.scope.subtype; }, { "data-f": "scope-atype", rerender: true })));
+      }
+      if (et === "artifact" || et === "component") g.appendChild(fld(L("platform"), sel(r.scope.platform || "", platOpts, function (v) { if (v) r.scope.platform = v; else delete r.scope.platform; delete r.scope.subtype; }, { "data-f": "scope-platform", rerender: true })));
+      if (et === "artifact" && r.scope.artifactType) {
+        var subs = r.scope.platform ? subtypesOf(cfg, r.scope.platform, r.scope.artifactType) : [].concat.apply([], cfg.platforms.map(function (p) { return (p.subtypes && p.subtypes[r.scope.artifactType]) || []; }));
+        if (subs.length) g.appendChild(fld("Subtype", sel(r.scope.subtype || "", [["", "any"]].concat(subs.map(function (s) { return [s.id, s.name]; })), function (v) { if (v) r.scope.subtype = v; else delete r.scope.subtype; }, { "data-f": "scope-subtype", rerender: true })));
+      }
       g.appendChild(fld("Mode", sel(r.mode, [["derive", "derive (build the name)"], ["check", "check only"]], function (v) { r.mode = v; })));
       g.appendChild(fld("Override", sel(r.override, [["allow", "allow"], ["warn", "warn"], ["block", "block (locked)"]], function (v) { r.override = v; }, { "data-f": "override" })));
       g.appendChild(fld("Breach level", sel(r.level, [["warn", "warn"], ["block", "block"]], function (v) { r.level = v; }, { "data-f": "level" })));
       bld.appendChild(g);
+      bld.appendChild(h("div", { class: "ls-note", "data-ls": "rule-level", text: "Matches at level: " + ruleLevel(r) }));
       // segments row
       var segs = h("div", { class: "ls-segs", "data-ls": "segments" }), dragS = -1;
       r.segments.forEach(function (s, i) {
@@ -1044,13 +1328,13 @@
         var dIn = h("input", { type: "text", value: "_", style: "width:50px", "data-f": "add-delim" });
         bld.appendChild(h("div", { class: "ls-chk" }, [srcSel, h("button", { class: "ls-btn sm", "data-ls-act": "add-seg", text: "＋ placeholder", onclick: function () {
           var s = { source: srcSel.value }; if (s.source === "free") { s.label = "Purpose"; s.required = true; s.maxLength = 20; }
-          if (s.source === "partType") s.map = { api: "API", process: "IF", topic: "TP", queue: "Q", file: "FL", scheduler: "SCH" };
+          if (s.source === "artifactType") s.map = clone(TYPE_MAP);
+          if (s.source === "attr") s.attr = ((cfg.attributeTypes || [])[0] || {}).id || "";
           if (s.source === "version") { s.format = "v{n}"; s.optional = true; } if (s.source === "literal") s.text = "X";
           var last = r.segments[r.segments.length - 1];
           if (last && last.delimiter === undefined && dIn.value) r.segments.push({ delimiter: dIn.value });   // keep placeholders apart
           r.segments.push(s); segSel = r.segments.length - 1; setDirty(); render(); } }),
           dIn, h("button", { class: "ls-btn sm", "data-ls-act": "add-delim", text: "＋ delimiter", onclick: function () { r.segments.push({ delimiter: dIn.value }); setDirty(); render(); } }),
-          h("button", { class: "ls-btn sm", text: "▲ rule up", disabled: ruleSel === 0, onclick: function () { var m = cfg.namingRules.splice(ruleSel, 1)[0]; ruleSel--; cfg.namingRules.splice(ruleSel, 0, m); setDirty(); render(); } }),
           h("button", { class: "ls-btn sm", text: r.status === "retired" ? "Re-activate rule" : "Retire rule", onclick: function () { r.status = r.status === "retired" ? "active" : "retired"; setDirty(); render(); } })]));
       }
       // per-segment editor
@@ -1062,6 +1346,7 @@
           gg.appendChild(fld("Source", sel(s.source, SEGMENT_SOURCES, function (v) { s.source = v; }, { rerender: true })));
           if (s.source === "free") { gg.appendChild(fld("Label", inp(s.label, function (v) { s.label = v; }))); gg.appendChild(fld("Allowed values (comma)", inp((s.values || []).join(", "), function (v) { s.values = listOf(v); if (!s.values.length) delete s.values; }))); }
           if (s.source === "literal") gg.appendChild(fld("Text", inp(s.text, function (v) { s.text = v; })));
+          if (s.source === "attr") gg.appendChild(fld("Attribute", sel(s.attr || "", [["", "—"]].concat((cfg.attributeTypes || []).map(function (a) { return [a.id, a.name || a.id]; })), function (v) { s.attr = v; })));
           gg.appendChild(fld("Map (value=abbr, …)", inp(s.map ? Object.keys(s.map).map(function (k) { return k + "=" + s.map[k]; }).join(", ") : "", function (v) {
             var m = {}; listOf(v).forEach(function (p) { var i = p.indexOf("="); if (i > 0) m[p.slice(0, i).trim()] = p.slice(i + 1).trim(); }); if (Object.keys(m).length) s.map = m; else delete s.map; }, { "data-f": "seg-map" })));
           gg.appendChild(fld("Format", inp(s.format, function (v) { if (v) s.format = v; else delete s.format; }, { placeholder: s.source === "version" ? "v{n}" : s.source === "seq" ? "{n:000}" : "{v}" })));
@@ -1098,15 +1383,21 @@
     return { root: root, close: close, get config() { return cfg; } };
   }
   function sample(cfg, rule) {
-    var p = active(cfg.platforms)[0] || { id: "btp-is", name: "SAP BTP Integration Suite", code: "BTP", kind: "ipaas" };
-    var c = active(cfg.components).find(function (x) { return x.platform === p.id; }) || { name: "Order iFlow", code: "ORD" };
+    var sc = (rule && rule.scope) || {};
+    var p = (sc.platform && find(cfg, "platform", sc.platform)) || active(cfg.platforms).find(function (x) { return !sc.componentType || x.kind === sc.componentType; }) || { id: "btp-is", name: "BTP IS", code: "BTPIS", kind: "ipaas" };
     var apps = active(cfg.applications);
-    var s = apps[0] || { name: "S/4HANA EU", code: "S4EU" }, t = apps[1] || { name: "Salesforce", code: "SFDC" };
+    var s = apps[0] || { name: "S/4HANA P01", code: "S4P01" }, t = apps[1] || { name: "Webshop", code: "WEBSHOP" };
     var free = {}; (rule.segments || []).forEach(function (sg) { if (sg.source === "free") free[sg.label || "Purpose"] = (sg.values && sg.values[0]) || "Orders"; });
-    return { platform: p, component: c, sourceApp: s, targetApp: t, endpoint: { id: (s.endpoints && s.endpoints[0] && s.endpoints[0].id) || "API_SALES_ORDER" },
-      partType: (rule.when && rule.when.partType) || "api", direction: "in", pattern: "api-to-process", version: 2, seq: 1, free: free };
+    var attrs = {}; (cfg.attributeTypes || []).forEach(function (a) { var v = (a.values || [])[0]; attrs[a.id] = v ? (v.code || v.name || v) : "EU"; });
+    var at = sc.artifactType || "process";
+    var st = sc.subtype ? subtypeFind(cfg, p.id, at, sc.subtype) : (subtypesOf(cfg, p.id, at)[0] || null);
+    var dobj = { name: "Sales Order", code: "SO" };
+    var comp = { name: (p.code || "BTPIS") + "_SO_" + (KIND_CODE[p.kind] || "INT") };
+    return { platform: p, component: comp, componentType: p.kind, sourceApp: s, targetApp: t, dataObject: dobj, subtype: st, attrs: attrs,
+      endpoint: { id: (s.endpoints && s.endpoints[0] && s.endpoints[0].id) || "API_SALES_ORDER" },
+      artifactType: at, partType: at, direction: "in", pattern: "api-to-process", version: 2, seq: 42, free: free };
   }
-  function describeSample(s) { return [s.platform.code || s.platform.name, s.component.code || s.component.name, (s.sourceApp.code || "") + "→" + (s.targetApp.code || ""), s.partType, "v" + s.version].join(" · "); }
+  function describeSample(s) { return [s.platform.code || s.platform.name, s.component.name, s.dataObject.name, (s.sourceApp.code || "") + "→" + (s.targetApp.code || ""), s.artifactType + (s.subtype ? " (" + s.subtype.name + ")" : ""), "v" + s.version].join(" · "); }
 
   /* ---------- staged retire / remove wizard (R-7, Pattern Bench C-2 standalone) ----------
      opts: { title, target:{ text }, deps: () => [{ text, kind }], blocked: () => [{ text, fix, act:{label, run} }],
@@ -1170,7 +1461,10 @@
   }
 
   window.__shared = {
-    SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, ENTITY_IDS: ENTITY_IDS, PART_TYPES: PART_TYPES, CAPABILITIES: CAPABILITIES,
+    SCHEMA: SCHEMA, SCHEMA_VERSION: SCHEMA_VERSION, ENTITY_IDS: ENTITY_IDS, PART_TYPES: PART_TYPES, ARTIFACT_TYPES: ARTIFACT_TYPES, CAPABILITIES: CAPABILITIES, KINDS: KINDS, TYPE_CODE: TYPE_CODE,
+    defaults: defaults, codeOf: codeOf, dataObjectOf: dataObjectOf, dataObjectKey: dataObjectKey, definition: definition, takesEffect: takesEffect, connectedLabel: connectedLabel,
+    subtypesOf: subtypesOf, subtypeFind: subtypeFind, attributesFor: attributesFor, missingAttributes: missingAttributes, ruleLevel: ruleLevel, scenarioId: scenarioId,
+    COLORS: COLORS, colorCss: colorCss, entityId: entityId,
     seed: seed, normalize: normalize, validate: validate, clone: clone, slug: slug, label: label, find: find, active: active, capable: capable,
     matchRule: matchRule, derive: derive, ruleRegex: ruleRegex, checkName: checkName, duplicates: duplicates,
     diff: diff, applyImport: applyImport, bump: bump, renames: renames, download: download, saveFile: saveFile,
@@ -1189,12 +1483,12 @@
    and scenario detail with cross-scenario flags. Single self-contained file.
    ========================================================================== */
 
-const APP_VERSION = "0.10";
+const APP_VERSION = "0.11";
 const INDEX_FILE = "index.json";
 const LIFECYCLE_FILE = "lifecycle.json";
 const INDEX_SCHEMA = "pattern-bench.registry-index";
 const ENTRY_SCHEMA = "pattern-bench.registry-entry";
-const RECORD_FORMAT = 4;            // bump when the cached record shape changes (3 = connected systems, 0.6; 4 = entry 0.7, draft 0.10)
+const RECORD_FORMAT = 5;            // 5 = entry 1.0 (data object, contains, subtypes), draft 0.11; bump when the cached record shape changes (3 = connected systems, 0.6; 4 = entry 0.7, draft 0.10)
 const LANDSCAPE_FILE = "landscape.json", INBOX_FILE = "inbox.json";
 
 /* R-13 (0.6): end applications and callers are not components — they are connected systems.
@@ -1452,7 +1746,7 @@ function extract(spec, path, lastModified, size) {
     const k = contById[c.container];
     const sys = k && isSystemKind(k.kind);
     components.push({ ref: c.ref || null, name: c.name || "", type: c.type, version: c.version, origin,
-      platform: k ? k.platform || "" : "", asset: k ? k.asset || "" : "", kind: k ? k.kind || "" : "", container: c.container, stage: c.stage || null,
+      platform: k ? k.platform || "" : "", asset: k ? k.asset || "" : "", kind: k ? k.kind || "" : "", container: c.container, stage: c.stage || null, subtype: c.subtype || "",
       app: sys ? appNameOf(k) : "", endpoint: sys && k.kind === "endApp" ? endpointNameOf(c, k) : "", process: sys ? k.process || "" : "" });
   };
   comps.forEach((c) => { addUse(c.ref, c.version); pushComp(c, "base"); });
@@ -1492,6 +1786,7 @@ function extract(spec, path, lastModified, size) {
     key: k.ref || "noref:" + k.id, name: label(k) || "(unlabelled)", platform: k.platform || "", kind: k.kind || "",
     refs: uniq(components.filter((c) => c.container === k.id).map((c) => c.ref)),
     app: isSystemKind(k.kind) ? appNameOf(k) : "", process: k.process || "",
+    contains: Array.isArray(k.contains) ? k.contains : [], attributes: k.attributes || {}, componentType: k.componentType || "", assetDerived: !!k.assetDerived,
   }));
   // every versioning decision, compact (for the cross-scenario Decisions view)
   const cname = (id) => { const c = compById[id]; return c ? c.name || c.type : id; };
@@ -1512,6 +1807,7 @@ function extract(spec, path, lastModified, size) {
     decisions: versions.length, openVersions: open, completedVersions: completed,
     uses, introduced, links, components, warnings, missingRefs, unnamed, containers, decisionList,
     acks: (spec.acknowledgements || []).map((a) => a.flag), relations: spec.relations || [],
+    dataObject: SH.dataObjectOf(sc.dataObject), displayIdFile: sc.displayId || "", attributes: sc.attributes || {},
     ...extract010(spec, comps, conts, versions, contById, compById),
   };
 }
@@ -1708,7 +2004,7 @@ function emptyView() {
 /* ---------- overview helpers ---------- */
 const KIND = {
   iPaaS: { label: "iPaaS", col: "#0f7c7a" }, broker: { label: "Message broker", col: "#6b4fd8" },
-  endApp: { label: "Connected system", col: "#b4472a" }, caller: { label: "Connected system (caller)", col: "#b4472a" }, system: { label: "Connected system", col: "#b4472a" },
+  endApp: { label: "Connected application", col: "#486581" }, caller: { label: "Connected application (caller)", col: "#486581" }, system: { label: "Connected application", col: "#486581" },
 };
 const kindInfo = (k) => KIND[k] || { label: k || "other", col: "#b0b7c3" };
 const flaggedRefs = (s) => new Set(activeFlags(s).map((f) => f.ref).filter(Boolean));
@@ -1792,7 +2088,7 @@ const ICON = {
 const BANDS = [
   { k: "sc", name: "Scenarios", desc: "End-to-end integration flows", c1: "#19b3ad", c2: "#0a5f5c", attnLabel: "need attention" },
   { k: "co", name: "Components", desc: "Integration components — named artifacts on platforms and brokers (iFlows, topics, queues …)", c1: "#6b8cff", c2: "#2f43c2", attnLabel: "need attention" },
-  { k: "cs", name: "Connected systems", desc: "Applications that trigger flows or receive them — S/4HANA, Salesforce, DHL …", c1: "#f08a5d", c2: "#b4472a", attnLabel: "need attention" },
+  { k: "cs", name: "Connected systems", desc: "Applications that trigger flows or receive them — S/4HANA, Salesforce, DHL …", c1: "#829ab1", c2: "#334e68", attnLabel: "need attention" },
   { k: "de", name: "Open decisions", desc: "Versioning decisions not yet completed", c1: "#9a7cf5", c2: "#5333c4", attnLabel: "with open warnings" },
   { k: "map", name: "Relationship map", desc: "Start from any object and follow its relationships, step by step", c1: "#5f6f88", c2: "#222d40" },
 ];
@@ -2062,9 +2358,9 @@ function sysTable() {
   if (q) list = list.filter((y) => (y.name + " " + [...y.endpoints.values()].map((e) => e.name).join(" ")).toLowerCase().includes(q));
   list.sort((a, b) => (sa.has(b.key) - sa.has(a.key)) || (b.triggers.size + b.receives.size) - (a.triggers.size + a.receives.size) || a.name.localeCompare(b.name));
   const role = (y) => [y.triggers.size ? "caller" : "", y.receives.size ? "receiver" : ""].filter(Boolean);
-  return `<table class="wtable"><thead><tr><th class="mk"></th><th>Connected system</th><th>Role</th><th>Endpoints (exposes)</th><th>Triggers</th><th>Receives from</th><th>Needs attention because</th></tr></thead><tbody>
+  return `<table class="wtable"><thead><tr><th class="mk"></th><th>Connected application</th><th>Role</th><th>Endpoints (exposes)</th><th>Triggers</th><th>Receives from</th><th>Needs attention because</th></tr></thead><tbody>
     ${list.map((y, i) => { const a = sa.get(y.key) || [], eps = [...y.endpoints.values()];
-      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(y.key)}" data-xkind="cs" data-rowopen="cs" tabindex="0" title="Open this connected system">
+      return `<tr class="r ${a.length ? "attn" : ""}" style="--i:${i}" data-id="${esc(y.key)}" data-xkind="cs" data-rowopen="cs" tabindex="0" title="Open this connected application">
       <td class="mk">${a.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
       <td><b>${esc(y.name)}</b></td>
       <td>${role(y).map((r) => `<span class="chip ${r === "caller" ? "" : "teal"}">${r}</span>`).join("")}</td>
@@ -2073,7 +2369,7 @@ function sysTable() {
       <td class="nowrap">${y.receives.size ? `${y.receives.size} flow${y.receives.size === 1 ? "" : "s"}` : '<span class="muted">—</span>'}</td>
       <td class="why">${a.length ? esc(a[0]) : '<span class="muted">—</span>'}</td>
 </tr>`; }).join("")
-      || `<tr><td colspan="7" class="muted" style="padding:18px">No connected systems match.</td></tr>`}
+      || `<tr><td colspan="7" class="muted" style="padding:18px">No connected applications match.</td></tr>`}
     </tbody></table>`;
 }
 
@@ -2174,7 +2470,7 @@ function chainSvg(spec, flagRefs) {
       s += `<g class="sys ${flagged ? "attn" : ""}" data-sysrow="${esc(sysKey(app))}"><rect x="${p.x}" y="${p.y}" width="${W}" height="${p.h}" rx="${p.h / 2}"/>
         <text x="${p.x + W / 2}" y="${p.y + 21}" text-anchor="middle" class="an">${esc(short(app, 26))}</text>
         <text x="${p.x + W / 2}" y="${p.y + 37}" text-anchor="middle" class="ap">${esc(short(sub, 32))}</text>
-        <title>${esc(app)} — connected system${k.kind === "caller" ? " (triggers this flow)" : " · endpoint " + esc(sub)} · click to see it in Connected systems</title></g>`;
+        <title>${esc(app)} — connected system${k.kind === "caller" ? " (triggers this flow)" : " · endpoint " + esc(sub)} · click to see it in Connected applications</title></g>`;
       continue;
     }
     const col = k.kind === "broker" ? "#6b4fd8" : "#0f7c7a";
@@ -2199,15 +2495,15 @@ function flowPanel(rec, spec, flagRefs) {
   return `<div class="panel"><h2>Flow <span class="count">(named artifacts)</span></h2>
     <div class="diagram pbwrap">${chainSvg(spec, flagRefs)}</div>
     <div class="legend"><span><i style="background:#0f7c7a"></i>iPaaS component</span><span><i style="background:#6b4fd8"></i>broker component (topic / queue)</span>
-      <span><i style="background:#fff6f2;border:1.5px solid #b4472a;border-radius:6px"></i>connected system</span>
+      <span><i style="background:#f3f6fa;border:1.5px solid #627d98;border-radius:6px"></i>connected application</span>
       <span><i style="background:#efebfd;border:1.5px solid #6b4fd8"></i>new / changed version</span><span><i style="background:#fff8ea;border:1.5px solid #f5a524"></i>needs attention</span></div>
-    <div class="note" style="margin-top:6px">Built from the registry entry. Click a component to open it, or a system to see it in Connected systems. The Pattern Bench canvas (pattern blocks) is a design-time view and stays in Pattern Bench.</div></div>`;
+    <div class="note" style="margin-top:6px">Built from the registry entry. Click a component to open it, or an application to see it in Connected applications. The Pattern Bench canvas (pattern blocks) is a design-time view and stays in Pattern Bench.</div></div>`;
 }
 
 /* ---- R-8 / R-9 / R-10: explorer with in-place pivot, 3D dive, visible Explore button ---- */
 const X = { stack: [], via: [], row: null, kind: null, open: new Map() };   // explorer state; via[i] = relationship that led to stack[i] (V-3)
 function nodeKey(t, id) { return t + "|" + id; }
-const NODE_KIND = { s: { label: "scenario", col: "#0f7c7a" }, c: { label: "component", col: "#3346c8" }, p: { label: "platform / broker", col: "#5f6f88" }, a: { label: "connected system", col: "#b4472a" }, v: { label: "part", col: "#98a2b3" } };
+const NODE_KIND = { s: { label: "scenario", col: "#0f7c7a" }, c: { label: "component", col: "#3346c8" }, p: { label: "platform / broker", col: "#5f6f88" }, a: { label: "connected application", col: "#486581" }, v: { label: "artifact", col: "#98a2b3" } };
 function nodeName(k) { const [t, id] = k.split(/\|(.*)/s); return t === "c" ? compName(id) : t === "p" ? platName(id) : t === "a" ? sysName(id) : scenarioName(id); }
 const pairText = (q) => (q.includes(" > ") ? q.split(" > ").map(thingName).join(" → ") : thingName(q));
 
@@ -2268,7 +2564,7 @@ function coRel(key) {
     { k: "used", verb: "used in", flow: "", items: used },
     { k: "calledby", verb: "called by", flow: "in", items: compNeighbours(key, true) },
     { k: "calls", verb: "calls", flow: "out", items: compNeighbours(key, false) },
-    { k: "parts", verb: "has parts", flow: "", items: parts },
+    { k: "parts", verb: "has artifacts", flow: "", items: parts },
     { k: "runs", verb: "runs on", flow: "", items: [{ kind: "p", label: platName(x.platKey), sub: kindInfo(x.kind).label, attr: `data-node="${esc(nodeKey("p", x.platKey))}"`, title: `${x.name} runs on ${platName(x.platKey)}` }] },
   ];
   return { kind: "c", center: { label: x.name, cls: ar.length ? "attn" : "" }, groups, foot: ar.slice(0, 3),
@@ -2294,7 +2590,7 @@ function sysRel(key) {
       title: `${e.name}${e.process ? " — " + e.process : ""} · used by ${[...e.scenarios].map(scenarioName).join(", ")}` })) },
   ];
   return { kind: "a", center: { label: y.name, cls: a.length ? "attn" : "" }, groups, foot: a.slice(0, 3),
-    open: `data-sysrow="${esc(key)}"`, openLabel: "Show in Connected systems" };
+    open: `data-sysrow="${esc(key)}"`, openLabel: "Show in Connected applications" };
 }
 function relOf(key) { const [t, id] = key.split(/\|(.*)/s); return t === "c" ? coRel(id) : t === "p" ? plRel(id) : t === "a" ? sysRel(id) : scRel(id); }
 function openSetOf(key) { return X.open.get(key) || X.open.set(key, new Set()).get(key); }
@@ -2359,7 +2655,7 @@ function explorerHtml(forceAll) {
     <div class="xstage">${relSvg(n, open, prev)}</div>
     ${!open.size && avail.length ? `<div class="xnote">Pick a relationship to explore: ${avail.map((g) => `<span class="vchip" data-verb="${g.k}">${esc(g.verb)} · ${g.items.length}</span>`).join(" ")}</div>` : ""}
     ${n.scen && [...open].some((k) => ["feeds", "fedby", "along", "shares"].includes(k)) ? `<div class="xlegend"><span class="lg path">━ runs alongside (same path)</span><span class="lg feeds">➝ feeds / fed by</span><span class="lg api">━ shares API</span><span class="lg asset">━ shares component</span><span class="lg endpoint">┄ same endpoint (weak)</span></div>` : ""}
-    <div class="xlegend"><span style="color:#0f7c7a">▌scenario</span><span style="color:#3346c8">▌component</span><span style="color:#5f6f88">▌platform / broker</span><span style="color:#b4472a">▌connected system</span><span>→ / ← direction of the message</span></div>
+    <div class="xlegend"><span style="color:#0f7c7a">▌scenario</span><span style="color:#3346c8">▌component</span><span style="color:#5f6f88">▌platform / broker</span><span style="color:#486581">▌connected application</span><span>→ / ← direction of the message</span></div>
     ${n.note ? `<div class="xnote">${esc(n.note)}</div>` : ""}
     <div class="xfoot">${n.foot.length ? `<div class="xflags">${n.foot.map((f) => `<div class="flag"><span class="ico">⚠</span><div>${esc(f)}</div></div>`).join("")}</div>` : ""}
 </div></div>`;
@@ -2392,7 +2688,7 @@ function rerenderExplorer(dir) {
 /* W-1 (0.9): the left link reads from the centre outward — store the inverse of the relationship that led here */
 const INVERSE = { "made of": "used in", "used in": "made of", "triggered by": "triggers", "triggers": "triggered by", "delivers to": "receives from", "receives from": "delivers to",
   "feeds": "fed by", "fed by": "feeds", "calls": "called by", "called by": "calls", "runs on": "hosts", "hosts": "runs on", "used by": "uses", "uses": "used by",
-  "runs alongside": "runs alongside", "shares": "shares", "has parts": "part of" };
+  "runs alongside": "runs alongside", "shares": "shares", "has parts": "part of", "has artifacts": "artifact of" };
 const FLIP = { out: "in", in: "out" };
 function syncMx() { if (S.view === "band" && S.param?.k === "map" && S.mx.stack) { S.mx.stack = X.stack; S.mx.via = X.via; } }
 function pivot(key, viaK) {
@@ -2594,7 +2890,7 @@ async function scenarioView(param) {
         <div class="note">Acting on a flag = re-export the scenario from Pattern Bench. Acknowledgements are stored in the scenario's own file.</div></div>` : ""}
       ${flowHtml}
       <div class="panel"><h2>Made of — ${esc(Lc("component", true))}</h2>
-        <table><tr><th>Component</th><th>Platform / broker</th><th>Parts and versions</th></tr>
+        <table><tr><th>Component</th><th>Platform / broker</th><th>${esc(L("artifact", true))} and versions</th></tr>
         ${madeOfRows(rec)}</table>
       </div>
       <div class="panel"><h2>Versioning decisions <span class="count">(${(spec.versions || []).length})</span></h2>${decisionsHtml}</div>
@@ -2663,7 +2959,7 @@ async function hldModel(id) {
   const label = (n) => { const k = n.k || {};
     if (isSystemKind(k.kind)) return k.kind === "caller" ? appNameOf(k) : `${appNameOf(k)} · ${endpointNameOf(n.c, k)}`;
     return `${k.asset || n.c.name || n.c.type} (${HLD_TYPE[n.c.type] || n.c.type})`; };
-  const where = (n) => (n.k ? (isSystemKind(n.k.kind) ? "connected system" : `${n.k.platform} · ${kindInfo(n.k.kind).label}`) : "—");
+  const where = (n) => (n.k ? (isSystemKind(n.k.kind) ? "connected application" : `${n.k.platform} · ${kindInfo(n.k.kind).label}`) : "—");
   const steps = links.map((l, i) => { const a = nodes.get(l.from), b = nodes.get(l.to);
     return [String(i + 1), label(a), label(b), hldInteraction(a, b) + (l.added ? " (planned, open decision)" : ""), isSystemKind(b.k?.kind) ? where(a) : where(b)]; });
   return { s, rec, spec, nodes, links, steps, openV, label };
@@ -2696,12 +2992,12 @@ function hldDoc(m) {
   const platRows = uniq(comps.map((k) => S.comps.get(k.key).platKey)).map((pk) => { const p = S.platforms.get(pk);
     return [p.name, [...p.kinds].map((k) => kindInfo(k).label).join(" + "), comps.filter((k) => S.comps.get(k.key).platKey === pk).map((k) => k.name).join(", ")]; });
   sec.push({ h: "Systems and integration platforms", b: [
-    { t: "table", title: "Connected systems", cols: ["System", "Role", "Interface / business process"], rows: sysRows },
+    { t: "table", title: "Connected applications", cols: ["Application", "Role", "Interface / business process"], rows: sysRows },
     { t: "table", title: "Integration platforms", cols: ["Platform", "Kind", "Components in this flow"], rows: platRows }] });
   // 5 flow step by step
   sec.push({ h: "Integration flow — step by step", b: [{ t: "table", cols: ["#", "From", "To", "Interaction", "Runs on"], rows: m.steps }] });
   // 6 components
-  sec.push({ h: "Integration components", b: [{ t: "table", cols: ["Component", "Platform", "Kind", "Parts and versions", "Lifecycle", "Reuse"], rows: comps.map((k) => {
+  sec.push({ h: "Integration components", b: [{ t: "table", cols: ["Component", "Platform", "Kind", "Artifacts and versions", "Lifecycle", "Reuse"], rows: comps.map((k) => {
     const x = S.comps.get(k.key), ps = partsIn(k.key, r);
     const st = uniq(ps.flatMap((p) => p.v.split("+").map((v) => S.lifecycle?.byKey.get(p.ref + "@" + v)?.stage)).filter(Boolean)).map((st) => STAGE_LABEL[st] || st);
     return [x.name, x.platform, kindInfo(x.kind).label, partsText(ps), st.join(", ") || "not recorded", x.scenarios.size > 1 ? `shared with ${x.scenarios.size - 1} other scenario${x.scenarios.size > 2 ? "s" : ""}` : "this scenario only"]; }) }] });
@@ -3074,7 +3370,7 @@ function extract010(spec, comps, conts, versions, contById, compById) {
     const k = contById[c.container];
     if (!k || !isIntegrationKind(k.kind) || !c.name || c.autoName) continue;
     names.push({ id: c.id, ref: c.ref || null, name: c.name, type: c.type, platform: k.platform || "", platformId: k.platformId || "", component: k.asset || "", componentId: k.componentId || "",
-      nameRule: c.nameRule || null, nameOverridden: !!c.nameOverridden, version: vnum(c.version) || 1 });
+      nameRule: c.nameRule || null, nameOverridden: !!c.nameOverridden, version: vnum(c.version) || 1, subtype: c.subtype || "" });
   }
   const live = {};
   for (const c of nodes.values()) if (c.ref) (live[c.ref] ||= new Set()).add(c.version || "v1");
@@ -3094,7 +3390,7 @@ function extract010(spec, comps, conts, versions, contById, compById) {
 function platformOf(name, id) { return (id && SH.find(S.config, "platform", id)) || SH.find(S.config, "platform", name); }
 function inboxItems(rec, released) {
   const items = [], cfg = S.config;
-  const legacy = !/^0\.([7-9]|\d\d)/.test(rec.schemaVersion || "0.6");      // 0.6: checks only flag
+  const legacy = /^0\.[0-6](\.|$)/.test(rec.schemaVersion || "0.6");      // 0.6: checks only flag (0.7 / 1.0: wait)
   const add = (it) => items.push(Object.assign({ level: legacy ? "flag" : "wait" }, it));
   // C-5 edge ends
   for (const m of rec.edgeMissing || []) add({ key: "end|" + m.component, kind: "missingEnd", text: "incomplete — end application missing: " + m.text, fixOnly: true });
@@ -3126,7 +3422,8 @@ function inboxItems(rec, released) {
   for (const s of released.values()) if (s.latest.id !== rec.id) for (const n of s.latest.names || []) pool.push({ name: n.name, platform: platKeyOf(n), scenario: s.latest.name });
   for (const n of rec.names || []) {
     const p = platformOf(n.platform, n.platformId);
-    const ctx = { partType: n.type, platform: p || { name: n.platform }, version: n.version };
+    const ctx = { partType: n.type, artifactType: n.type, platform: p || { name: n.platform }, version: n.version, component: { name: n.component },
+      subtype: p && n.subtype ? SH.subtypeFind(cfg, p.id, n.type, n.subtype) : null };
     const ch = SH.checkName(cfg, "part", ctx, n.name, n.nameOverridden || !n.nameRule);
     if (!ch.ok && ch.rule && (n.nameOverridden || SH.ruleRegex(SH.matchRule(cfg, "part", ctx)))) {
       const re = SH.ruleRegex(SH.matchRule(cfg, "part", ctx));
@@ -3431,8 +3728,8 @@ function versionHistoryHtml(x) {
         <td>${canRetire ? `<button class="btn small ghost" data-act="retire" data-ref="${esc(ref)}" data-v="${esc(v)}">Retire ${esc(v)}…</button>` : ""}</td></tr>`);
     }
   }
-  return `<div class="panel" data-panel="history"><h2>${esc(L("version"))} history</h2><table><tr><th>${esc(L("part"))}</th><th>${esc(L("version"))}</th><th>Status</th><th>Retirement</th><th></th></tr>${rows.join("")}</table>
-    <div class="note">At most two live ${esc(Lc("version", true))} per ${esc(Lc("part"))}. Retiring the older one is a registry-only action; Pattern Bench removes it from the canvas when the ${esc(Lc("scenario"))} opens.</div></div>`;
+  return `<div class="panel" data-panel="history"><h2>${esc(L("version"))} history</h2><table><tr><th>${esc(L("artifact"))}</th><th>${esc(L("version"))}</th><th>Status</th><th>Retirement</th><th></th></tr>${rows.join("")}</table>
+    <div class="note">At most two live ${esc(Lc("version", true))} per ${esc(Lc("artifact"))}. Retiring the older one is a registry-only action; Pattern Bench removes it from the canvas when the ${esc(Lc("scenario"))} opens.</div></div>`;
 }
 const _componentView = componentView;
 componentView = function (param) {
@@ -3460,7 +3757,613 @@ function act010(act, t) {
   if (act === "remove") { removeWizard(t.dataset.id); return true; }
   return false;
 }
-window.__registry = { S, SH, inboxApprove, inboxReject, retireWizard, removeWizard, openSettings: openSettings010, liveVersionsOf, retireBlocked, pbPayload, saveConfig };
+/* ============================================================================
+   Draft 0.11 — domain baseline (W-8 … W-16, entry / landscape 1.0)
+   W-9 Components + Artifacts lists, component page, artifact page · W-10 orphans, retire / remove / re-activate
+   artifacts and components · W-11 scenario list (id first, data object, 4 chips, calm application colours) ·
+   W-13 header actions · W-14 source / target cards · W-15 data objects learned from exports · W-16
+   "Connected applications" · W-12 bugs (feeds both ways, label truncation) · SCN ids assigned at approval
+   ========================================================================== */
+const IDS_FILE = "scenario-ids.json";
+S.ids = { schema: "registry-scenario-ids", schemaVersion: "1.0", ids: {} };
+S.artQuery = ""; S.artOrphan = false; S.artRetired = false; S.compOrphan = false; S.compRetired = false; S.dobjFilter = "";
+const LA = () => L("artifact"), LAs = () => L("artifact", true);
+/* lifecycle events of whole objects: { kind:"object", objType:"artifact"|"component", ref, stage:"retired"|"active"|"removed", date, by, why } */
+const _buildLifecycle011 = buildLifecycle;
+buildLifecycle = function (doc) {
+  const all = doc.events || [];
+  const lc = _buildLifecycle011({ events: all.filter((e) => e.kind !== "object") });
+  lc.events = all.slice().sort((a, b) => String(a.date).localeCompare(String(b.date)));
+  lc.objects = new Map();
+  const today = new Date().toISOString().slice(0, 10);
+  for (const e of lc.events) if (e.kind === "object" && String(e.date || "") <= today) lc.objects.set(e.ref, e);
+  return lc;
+};
+const objStage = (ref) => S.lifecycle?.objects?.get(ref)?.stage || "active";
+const isRetiredObj = (ref) => objStage(ref) === "retired";
+const isRemovedObj = (ref) => objStage(ref) === "removed";
+/* scenario-ids.json (SCN-0042 per internal id) — read with the config files */
+const _readConfigFiles011 = readConfigFiles;
+readConfigFiles = async function (files, errors) {
+  await _readConfigFiles011(files, errors);
+  S.ids = { schema: "registry-scenario-ids", schemaVersion: "1.0", ids: {} };
+  const e = files.get(IDS_FILE);
+  if (e) { try { const j = await readJson(e); if (j && j.ids) S.ids.ids = Object.assign({}, j.ids); } catch (x) { errors.push(IDS_FILE); } }
+};
+/* the readable id of a scenario: scenario-ids.json → the export's own displayId → "SCN pending" (assigned at approval) */
+function displayIdOf(id) { const s = S.scenarios.get(id); return S.ids.ids[id] || s?.latest?.displayIdFile || ""; }
+function assignIds() {
+  // a released scenario without an id gets the next free one (scenario-id rule) — in export order, so it is stable
+  const used = Object.values(S.ids.ids).concat([...S.scenarios.values()].map((s) => s.latest.displayIdFile).filter(Boolean));
+  const order = [...S.scenarios.values()].sort((a, b) => String(a.history[a.history.length - 1].exportedAt).localeCompare(String(b.history[b.history.length - 1].exportedAt)) || a.latest.id.localeCompare(b.latest.id));
+  let added = 0;
+  for (const s of order) {
+    const id = s.latest.id; if (S.ids.ids[id]) continue;
+    const own = s.latest.displayIdFile;
+    const v = own || SH.scenarioId(S.config, used); used.push(v); S.ids.ids[id] = v; added++;
+  }
+  return added;
+}
+async function saveIds() { S.saved.push({ file: IDS_FILE, obj: SH.clone(S.ids) }); await saveRegistryFile(IDS_FILE, S.ids); }
+
+const _derive011 = derive;
+derive = function () {
+  _derive011();
+  // canonical platforms from the landscape (aliases: "Azure Logic Apps" → AIS + Logic App subtype)
+  const canon = (name) => SH.find(S.config, "platform", name);
+  const plats = new Map();
+  for (const x of S.comps.values()) {
+    const p = canon(x.platform);
+    x.platformRaw = x.platform;
+    if (p) { x.platform = p.name; x.platformId = p.id; x.ctype = p.kind; }
+    else x.ctype = x.kind === "broker" ? "broker" : "ipaas";
+    // a legacy platform name that is one of the platform's subtypes → inferred subtype (information only)
+    x.inferred = null;
+    if (p && x.platformRaw && x.platformRaw !== p.name) for (const [type, subs] of Object.entries(p.subtypes || {})) for (const st of subs) {
+      const w = String(st.name).toLowerCase().split(/\s+/)[0];
+      if (String(x.platformRaw).toLowerCase().includes(w)) x.inferred = { type, id: st.id, name: st.name };
+    }
+    x.platKey = platKey(x.platform);
+    const pk = x.platKey;
+    const e = plats.get(pk) || plats.set(pk, { key: pk, name: x.platform || "(no platform)", kinds: new Set(), comps: new Set(), scenarios: new Set(), id: x.platformId || "" }).get(pk);
+    e.kinds.add(x.kind); e.comps.add(x.key); x.scenarios.forEach((id) => e.scenarios.add(id));
+    x.contains = []; x.attributes = {};
+  }
+  S.platforms = plats;
+  // contains / attributes from the latest exports
+  for (const s of S.scenarios.values()) for (const k of s.latest.containers || []) {
+    const x = S.comps.get(k.key); if (!x) continue;
+    for (const c of k.contains || []) if (!x.contains.some((y) => y.capability === c.capability && (y.subtype || "") === (c.subtype || ""))) x.contains.push(c);
+    Object.assign(x.attributes, k.attributes || {});
+  }
+  // artifacts: every ref of an integration component (latest exports) + history-only (orphaned) + waiting-only (never released)
+  const arts = new Map();
+  const A = (ref, comp) => arts.get(ref) || arts.set(ref, { ref, comp, type: "", subtype: "", names: new Set(), versions: new Set(), scenarios: new Set(), orphan: false, neverReleased: false }).get(ref);
+  for (const [ref, x] of S.refs) {
+    if (!isIntegrationKind(x.kind)) continue;
+    const a = A(ref, S.partComp.get(ref)); a.type = x.type; x.names.forEach((n) => a.names.add(n)); x.versions.forEach((v) => a.versions.add(v)); x.scenarios.forEach((id) => a.scenarios.add(id));
+  }
+  for (const s of S.scenarios.values()) for (const c of s.latest.components) if (c.ref && arts.has(c.ref) && c.subtype) arts.get(c.ref).subtype = c.subtype;
+  for (const a of arts.values()) if (!a.subtype && a.comp) { const x = S.comps.get(a.comp); if (x?.inferred && x.inferred.type === a.type) a.subtype = x.inferred.id; }
+  // history (released, older exports) and waiting exports
+  const histComps = new Map();
+  const scanRec = (r, waiting) => {
+    for (const k of r.containers || []) {
+      if (!isIntegrationKind(k.kind) || String(k.key).startsWith("noref:")) continue;
+      if (!S.comps.has(k.key) && !histComps.has(k.key)) histComps.set(k.key, { key: k.key, name: k.name, platform: (canon(k.platform) || {}).name || k.platform, platformId: (canon(k.platform) || {}).id || "", kind: k.kind, parts: new Set(k.refs), scenarios: new Set(), orphan: true, neverReleased: !!waiting, contains: k.contains || [], attributes: k.attributes || {} });
+      else if (histComps.has(k.key)) { k.refs.forEach((rf) => histComps.get(k.key).parts.add(rf)); if (!waiting) histComps.get(k.key).neverReleased = false; }
+    }
+    for (const c of r.components) {
+      if (!c.ref || !isIntegrationKind(c.kind) || S.refs.has(c.ref)) continue;
+      const a = A(c.ref, S.partComp.get(c.ref) || [...(r.containers || [])].find((k) => k.refs.includes(c.ref))?.key || null);
+      if (!a.seen) { a.orphan = true; a.neverReleased = !!waiting; a.seen = true; } else if (!waiting) a.neverReleased = false;
+      a.type ||= c.type; if (c.name) a.names.add(c.name); a.versions.add(c.version); if (c.subtype) a.subtype ||= c.subtype;
+    }
+  };
+  for (const s of S.scenarios.values()) for (const h of s.history) if (h !== s.latest) scanRec(h, false);
+  for (const w of S.inbox.list || []) scanRec(w.rec, true);
+  for (const r of S.records) if (S.lifecycle?.removed?.has(r.id)) scanRec(r, false);
+  // removed objects disappear entirely
+  for (const [ref] of arts) if (isRemovedObj(ref)) arts.delete(ref);
+  S.arts = arts;
+  S.allComps = new Map([...S.comps, ...[...histComps].filter(([k]) => !isRemovedObj(k))]);
+  for (const x of S.allComps.values()) x.artRefs = [...arts.values()].filter((a) => a.comp === x.key).map((a) => a.ref);
+  // data objects learned from exports (identity = normalised name)
+  const dob = new Map();
+  for (const s of S.scenarios.values()) { const d = s.latest.dataObject; if (!d) continue;
+    const k = SH.dataObjectKey(d.name), e = dob.get(k) || dob.set(k, { key: k, name: d.name, code: d.code, variants: new Set(), scenarios: new Set() }).get(k);
+    e.variants.add(d.name); e.scenarios.add(s.latest.id); }
+  S.dobjs = dob;
+  // W-12: feeds both ways is its own relation (no duplicate rows under feeds and fed by)
+  assignIds();
+};
+const isOrphanComp = (x) => x.orphan || (x.artRefs.length && x.artRefs.every((r) => S.arts.get(r)?.orphan));
+const compStatus = (x) => isRetiredObj(x.key) ? "retired" : isOrphanComp(x) ? "orphaned" : "";
+const artStatus = (a) => isRetiredObj(a.ref) ? "retired" : a.orphan ? "orphaned" : "";
+const statusChip = (st) => st === "retired" ? `<span class="chip st-retired">retired</span>` : st === "orphaned" ? `<span class="chip st-orphan" title="No scenario's latest export uses it">orphaned</span>` : "";
+const idTag = () => `<span class="id-tag" title="Temporary identifier from the ${esc(Lc("artifact"))} naming rule (W-8) — not a real deployable name">id</span>`;
+function subtypeName(a) {
+  if (!a.subtype) return "";
+  const x = a.comp ? S.allComps.get(a.comp) : null;
+  const st = x?.platformId ? SH.subtypeFind(S.config, x.platformId, a.type, a.subtype) : null;
+  return st ? st.name : a.subtype;
+}
+const artLabel = (a) => (PART_LABEL[a.type] || a.type) + (a.subtype ? " (" + subtypeName(a) + ")" : "");
+const artName = (a) => (a.names.size ? [...a.names][0] : a.ref);
+const liveOf = (a) => [...a.versions].filter((v) => S.lifecycle?.byKey.get(a.ref + "@" + v)?.stage !== "retired").sort((x, y) => vnum(x) - vnum(y));
+
+/* ---------- W-16 / C-3 band names ---------- */
+BANDS.splice(2, 0, { k: "ar", name: "Artifacts", desc: "Typed steps inside components — API, process, topic, queue, file, scheduler — the things that carry versions", c1: "#3aa0d8", c2: "#1d5f8a", attnLabel: "need attention" });
+(() => {
+  const b = BANDS.find((x) => x.k === "ar"); Object.defineProperty(b, "name", { get: () => L("artifact", true), configurable: true });
+  const cs = BANDS.find((x) => x.k === "cs"); Object.defineProperty(cs, "name", { get: () => SH.connectedLabel(S.config), configurable: true });
+  cs.desc = "Applications at the ends of the flows — sources (callers / senders) and targets (receivers): S/4HANA, Salesforce, DHL …";
+  const co = BANDS.find((x) => x.k === "co"); co.desc = "Named units on one platform holding several artifacts — identified and named in design; not versioned";
+})();
+ICON.ar = ICON.co;
+const _bandStats011 = bandStats;
+bandStats = function (k) {
+  if (k === "ar") { const am = attnRefs(); return { n: [...S.arts.values()].filter((a) => !a.orphan && !isRetiredObj(a.ref)).length, a: [...S.arts.keys()].filter((r) => am.has(r)).length }; }
+  if (k === "co") return { n: [...S.comps.values()].filter((x) => !isRetiredObj(x.key)).length, a: compAttn().size };
+  return _bandStats011(k);
+};
+const _worldView011 = worldView;
+worldView = function (k, enter) {
+  if (k !== "ar") return _worldView011(k, enter);
+  return `<div class="world ${enter ? "enter" : ""}" data-world="ar">${worldHead(k)}<div class="world-body" id="worldBody">${arWorld()}</div></div>`;
+};
+const _homeView011 = homeView;
+homeView = function () {
+  let h = _homeView011();
+  const no = [...S.allComps.values()].filter((x) => compStatus(x) === "orphaned").length + [...S.arts.values()].filter((a) => artStatus(a) === "orphaned").length;
+  if (no) h = h.replace('<div class="tiles010">', `<div class="tiles010"><div class="tile010 orph" data-act="orphans" tabindex="0" role="button"><span class="ti">◌</span><span class="tt">Orphaned <b class="cnt" data-orphan-count="${no}">${no}</b></span><span class="td">${esc(Lc("component", true))} / ${esc(Lc("artifact", true))} no scenario uses</span></div>`);
+  return h;
+};
+
+const _openWorld011 = openWorld;
+openWorld = function (el, k) { S.artQuery = ""; S.artOrphan = false; S.artRetired = false; S.compOrphan = false; S.compRetired = false; S.dobjFilter = ""; return _openWorld011(el, k); };
+/* ---------- W-11 scenario list ---------- */
+const chips4 = (arr, cls = "", max = 4) => (arr.length ? arr.slice(0, max).map((x) => `<span class="chip ${cls}" title="${esc(x)}">${esc(short(x, 26))}</span>`).join("") + (arr.length > max ? `<span class="chip more" title="${esc(arr.slice(max).join(", "))}">+${arr.length - max}</span>` : "") : '<span class="muted">—</span>');
+LIST_COLS.unshift({ key: "sid", label: "Scenario id", get: (r) => displayIdOf(r.id) || "~" + r.id });
+LIST_COLS.splice(2, 0, { key: "dobj", get label() { return L("dataObject"); }, get: (r) => (r.dataObject?.name || "~").toLowerCase() });
+const _listRows011 = listRows;
+listRows = function () {
+  let rows = _listRows011();
+  if (S.dobjFilter) rows = rows.filter((s) => s.latest.dataObject && SH.dataObjectKey(s.latest.dataObject.name) === S.dobjFilter);
+  return rows;
+};
+const platChips4 = (r) => { const ps = intPlats(r); if (!ps.length) return '<span class="muted">—</span>';
+  return ps.slice(0, 4).map((p) => `<span class="chip pk-${p.kind}" title="${p.kind === "broker" ? "Message broker" : "iPaaS"}">${esc((SH.find(S.config, "platform", p.name) || {}).name || p.name)}</span>`).join("") + (ps.length > 4 ? `<span class="chip more" title="${esc(ps.slice(4).map((p) => p.name).join(", "))}">+${ps.length - 4}</span>` : ""); };
+listTable = function () {
+  const rows = listRows();
+  const arrow = (k) => (S.listSort.key === k ? (S.listSort.dir > 0 ? " ▲" : " ▼") : "");
+  const cols = LIST_COLS.filter((c) => c.key !== "tags");
+  const cls = { source: "th-src", target: "th-tgt" };
+  return `<table class="wtable scl"><thead><tr><th class="mk"></th>${cols.map((c) => `<th class="sort ${c.key === "sid" ? "sticky-id" : ""} ${cls[c.key] || ""}" data-sort="${c.key}">${c.label}${arrow(c.key)}</th>`).join("")}<th>Pattern Bench</th></tr></thead>
+  <tbody>${rows.map((s, i) => { const r = s.latest, n = activeFlags(s).length, did = displayIdOf(r.id);
+    return `<tr class="r ${n ? "attn" : ""}" style="--i:${i}" data-id="${esc(r.id)}" data-xkind="sc" data-rowopen="sc" tabindex="0" title="Open all details of this scenario">
+    <td class="mk">${n ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
+    <td class="sticky-id"><span class="sid mono" title="internal ${esc(r.id)} · click to copy" data-copy="${esc(did || r.id)}">${esc(did || "SCN pending")}</span></td>
+    <td><b>${esc(r.name)}</b>${r.tags.length ? `<div class="sub2">${chips(r.tags)}</div>` : ""}</td>
+    <td>${r.dataObject ? `<span class="chip do" title="${esc(SH.definition(S.config, "dataObject"))}">${esc(r.dataObject.name)}</span>` : '<span class="chip st-miss">missing</span>'}</td>
+    <td class="flowcell">${chips4(srcNames(r), "app-src")}<span class="farr">→</span></td><td>${platChips4(r)}</td><td class="flowcell"><span class="farr">→</span>${chips4(tgtNames(r), "app-tgt")}</td>
+    <td class="nowrap">${r.decisions}${r.openVersions ? ` <span class="chip violet">${r.openVersions} open</span>` : ""}</td>
+    <td class="nowrap">${n ? `<span class="chip amber">⚠ ${n}</span>` : '<span class="muted">—</span>'}</td>
+    <td class="nowrap">${esc(fmtDate(r.exportedAt))}</td><td>${esc(r.author)}</td>
+    <td class="xcell">${pbButton(r, "row")}</td></tr>`; }).join("")
+    || `<tr><td colspan="${cols.length + 2}" class="muted" style="padding:18px">No scenarios match.</td></tr>`}
+  </tbody></table>`;
+};
+const _scWorld011 = scWorld;
+scWorld = function () {
+  const opts = [...S.dobjs.values()].sort((a, b) => a.name.localeCompare(b.name));
+  return _scWorld011().replace('</div>\n    <div id="listTable">', `<select id="dobjFilter" class="dsel" title="Filter by ${esc(Lc("dataObject"))}"><option value="">all ${esc(Lc("dataObject", true))}</option>${opts.map((d) => `<option value="${esc(d.key)}" ${S.dobjFilter === d.key ? "selected" : ""}>${esc(d.name)} (${d.scenarios.size})</option>`).join("")}</select>
+      <span class="legend"><span class="chip app-src">source</span><span class="chip app-tgt">target</span></span></div>
+    <div id="listTable">`);
+};
+
+/* ---------- W-9 Components list ---------- */
+function artChips(x) {
+  const lc = (ref, v) => S.lifecycle?.byKey.get(ref + "@" + v)?.stage;
+  return x.artRefs.map((ref) => { const a = S.arts.get(ref); if (!a) return "";
+    const vs = liveOf(a), bad = [...a.versions].map((v) => lc(ref, v)).find((st) => st === "deprecated");
+    return `<span class="chip ${vs.length > 1 ? "violet" : ""} ${artStatus(a) ? "dim" : ""}" title="${esc(artName(a))} · ${esc(ref)}">${esc(artLabel(a))} ${esc(vs.join(" ║ ") || "—")}</span>${bad ? stageChip(bad) : ""}`; }).join(" ");
+}
+const containsText = (list) => (list || []).map((c) => (c.label || c.subtype || c.capability) + (c.count > 1 ? " ×" + c.count : "")).join(" · ");
+coWorld = function () {
+  return `<div class="toolbar"><input type="search" id="compSearch" placeholder="Search ${esc(Lc("component"))}, ${esc(Lc("platform"))}, ${esc(Lc("artifact"))} or contents …" value="${esc(S.compQuery)}">
+      <label class="pill-toggle ${S.compAttn ? "on" : ""}"><input type="checkbox" id="compAttn" ${S.compAttn ? "checked" : ""}><span class="ico">${ICON.warn}</span>Needs attention only</label>
+      <label class="pill-toggle ${S.compShared ? "on" : ""}"><input type="checkbox" id="compShared" ${S.compShared ? "checked" : ""}>Shared only</label>
+      <label class="pill-toggle ${S.compOrphan ? "on" : ""}"><input type="checkbox" id="compOrphan" ${S.compOrphan ? "checked" : ""}>Orphaned</label>
+      <label class="pill-toggle ${S.compRetired ? "on" : ""}"><input type="checkbox" id="compRetired" ${S.compRetired ? "checked" : ""}>Show retired</label></div>
+    <div id="compTable">${compTable()}</div>`;
+};
+compTable = function () {
+  const q = S.compQuery.trim().toLowerCase(), ca = compAttn();
+  let list = [...S.allComps.values()];
+  if (!S.compRetired) list = list.filter((x) => !isRetiredObj(x.key));
+  if (S.compOrphan) list = list.filter((x) => compStatus(x) === "orphaned");
+  else if (!S.compRetired) list = list.filter((x) => !x.orphan || true);
+  if (q) list = list.filter((x) => [x.name, x.key, x.platform, containsText(x.contains), ...x.artRefs.map((r) => { const a = S.arts.get(r); return a ? artLabel(a) + " " + artName(a) + " " + r : r; })].join(" ").toLowerCase().includes(q));
+  if (S.compShared) list = list.filter((x) => x.scenarios.size > 1);
+  if (S.compAttn) list = list.filter((x) => ca.has(x.key));
+  list.sort((a, b) => (ca.has(b.key) - ca.has(a.key)) || b.scenarios.size - a.scenarios.size || a.name.localeCompare(b.name));
+  return `<table class="wtable"><thead><tr><th class="mk"></th><th>${esc(L("component"))}</th><th>${esc(L("platform"))}</th><th>Kind</th><th>${esc(LAs())} and live ${esc(Lc("version", true))}</th><th>Contains</th><th>Used in</th><th>Status / attention</th></tr></thead><tbody>
+    ${list.map((x, i) => { const a = ca.get(x.key) || [], st = compStatus(x);
+      return `<tr class="r ${a.length ? "attn" : ""} ${st ? "st-" + st : ""}" style="--i:${i}" data-id="${esc(x.key)}" data-xkind="co" data-rowopen="co" tabindex="0" title="Open this ${esc(Lc("component"))}">
+      <td class="mk">${a.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
+      <td><b>${esc(x.name)}</b><div class="sub2 mono muted">${esc(x.key)}</div></td>
+      <td>${esc(x.platform || "—")}</td><td><span class="muted">${esc(kindName(x))}</span></td>
+      <td>${artChips(x) || '<span class="muted">—</span>'}</td>
+      <td class="muted" style="font-size:12px">${esc(containsText(x.contains)) || "—"}</td>
+      <td>${x.scenarios.size ? [...x.scenarios].slice(0, 3).map((id) => `<span class="chip" data-open="${esc(id)}" style="cursor:pointer">${esc(short(scenarioName(id), 26))}</span>`).join("") + (x.scenarios.size > 3 ? `<span class="chip more">+${x.scenarios.size - 3}</span>` : "") : '<span class="muted">none</span>'}</td>
+      <td class="why">${statusChip(st)}${a.length ? esc(a[0]) + (a.length > 1 ? ` <span class="muted">(+${a.length - 1})</span>` : "") : st ? "" : '<span class="muted">—</span>'}</td>
+</tr>`; }).join("")
+      || `<tr><td colspan="8" class="muted" style="padding:18px">No ${esc(Lc("component", true))} match.</td></tr>`}
+    </tbody></table>`;
+};
+const kindName = (x) => (SH.KINDS.find((k) => k[0] === (x.ctype || (x.kind === "broker" ? "broker" : "ipaas"))) || [0, kindInfo(x.kind).label])[1];
+
+/* ---------- W-9 Artifacts list ---------- */
+function arWorld() {
+  return `<div class="toolbar"><input type="search" id="artSearch" placeholder="Search ${esc(Lc("artifact"))}, type, ${esc(Lc("component"))} …" value="${esc(S.artQuery)}">
+      <label class="pill-toggle ${S.artOrphan ? "on" : ""}"><input type="checkbox" id="artOrphan" ${S.artOrphan ? "checked" : ""}>Orphaned</label>
+      <label class="pill-toggle ${S.artRetired ? "on" : ""}"><input type="checkbox" id="artRetired" ${S.artRetired ? "checked" : ""}>Show retired</label></div>
+    <div class="note" style="margin:-4px 0 8px">${esc(LAs())} carry the ${esc(Lc("version", true))} (<span class="mono">platform/component#type@vN</span>). Their names are temporary identifiers ${idTag()} from the naming rule; a process may stand for several real deployables.</div>
+    <div id="artTable">${artTable()}</div>`;
+}
+function artTable() {
+  const q = S.artQuery.trim().toLowerCase(), am = attnRefs();
+  let list = [...S.arts.values()];
+  if (!S.artRetired) list = list.filter((a) => !isRetiredObj(a.ref));
+  if (S.artOrphan) list = list.filter((a) => artStatus(a) === "orphaned");
+  if (q) list = list.filter((a) => [artName(a), a.ref, artLabel(a), a.comp ? (S.allComps.get(a.comp)?.name || "") : ""].join(" ").toLowerCase().includes(q));
+  list.sort((x, y) => (am.has(y.ref) - am.has(x.ref)) || y.scenarios.size - x.scenarios.size || artName(x).localeCompare(artName(y)));
+  return `<table class="wtable"><thead><tr><th class="mk"></th><th>${esc(LA())} (temp. id)</th><th>Type (subtype, info)</th><th>${esc(L("component"))}</th><th>${esc(L("platform"))}</th><th>Live ${esc(Lc("version", true))}</th><th>Used in</th><th>Status</th></tr></thead><tbody>
+    ${list.map((a, i) => { const x = a.comp ? S.allComps.get(a.comp) : null, at = am.get(a.ref) || [], st = artStatus(a);
+      return `<tr class="r ${at.length ? "attn" : ""} ${st ? "st-" + st : ""}" style="--i:${i}" data-act="art" data-ref="${esc(a.ref)}" tabindex="0" title="Open this ${esc(Lc("artifact"))}">
+      <td class="mk">${at.length ? `<span class="wmark">${ICON.warn}</span>` : ""}</td>
+      <td>${idTag()}<b>${esc(artName(a))}</b><div class="sub2 mono muted">${esc(a.ref)}</div></td>
+      <td>${esc(artLabel(a))}</td>
+      <td>${x ? `<span class="linkish" data-go="${esc(nodeKey("c", x.key))}">${esc(x.name)}</span>` : '<span class="muted">—</span>'}</td>
+      <td>${esc(x?.platform || "—")}</td>
+      <td class="nowrap">${esc(liveOf(a).join(" ║ ") || "—")}</td>
+      <td class="nowrap">${a.scenarios.size} ${esc(Lc("scenario", a.scenarios.size !== 1))}</td>
+      <td>${statusChip(st)}${at.length ? `<span class="why">${esc(at[0])}</span>` : ""}</td></tr>`; }).join("")
+      || `<tr><td colspan="8" class="muted" style="padding:18px">No ${esc(Lc("artifact", true))} match.</td></tr>`}
+    </tbody></table>`;
+}
+
+/* ---------- W-13 header actions (discreet, next to the status badge) ---------- */
+const _detailHead011 = detailHead;
+detailHead = function (k, title, sub, attnN, actions) {
+  if (!actions && S.nextHeadActions && k === S.nextHeadActions.k) { actions = S.nextHeadActions.html; S.nextHeadActions = null; }
+  const h = _detailHead011(k, title, sub, attnN);
+  return actions ? h.replace(/<\/div>$/, `<span class="hacts" data-hacts="1">${actions}</span></div>`) : h;
+};
+function objActions(kind, ref, opts = {}) {
+  const st = objStage(ref), used = opts.used, never = opts.never;
+  const label = kind === "artifact" ? Lc("artifact") : kind === "component" ? Lc("component") : Lc("scenario");
+  if (kind === "scenario") return `<button class="hact" data-act="remove" data-id="${esc(ref)}" title="Staged check, then remove (kept in history)">Remove…</button>`;
+  if (st === "retired") return `<button class="hact" data-act="reactivate" data-kind="${kind}" data-ref="${esc(ref)}" title="Make it active again (history entry)">Re-activate</button>`;
+  return `<button class="hact" data-act="oretire" data-kind="${kind}" data-ref="${esc(ref)}" title="Staged check: every ${Lc("scenario")} still using it blocks">Retire…</button>` +
+    `<button class="hact" data-act="oremove" data-kind="${kind}" data-ref="${esc(ref)}" ${never ? "" : `disabled aria-disabled="true"`} title="${never ? "Never used in a released export — remove it for good" : "Used in a released export — only Retire is possible (history is kept)"}">Remove</button>`;
+}
+
+/* ---------- W-9 component page ---------- */
+componentView = function (param) {
+  const key = compKeyOf(param.key || param.ref) || param.key, x = S.allComps.get(key); if (!x) return `<div class="panel">${esc(L("component"))} not found.</div>`;
+  const ar = compAttn().get(key) || [], st = compStatus(x);
+  const decs = []; for (const s of S.scenarios.values()) for (const d of s.latest.decisionList || []) if (d.status !== "completed" && d.refs.some((r) => x.artRefs.includes(r))) decs.push({ s: s.latest, d });
+  X.stack = [nodeKey("c", key)]; X.via = []; X.open.delete(X.stack[0]);
+  const n = S.comps.has(key) ? coRel(key) : { groups: [] };
+  const arts = x.artRefs.map((r) => S.arts.get(r)).filter(Boolean);
+  const types = uniq(arts.map(artLabel));
+  const scs = [...x.scenarios];
+  const MAXR = S.matrixAll === key ? 1e9 : 10;
+  const matrix = arts.length && scs.length ? `<div class="panel" data-panel="matrix"><h2>${esc(L("scenario"))} × ${esc(Lc("artifact"))} <span class="count">which ${esc(Lc("scenario"))} uses which ${esc(Lc("artifact"))} at which ${esc(Lc("version"))}</span></h2>
+    <table class="matrix"><tr><th></th>${arts.map((a) => `<th title="${esc(a.ref)}">${esc(artLabel(a))}</th>`).join("")}</tr>
+    ${scs.slice(0, MAXR).map((id) => { const u = S.scenarios.get(id)?.latest.uses || {};
+      return `<tr><td><span class="linkish" data-go="${esc(nodeKey("s", id))}">${esc(short(scenarioName(id), 34))}</span></td>${arts.map((a) => `<td class="mono">${esc((u[a.ref] || []).join(" ║ ")) || '<span class="muted">—</span>'}</td>`).join("")}</tr>`; }).join("")}</table>
+    ${scs.length > MAXR ? `<button class="btn small ghost" data-act="matrixall" data-key="${esc(key)}">Show all ${scs.length}</button>` : ""}</div>` : "";
+  const never = x.neverReleased && !S.comps.has(key);
+  return `<div class="world ${S.enterDetail ? "enter" : ""}">
+    ${detailHead("co", x.name, `${esc(L("component"))} · <span class="mono">${esc(key)}</span> ${statusChip(st)}`, ar.length, objActions("component", key, { never }))}
+    <div class="world-body">
+      ${factsHtml([[L("platform"), `<span class="linkish" data-go="${esc(nodeKey("p", x.platKey || platKey(x.platform)))}">${esc(x.platform || "—")}</span>`], ["Kind", esc(kindName(x))],
+        [LAs(), esc(types.join(" · ") || "—")], ["Used in", `${x.scenarios.size} ${esc(Lc("scenario", x.scenarios.size !== 1))}`]])}
+      ${x.contains?.length ? `<div class="contains-line" data-f="contains">Contains: ${esc(containsText(x.contains))} <span class="muted">— descriptive only, not versioned</span></div>` : ""}
+      ${Object.keys(x.attributes || {}).length ? `<div class="contains-line">${Object.entries(x.attributes).map(([k, v]) => `<span class="chip">${esc((SH.find(S.config, "attribute", k) || {}).name || k)}: ${esc(v)}</span>`).join("")}</div>` : ""}
+      <div class="dlayout"><div class="dmain">
+        ${ar.length ? `<div class="panel"><h2>Why it needs attention</h2>${ar.map((t) => `<div class="flag"><span class="ico">⚠</span><div>${esc(t)}</div></div>`).join("")}</div>` : ""}
+        <div class="panel" data-panel="artifacts"><h2>${esc(LAs())} in this ${esc(Lc("component"))}</h2>
+          <table><tr><th>${esc(LA())} (temp. id)</th><th>Type (subtype, info)</th><th>Live ${esc(Lc("version", true))}</th><th>Used in</th><th>Status</th></tr>
+          ${arts.map((a) => `<tr class="row" data-act="art" data-ref="${esc(a.ref)}"><td>${idTag()}<b>${esc(artName(a))}</b><div class="mono muted" style="font-size:11px">${esc(a.ref)}</div></td><td>${esc(artLabel(a))}</td>
+            <td class="mono">${esc(liveOf(a).join(" ║ ") || "—")}</td><td>${a.scenarios.size} ${esc(Lc("scenario", a.scenarios.size !== 1))}</td><td>${statusChip(artStatus(a))}</td></tr>`).join("") || `<tr><td colspan="5" class="muted">No ${esc(Lc("artifact", true))}.</td></tr>`}</table></div>
+        ${matrix}
+        ${S.comps.has(key) ? versionHistoryHtml({ parts: new Set(x.artRefs.filter((r) => S.refs.has(r))) }) : ""}
+        ${S.comps.has(key) ? relPanel("Relationships") : ""}
+      </div><aside class="dside">
+        <div class="panel"><h2>Relationships</h2>${sideLists(n, ["used", "calledby", "calls", "runs"])}</div>
+        <div class="panel"><h2>Open decisions that touch it</h2>
+          ${decs.map(({ s, d }) => `<div class="list-item" data-go="${esc(nodeKey("s", s.id))}"><div class="t">${esc(d.label)} ${d.option ? `<span class="chip">${esc(d.option)}</span>` : ""}</div><div class="s">${esc(s.name)}${d.why ? " — " + esc(d.why) : ""}</div></div>`).join("") || '<div class="muted">None.</div>'}</div>
+      </aside></div>
+    </div></div>`;
+};
+
+/* ---------- W-9 artifact page ---------- */
+function artifactView(param) {
+  const a = S.arts.get(param.ref); if (!a) return `<div class="panel">${esc(LA())} not found.</div>`;
+  const x = a.comp ? S.allComps.get(a.comp) : null, st = artStatus(a), at = attnRefs().get(a.ref) || [];
+  const lc = (v) => S.lifecycle?.byKey.get(a.ref + "@" + v), pl = (v) => S.lifecycle?.planned?.get(a.ref + "@" + v);
+  const vers = [...a.versions].sort((p, q) => vnum(q) - vnum(p));
+  const objEv = (S.lifecycle?.events || []).filter((e) => e.kind === "object" && e.ref === a.ref);
+  return `<div class="world ${S.enterDetail ? "enter" : ""}">
+    ${detailHead("ar", artName(a), `${idTag()} ${esc(LA())} · <span class="mono">${esc(a.ref)}</span> ${statusChip(st)}`, at.length, objActions("artifact", a.ref, { never: a.neverReleased }))}
+    <div class="world-body">
+      ${factsHtml([[L("component"), x ? `<span class="linkish" data-go="${esc(nodeKey("c", x.key))}">${esc(x.name)}</span>` : "—"], [L("platform"), esc(x?.platform || "—")], ["Type", esc(artLabel(a))], ["Used in", `${a.scenarios.size} ${esc(Lc("scenario", a.scenarios.size !== 1))}`]])}
+      <div class="dlayout"><div class="dmain">
+        ${at.length ? `<div class="panel"><h2>Why it needs attention</h2>${at.map((t) => `<div class="flag"><span class="ico">⚠</span><div>${esc(t)}</div></div>`).join("")}</div>` : ""}
+        <div class="panel" data-panel="versions"><h2>${esc(L("version", true))} and lifecycle</h2>
+          <table><tr><th>${esc(L("version"))}</th><th>Status</th><th>Retirement</th><th>Used by</th></tr>
+          ${vers.map((v) => { const e = lc(v), p = pl(v), users = [...a.scenarios].filter((id) => (S.scenarios.get(id)?.latest.uses[a.ref] || []).includes(v));
+            return `<tr><td><b>${esc(v)}</b></td><td>${e?.stage === "retired" ? '<span class="chip">archived</span>' : p ? `<span class="chip amber">planned retire ${esc(p.date)}</span>` : liveOf(a).includes(v) ? '<span class="chip teal">live</span>' : stageChip(e?.stage)}</td>
+              <td class="muted">${e?.stage === "retired" ? esc([e.by || e.who, e.date, e.why || e.note].filter(Boolean).join(" · ")) : ""}</td><td>${users.map((id) => `<span class="chip" data-go="${esc(nodeKey("s", id))}" style="cursor:pointer">${esc(short(scenarioName(id), 28))}</span>`).join("") || '<span class="muted">—</span>'}</td></tr>`; }).join("")}</table>
+          ${objEv.length ? `<div class="sec">Object events</div><table>${objEv.map((e) => `<tr><td class="nowrap">${esc(e.date)}</td><td>${esc(e.stage)}</td><td>${esc(e.by || "")}</td><td class="muted">${esc(e.why || "")}</td></tr>`).join("")}</table>` : ""}
+        </div>
+      </div><aside class="dside">
+        <div class="panel"><h2>${esc(L("scenario", true))} using it</h2>
+          ${[...a.scenarios].map((id) => `<div class="list-item" data-go="${esc(nodeKey("s", id))}"><div class="t">${esc(scenarioName(id))}</div><div class="s mono">${esc(displayIdOf(id) || id)} · ${esc((S.scenarios.get(id)?.latest.uses[a.ref] || []).join(" ║ "))}</div></div>`).join("") || '<div class="muted">None — orphaned.</div>'}</div>
+      </aside></div>
+    </div></div>`;
+}
+const _go011 = go;
+go = function (view, param, opts = {}) {
+  if (view !== "artifact") return _go011(view, param, opts);
+  S.view = view; S.param = param || null; S.enterDetail = !!opts.enter;
+  $("#view").innerHTML = artifactView(param);
+  if (!opts.keepScroll) window.scrollTo(0, 0);
+};
+
+/* ---------- W-14 / W-15 scenario page: source / target cards, data object, relations apart; W-13 Remove in the header ---------- */
+const _scenarioView011 = scenarioView;
+scenarioView = async function (param) {
+  const s0 = S.scenarios.get(param.id);
+  if (s0) S.nextHeadActions = { k: "sc", html: objActions("scenario", s0.latest.id) };     // W-13: Remove sits in the header
+  let html = await _scenarioView011(param);
+  S.nextHeadActions = null;
+  const s = S.scenarios.get(param.id); if (!s) return html;
+  const r = s.latest, did = displayIdOf(r.id);
+  html = html.replace(/<button class="btn small ghost" data-act="remove"[^>]*>[^<]*<\/button>/, "");
+  // facts: readable id + internal id, data object
+  html = html.replace(`<span class="mono">${esc(r.id)}</span>`, `<span class="mono" data-f="displayId">${esc(did || "SCN pending")}</span> <span class="mono muted" style="font-size:11px">${esc(r.id)}</span>`);
+  html = html.replace('<div class="fact wide"><span class="fk">Description</span>', `<div class="fact"><span class="fk">${esc(L("dataObject"))}</span><span class="fv">${r.dataObject ? `<span class="chip do" data-f="dataObject">${esc(r.dataObject.name)}</span> <span class="mono muted">${esc(r.dataObject.code)}</span>` : '<span class="chip st-miss">missing</span>'}</span></div><div class="fact wide"><span class="fk">Description</span>`);
+  // side panel: Source / Target first (prominent), then Relations (overlaps / feeds) apart, then declared relations
+  const card = (cls, title, items) => `<div class="appcard ${cls}"><div class="ach">${title}</div>${items.length ? items.map((it) => `<div class="aci" ${it.go ? `data-go="${esc(it.go)}"` : ""}><b>${esc(it.name)}</b>${it.sub ? `<span>${esc(it.sub)}</span>` : ""}</div>`).join("") : '<div class="aci muted">—</div>'}</div>`;
+  const src = r.sys.triggeredBy.map((t) => ({ name: sysName(t.key), sub: t.process || "caller / sender", go: nodeKey("a", t.key) }));
+  const dmap = new Map(); for (const d of r.sys.deliversTo) dmap.set(d.key, uniq([...(dmap.get(d.key) || []), d.endpoint]));
+  const tgt = [...dmap].map(([k, eps]) => ({ name: sysName(k), sub: eps.filter(Boolean).join(", ") || "receiver", go: nodeKey("a", k) }));
+  const apps = `<div class="panel apps" data-panel="apps"><h2>${esc(SH.connectedLabel(S.config))}</h2>${card("src", "Source", src)}<div class="acarr">↓</div>${card("tgt", "Target", tgt)}
+    ${r.dataObject ? `<div class="acdo">${esc(L("dataObject"))}: <span class="chip do">${esc(r.dataObject.name)}</span></div>` : ""}</div>`;
+  X.stack = [nodeKey("s", r.id)];
+  const n = scRel(r.id);
+  const ai = html.indexOf('<aside class="dside">'), ri = html.indexOf('<div class="panel"><h2>Relationships</h2>', ai), di = html.indexOf('<div class="panel"><h2>Relations</h2>', ri);
+  if (ai > 0 && ri > ai && di > ri) html = html.slice(0, ri) + "§§REL§§" + html.slice(di);
+  html = html.replace(/§§REL§§/, `${apps}<div class="panel" data-panel="relations"><h2>Relations <span class="count">with other ${esc(Lc("scenario", true))}</span></h2>${sideLists(n, ["feeds", "fedby", "both", "along", "shares"])}${sameSourceOf(r.id).map((x) => `<div class="note" style="margin-top:8px">Same source: ${esc(thingName(x.ref))} also triggers ${x.others.length} other scenario(s) — not counted as overlap.</div>`).join("")}</div>`);
+  html = html.replace('<div class="panel"><h2>Relations</h2>', '<div class="panel"><h2>Declared relations</h2>');
+  return html;
+};
+
+/* ---------- W-12: feeds both ways = one relation; labels no longer run into "via …" ---------- */
+const _overlapBetween011 = overlapBetween;
+overlapBetween = function (a, b) {
+  const o = _overlapBetween011(a, b);
+  if (o.byTier.feeds) {      // every shared topic counts, not only the last one
+    const A = scenFacts(a), B = scenFacts(b); let out = false, inn = false;
+    for (const ref of o.byTier.feeds) { if (A.pub.has(ref) && B.sub.has(ref)) out = true; if (B.pub.has(ref) && A.sub.has(ref)) inn = true; }
+    o.dir = out && inn ? "both" : out ? "out" : "in";
+  }
+  return o;
+};
+const _scRel011 = scRel;
+scRel = function (id) {
+  const n = _scRel011(id);
+  const feeds = n.groups.find((g) => g.k === "feeds"), fedby = n.groups.find((g) => g.k === "fedby");
+  if (feeds && fedby) {
+    const both = feeds.items.filter((it) => /t-feeds/.test(it.cls || "") && fedby.items.some((x) => x.attr === it.attr));
+    feeds.items = feeds.items.filter((it) => !both.includes(it)); fedby.items = fedby.items.filter((it) => !both.some((b) => b.attr === it.attr));
+    n.groups.splice(n.groups.indexOf(fedby) + 1, 0, { k: "both", verb: "⇄ feeds both ways", flow: "", hint: "each publishes on a topic the other consumes", items: both });
+  }
+  return n;
+};
+const _short011 = short;
+relSvg = (function (orig) { return function (n, open, prev) {
+  // a label with a sub-text ("via …") gets the room that is left — the two never overlap (W-12)
+  n = Object.assign({}, n, { groups: n.groups.map((g) => Object.assign({}, g, { items: g.items.map((it) => it.sub ? Object.assign({}, it, { label: _short011(it.label, Math.max(12, 41 - Math.min(String(it.sub).length, 20))), sub: _short011(it.sub, 20) }) : it) })) });
+  return orig(n, open, prev);
+}; })(relSvg);
+INVERSE["feeds both ways"] = "feeds both ways"; INVERSE["⇄ feeds both ways"] = "⇄ feeds both ways";
+
+/* ---------- W-10 retire / remove / re-activate whole artifacts and components ---------- */
+function objUsers(kind, ref) {
+  const refs = kind === "artifact" ? [ref] : (S.allComps.get(ref)?.artRefs || []);
+  const out = [];
+  for (const s of S.scenarios.values()) if (refs.some((r) => s.latest.uses[r])) out.push(s.latest);
+  return out;
+}
+function objRetireWizard(kind, ref) {
+  const name = kind === "artifact" ? artName(S.arts.get(ref) || { names: new Set(), ref }) : (S.allComps.get(ref)?.name || ref);
+  const label = kind === "artifact" ? LA() : L("component");
+  SH.openWizard({ title: `Retire ${Lc(kind)} ${name}`, target: { text: `${label} ${name} (${ref})`, note: kind === "artifact" ? "All live versions are archived at once; history is kept." : `Allowed only when all its ${Lc("artifact", true)} are retired.` },
+    deps: () => objUsers(kind, ref).map((r) => ({ kind: L("scenario"), text: `${r.name} still uses it` })).concat(kind === "component" ? (S.allComps.get(ref)?.artRefs || []).map((a) => ({ kind: LA(), text: `${artName(S.arts.get(a))} — ${isRetiredObj(a) ? "retired" : artStatus(S.arts.get(a)) || "live"}` })) : []),
+    blocked: () => {
+      const out = objUsers(kind, ref).map((r) => ({ text: `“${r.name}” still uses it`, fix: `remove it from the design in Pattern Bench and export again, or remove the ${Lc("scenario")}` }));
+      if (kind === "component") {
+        const live = (S.allComps.get(ref)?.artRefs || []).filter((a) => !isRetiredObj(a));
+        if (live.length) { const orph = live.filter((a) => S.arts.get(a)?.orphan);
+          out.push({ text: `${live.length} ${Lc("artifact", live.length !== 1)} still live: ${live.map((a) => artName(S.arts.get(a))).join(", ")}`, fix: `retire them first${orph.length ? " — the orphaned ones can go together" : ""}`,
+            act: orph.length === live.length ? { label: `Retire the ${orph.length} orphaned ${Lc("artifact", orph.length !== 1)} together`, run: () => { S.pendingObj = (S.pendingObj || []).concat(orph); orph.forEach((a) => S.lifecycle && S.lifecycle.objects.set(a, { kind: "object", ref: a, stage: "retired" })); } } : null }); }
+      }
+      return out;
+    }, byLabel: "Retired by",
+    onConfirm: async (f) => {
+      const base = { kind: "object", stage: "retired", date: f.date, by: f.by, why: f.why, at: new Date().toISOString() };
+      for (const a of S.pendingObj || []) await addLifecycle(Object.assign({ objType: "artifact", ref: a }, base));
+      S.pendingObj = [];
+      await addLifecycle(Object.assign({ objType: kind, ref }, base));
+      toast(`${label} ${name} retired — its name stays reserved`);
+    }, onClose: () => { S.pendingObj = []; derive(); } });
+}
+function objRemove(kind, ref) {
+  const x = kind === "artifact" ? S.arts.get(ref) : S.allComps.get(ref);
+  if (!x || !x.neverReleased || (kind === "component" && S.comps.has(ref))) { toast("Used in a released export — it can only be retired (history is kept).", true); return; }
+  const name = kind === "artifact" ? artName(x) : x.name;
+  $("#pbdlg")?.remove();
+  const d = document.createElement("div"); d.id = "pbdlg"; d.className = "pbdlg";
+  d.innerHTML = `<div class="box" role="dialog" aria-label="Remove"><h3>Remove ${esc(Lc(kind))} “${esc(name)}” for good?</h3>
+    <p class="note">It was never used in a released export (e.g. it came from a rejected Inbox item). Removing it can't be undone; a change-log entry is written.</p>
+    <label>Removed by<input id="rmBy" type="text"></label><label>Why<input id="rmWhy" type="text"></label>
+    <div class="row end"><button class="btn small ghost" data-pbd="close">Cancel</button><button class="btn small" data-pbd="rm">Remove</button></div></div>`;
+  d.addEventListener("click", async (ev) => {
+    const b = ev.target.closest("[data-pbd]"); if (!b) { if (ev.target === d) d.remove(); return; }
+    if (b.dataset.pbd === "close") return d.remove();
+    const by = $("#rmBy").value.trim(), why = $("#rmWhy").value.trim(); if (!by || !why) { toast("Who and why are required.", true); return; }
+    d.remove();
+    await addLifecycle({ kind: "object", objType: kind, ref, stage: "removed", date: new Date().toISOString().slice(0, 10), by, why, at: new Date().toISOString() });
+    toast(`${name} removed`); go("home");
+  });
+  document.body.appendChild(d);
+}
+async function objReactivate(kind, ref) {
+  await addLifecycle({ kind: "object", objType: kind, ref, stage: "active", date: new Date().toISOString().slice(0, 10), by: "", why: "re-activated", at: new Date().toISOString() });
+  toast("Re-activated");
+}
+/* Inbox reject → objects that only this export created (never released) are removed automatically (change log) */
+const _inboxReject011 = inboxReject;
+inboxReject = async function (sid, key) {
+  await _inboxReject011(sid, key);
+  const w = S.inbox.list.find((x) => x.id === sid); if (!w) return;
+  if (S.scenarios.has(sid)) return;            // an earlier export is live — its objects stay
+  const auto = [...S.arts.values()].filter((a) => a.neverReleased && w.rec.uses[a.ref]).map((a) => a.ref);
+  for (const ref of auto) await addLifecycle({ kind: "object", objType: "artifact", ref, stage: "removed", date: new Date().toISOString().slice(0, 10), by: "registry", why: "auto-removed: only used by rejected Inbox item " + sid, at: new Date().toISOString() });
+};
+
+/* ---------- Inbox checks 1.0: data object, required attributes, retired objects, near-duplicate data objects; SCN id at approval ---------- */
+const _inboxItems011 = inboxItems;
+inboxItems = function (rec, released) {
+  const items = _inboxItems011(rec, released);
+  const legacy = /^0\./.test(rec.schemaVersion || "0.6");
+  const add = (it) => items.push(Object.assign({ level: "wait" }, it));
+  if (!legacy) {
+    if (!rec.dataObject) add({ key: "dataobject", kind: "missingDataObject", fixOnly: true, text: `${Lc("dataObject")} missing — required for every ${Lc("scenario")} (W-15)` });
+    const miss = SH.missingAttributes(S.config, "scenario", rec.attributes);
+    if (miss.length) add({ key: "attr|scenario", kind: "missingAttr", fixOnly: true, text: `required ${Lc("scenario")} attribute empty: ${miss.map((a) => a.name).join(", ")}` });
+    for (const k of rec.containers || []) {
+      if (!isIntegrationKind(k.kind) && !isSystemKind(k.kind)) continue;
+      const m = SH.missingAttributes(S.config, isSystemKind(k.kind) ? "application" : "component", k.attributes);
+      if (m.length) add({ key: "attr|" + k.key, kind: "missingAttr", fixOnly: true, text: `required attribute empty on ${k.name}: ${m.map((a) => a.name).join(", ")}` });
+    }
+  }
+  // retired objects still drawn → flag (W-10.6); a retired name is reserved
+  for (const ref of Object.keys(rec.uses || {})) {
+    const comp = ref.split("#")[0];
+    if (isRetiredObj(ref) || isRetiredObj(comp)) items.push({ key: "retired|" + ref, kind: "retiredUsed", level: "flag", text: `uses a retired ${isRetiredObj(ref) ? Lc("artifact") : Lc("component")}: ${refName(ref)} — not offered for reuse; replace it` });
+  }
+  const retiredNames = new Map();
+  for (const [ref, e] of S.lifecycle?.objects || []) if (e.stage === "retired") { const x = S.allComps?.get(ref); if (x) retiredNames.set(x.name.toLowerCase(), ref); }
+  for (const k of rec.containers || []) { const hit = retiredNames.get(String(k.name || "").toLowerCase()); if (hit && hit !== k.key) items.push({ key: "reserved|" + k.key, kind: "reservedName", level: "flag", text: `name reserved by a retired ${Lc("component")}: ${k.name}` }); }
+  // a data object spelled like a known one, but not the same
+  if (rec.dataObject) {
+    const me = SH.dataObjectKey(rec.dataObject.name), known = new Map();
+    for (const o of released.values()) { const d = o.latest.dataObject; if (d && o.latest.id !== rec.id) known.set(SH.dataObjectKey(d.name), { key: SH.dataObjectKey(d.name), name: d.name }); }
+    const near = [...known.values()].find((d) => d.key !== me && (d.key.includes(me) || me.includes(d.key) || lev(d.key, me) <= 2) && Math.min(d.key.length, me.length) >= 4);
+    if (near) items.push({ key: "do-near|" + me, kind: "dataObjectNear", level: "flag", text: `${Lc("dataObject")} “${rec.dataObject.name}” looks like “${near.name}” — same object? Use one spelling` });
+  }
+  return items;
+};
+function lev(a, b) { const m = a.length, n = b.length; if (Math.abs(m - n) > 2) return 9; const d = Array.from({ length: m + 1 }, (_, i) => [i]); for (let j = 1; j <= n; j++) d[0][j] = j;
+  for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[m][n]; }
+Object.assign(KIND_TXT, { missingDataObject: "data object missing", missingAttr: "required attribute", retiredUsed: "retired object used", reservedName: "reserved name", dataObjectNear: "data object spelling" });
+const _flags011 = flags010;
+flags010 = function (r) {
+  const out = _flags011(r);
+  for (const f of out) if (/^inbox:(retired|reserved|do-near)/.test(f.key)) f.sev = "amber";
+  return out;
+};
+/* approval assigns the readable SCN id and saves scenario-ids.json */
+const _ingestAfter011 = derive;
+async function approveIds() { const n = assignIds(); if (n) await saveIds(); }
+
+/* ---------- Pattern Bench open 1.0: SCN id, learned data objects, retired objects ---------- */
+const _pbPayload011 = pbPayload010;
+pbPayload010 = function (s, rec, spec) {
+  const p = _pbPayload011(s, rec, spec);
+  p.dataObjects = [...S.dobjs.values()].map((d) => ({ name: d.name, code: d.code }));
+  p.retiredObjects = [...(S.lifecycle?.objects || [])].filter(([, e]) => e.stage === "retired").map(([ref, e]) => ({ ref, kind: e.objType || "artifact" }));
+  return p;
+};
+const _pbPayloadMain011 = pbPayload;
+pbPayload = async function (id, version) {
+  const r = await _pbPayloadMain011(id, version);
+  r.payload.schemaVersion = "1.0"; r.payload.scenario.displayId = displayIdOf(id) || null;
+  return r;
+};
+
+/* ---------- Settings: platforms with no live components (W-10) ---------- */
+openSettings010 = function (section) {
+  SH.openSettings({ config: S.config, origin: "registry", title: "⚙ Settings — landscape config", section, sourceLabel: S.configMissing ? "built-in defaults" : S.configSource,
+    isUsed: usedInRegistry,
+    liveComponents: (pid) => [...S.comps.values()].some((x) => x.platformId === pid && !isRetiredObj(x.key)),
+    onSave: async (cfg, ren) => {
+      if (ren.length) {
+        const what = ren.map((x) => x.section === "namingRules" ? "naming rules" : x.from + " → " + x.to).join(", ");
+        for (const s of S.scenarios.values()) {
+          const r = s.latest;
+          const hit = ren.some((x) => x.section === "namingRules" ? (r.names || []).length :
+            x.section === "platforms" ? (r.integ || []).some((k) => k.platformId === x.id || slug(k.platform) === slug(x.from.replace(/ \(.*\)$/, ""))) :
+            (r.apps || []).some((a) => a.appId === x.id || slug(a.name) === slug(x.from.replace(/ \(.*\)$/, ""))));
+          if (hit) S.inbox.state.namesChanged[r.id] = { landscapeVersion: cfg.landscapeVersion, what };
+        }
+        await saveInbox();
+      }
+      await saveConfig(cfg);
+    } });
+};
+renderCfgBadge = function () {
+  const b = $("#cfgBadge"); if (!b) return;
+  b.textContent = "⚙ Config: " + (S.configMissing ? "built-in defaults" : (S.configSource === "github" ? "GitHub" : "local")) + " · v" + S.config.landscapeVersion;
+};
+
+/* ---------- events ---------- */
+const _act011 = act010;
+act010 = function (act, t) {
+  if (act === "art") { pushNav(); go("artifact", { ref: t.dataset.ref }); return true; }
+  if (act === "oretire") { objRetireWizard(t.dataset.kind, t.dataset.ref); return true; }
+  if (act === "oremove") { if (!t.disabled) objRemove(t.dataset.kind, t.dataset.ref); return true; }
+  if (act === "reactivate") { objReactivate(t.dataset.kind, t.dataset.ref); return true; }
+  if (act === "matrixall") { S.matrixAll = t.dataset.key; rerender(); return true; }
+  if (act === "orphans") { S.compOrphan = true; pushNav(); go("band", { k: "co" }); S.compOrphan = true; $("#compTable") && ($("#compTable").innerHTML = compTable()); return true; }
+  if (act === "iapprove" || act === "imap") { const r = _act011(act, t); approveIds(); return r; }
+  return _act011(act, t);
+};
+document.addEventListener("input", (ev) => {
+  const t = ev.target;
+  if (t.id === "artSearch") { S.artQuery = t.value; $("#artTable").innerHTML = artTable(); }
+});
+document.addEventListener("change", (ev) => {
+  const t = ev.target;
+  const tog = { artOrphan: ["artOrphan", "#artTable", artTable], artRetired: ["artRetired", "#artTable", artTable], compOrphan: ["compOrphan", "#compTable", () => compTable()], compRetired: ["compRetired", "#compTable", () => compTable()] }[t.id];
+  if (tog) { S[tog[0]] = t.checked; t.closest(".pill-toggle")?.classList.toggle("on", t.checked); $(tog[1]).innerHTML = tog[2](); }
+  if (t.id === "dobjFilter") { S.dobjFilter = t.value; $("#listTable").innerHTML = listTable(); }
+});
+document.addEventListener("click", (ev) => {
+  const c = ev.target.closest && ev.target.closest("[data-copy]"); if (!c) return;
+  ev.stopPropagation(); try { navigator.clipboard?.writeText(c.dataset.copy); } catch (e) {} toast("Copied " + c.dataset.copy);
+}, true);
+Object.assign(NODE_KIND.a, { label: "connected application" });
+NODE_KIND.v.label = "artifact";
+
+window.__registry = { S, SH, inboxApprove, inboxReject, retireWizard, removeWizard, objRetireWizard, objRemove, objReactivate, displayIdOf, artifactView, assignIds, openSettings: openSettings010, liveVersionsOf, retireBlocked, pbPayload, saveConfig };
 
 // test / automation hook: load from an array of {path, text, lastModified}
 window.__registryLoad = (items, name = "test") => {

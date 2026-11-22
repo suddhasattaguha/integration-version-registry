@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-0f780c",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "The catalogue sync subscribes to material events and also takes enriched products pushed from PIM, updating the webshop catalogue.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-14T09:30:00.000Z",
+    "dataObject": {
+      "name": "Material",
+      "code": "MAT"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "MDM"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -76,7 +85,9 @@
         "name": "SOL_MATERIALEVEN_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -88,19 +99,24 @@
         "name": "SOL_QWEBSHOPMATE_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c3",
-        "ref": "azure-logic-apps/catalog-sync#process",
+        "ref": "ais/catalog-sync#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k3",
-        "name": "ALA_CATALOGSYNC_IF",
-        "nameRule": "N-2",
+        "name": "AIS_CATALOGSYNC_LA",
+        "nameRule": "N-LA",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "logic-app"
       },
       {
         "id": "c4",
@@ -116,15 +132,17 @@
       },
       {
         "id": "c5",
-        "ref": "azure-logic-apps/catalog-sync#api",
+        "ref": "ais/catalog-sync#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
         "container": "k3",
-        "name": "ALA_CATALOGSYNC_API",
+        "name": "AIS_CATALOGSYNC_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c6",
@@ -150,25 +168,25 @@
         "from": "c2",
         "to": "c3",
         "fromRef": "solace/q-webshop-material#queue",
-        "toRef": "azure-logic-apps/catalog-sync#process"
+        "toRef": "ais/catalog-sync#process"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "azure-logic-apps/catalog-sync#process",
+        "fromRef": "ais/catalog-sync#process",
         "toRef": "endapp/webshop-commercetools/commercetools-product-api#api"
       },
       {
         "from": "c5",
         "to": "c3",
-        "fromRef": "azure-logic-apps/catalog-sync#api",
-        "toRef": "azure-logic-apps/catalog-sync#process"
+        "fromRef": "ais/catalog-sync#api",
+        "toRef": "ais/catalog-sync#process"
       },
       {
         "from": "c6",
         "to": "c5",
         "fromRef": "caller/pim-akeneo#app",
-        "toRef": "azure-logic-apps/catalog-sync#api"
+        "toRef": "ais/catalog-sync#api"
       }
     ],
     "containers": [
@@ -179,7 +197,10 @@
         "platform": "Solace",
         "asset": "Material-Events",
         "platformId": "solace",
-        "componentId": "solace/material-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -188,16 +209,22 @@
         "platform": "Solace",
         "asset": "Q-Webshop-Material",
         "platformId": "solace",
-        "componentId": "solace/q-webshop-material"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
-        "ref": "azure-logic-apps/catalog-sync",
+        "ref": "ais/catalog-sync",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "Catalog-Sync",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/catalog-sync"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",

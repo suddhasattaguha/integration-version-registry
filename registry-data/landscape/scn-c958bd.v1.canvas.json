@@ -60,10 +60,18 @@
     }
   ],
   "std": {
-    "pb": "2.1",
+    "pb": "2.2",
     "landscape": {
       "source": "Registry",
       "landscapeVersion": 1
+    },
+    "dataObject": {
+      "name": "Supplier Invoice",
+      "code": "SINV"
+    },
+    "attrs": {
+      "region": "EU",
+      "domain": "P2P"
     },
     "branchContainers": [
       {

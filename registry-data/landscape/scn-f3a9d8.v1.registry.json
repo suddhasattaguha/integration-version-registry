@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-f3a9d8",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Customer invoices from S/4HANA DRC are published once and sent to KSeF (Poland) and the Peppol access point; a copy lands in the data lake.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-08T09:30:00.000Z",
+    "dataObject": {
+      "name": "Customer Invoice",
+      "code": "INV"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "O2C"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -112,7 +121,9 @@
         "name": "BTP_INVOICEOUTBO_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -124,7 +135,10 @@
         "name": "BTP_INVOICEOUTBO_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -136,7 +150,9 @@
         "name": "SOL_INVOICEEVENT_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c4",
@@ -148,7 +164,9 @@
         "name": "SOL_QKSEF_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c5",
@@ -172,7 +190,9 @@
         "name": "SOL_QPEPPOL_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c7",
@@ -196,19 +216,24 @@
         "name": "SOL_QDWHINVOICE_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c9",
-        "ref": "azure-logic-apps/datalake-ingest#process",
+        "ref": "ais/datalake-ingest#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k8",
-        "name": "ALA_DATALAKEINGE_IF",
+        "name": "AIS_DATALAKEINGE_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "function-app"
       },
       {
         "id": "c10",
@@ -282,12 +307,12 @@
         "from": "c8",
         "to": "c9",
         "fromRef": "solace/q-dwh-invoice#queue",
-        "toRef": "azure-logic-apps/datalake-ingest#process"
+        "toRef": "ais/datalake-ingest#process"
       },
       {
         "from": "c9",
         "to": "c10",
-        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "fromRef": "ais/datalake-ingest#process",
         "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
       },
       {
@@ -305,7 +330,10 @@
         "platform": "BTP IS",
         "asset": "Invoice-Outbound-DRC",
         "platformId": "btp-is",
-        "componentId": "btp-is/invoice-outbound-drc"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -314,7 +342,10 @@
         "platform": "Solace",
         "asset": "Invoice-Events",
         "platformId": "solace",
-        "componentId": "solace/invoice-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
@@ -323,7 +354,10 @@
         "platform": "Solace",
         "asset": "Q-Ksef",
         "platformId": "solace",
-        "componentId": "solace/q-ksef"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
@@ -342,7 +376,10 @@
         "platform": "Solace",
         "asset": "Q-Peppol",
         "platformId": "solace",
-        "componentId": "solace/q-peppol"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k6",
@@ -361,16 +398,22 @@
         "platform": "Solace",
         "asset": "Q-Dwh-Invoice",
         "platformId": "solace",
-        "componentId": "solace/q-dwh-invoice"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k8",
-        "ref": "azure-logic-apps/datalake-ingest",
+        "ref": "ais/datalake-ingest",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "DataLake-Ingest",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/datalake-ingest"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k9",

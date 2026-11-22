@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-86449e",
     "version": 1,
@@ -8,9 +8,17 @@
     "description": "Test case: cross-platform-duplicate",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-25T09:30:00.000Z",
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "single"
     },
     "canvas": {
@@ -54,27 +62,32 @@
     "components": [
       {
         "id": "c1",
-        "ref": "azure-logic-apps/crm-connector#api",
+        "ref": "ais/crm-connector#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
         "container": "k1",
-        "name": "ALA_CRMCONNECTOR_API",
+        "name": "AIS_CRMCONNECTOR_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
-        "ref": "azure-logic-apps/crm-connector#process",
+        "ref": "ais/crm-connector#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k1",
         "name": "BTP_SALESORDEREX_IF",
-        "nameRule": "N-2",
+        "nameRule": "N-LA",
         "autoName": false,
-        "nameOverridden": true
+        "nameOverridden": true,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "logic-app"
       },
       {
         "id": "c3",
@@ -105,31 +118,34 @@
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "azure-logic-apps/crm-connector#api",
-        "toRef": "azure-logic-apps/crm-connector#process"
+        "fromRef": "ais/crm-connector#api",
+        "toRef": "ais/crm-connector#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "azure-logic-apps/crm-connector#process",
+        "fromRef": "ais/crm-connector#process",
         "toRef": "endapp/salesforce-sales-cloud/salesforce-account-api#api"
       },
       {
         "from": "c4",
         "to": "c1",
         "fromRef": "caller/salesforce-sales-cloud#app",
-        "toRef": "azure-logic-apps/crm-connector#api"
+        "toRef": "ais/crm-connector#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "azure-logic-apps/crm-connector",
+        "ref": "ais/crm-connector",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "CRM-Connector",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/crm-connector"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",

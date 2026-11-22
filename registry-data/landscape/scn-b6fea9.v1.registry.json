@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-b6fea9",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Webshop and sales-rep app orders enter through the Sales Order experience API, are published once and fan out to S/4HANA and Salesforce.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-02T09:30:00.000Z",
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "O2C"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -110,7 +119,9 @@
         "name": "BTP_SALESORDEREX_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -122,7 +133,10 @@
         "name": "BTP_SALESORDEREX_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -134,7 +148,9 @@
         "name": "SOL_SALESORDEREV_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c4",
@@ -146,7 +162,9 @@
         "name": "SOL_QS4ORDER_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c5",
@@ -170,7 +188,9 @@
         "name": "SOL_QCRMORDER_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c7",
@@ -186,27 +206,32 @@
       },
       {
         "id": "c8",
-        "ref": "azure-logic-apps/webshop-gateway#api",
+        "ref": "ais/webshop-gateway#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
         "container": "k7",
-        "name": "ALA_WEBSHOPGATEW_API",
+        "name": "AIS_WEBSHOPGATEW_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c9",
-        "ref": "azure-logic-apps/webshop-gateway#process",
+        "ref": "ais/webshop-gateway#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k7",
-        "name": "ALA_WEBSHOPGATEW_IF",
-        "nameRule": "N-2",
+        "name": "AIS_WEBSHOPGATEW_LA",
+        "nameRule": "N-LA",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "logic-app"
       },
       {
         "id": "c10",
@@ -273,13 +298,13 @@
       {
         "from": "c8",
         "to": "c9",
-        "fromRef": "azure-logic-apps/webshop-gateway#api",
-        "toRef": "azure-logic-apps/webshop-gateway#process"
+        "fromRef": "ais/webshop-gateway#api",
+        "toRef": "ais/webshop-gateway#process"
       },
       {
         "from": "c9",
         "to": "c1",
-        "fromRef": "azure-logic-apps/webshop-gateway#process",
+        "fromRef": "ais/webshop-gateway#process",
         "toRef": "btp-is/sales-order-exp#api"
       },
       {
@@ -292,7 +317,7 @@
         "from": "c11",
         "to": "c8",
         "fromRef": "caller/webshop-commercetools#app",
-        "toRef": "azure-logic-apps/webshop-gateway#api"
+        "toRef": "ais/webshop-gateway#api"
       }
     ],
     "containers": [
@@ -303,7 +328,18 @@
         "platform": "BTP IS",
         "asset": "Sales-Order-Exp",
         "platformId": "btp-is",
-        "componentId": "btp-is/sales-order-exp"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        },
+        "contains": [
+          {
+            "capability": "process",
+            "subtype": "iflow",
+            "label": "iFlow",
+            "count": 3
+          }
+        ]
       },
       {
         "id": "k2",
@@ -312,7 +348,10 @@
         "platform": "Solace",
         "asset": "Sales-Order-Events",
         "platformId": "solace",
-        "componentId": "solace/sales-order-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
@@ -321,7 +360,10 @@
         "platform": "Solace",
         "asset": "Q-S4-Order",
         "platformId": "solace",
-        "componentId": "solace/q-s4-order"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
@@ -340,7 +382,10 @@
         "platform": "Solace",
         "asset": "Q-Crm-Order",
         "platformId": "solace",
-        "componentId": "solace/q-crm-order"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k6",
@@ -354,12 +399,15 @@
       },
       {
         "id": "k7",
-        "ref": "azure-logic-apps/webshop-gateway",
+        "ref": "ais/webshop-gateway",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "Webshop-Gateway",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/webshop-gateway"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k8",

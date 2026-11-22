@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-64cc50",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Analytics subscription on the sales-order topic, landing raw order events in the data lake.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-10T09:30:00.000Z",
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "ANA"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "single"
     },
     "canvas": {
@@ -64,7 +73,9 @@
         "name": "SOL_SALESORDEREV_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -76,19 +87,24 @@
         "name": "SOL_QDWHORDER_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c3",
-        "ref": "azure-logic-apps/datalake-ingest#process",
+        "ref": "ais/datalake-ingest#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k3",
-        "name": "ALA_DATALAKEINGE_IF",
+        "name": "AIS_DATALAKEINGE_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "function-app"
       },
       {
         "id": "c4",
@@ -114,12 +130,12 @@
         "from": "c2",
         "to": "c3",
         "fromRef": "solace/q-dwh-order#queue",
-        "toRef": "azure-logic-apps/datalake-ingest#process"
+        "toRef": "ais/datalake-ingest#process"
       },
       {
         "from": "c3",
         "to": "c4",
-        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "fromRef": "ais/datalake-ingest#process",
         "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
       }
     ],
@@ -131,7 +147,10 @@
         "platform": "Solace",
         "asset": "Sales-Order-Events",
         "platformId": "solace",
-        "componentId": "solace/sales-order-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -140,16 +159,22 @@
         "platform": "Solace",
         "asset": "Q-Dwh-Order",
         "platformId": "solace",
-        "componentId": "solace/q-dwh-order"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
-        "ref": "azure-logic-apps/datalake-ingest",
+        "ref": "ais/datalake-ingest",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "DataLake-Ingest",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/datalake-ingest"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",

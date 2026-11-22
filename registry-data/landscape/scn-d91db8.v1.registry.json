@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-d91db8",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Outbound deliveries from S/4HANA go to EWM for picking and, via the carrier hub, to DHL for shipment booking.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-05T09:30:00.000Z",
+    "dataObject": {
+      "name": "Outbound Delivery",
+      "code": "DLV"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "O2C"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -99,7 +108,9 @@
         "name": "BTP_DELIVERYDIST_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -111,7 +122,10 @@
         "name": "BTP_DELIVERYDIST_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -123,7 +137,9 @@
         "name": "SOL_DELIVERYEVEN_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c4",
@@ -135,7 +151,9 @@
         "name": "SOL_QEWMDELIVERY_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c5",
@@ -159,19 +177,24 @@
         "name": "SOL_QCARRIERDELI_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c7",
-        "ref": "azure-logic-apps/carrier-hub#process",
+        "ref": "ais/carrier-hub#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k6",
-        "name": "ALA_CARRIERHUB_IF",
-        "nameRule": "N-2",
+        "name": "AIS_CARRIERHUB_LA",
+        "nameRule": "N-LA",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "logic-app"
       },
       {
         "id": "c8",
@@ -233,12 +256,12 @@
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-carrier-delivery#queue",
-        "toRef": "azure-logic-apps/carrier-hub#process"
+        "toRef": "ais/carrier-hub#process"
       },
       {
         "from": "c7",
         "to": "c8",
-        "fromRef": "azure-logic-apps/carrier-hub#process",
+        "fromRef": "ais/carrier-hub#process",
         "toRef": "endapp/dhl-parcel/dhl-shipment-api#api"
       },
       {
@@ -256,7 +279,10 @@
         "platform": "BTP IS",
         "asset": "Delivery-Dist",
         "platformId": "btp-is",
-        "componentId": "btp-is/delivery-dist"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -265,7 +291,10 @@
         "platform": "Solace",
         "asset": "Delivery-Events",
         "platformId": "solace",
-        "componentId": "solace/delivery-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
@@ -274,7 +303,10 @@
         "platform": "Solace",
         "asset": "Q-Ewm-Delivery",
         "platformId": "solace",
-        "componentId": "solace/q-ewm-delivery"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
@@ -293,16 +325,35 @@
         "platform": "Solace",
         "asset": "Q-Carrier-Delivery",
         "platformId": "solace",
-        "componentId": "solace/q-carrier-delivery"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k6",
-        "ref": "azure-logic-apps/carrier-hub",
+        "ref": "ais/carrier-hub",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "Carrier-Hub",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/carrier-hub"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        },
+        "contains": [
+          {
+            "capability": "process",
+            "subtype": "logic-app",
+            "label": "Logic App",
+            "count": 3
+          },
+          {
+            "capability": "queue",
+            "subtype": "service-bus",
+            "label": "Service Bus"
+          }
+        ]
       },
       {
         "id": "k7",

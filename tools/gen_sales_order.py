@@ -1,4 +1,4 @@
-"""X-1 / C-5 test example "Sales order distribution", written by Pattern Bench itself (so refs and names are exactly what it exports).
+"""X-1 / C-5 test example (contract 1.0: data object Sales Order, Region EU) "Sales order distribution", written by Pattern Bench itself (so refs and names are exactly what it exports).
   inbound API (caller S/4HANA) → BTP iFlow → topic → fan-out (a) iFlow → Salesforce API, (b) iFlow → Legacy WMS folder (proposed),
   (c) iFlow → DHL API on a v1 ║ v2 parallel version (application attached without endpoint).
 Writes: registry-data/landscape/scn-sod001.v1.{registry,canvas}.json (finished state)
@@ -20,7 +20,7 @@ start = {"format": "pattern-bench-flow", "version": 1, "origin": {"x": 260, "y":
                {"kind": "out", "row": -1, "anchor": [{"ref": "t1", "side": "out"}, {"ref": "t2", "side": "in"}], "blocks": [B("consume-to-process", "Consume-to-Process"), B("process-to-api", "Process-to-API")]}],
   "callers": [], "branchVersions": [{"ref": "b1.1", "variant": "p2a-contract-parallel"}], "lineFlips": [], "callerVer": [], "laneChoice": [], "compositeRipples": [],
   "componentAssets": [{"key": "@t1:out", "name": "SOD-Order-Events"}],
-  "std": {"pb": "2.1", "branchContainers": [{"key": "@b0.0:m0", "platform": "Solace", "asset": "Q-SOD-WMS"}, {"key": "@b0.0:out", "platform": "BTP IS", "asset": "SOD-WMS-Feed"},
+  "std": {"pb": "2.2", "branchContainers": [{"key": "@b0.0:m0", "platform": "Solace", "asset": "Q-SOD-WMS"}, {"key": "@b0.0:out", "platform": "BTP IS", "asset": "SOD-WMS-Feed"},
                                             {"key": "@b1.0:m0", "platform": "Solace", "asset": "Q-SOD-Carrier"}, {"key": "@b1.0:out", "platform": "BTP IS", "asset": "SOD-Carrier-Sync"}]}}
 done = copy.deepcopy(start)
 done["caller"] = True
@@ -28,7 +28,8 @@ done["containers"] += [{"block": 3, "at": "out", "name": "Salesforce Sales Cloud
 done["componentAssets"] += [{"key": "@t3:out", "name": "Salesforce Order API"}, {"key": "@b0.1:out", "name": "/inbound/orders"}]
 done["std"]["branchContainers"] += [{"key": "@b0.1:out", "name": "Legacy WMS", "process": "Warehouse inbound"}, {"key": "@b1.1:out", "name": "DHL Parcel", "process": "Shipment booking"}]
 META = {"id": "scn-sod001", "version": 1, "name": "Sales order distribution", "description": "Sales orders from S/4HANA are published once and fan out to Salesforce, the legacy warehouse (file) and DHL (API v1 ║ v2).",
-        "author": "Suddhasatta Guha", "tags": ["O2C", "sales order", "C-5 example"], "relations": [], "why": []}
+        "author": "Suddhasatta Guha", "tags": ["O2C", "sales order", "C-5 example"], "relations": [], "why": [],
+        "dataObject": {"name": "Sales Order", "code": "SO"}, "attributes": {"region": "EU", "domain": "O2C"}}
 done["scenario"] = dict(META)
 with sync_playwright() as p:
     b = p.chromium.launch(); pg = b.new_page(viewport={"width": 1600, "height": 1000}); errs = []
@@ -44,6 +45,7 @@ with sync_playwright() as p:
     s0 = pg.evaluate("() => window.__debug.serializeFlow()"); s0["savedAt"] = "2026-11-22T13:00:00.000Z"
     json.dump(s0, open(os.path.join(EX, "sales-order-distribution.json"), "w"), indent=2)
     pg.evaluate("f => window.__debug.loadFlow(f)", done)
+    pg.evaluate("() => { window.__debug.setDataObject('Sales Order'); window.__debug.setScnAttrs({ region:'EU', domain:'O2C' }); }")
     assert pg.evaluate("() => window.__debug.missingEnds().length") == 0
     meta = dict(META, exportedAt="2026-11-22T13:00:00.000Z")
     spec = pg.evaluate("m => window.__debug.buildSpec(m, 'scn-sod001.v1.canvas.json')", meta)

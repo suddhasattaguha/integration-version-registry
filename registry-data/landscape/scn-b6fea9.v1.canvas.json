@@ -75,10 +75,18 @@
     }
   ],
   "std": {
-    "pb": "2.1",
+    "pb": "2.2",
     "landscape": {
       "source": "Registry",
       "landscapeVersion": 1
+    },
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "attrs": {
+      "region": "EU",
+      "domain": "O2C"
     },
     "branchContainers": [
       {
@@ -93,12 +101,12 @@
       },
       {
         "key": "@b1.0:in",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "Webshop-Gateway"
       },
       {
         "key": "@b1.0:out",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "Webshop-Gateway"
       }
     ]

@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-b29a4e",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Terminations in SuccessFactors flow over the employee topic to the identity process that disables the Entra ID account; ServiceNow gets the offboarding case.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-23T09:30:00.000Z",
+    "dataObject": {
+      "name": "Employee",
+      "code": "EMP"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "HR"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -99,7 +108,9 @@
         "name": "BTP_SFEMPLOYEESY_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -111,7 +122,10 @@
         "name": "BTP_SFEMPLOYEESY_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -123,7 +137,9 @@
         "name": "SOL_EMPLOYEEEVEN_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c4",
@@ -135,19 +151,24 @@
         "name": "SOL_QENTRALEAVER_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c5",
-        "ref": "azure-logic-apps/hr-identity#process",
+        "ref": "ais/hr-identity#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k4",
-        "name": "ALA_HRIDENTITY_IF",
-        "nameRule": "N-2",
+        "name": "AIS_HRIDENTITY_LA",
+        "nameRule": "N-LA",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "logic-app"
       },
       {
         "id": "c6",
@@ -171,7 +192,9 @@
         "name": "SOL_QSERVICENOW_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c8",
@@ -221,12 +244,12 @@
         "from": "c4",
         "to": "c5",
         "fromRef": "solace/q-entra-leaver#queue",
-        "toRef": "azure-logic-apps/hr-identity#process"
+        "toRef": "ais/hr-identity#process"
       },
       {
         "from": "c5",
         "to": "c6",
-        "fromRef": "azure-logic-apps/hr-identity#process",
+        "fromRef": "ais/hr-identity#process",
         "toRef": "endapp/microsoft-entra-id/microsoft-graph-users-api#api"
       },
       {
@@ -256,7 +279,10 @@
         "platform": "BTP IS",
         "asset": "SF-Employee-Sync",
         "platformId": "btp-is",
-        "componentId": "btp-is/sf-employee-sync"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -265,7 +291,10 @@
         "platform": "Solace",
         "asset": "Employee-Events",
         "platformId": "solace",
-        "componentId": "solace/employee-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
@@ -274,16 +303,22 @@
         "platform": "Solace",
         "asset": "Q-Entra-Leaver",
         "platformId": "solace",
-        "componentId": "solace/q-entra-leaver"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
-        "ref": "azure-logic-apps/hr-identity",
+        "ref": "ais/hr-identity",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "HR-Identity",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/hr-identity"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k5",
@@ -302,7 +337,10 @@
         "platform": "Solace",
         "asset": "Q-Servicenow",
         "platformId": "solace",
-        "componentId": "solace/q-servicenow"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k7",

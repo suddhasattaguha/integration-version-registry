@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-885968",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Supplier order confirmations from Ariba update the purchase order in S/4HANA through the shared Ariba procurement API.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-17T09:30:00.000Z",
+    "dataObject": {
+      "name": "Purchase Order",
+      "code": "PO"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "P2P"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "single"
     },
     "canvas": {
@@ -64,7 +73,9 @@
         "name": "BTP_ARIBAPROCURE_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -76,7 +87,10 @@
         "name": "BTP_ARIBAPROCURE_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -131,7 +145,10 @@
         "platform": "BTP IS",
         "asset": "Ariba-Procurement",
         "platformId": "btp-is",
-        "componentId": "btp-is/ariba-procurement"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",

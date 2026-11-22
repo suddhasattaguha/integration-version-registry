@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-35433e",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Payment files from the S/4HANA payment run are published and delivered to Nordea; Kyriba gets the payment details for cash positioning.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-19T09:30:00.000Z",
+    "dataObject": {
+      "name": "Payment",
+      "code": "PAY"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "FIN"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -111,7 +120,10 @@
         "name": "BTP_PAYMENTFILES_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -123,7 +135,9 @@
         "name": "SOL_PAYMENTEVENT_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c4",
@@ -135,7 +149,9 @@
         "name": "SOL_QBANKPAYMENT_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c5",
@@ -147,7 +163,10 @@
         "name": "BTP_PAYMENTDELIV_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c6",
@@ -171,7 +190,9 @@
         "name": "SOL_QTREASURY_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c8",
@@ -248,7 +269,23 @@
         "platform": "BTP IS",
         "asset": "Payment-Files",
         "platformId": "btp-is",
-        "componentId": "btp-is/payment-files"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        },
+        "contains": [
+          {
+            "capability": "process",
+            "subtype": "iflow",
+            "label": "iFlow",
+            "count": 2
+          },
+          {
+            "capability": "queue",
+            "subtype": "jms",
+            "label": "JMS queue"
+          }
+        ]
       },
       {
         "id": "k3",
@@ -257,7 +294,10 @@
         "platform": "Solace",
         "asset": "Payment-Events",
         "platformId": "solace",
-        "componentId": "solace/payment-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
@@ -266,7 +306,10 @@
         "platform": "Solace",
         "asset": "Q-Bank-Payment",
         "platformId": "solace",
-        "componentId": "solace/q-bank-payment"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k5",
@@ -275,7 +318,10 @@
         "platform": "BTP IS",
         "asset": "Payment-Delivery",
         "platformId": "btp-is",
-        "componentId": "btp-is/payment-delivery"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k6",
@@ -294,7 +340,10 @@
         "platform": "Solace",
         "asset": "Q-Treasury",
         "platformId": "solace",
-        "componentId": "solace/q-treasury"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k8",

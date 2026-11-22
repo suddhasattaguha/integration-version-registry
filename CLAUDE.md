@@ -9,7 +9,7 @@
 
 ## What this is
 Single self-contained `registry-app.html` (no build step, no libraries). Reads Pattern Bench registry
-entries (`*.registry.json`, schema 0.7; 0.6 still accepted) + canvas exports (`*.canvas.json`) from `registry-data/` on GitHub
+entries (`*.registry.json`, schema 1.0; 0.7 / 0.6 still accepted) + canvas exports (`*.canvas.json`) from `registry-data/` on GitHub
 (default) or a local folder. Companion: Pattern Bench (`suddhasattaguha/pattern-bench`, branch `feature/v2.0`).
 
 ## Code map of registry-app.html (search for the markers / function names; line numbers drift)
@@ -33,6 +33,7 @@ entries (`*.registry.json`, schema 0.7; 0.6 still accepted) + canvas exports (`*
 | Sticky layers (W-4, 0.9) | `measureSticky`, `onScrollSticky` (`.world.compact`), Escape / Alt+← = back; `.world` uses `overflow: clip` (hidden would break sticky) |
 | Scenario export ≠ version (W-2, 0.9) | no version shown; Exports panel "Export n · date"; `rec.version` kept internally (file names, PB payloads, `data-v`) |
 | Draft 0.10 block (before the test hook) | `Draft 0.10`: R-1 `readConfigFiles` (landscape.json, inbox.json), `renderCfgBadge`, `configBanner`; R-5 `extract010` (edgeMissing, names, liveVersions, integ, apps); R-3 `inboxItems`, `inboxTriage` (in `derive`, export order, first released keeps names), `flags010`, `inboxView`, `inboxApprove` / `inboxMapDialog` / `inboxReject`; saving `saveRegistryFile` / `saveConfig` / `saveInbox` / `addLifecycle` (FS Access into the folder, else download; `S.saved` test hook); R-2 `openSettings010`; R-4 `pbPayload010`; R-6 `versionHistoryHtml`; R-7 `retireDeps` / `retireBlocked` / `retireWizard`, `removeDeps` / `removeBlocked` / `removeWizard`; `act010`; `window.__registry` |
+| Draft 0.11 block (before the test hook) | `Draft 0.11`: `buildLifecycle` wrapper (object events: artifact / component retired · active · removed), `scenario-ids.json` (`displayIdOf`, `assignIds`, `saveIds`), `derive` wrapper (`S.arts`, `S.allComps`, `S.dobjs`, canonical platforms + inferred subtypes, orphans), bands `ar` + Connected applications (W-16), `listTable` (W-11), `coWorld`/`compTable`, `arWorld`/`artTable`, `componentView` / `artifactView` (W-9), `detailHead` actions (W-13), `scenarioView` wrapper (W-14), `overlapBetween` / `scRel` (feeds both ways, W-12), `objRetireWizard` / `objRemove` / `objReactivate` (W-10), `inboxItems` wrapper (data object, required attributes, retired / reserved, data-object spelling), `pbPayload` 1.0 |
 | Shared helpers | `<script id="landscape-shared">` = `tools/landscape-shared.js` (same file in Pattern Bench) → `window.__shared`; edit the .js then `python3 tools/sync_shared.py` |
 | 5. Events | `5. Events` — one delegated click handler (data-act, data-go, data-rowopen, data-node, data-verb …), input, dblclick / hold |
 
@@ -52,9 +53,9 @@ entries (`*.registry.json`, schema 0.7; 0.6 still accepted) + canvas exports (`*
 - Test landscape (X-1): `python3 tools/gen_landscape.py registry-data` (landscape.json + 24 scenarios entry 0.7 + test-cases/), then
   `python3 tools/gen_sales_order.py <pattern-bench.html> registry-data` (Sales order distribution, written through Pattern Bench; also copies
   examples/ into the Pattern Bench folder).
-- Suites: `tests/test_registry_010.py` (54), `tests/test_cross_app.py` (14, PB_HTML=path to pattern-bench.html).
+- Suites: `tests/test_registry_010.py` (54), `tests/test_registry_011.py` (42), `tests/test_cross_app.py` (15, PB_HTML=path to pattern-bench.html).
 - Files in `registry-data/`: `landscape.json` (config), `inbox.json` (Inbox decisions, names changed), `lifecycle.json` (retire / remove events,
   who · date · why), `test-cases/` (never loaded by the app).
 
 ## Commits
-End commit messages with the attribution lines the session gives; push to `main`.
+End commit messages with the attribution lines the session gives; push to `main` (draft 0.11 round: `feature/0.11`, merge after Suddha's test).

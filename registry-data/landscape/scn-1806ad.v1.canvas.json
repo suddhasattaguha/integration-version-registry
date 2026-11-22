@@ -79,10 +79,18 @@
     }
   ],
   "std": {
-    "pb": "2.1",
+    "pb": "2.2",
     "landscape": {
       "source": "Registry",
       "landscapeVersion": 1
+    },
+    "dataObject": {
+      "name": "Employee",
+      "code": "EMP"
+    },
+    "attrs": {
+      "region": "EU",
+      "domain": "HR"
     },
     "branchContainers": [
       {

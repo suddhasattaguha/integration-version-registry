@@ -1,4 +1,4 @@
-"""Cross-app round trip (registry 0.10 ⇄ Pattern Bench 2.1), on the regenerated landscape:
+"""Cross-app round trip (registry 0.11 ⇄ Pattern Bench 2.2, contract 1.0), on the regenerated landscape:
 PB export → registry Inbox → Approve → Open in PB → registry retire wizard → PB auto-collapse → export n+1 → flag clears.
 Run: python3 tests/test_cross_app.py   (PB_HTML=<path to pattern-bench.html>, default ../pattern-bench/pattern-bench.html)"""
 import os, json, glob, shutil, tempfile, zipfile
@@ -31,7 +31,7 @@ with sync_playwright() as p:
     with pb.expect_download() as dl: pb.click('#regDialog [data-a=export]')
     z = zipfile.ZipFile(dl.value.path()); files = {n: z.read(n).decode() for n in z.namelist()}
     spec1 = json.loads([t for n, t in files.items() if n.endswith('registry.json')][0]); sid = spec1['scenario']['id']
-    check('PB export 1: entry 0.7 with proposed Legacy WMS and the DHL v1 ║ v2 version', spec1['schemaVersion'] == '0.7' and spec1['proposed'] and spec1['versions'])
+    check('PB export 1: entry 1.0 with data object, proposed Legacy WMS and the DHL v1 ║ v2 version', spec1['schemaVersion'] == '1.0' and spec1['scenario']['dataObject']['name'] == 'Sales Order' and spec1['proposed'] and spec1['versions'])
     pb.click('#regDialog [data-a=done]')
     # ---- 2 registry: Inbox → Approve → released
     rg = ctx.new_page(); rg.on('pageerror', lambda e: errs.append('REG: ' + str(e)))
@@ -50,6 +50,7 @@ with sync_playwright() as p:
     check('Open in PB: flow arrives with the registry config (read-only) and "export 1"', pb2.evaluate(f"{d}.rgState() && {d}.rgState().meta.id") == sid
           and 'Registry' in pb2.inner_text('#cfgBadge') and 'export 1' in pb2.inner_text('.rg-banner'))
     check('Open in PB: the DHL API is on v1 ║ v2', pb2.evaluate(f"Object.keys({d}.versionOverrides()).length") == 1)
+    check('W-1: opened from the registry in View mode; SCN id and data object arrive', pb2.evaluate(f"{d}.viewMode()") and pb2.evaluate(f"{d}.displayId()") and pb2.evaluate(f"{d}.dataObject().name") == 'Sales Order')
     # ---- 4 registry: retire DHL API v1 in the staged wizard
     ref = 'endapp/dhl-parcel#api'
     rg.evaluate(f"{R}.retireWizard('{ref}', 'v1')"); rg.wait_for_timeout(150)

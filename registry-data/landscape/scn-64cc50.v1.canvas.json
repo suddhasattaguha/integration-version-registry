@@ -30,7 +30,7 @@
     {
       "block": 0,
       "at": "out",
-      "platform": "Azure Logic Apps",
+      "platform": "AIS",
       "asset": "DataLake-Ingest"
     },
     {
@@ -54,10 +54,18 @@
     }
   ],
   "std": {
-    "pb": "2.1",
+    "pb": "2.2",
     "landscape": {
       "source": "Registry",
       "landscapeVersion": 1
+    },
+    "dataObject": {
+      "name": "Sales Order",
+      "code": "SO"
+    },
+    "attrs": {
+      "region": "EU",
+      "domain": "ANA"
     }
   },
   "scenario": {

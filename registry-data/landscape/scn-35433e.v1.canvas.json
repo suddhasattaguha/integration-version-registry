@@ -84,10 +84,18 @@
     }
   ],
   "std": {
-    "pb": "2.1",
+    "pb": "2.2",
     "landscape": {
       "source": "Registry",
       "landscapeVersion": 1
+    },
+    "dataObject": {
+      "name": "Payment",
+      "code": "PAY"
+    },
+    "attrs": {
+      "region": "EU",
+      "domain": "FIN"
     },
     "branchContainers": [
       {

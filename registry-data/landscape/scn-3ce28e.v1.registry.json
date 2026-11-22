@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-3ce28e",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Employee events are collected and sent as the payroll input file to ADP.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-22T09:30:00.000Z",
+    "dataObject": {
+      "name": "Employee",
+      "code": "EMP"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "HR"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "single"
     },
     "canvas": {
@@ -64,7 +73,9 @@
         "name": "SOL_EMPLOYEEEVEN_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -76,7 +87,9 @@
         "name": "SOL_QPAYROLL_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c3",
@@ -88,7 +101,10 @@
         "name": "BTP_PAYROLLEXPOR_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c4",
@@ -131,7 +147,10 @@
         "platform": "Solace",
         "asset": "Employee-Events",
         "platformId": "solace",
-        "componentId": "solace/employee-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -140,7 +159,10 @@
         "platform": "Solace",
         "asset": "Q-Payroll",
         "platformId": "solace",
-        "componentId": "solace/q-payroll"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
@@ -149,7 +171,10 @@
         "platform": "BTP IS",
         "asset": "Payroll-Export",
         "platformId": "btp-is",
-        "componentId": "btp-is/payroll-export"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",

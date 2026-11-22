@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-c20edf",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "A scheduler polls the Nordea SFTP inbox every night and imports the camt.053 statements into S/4HANA.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-24T07:30:00.000Z",
+    "dataObject": {
+      "name": "Bank Statement",
+      "code": "BST"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "FIN"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "single"
     },
     "canvas": {
@@ -65,7 +74,9 @@
         "name": "BTP_BANKSTATEMEN_SCH",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "scheduler",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -77,7 +88,10 @@
         "name": "BTP_BANKSTATEMEN_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -132,7 +146,10 @@
         "platform": "BTP IS",
         "asset": "Bank-Statement-Poll",
         "platformId": "btp-is",
-        "componentId": "btp-is/bank-statement-poll"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",

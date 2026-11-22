@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-4a5389",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "Released purchase orders are published and sent to suppliers via Ariba; a copy lands in the data lake.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-16T09:30:00.000Z",
+    "dataObject": {
+      "name": "Purchase Order",
+      "code": "PO"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "P2P"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -99,7 +108,9 @@
         "name": "BTP_ARIBAPROCURE_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
@@ -111,7 +122,10 @@
         "name": "BTP_ARIBAPROCURE_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "iflow"
       },
       {
         "id": "c3",
@@ -123,7 +137,9 @@
         "name": "SOL_POEVENTS_TP",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "topic",
+        "nameIsId": true
       },
       {
         "id": "c4",
@@ -135,7 +151,9 @@
         "name": "SOL_QARIBAPO_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c5",
@@ -159,19 +177,24 @@
         "name": "SOL_QDWHPO_Q",
         "nameRule": "N-3",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "queue",
+        "nameIsId": true
       },
       {
         "id": "c7",
-        "ref": "azure-logic-apps/datalake-ingest#process",
+        "ref": "ais/datalake-ingest#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k6",
-        "name": "ALA_DATALAKEINGE_IF",
+        "name": "AIS_DATALAKEINGE_IF",
         "nameRule": "N-2",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "function-app"
       },
       {
         "id": "c8",
@@ -233,12 +256,12 @@
         "from": "c6",
         "to": "c7",
         "fromRef": "solace/q-dwh-po#queue",
-        "toRef": "azure-logic-apps/datalake-ingest#process"
+        "toRef": "ais/datalake-ingest#process"
       },
       {
         "from": "c7",
         "to": "c8",
-        "fromRef": "azure-logic-apps/datalake-ingest#process",
+        "fromRef": "ais/datalake-ingest#process",
         "toRef": "endapp/azure-data-lake/data-lake-landing-folder#file"
       },
       {
@@ -256,7 +279,10 @@
         "platform": "BTP IS",
         "asset": "Ariba-Procurement",
         "platformId": "btp-is",
-        "componentId": "btp-is/ariba-procurement"
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -265,7 +291,10 @@
         "platform": "Solace",
         "asset": "PO-Events",
         "platformId": "solace",
-        "componentId": "solace/po-events"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k3",
@@ -274,7 +303,10 @@
         "platform": "Solace",
         "asset": "Q-Ariba-Po",
         "platformId": "solace",
-        "componentId": "solace/q-ariba-po"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
@@ -293,16 +325,22 @@
         "platform": "Solace",
         "asset": "Q-Dwh-Po",
         "platformId": "solace",
-        "componentId": "solace/q-dwh-po"
+        "componentType": "broker",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k6",
-        "ref": "azure-logic-apps/datalake-ingest",
+        "ref": "ais/datalake-ingest",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "DataLake-Ingest",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/datalake-ingest"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k7",

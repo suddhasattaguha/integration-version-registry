@@ -1,6 +1,6 @@
 {
   "schema": "pattern-bench.registry-entry",
-  "schemaVersion": "0.7",
+  "schemaVersion": "1.0",
   "scenario": {
     "id": "scn-3bcd54",
     "version": 1,
@@ -8,9 +8,18 @@
     "description": "New prospects converted in Salesforce, and webshop self-registrations, create business partners in S/4HANA through the CRM connector.",
     "author": "Suddhasatta Guha",
     "exportedAt": "2026-11-12T09:30:00.000Z",
+    "dataObject": {
+      "name": "Business Partner",
+      "code": "BP"
+    },
+    "displayId": null,
+    "attributes": {
+      "region": "EU",
+      "domain": "MDM"
+    },
     "source": {
       "tool": "Pattern Bench",
-      "toolVersion": "2.1",
+      "toolVersion": "2.2",
       "mode": "composite"
     },
     "canvas": {
@@ -78,27 +87,32 @@
     "components": [
       {
         "id": "c1",
-        "ref": "azure-logic-apps/crm-connector#api",
+        "ref": "ais/crm-connector#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
         "container": "k1",
-        "name": "ALA_CRMCONNECTOR_API",
+        "name": "AIS_CRMCONNECTOR_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c2",
-        "ref": "azure-logic-apps/crm-connector#process",
+        "ref": "ais/crm-connector#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k1",
-        "name": "ALA_CRMCONNECTOR_IF",
-        "nameRule": "N-2",
+        "name": "AIS_CRMCONNECTOR_LA",
+        "nameRule": "N-LA",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "logic-app"
       },
       {
         "id": "c3",
@@ -114,27 +128,32 @@
       },
       {
         "id": "c4",
-        "ref": "azure-logic-apps/webshop-gateway#api",
+        "ref": "ais/webshop-gateway#api",
         "type": "api",
         "version": "v1",
         "owner": "integration",
         "container": "k3",
-        "name": "ALA_WEBSHOPGATEW_API",
+        "name": "AIS_WEBSHOPGATEW_API",
         "nameRule": "N-1",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "api",
+        "nameIsId": true
       },
       {
         "id": "c5",
-        "ref": "azure-logic-apps/webshop-gateway#process",
+        "ref": "ais/webshop-gateway#process",
         "type": "process",
         "version": "v1",
         "owner": "integration",
         "container": "k3",
-        "name": "ALA_WEBSHOPGATEW_IF",
-        "nameRule": "N-2",
+        "name": "AIS_WEBSHOPGATEW_LA",
+        "nameRule": "N-LA",
         "autoName": false,
-        "nameOverridden": false
+        "nameOverridden": false,
+        "artifactType": "process",
+        "nameIsId": true,
+        "subtype": "logic-app"
       },
       {
         "id": "c6",
@@ -165,49 +184,52 @@
       {
         "from": "c1",
         "to": "c2",
-        "fromRef": "azure-logic-apps/crm-connector#api",
-        "toRef": "azure-logic-apps/crm-connector#process"
+        "fromRef": "ais/crm-connector#api",
+        "toRef": "ais/crm-connector#process"
       },
       {
         "from": "c2",
         "to": "c3",
-        "fromRef": "azure-logic-apps/crm-connector#process",
+        "fromRef": "ais/crm-connector#process",
         "toRef": "endapp/sap-s-4hana-p01/s-4-api-business-partner#api"
       },
       {
         "from": "c4",
         "to": "c5",
-        "fromRef": "azure-logic-apps/webshop-gateway#api",
-        "toRef": "azure-logic-apps/webshop-gateway#process"
+        "fromRef": "ais/webshop-gateway#api",
+        "toRef": "ais/webshop-gateway#process"
       },
       {
         "from": "c5",
         "to": "c1",
-        "fromRef": "azure-logic-apps/webshop-gateway#process",
-        "toRef": "azure-logic-apps/crm-connector#api"
+        "fromRef": "ais/webshop-gateway#process",
+        "toRef": "ais/crm-connector#api"
       },
       {
         "from": "c6",
         "to": "c1",
         "fromRef": "caller/salesforce-sales-cloud#app",
-        "toRef": "azure-logic-apps/crm-connector#api"
+        "toRef": "ais/crm-connector#api"
       },
       {
         "from": "c7",
         "to": "c4",
         "fromRef": "caller/webshop-commercetools#app",
-        "toRef": "azure-logic-apps/webshop-gateway#api"
+        "toRef": "ais/webshop-gateway#api"
       }
     ],
     "containers": [
       {
         "id": "k1",
-        "ref": "azure-logic-apps/crm-connector",
+        "ref": "ais/crm-connector",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "CRM-Connector",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/crm-connector"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k2",
@@ -221,12 +243,15 @@
       },
       {
         "id": "k3",
-        "ref": "azure-logic-apps/webshop-gateway",
+        "ref": "ais/webshop-gateway",
         "kind": "iPaaS",
-        "platform": "Azure Logic Apps",
+        "platform": "AIS",
         "asset": "Webshop-Gateway",
-        "platformId": "azure-logic-apps",
-        "componentId": "azure-logic-apps/webshop-gateway"
+        "platformId": "ais",
+        "componentType": "ipaas",
+        "attributes": {
+          "region": "EU"
+        }
       },
       {
         "id": "k4",
