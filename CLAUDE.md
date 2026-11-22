@@ -28,6 +28,7 @@ entries (`*.registry.json`, schema 0.6) + canvas exports (`*.canvas.json`) from 
 | Explorer (verbs) | `scRel`, `coRel` (component), `plRel` (platform), `sysRel`, `compNeighbours`; `relSvg` (drawing; left column = previous node, V-3), `explorerHtml`, `toggleVerb`, `pivot(key, via)`, `crumbTo`, `X.via`, `dive`, `#pageRel` |
 | Detail pages | `factsHtml`, `sideLists`, `detailHead`, `componentView`, `platformView`, `systemView`, `scenarioView`, `madeOfRows` |
 | Flow diagram (named artifacts) | `chainSvg`, `flowPanel` |
+| High-level design (trial, 0.8.1) | `hldModel` (nodes, ordered links, steps), `hldDoc` (13 sections → blocks p / list / table / note / diagram), `hldHtml`, `hldMarkdown` + `hldMermaid`, `hldView`; route `hld`; acts `hld`, `hldcopy`, `hldmd`, `hldprint` |
 | Open in Pattern Bench (R-14) | `pbAddress`, `canvasEntry`, `pbButton`, `statusMarkers`, `pbPayload`, `openInPB`, `pbDialog`, `toast`, `saveBlob` |
 | 5. Events | `5. Events` — one delegated click handler (data-act, data-go, data-rowopen, data-node, data-verb …), input, dblclick / hold |
 

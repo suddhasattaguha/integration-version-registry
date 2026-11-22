@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Integration Registry — draft 0.8</title>
+<title>Integration Registry — draft 0.8.1</title>
 <style>
   :root {
     --bg: #f5f6f8; --panel: #ffffff; --ink: #1d2433; --muted: #667085; --line: #e3e6ec;
@@ -352,6 +352,25 @@
   .mobj .wmark { margin-left: auto; }
   .mhead { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .prow { display: flex; gap: 14px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--line); } .prow:last-of-type { border-bottom: 0; } .prow .ph { width: 220px; flex: none; }
+  /* ===== draft 0.8.1: high-level design document (trial) ===== */
+  .hld { max-width: 1000px; margin: 0 auto; }
+  .hbar { position: sticky; top: 48px; z-index: 4; display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: rgba(245,246,248,.94); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); margin-bottom: 14px; }
+  .hbar .hbt { font-weight: 600; }
+  .hpage { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 48px 64px 40px; box-shadow: 0 10px 30px rgba(16,24,40,.06); font-size: 14.5px; line-height: 1.6; }
+  .hhead { border-bottom: 3px solid var(--head); padding-bottom: 16px; margin-bottom: 18px; }
+  .hkicker { font-size: 12px; color: var(--muted); letter-spacing: .3px; } .hhead h1 { font-size: 30px; line-height: 1.15; margin: 6px 0 4px; } .hsub { color: var(--muted); font-size: 13px; }
+  .htoc { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 24px; padding: 12px 16px; background: #f7f8fa; border-radius: 6px; margin-bottom: 8px; font-size: 13px; }
+  .htoc b { grid-column: 1 / -1; margin-bottom: 4px; } .htoc a { color: var(--teal); text-decoration: none; cursor: pointer; } .htoc a:hover { text-decoration: underline; }
+  .hpage section { padding-top: 10px; scroll-margin-top: 110px; } .hpage h2 { font-size: 19px; margin: 22px 0 8px; padding-bottom: 4px; border-bottom: 1px solid var(--line); } .hpage h3 { font-size: 14px; margin: 14px 0 6px; }
+  .hpage p { margin: 6px 0 10px; max-width: 75ch; } .hpage ul { margin: 4px 0 10px 20px; padding: 0; }
+  .htab { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 13px; } .htab th { text-align: left; background: #f1f3f6; font-weight: 600; padding: 7px 9px; border: 1px solid #dfe3e9; }
+  .htab td { padding: 6px 9px; border: 1px solid #e6e9ee; vertical-align: top; } .htab.todo td:last-child { color: #b86e00; font-style: italic; }
+  .hnote { background: #fff8ea; border-left: 3px solid #f5a524; padding: 8px 12px; font-size: 13px; }
+  .hfig { margin: 8px 0 12px; overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; padding: 10px; } .hfig svg.chain { width: 100% !important; height: auto; max-width: 100%; } .hfig figcaption { font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .hfoot { margin-top: 28px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 12px; color: var(--muted); }
+  @media (max-width: 700px) { .hpage { padding: 24px 18px; } .htoc { grid-template-columns: 1fr; } }
+  @media print { body > header, .hbar, #status, .status { display: none !important; } main { padding: 0; max-width: none; } body { background: #fff; }
+    .hpage { border: 0; box-shadow: none; padding: 0; } .hpage section { break-inside: auto; } .htab tr, .hfig { break-inside: avoid; } .htoc a { color: inherit; } }
   /* ===== draft 0.7: one detail-page pattern, flow columns, Open in Pattern Bench ===== */
   .facts { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 14px; }
   .fact { background: #fff; border: 1px solid var(--line, #e3e6ec); border-radius: 12px; padding: 9px 14px; min-width: 120px; box-shadow: 0 2px 6px rgba(16,24,40,.04); }
@@ -395,7 +414,7 @@
 <body>
 <header>
   <h1 data-act="home" style="cursor:pointer" title="Home">Integration Registry</h1>
-  <span class="draft">draft 0.8 · schema 0.6</span>
+  <span class="draft">draft 0.8.1 · schema 0.6</span>
   <span class="spacer"></span>
   <span class="folder" id="folderName"></span>
   <button class="btn ghost small hidden" id="reloadBtn" title="Read the registry again">Reload</button>
@@ -887,6 +906,8 @@ function go(view, param, opts = {}) {
   if (!S.records.length && !S.folderName) { v.innerHTML = emptyView(); return; }
   S.enterDetail = !!opts.enter;
   if (view === "scenario") { v.innerHTML = `<div class="world"><div class="world-body">Loading …</div></div>`; scenarioView(param).then((h) => { if (S.view === "scenario") v.innerHTML = h; }); }
+  else if (view === "hld") { v.innerHTML = `<div class="world"><div class="world-body">Generating the document …</div></div>`;
+    hldView(param).then((h) => { if (S.view === "hld") v.innerHTML = h; }).catch((e) => { v.innerHTML = `<div class="panel">Could not generate the document: ${esc(e.message)}</div>`; }); }
   else if (view === "component") v.innerHTML = componentView(param);
   else if (view === "platform") v.innerHTML = platformView(param.key);
   else if (view === "system") v.innerHTML = systemView(param.key);
@@ -1780,7 +1801,8 @@ async function scenarioView(param) {
     <div class="scenhead">
       ${factsHtml([["ID", `<span class="mono">${esc(rec.id)}</span>`], ["Type", typeTxt], ["Description", rec.description ? esc(rec.description) : '<span class="muted">—</span>', true]])}
       <div class="scenact"><div class="pbrow">${pbButton(rec, "page")}</div>
-        <button class="btn small ghost" data-act="markers" data-id="${esc(rec.id)}" data-v="${rec.version}" title="Status markers for Pattern Bench as a file">Download marker list</button></div>
+        <button class="btn small ghost" data-act="markers" data-id="${esc(rec.id)}" data-v="${rec.version}" title="Status markers for Pattern Bench as a file">Download marker list</button>
+        <button class="btn small" data-act="hld" data-id="${esc(rec.id)}" title="Generate a high-level design document from this scenario (trial)">High-level design <span class="chip violet" style="margin-left:4px">trial</span></button></div>
     </div>
     <div class="meta minor">v${rec.version} · exported ${esc(fmtDate(rec.exportedAt))}${rec.author ? " by " + esc(rec.author) : ""} ${rec.tags.length ? "· " + chips(rec.tags) : ""} · canvas <span class="mono">${esc(rec.canvas || "—")}</span>${rec.canvas && !canvasEntry(rec) ? ' <span class="chip red">missing</span>' : ""}</div>
     <div class="dlayout"><div class="dmain">
@@ -1820,6 +1842,172 @@ function madeOfRows(rec) {
       <td>${esc(c0.platform || "—")}<div class="muted" style="font-size:12px">${esc(kindInfo(c0.kind).label)}</div></td><td>${parts}</td></tr>`; }).join("");
 }
 const dirOf = (p) => (p.includes("/") ? p.slice(0, p.lastIndexOf("/") + 1) : "");
+
+/* ============================================================================
+   HLD (trial, 0.8.1): High-level design document generated from one scenario.
+   One document model → rendered as an HTML page (with the flow diagram) and as Markdown (with a Mermaid diagram).
+   ========================================================================== */
+const HLD_TYPE = { api: "API", process: "Process", topic: "Topic", queue: "Queue", file: "Folder", app: "Application" };
+function hldInteraction(a, b) {
+  const ta = a.c.type, tb = b.c.type, ka = a.k?.kind, kb = b.k?.kind;
+  if (ka === "caller") return tb === "file" ? "drops a file" : tb === "topic" ? "publishes a business event" : "calls the integration API";
+  if (ka === "endApp" && ta === "file") return "integration picks up the file";
+  if (ta === "api" && tb === "process") return "API request handed to the process";
+  if (ta === "api" && tb === "topic") return "API publishes the message as an event";
+  if (ta === "process" && tb === "topic") return "process publishes an event";
+  if (ta === "process" && tb === "queue") return "process sends to the queue";
+  if (ta === "topic" && tb === "queue") return "topic subscription delivers to the queue";
+  if (ta === "queue" && tb === "process") return "process consumes from the queue";
+  if (ta === "queue" && tb === "api") return kb === "endApp" ? "queue pushes to the target API" : "queue pushes to the API";
+  if (ta === "process" && tb === "api") return kb === "endApp" ? "process calls the target API" : "process calls the API";
+  if (ta === "process" && tb === "file") return "process writes a file to the target folder";
+  if (ta === "process" && tb === "process") return "hands over to the next process";
+  return `${HLD_TYPE[ta] || ta} → ${HLD_TYPE[tb] || tb}`;
+}
+async function hldModel(id) {
+  const s = S.scenarios.get(id), rec = s.latest, spec = await loadSpec(rec.path);
+  const base = spec.base || {}, conts = base.containers || [], kById = Object.fromEntries(conts.map((k) => [k.id, k]));
+  const openV = (spec.versions || []).filter((v) => v.status !== "completed");
+  const nodes = new Map();                                  // component id -> { c, k, added }
+  for (const c of base.components || []) nodes.set(c.id, { c, k: kById[c.container], added: false });
+  for (const v of openV) for (const a of v.added || []) nodes.set(a.id, { c: a, k: kById[a.container], added: true });
+  const links = [...(base.links || []).map((l) => ({ ...l, added: false })), ...openV.flatMap((v) => (v.addedLinks || []).map((l) => ({ ...l, added: true })))]
+    .filter((l) => nodes.has(l.from) && nodes.has(l.to));
+  // order the steps: breadth-first from components nothing points to (callers / source folders first)
+  const inDeg = new Map([...nodes.keys()].map((k) => [k, 0])); links.forEach((l) => inDeg.set(l.to, inDeg.get(l.to) + 1));
+  const rank = new Map(), q = [...nodes.keys()].filter((k) => !inDeg.get(k)); q.forEach((k) => rank.set(k, 0));
+  while (q.length) { const a = q.shift(); for (const l of links) if (l.from === a && !rank.has(l.to)) { rank.set(l.to, rank.get(a) + 1); q.push(l.to); } }
+  links.sort((x, y) => (rank.get(x.from) ?? 99) - (rank.get(y.from) ?? 99) || (rank.get(x.to) ?? 99) - (rank.get(y.to) ?? 99));
+  const label = (n) => { const k = n.k || {};
+    if (isSystemKind(k.kind)) return k.kind === "caller" ? appNameOf(k) : `${appNameOf(k)} · ${endpointNameOf(n.c, k)}`;
+    return `${k.asset || n.c.name || n.c.type} (${HLD_TYPE[n.c.type] || n.c.type})`; };
+  const where = (n) => (n.k ? (isSystemKind(n.k.kind) ? "connected system" : `${n.k.platform} · ${kindInfo(n.k.kind).label}`) : "—");
+  const steps = links.map((l, i) => { const a = nodes.get(l.from), b = nodes.get(l.to);
+    return [String(i + 1), label(a), label(b), hldInteraction(a, b) + (l.added ? " (planned, open decision)" : ""), isSystemKind(b.k?.kind) ? where(a) : where(b)]; });
+  return { s, rec, spec, nodes, links, steps, openV, label };
+}
+function hldDoc(m) {
+  const { s, rec, spec, nodes } = m, r = rec, flags = activeFlags(s), ov = overlapsOf(r.id);
+  const src = srcNames(r), tgt = tgtNames(r), plats = r.platforms;
+  const sentence = (a) => (a.length <= 1 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]);
+  const comps = (r.containers || []).filter((k) => S.comps.has(k.key));
+  const topics = [...nodes.values()].filter((n) => n.c.type === "topic");
+  const sec = [];
+  // 1 document control
+  sec.push({ h: "Document control", b: [{ t: "table", cols: ["Item", "Value"], rows: [
+    ["Document", `High-level design — ${r.name}`], ["Scenario ID", r.id], ["Based on", `Export ${r.version} from Pattern Bench, ${fmtDate(r.exportedAt)}`],
+    ["Author of the design", r.author || "—"], ["Status", "Draft — generated from the integration registry"], ["Generated", fmtDate(new Date().toISOString())]] }] });
+  // 2 purpose and scope
+  sec.push({ h: "Purpose and scope", b: [
+    { t: "p", x: r.description || "No description recorded in the registry entry." },
+    { t: "p", x: `This document describes the end-to-end integration ${r.mode === "composite" ? "(composite flow)" : ""} from ${sentence(src) || "the source system"} to ${sentence(tgt) || "the target system(s)"}, running on ${sentence(plats) || "the integration platforms listed below"}.` },
+    { t: "list", title: "In scope", items: [`${comps.length} integration component${comps.length === 1 ? "" : "s"} and the message flow between them`, "Inbound and outbound interfaces to the connected systems", "Versioning decisions recorded for this scenario"] },
+    { t: "list", title: "Out of scope", items: ["Internal logic of the connected systems (they are treated as black boxes)", "Detailed mapping and transformation specifications (to be covered in the detailed design)"] }] });
+  // 3 solution overview
+  const trig = r.sys.triggeredBy.map((t) => `${sysName(t.key)}${t.process ? " (" + t.process + ")" : ""}`);
+  const deliv = uniq(r.sys.deliversTo.map((d) => `${sysName(d.key)} through ${d.endpoint}`));
+  sec.push({ h: "Solution overview", b: [{ t: "diagram" },
+    { t: "p", x: `The flow is triggered by ${sentence(trig) || "an inbound event"}. It passes through ${comps.length} integration component${comps.length === 1 ? "" : "s"} (${sentence(comps.map((k) => k.name))}) and delivers to ${sentence(deliv) || "the target system(s)"}.` }] });
+  // 4 systems and platforms
+  const sysRows = [...r.sys.triggeredBy.map((t) => [sysName(t.key), "Source (triggers the flow)", t.process || "—"]),
+    ...uniq(r.sys.deliversTo.map((d) => d.key)).map((k) => [sysName(k), "Target (receives)", uniq(r.sys.deliversTo.filter((d) => d.key === k).map((d) => d.endpoint)).join(", ")])];
+  const platRows = uniq(comps.map((k) => S.comps.get(k.key).platKey)).map((pk) => { const p = S.platforms.get(pk);
+    return [p.name, [...p.kinds].map((k) => kindInfo(k).label).join(" + "), comps.filter((k) => S.comps.get(k.key).platKey === pk).map((k) => k.name).join(", ")]; });
+  sec.push({ h: "Systems and integration platforms", b: [
+    { t: "table", title: "Connected systems", cols: ["System", "Role", "Interface / business process"], rows: sysRows },
+    { t: "table", title: "Integration platforms", cols: ["Platform", "Kind", "Components in this flow"], rows: platRows }] });
+  // 5 flow step by step
+  sec.push({ h: "Integration flow — step by step", b: [{ t: "table", cols: ["#", "From", "To", "Interaction", "Runs on"], rows: m.steps }] });
+  // 6 components
+  sec.push({ h: "Integration components", b: [{ t: "table", cols: ["Component", "Platform", "Kind", "Parts and versions", "Lifecycle", "Reuse"], rows: comps.map((k) => {
+    const x = S.comps.get(k.key), ps = partsIn(k.key, r);
+    const st = uniq(ps.flatMap((p) => p.v.split("+").map((v) => S.lifecycle?.byKey.get(p.ref + "@" + v)?.stage)).filter(Boolean)).map((st) => STAGE_LABEL[st] || st);
+    return [x.name, x.platform, kindInfo(x.kind).label, partsText(ps), st.join(", ") || "not recorded", x.scenarios.size > 1 ? `shared with ${x.scenarios.size - 1} other scenario${x.scenarios.size > 2 ? "s" : ""}` : "this scenario only"]; }) }] });
+  // 7 interfaces
+  const inRows = [...nodes.values()].filter((n) => n.k?.kind === "caller").map((n) => { const nxt = m.links.find((l) => l.from === n.c.id); const e = nxt && nodes.get(nxt.to);
+    return [appNameOf(n.k), n.k.process || "—", e ? m.label(e) : "—", e ? HLD_TYPE[e.c.type] || e.c.type : "—"]; });
+  const outRows = [...nodes.values()].filter((n) => n.k?.kind === "endApp").map((n) => { const prv = m.links.find((l) => l.to === n.c.id); const e = prv && nodes.get(prv.from);
+    return [appNameOf(n.k), endpointNameOf(n.c, n.k), HLD_TYPE[n.c.type] || n.c.type, e ? m.label(e) : "—"]; });
+  sec.push({ h: "Interfaces", b: [
+    { t: "table", title: "Inbound", cols: ["Source system", "Business process", "Entry point", "Type"], rows: inRows },
+    { t: "table", title: "Outbound", cols: ["Target system", "Endpoint", "Type", "Called from"], rows: outRows }] });
+  // 8 messaging
+  if (topics.length) {
+    const tRows = topics.map((n) => { const pubs = m.links.filter((l) => l.to === n.c.id).map((l) => m.label(nodes.get(l.from)));
+      const subs = m.links.filter((l) => l.from === n.c.id).map((l) => m.label(nodes.get(l.to)));
+      const others = [...(S.refs.get(n.c.ref)?.scenarios || [])].filter((x) => x !== r.id).map(scenarioName);
+      return [m.label(n), n.k?.platform || "—", pubs.join(", ") || "published outside this flow", subs.join(", ") || "—", others.join(", ") || "none"]; });
+    sec.push({ h: "Messaging and events", b: [{ t: "table", cols: ["Topic", "Broker", "Published by", "Subscriptions in this flow", "Other scenarios on this topic"], rows: tRows }] });
+  }
+  // 9 dependencies
+  sec.push({ h: "Dependencies and reuse", b: ov.length ? [{ t: "table", cols: ["Scenario", "Relation", "Through"], rows: ov.map((o) => [scenarioName(o.id), (o.strong ? "" : "weak — ") + tierLabel(o),
+    Object.values(o.byTier).flat().map((x) => (x.includes(" > ") ? x.split(" > ").map(thingName).join(" → ") : thingName(x))).slice(0, 4).join(", ")]) },
+    { t: "p", x: "A change to a shared component or topic affects the scenarios above; check them before a new version is introduced." }]
+    : [{ t: "p", x: "No overlap with other scenarios in the registry." }] });
+  // 10 versioning
+  const dl = r.decisionList || [];
+  sec.push({ h: "Versioning and change decisions", b: dl.length ? [{ t: "table", cols: ["Decision", "On", "Change", "Why", "Who / when", "Status"], rows: dl.map((d) => [d.label + (d.option ? ` (${d.option})` : ""), d.on + (d.side ? ` · ${d.side}` : ""),
+    d.change.map((c) => (c === "nonBreaking" ? "non-breaking" : c)).join(", ") || "—", d.why || "not given", [d.who, fmtDate(d.when)].filter(Boolean).join(" · ") || "—", d.status]) }]
+    : [{ t: "p", x: "No versioning decisions recorded — this document describes the base design." }] });
+  // 11 risks
+  const risks = [...flags.map((f) => ["Flag", f.text]), ...dl.filter((d) => d.status !== "completed").map((d) => ["Open decision", `${d.label} on ${d.on}${d.warnings ? ` — ${d.warnings} unacknowledged warning(s)` : ""}`]),
+    ...(r.missingRefs ? [["Data quality", `${r.missingRefs} container(s) without platform / component name`]] : [])];
+  sec.push({ h: "Risks, issues and open points", b: risks.length ? [{ t: "table", cols: ["Type", "Description"], rows: risks }] : [{ t: "p", x: "No open flags or decisions." }] });
+  // 12 NFRs (placeholders)
+  sec.push({ h: "Non-functional aspects", b: [{ t: "note", x: "Not held in the registry yet — to be completed by the integration architect." },
+    { t: "table", cols: ["Aspect", "Approach"], rows: [["Error handling and retries", "To be completed"], ["Monitoring and alerting", "To be completed"], ["Security (authentication, authorisation, encryption)", "To be completed"],
+      ["Performance and volumes", "To be completed"], ["Data protection", "To be completed"], ["Deployment and environments", "To be completed"]], todo: true }] });
+  // 13 appendix
+  sec.push({ h: "Appendix — technical references", b: [{ t: "table", cols: ["Name", "Type", "Version", "Registry ref"], rows: [...nodes.values()].map((n) => [n.c.name || n.c.type, HLD_TYPE[n.c.type] || n.c.type, n.c.version || "—", n.c.ref || "—"]) }] });
+  return { title: `High-level design — ${r.name}`, sub: `${r.id} · export ${r.version} · ${fmtDate(r.exportedAt)}`, sec };
+}
+function hldMermaid(m) {
+  const id = (k) => "n" + String(k).replace(/[^a-zA-Z0-9]/g, "_"), q = (t) => '"' + String(t).replace(/"/g, "'") + '"';
+  const kOf = (n) => n.k?.id || n.c.id, seen = new Set(), edges = new Set();
+  let out = "flowchart LR\n";
+  for (const n of m.nodes.values()) { const k = kOf(n); if (seen.has(k)) continue; seen.add(k);
+    const kk = n.k || {}; const name = isSystemKind(kk.kind) ? appNameOf(kk) : `${kk.asset || n.c.name}<br/>${kk.platform || ""} · ${kindInfo(kk.kind).label}`;
+    out += `  ${id(k)}${isSystemKind(kk.kind) ? "([" + q(name) + "])" : "[" + q(name) + "]"}\n`; }
+  for (const l of m.links) { const a = kOf(m.nodes.get(l.from)), b = kOf(m.nodes.get(l.to)); if (a === b || edges.has(a + ">" + b)) continue; edges.add(a + ">" + b);
+    out += `  ${id(a)} ${l.added ? "-.->" : "-->"} ${id(b)}\n`; }
+  return out;
+}
+function hldMarkdown(doc, m) {
+  const cell = (v) => String(v ?? "").replace(/\|/g, "\\|").replace(/\n/g, " ");
+  let md = `# ${doc.title}\n\n_${doc.sub}_\n`;
+  doc.sec.forEach((s, i) => {
+    md += `\n## ${i + 1}. ${s.h}\n`;
+    for (const b of s.b) {
+      if (b.t === "p") md += `\n${b.x}\n`;
+      if (b.t === "note") md += `\n> ${b.x}\n`;
+      if (b.t === "list") md += `\n**${b.title}**\n\n${b.items.map((x) => "- " + x).join("\n")}\n`;
+      if (b.t === "diagram") md += "\n```mermaid\n" + hldMermaid(m) + "```\n";
+      if (b.t === "table") md += `${b.title ? `\n**${b.title}**\n` : ""}\n| ${b.cols.join(" | ")} |\n|${b.cols.map(() => "---").join("|")}|\n${(b.rows.length ? b.rows : [b.cols.map(() => "—")]).map((r) => "| " + r.map(cell).join(" | ") + " |").join("\n")}\n`;
+    }
+  });
+  return md;
+}
+function hldHtml(doc, m) {
+  const toc = doc.sec.map((s, i) => `<a href="#hld-${i + 1}" data-hldjump="${i + 1}">${i + 1}. ${esc(s.h)}</a>`).join("");
+  const body = doc.sec.map((s, i) => `<section id="hld-${i + 1}"><h2>${i + 1}. ${esc(s.h)}</h2>${s.b.map((b) => {
+    if (b.t === "p") return `<p>${esc(b.x)}</p>`;
+    if (b.t === "note") return `<p class="hnote">${esc(b.x)}</p>`;
+    if (b.t === "list") return `<h3>${esc(b.title)}</h3><ul>${b.items.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`;
+    if (b.t === "diagram") return `<figure class="hfig">${chainSvg(m.spec, new Map(activeFlags(m.s).filter((f) => f.ref).map((f) => [f.ref, f.sev])))}<figcaption>Figure 1 — ${esc(m.rec.name)}: connected systems and integration components</figcaption></figure>`;
+    if (b.t === "table") return `${b.title ? `<h3>${esc(b.title)}</h3>` : ""}<table class="htab ${b.todo ? "todo" : ""}"><thead><tr>${b.cols.map((c) => `<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${
+      (b.rows.length ? b.rows : [[`None`]]).map((r) => `<tr>${r.map((v) => `<td>${esc(v)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+    return ""; }).join("")}</section>`).join("");
+  return `<div class="hld"><div class="hbar"><button class="wback" data-act="back" aria-label="Back">${ICON.back}</button><span class="hbt">High-level design <span class="chip violet">trial</span></span><span style="flex:1"></span>
+      <button class="btn small ghost" data-act="hldcopy">Copy as Markdown</button><button class="btn small ghost" data-act="hldmd">Download .md</button><button class="btn small" data-act="hldprint">Print / PDF</button></div>
+    <div class="hpage"><div class="hhead"><div class="hkicker">Integration registry · high-level design</div><h1>${esc(m.rec.name)}</h1><div class="hsub">${esc(doc.sub)}</div></div>
+      <nav class="htoc"><b>Contents</b>${toc}</nav>${body}
+      <footer class="hfoot">Generated from the integration registry (draft 0.8.1, trial). Content comes from the Pattern Bench export; sections marked "to be completed" are not held in the registry yet.</footer></div></div>`;
+}
+async function hldView(param) {
+  const m = await hldModel(param.id), doc = hldDoc(m);
+  S.hld = { md: hldMarkdown(doc, m), file: `${m.rec.id}-high-level-design.md` };
+  return hldHtml(doc, m);
+}
 
 /* ---- marker list (registry → Pattern Bench), schema 0.5 ---- */
 async function downloadMarkers(id, version) {
@@ -1938,6 +2126,8 @@ function goKey(key, el) { const [v, p] = keyView(key); openDetail(el, v, p); }
    ========================================================================== */
 document.addEventListener("click", (ev) => {
   if (S.holdFired) { S.holdFired = false; return; }
+  const hj = ev.target.closest("[data-hldjump]");
+  if (hj) { ev.preventDefault(); document.getElementById("hld-" + hj.dataset.hldjump)?.scrollIntoView({ behavior: reduced() ? "auto" : "smooth", block: "start" }); return; }
   const t = ev.target.closest("[data-open],[data-copen],[data-act],[data-sort],[data-sel],[data-map],[data-band],[data-node],[data-crumb],[data-xopen],[data-rowopen],[data-verb],[data-verbs],[data-sysrow],[data-go],[data-back],[data-mtype],[data-mstart]");
   if (!t) return;
   if (t.dataset.act === "pb") { ev.stopPropagation(); return openInPB(t.dataset.id, Number(t.dataset.v)); }
@@ -1972,6 +2162,11 @@ document.addEventListener("click", (ev) => {
   if (act === "diveback") { const d = S.diveFrom; S.diveFrom = null; go("band", { k: d.k }, { enter: true });
     const row = document.querySelector(`tr.r[data-id="${CSS.escape(d.row || "")}"]`); if (row) { X.stack = d.stack; openExplorer(row, true); row.scrollIntoView({ block: "center" }); } }
   if (act === "markers") downloadMarkers(t.dataset.id, Number(t.dataset.v));
+  if (act === "hld") { pushNav(); go("hld", { id: t.dataset.id }); }
+  if (act === "hldcopy") navigator.clipboard?.writeText(S.hld?.md || "").then(() => toast("Markdown copied — paste it into Word, Confluence, a .md file …"), () => toast("The browser refused the clipboard here.", true));
+  if (act === "hldmd") { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([S.hld?.md || ""], { type: "text/markdown" })); a.download = S.hld?.file || "high-level-design.md";
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); }
+  if (act === "hldprint") { try { window.print(); } catch { toast("Printing isn't allowed in this viewer — open the registry file directly to print or save as PDF.", true); } }
 });
 document.addEventListener("input", (ev) => {
   if (ev.target.id === "listSearch") { S.listQuery = ev.target.value; $("#listTable").innerHTML = listTable(); }
